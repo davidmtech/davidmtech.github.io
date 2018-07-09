@@ -73,8 +73,9 @@ function startDemo() {
             case 'mapVirtualSurfaces':
             case 'mapPreciseBBoxTest':
             case 'mapPreciseDistanceTest':
-            case "mapGridSurrogatez":   
-            case 'mapNoTextures':  
+            case 'mapGridSurrogatez':
+            case 'mapNoTextures':
+            case 'mapFeaturesSortByTop':
             case 'rendererAntialiasing':
             case 'rendererAllowScreenshots':    params[key] = (params[key] == 'true' || params[key] == '1'); break;
             case 'inertia':
@@ -365,6 +366,8 @@ function startDemo() {
 
         //params['mapForceMetatileV3'] =  true;
 
+        params['authorization'] = "https://cdn.melown.com/mario/auth/A9bw4QkyR0Ej0phswStm";
+
         /*
         params['controlSearch'] = true;
         params['controlSearchElement'] = 'some-div';
@@ -459,6 +462,8 @@ function startDemo() {
 
     browser.on('map-mapconfig-loaded', (function(data){
 
+        //return;
+
        data['view'] = 
             {
               "surfaces": {
@@ -490,6 +495,8 @@ function startDemo() {
                             "#default": "https://cdn.melown.com/libs/vtsjs/fonts/noto-basic/1.0.0/noto.fnt"
 
                           },
+
+                          /*
                           "layers": {
                             "country-boundaries": {
                               "filter": ["all",["==","#group","boundary"],["==","$admin_level","2"],["!=","$maritime","1"]],
@@ -525,6 +532,46 @@ function startDemo() {
                               "culling": 94,
                               "hysteresis": [1500,1500,"@id-solver",true]
                             }
+*/
+                          "layers": {
+                            "country-boundaries": {
+                              "filter": ["all",["==","#group","boundary"],["==","$admin_level","2"],["!=","$maritime","1"]],
+                              "line": true,
+                              "line-flat": false,
+                              "line-width": 5.333,
+                              "line-width-units": "points",
+                              "line-color": [255,255,255,128],
+                              "zbuffer-offset": [-0.01,0,0]
+                            },
+                            "state-boundaries": {
+                              "filter": ["all",["==","#group","boundary"],["==","$admin_level","4"],["!=","$maritime","1"]],
+                              "line": true,
+                              "line-flat": false,
+                              "line-width": 5.333,
+                              "line-width-units": "points",
+                              "line-color": [255,255,255,64],
+                              "zbuffer-offset": [-0.01,0,0]
+                            },
+                            "peaks": {
+                              "filter": ["all",["==","#group","mountain_peak"]],
+                              "visible": {"if":[["!=","@name-solver",""],true,false]},
+                              "reduce": ["bottom",100,"@prominence"],
+                              "dynamic-reduce": ["scr-count4","@prominence"],
+                              "label": true,
+                              "label-color": {"linear2":["@peak-rank",[[1,[255,233,0,255]],[5,[230,230,230,255]]]]},
+                              "label-stick": {"linear2":["@peak-rank",[[1,[70,5,2,255,233,0,128]],[5,[70,5,2,230,230,230,128]]]]},
+                              "label-size": {"discrete2":["@peak-rank",[[0,25.3],[1,24],[2,22.6],[3,21.3],[4,20],[5,18.6]]]},
+                              "label-size-units": "points",
+                              "label-source": "@peak-name2",
+                              "label-font": "@main-font",
+                              "label-no-overlap": true,
+                              "label-no-overlap-factor": ["div-by-dist","@prominence"],
+                              "zbuffer-offset": [-0.25,0,0],
+                              "culling": 94,
+                              "hysteresis": [1500,1500,"@id-solver",true]
+                            }
+
+
                           }
                         }
 
