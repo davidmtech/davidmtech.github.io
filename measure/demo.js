@@ -434,6 +434,8 @@ function startDemo() {
     params['positionInUrl'] = true;
     params['jumpAllowed'] = true;
     //params['rotate'] = 10;
+	
+   params['controlMeasure'] = true;	
     
     params['inspector'] = true;
 
