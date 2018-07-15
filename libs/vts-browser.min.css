@@ -538,7 +538,7 @@
     background-color: rgba(255, 229, 42, 1);
     border: solid 1px #000;
     white-space: nowrap;
-    padding: 0px 2px;
+    padding: 1px 3px;
 }
 
 .vts-measure-tools {
