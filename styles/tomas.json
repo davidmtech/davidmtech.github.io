@@ -1,0 +1,216 @@
+{
+  "constants": {
+    "@main-font": ["noto-mix"],
+    "@name-solver": {"if":[["has","$name"],{"if":[["any",["!has","$name:en"],["==",{"has-latin":"$name"},true]],"{$name}","{$name}\n{$name:en}"]},""]},
+    "@peak-name2": {"if":[["has","$ele"],"{$name}\n {{'round': {'str2num':'$ele'}}} m","{$name}"]},
+    "@peak-name": {"if":[["has","$ele"],"{@name-solver}\n {{'round': {'str2num':'$ele'}}} m","{@name-solver}"]}
+
+  },
+  "fonts": {
+    "noto-mix": "//cdn.melown.com/libs/vtsjs/fonts/noto-basic/1.0.0/noto.fnt",
+    "noto-cjk": "//cdn.melown.com/libs/vtsjs/fonts/noto-cjk/1.0.0/noto.fnt",
+    "#default": "//cdn.melown.com/libs/vtsjs/fonts/noto-basic/1.0.0/noto.fnt"
+
+  },
+  "layers": {
+    "country-boundaries": {
+      "filter": ["all",["==","#group","boundary"],["==","$admin_level","2"],["!=","$maritime","1"]],
+      "line": true,
+      "line-flat": false,
+      "line-width": 4,
+      "line-color": [255,255,0,200],
+      "zbuffer-offset": [-0.01,0,0]
+    },
+    "state-boundaries": {
+      "filter": ["all",["==","#group","boundary"],["==","$admin_level","4"],["!=","$maritime","1"]],
+      "line": true,
+      "line-flat": false,
+      "line-width": 4,
+      "line-color": [255,255,0,80],
+      "zbuffer-offset": [-0.01,0,0]
+    },
+    "country-labels": {
+      "filter": ["all",["==","#group","place"],["==","$class","country"]],
+      "visible": {"discrete":[[3,false],[4,true],[7,false]]},
+      "label": true,
+      "label-size": 19,
+      "label-font": "@main-font",
+      "label-source": "@name-solver",
+      "culling": 90,
+      "zbuffer-offset": [-0.15,0,0],
+      "z-index": 1
+    },
+    "state-labels": {
+      "filter": ["all",["==","#group","place"],["==","$class","state"]],
+      "visible": {"discrete":[[5,false],[6,true],[8,false]]},
+      "label": true,
+      "label-size": 19,
+      "label-font": "@main-font",
+      "label-source": "@name-solver",
+      "zbuffer-offset": [-0.15,0,0],
+      "z-index": 1,
+      "culling": 90,
+      "visibility": 2200000
+    },
+    "city-labels": {
+      "filter": ["all",["==","#group","place"],["==","$class","city"],["any",["has","$capital"],["<=","$rank",3]]],
+      "visible": {"discrete":[[5,false],[6,true],[16,false]]},
+      "label": true,
+      "label-size": 19,
+      "label-font": "@main-font",
+      "label-source": "@name-solver",
+      "zbuffer-offset": [-0.15,0,0],
+      "z-index": 1,
+      "culling": 90,
+      "visibility": 1600000
+    },
+    "city-labels2": {
+      "filter": ["all",["==","#group","place"],["==","$class","city"]],
+      "visible": {"discrete":[[6,false],[7,true],[16,false]]},
+      "label": true,
+      "label-size": 19,
+      "label-font": "@main-font",
+      "label-source": "@name-solver",
+      "zbuffer-offset": [-0.15,0,0],
+      "z-index": 1,
+      "visibility": 150000
+    },
+    "town-labels": {
+      "filter": ["all",["==","#group","place"],["==","$class","town"],["<=","$rank",12]],
+      "visible": {"discrete":[[7,false],[8,true],[16,false]]},
+      "label": true,
+      "label-size": 19,
+      "label-font": "@main-font",
+      "label-source": "@name-solver",
+      "zbuffer-offset": [-0.15,0,0],
+      "z-index": 1,
+      "visibility": 80000
+    },
+    "town-labels2": {
+      "filter": ["all",["==","#group","place"],["==","$class","town"],["<=","$rank",20]],
+      "visible": {"discrete":[[9,false],[11,true],[16,false]]},
+      "label": true,
+      "label-size": 19,
+      "label-font": "@main-font",
+      "label-source": "@name-solver",
+      "zbuffer-offset": [-0.5,0,0],
+      "z-index": 1,
+      "visibility": 40000
+    },
+    "town-labels3": {
+      "filter": ["all",["==","#group","place"],["==","$class","village"]],
+      "visible": {"discrete":[[9,false],[11,true],[16,false]]},
+      "label": true,
+      "label-size": 19,
+      "label-font": "@main-font",
+      "label-source": "@name-solver",
+      "zbuffer-offset": [-0.5,0,0],
+      "z-index": 1,
+      "visibility": 10000
+    },
+    "suburb-labels": {
+      "filter": ["all",["==","#group","place"],["==","$class","suburb"]],
+      "visible": {"discrete":[[9,false],[11,true],[16,false]]},
+      "label": true,
+      "label-size": 19,
+      "label-font": "@main-font",
+      "label-source": "@name-solver",
+      "zbuffer-offset": [-1,0,0],
+      "z-index": 1,
+      "visibility": 10000
+    },
+    "roads": {
+      "filter": ["all",["==","#group","transportation"],["in","$class","secondary","tertiary","unclassified","minor","service","unclassified","residential"]],
+      "visible": {"discrete":[[15,false],[16,true]]},
+      "line": true,
+      "line-flat": true,
+      "line-width": {"lod-scaled":[14,10,1]},
+      "line-color": [255,255,255,120],
+      "zbuffer-offset": [-10,-50,-50]
+    },
+    "highways": {
+      "filter": ["all",["==","#group","transportation"],["==","$class","highway"]],
+      "visible": false,
+      "line": false,
+      "line-flat": true,
+      "line-width": {"lod-scaled":[12,40,1]},
+      "line-color": [255,255,255,130],
+      "zbuffer-offset": [-10,-50,-50]
+    },
+    "roads-major-label": {
+      "filter": ["all",["==","#group","transportation_name"],["==","$class","primary"],["==","$class","trunk"]],
+      "visible": {"discrete":[[15,false],[16,true]]},
+      "line-label": true,
+      "line-label-font": "@main-font",
+      "line-label-size": {"discrete":[[16,9],[17,6],[18,3.5],[19,2],[20,1.5],[21,1]]},
+      "line-label-color": [255,255,255,255],
+      "label-font": "@main-font",
+      "zbuffer-offset": [-10,-50,-50]
+    },
+    "roads-minor-label": {
+      "filter": ["all",["==","#group","transportation_name"],["in","$class","secondary","tertiary","unclassified","minor","service","unclassified","residential","path"]],
+      "visible": {"discrete":[[15,false],[16,true]]},
+      "line-label": true,
+      "line-label-font": "@main-font",
+      "line-label-size": {"discrete":[[16,9],[17,6],[18,3.5],[19,2],[20,1.5],[21,1]]},
+      "line-label-color": [255,255,255,255],
+      "label-font": "@main-font",
+      "zbuffer-offset": [-10,-50,-50]
+    },
+    "peaks": {
+      "filter": ["all",["==","#group","mountain_peak"],["==","$rank","1"],["has","$prominence"],["==","#lod","10"]],
+      "visible": {"if":[[">=",{"str2num":"$prominence"},3200],true,false]},
+      "label": true,
+      "label-stick": [70,5,2,255,255,255,128],
+      "label-size": 19,
+      "label-source": "@peak-name",
+      "label-font": "@main-font",
+      "zbuffer-offset": [-0.15,0,0],
+      "z-index": 1
+    },
+    "peaks2": {
+      "filter": ["all",["==","#group","mountain_peak"],["==","$rank","1"],["has","$prominence"],["==","#lod","11"]],
+      "visible": {"if":[[">=",{"str2num":"$prominence"},2400],true,false]},
+      "label": true,
+      "label-stick": [70,5,2,255,255,255,128],
+      "label-size": 19,
+      "label-source": "@peak-name",
+      "label-font": "@main-font",
+      "zbuffer-offset": [-0.15,0,0],
+      "z-index": 1
+    },
+    "peaks3": {
+      "filter": ["all",["==","#group","mountain_peak"],["==","$rank","1"],["has","$prominence"],["==","#lod","12"]],
+      "visible": {"if":[[">=",{"str2num":"$prominence"},1200],true,false]},
+      "label": true,
+      "label-stick": [70,5,2,255,255,255,128],
+      "label-size": 19,
+      "label-source": "@peak-name",
+      "label-font": "@main-font",
+      "zbuffer-offset": [-0.15,0,0],
+      "z-index": 1
+    },
+    "peaks4": {
+      "filter": ["all",["==","#group","mountain_peak"],["==","$rank","1"],["has","$prominence"],["==","#lod","13"]],
+      "visible": {"if":[[">=",{"str2num":"$prominence"},300],true,false]},
+      "label": true,
+      "label-stick": [70,5,2,255,255,255,128],
+      "label-size": 19,
+      "label-source": "@peak-name",
+      "label-font": "@main-font",
+      "zbuffer-offset": [-0.15,0,0],
+      "z-index": 1
+    },
+    "peaks5": {
+      "filter": ["all",["==","#group","mountain_peak"],["==","$rank","1"],["has","$prominence"],[">=","#lod","14"]],
+      "visible": {"if":[[">=",{"str2num":"$prominence"},100],true,false]},
+      "label": true,
+      "label-stick": [70,5,2,255,255,255,128],
+      "label-size": 19,
+      "label-source": "@peak-name",
+      "label-font": "@main-font",
+      "zbuffer-offset": [-0.15,0,0],
+      "z-index": 1
+    }
+  }
+}
