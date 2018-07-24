@@ -346,6 +346,10 @@ function startDemo() {
 
         //params['map'] = 'http://jetstream.signell.us:8070/mapproxy/melown2015/surface/sandwich/sandwich_dem_resampling/mapConfig.json';
 
+        //params['map'] = 'http://pomerol:8889/vasek-output/jenstejn.vf.free/mapConfig.json';  //TODO: debug lada conference bug
+
+        //params['map'] = 'https://rigel.mlwn.se/vts/mapproxy/pluto-qsc/surface/.system/surface-spheroid/mapConfig.json';
+        //params['map'] = 'https://rigel.mlwn.se/store/map-config/mars-case-study/mapConfig.json';
 
 
         //ONDRA
@@ -434,9 +438,15 @@ function startDemo() {
     params['positionInUrl'] = true;
     params['jumpAllowed'] = true;
     //params['rotate'] = 10;
-	
-   params['controlMeasure'] = true;	
-    
+
+        params["controlMeasure"] = true;
+
+/*
+        params["controlMeasure"] = true;
+        params["controlSearchFilter"] = false;
+        params["controlSearchSrs"] = "+proj=longlat +a=3396190 +b=3376200 +no_defs";
+        params["controlSearchUrl"] = "//rigel.mlwn.se/togs/mars?q={value}&format=json&limit=20";
+  */  
     params['inspector'] = true;
 
 //    params['mapDefaultFont'] = '../demos/fonts/full-plain/basic.fnt';
