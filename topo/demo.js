@@ -504,6 +504,7 @@ function startDemo() {
                             "@prominence-name": {"round":"@prominence"},
                             "@osmid": {"if":[["has","$osm_id"],"$osm_id",""]},
                             "@id-solver": "{@osmid} {@ele-solver} {@name-solver}",
+                            "@id-solver2": "{@osmid} {@name-solver}",
                             "@peak-rank": {"discrete2":["@prominence",[[-1501,0],[-1499,1],[-751,1],[-749,2],[-326,2],[-324,3],[-164,3],[-162,4],[-2,4],[-1,5]]]},
                             "@peak-name2": {"if":[["==","@peak-rank",0],{"uppercase":"@peak-name"},"@peak-name"]}
 
@@ -559,7 +560,7 @@ function startDemo() {
                               "line-flat": false,
                               "line-width": 5.333,
                               "line-width-units": "points",
-                              "line-color": [255,255,255,128],
+                              "line-color": [255,255,0,200],
                               "zbuffer-offset": [-0.01,0,0]
                             },
                             "state-boundaries": {
@@ -568,7 +569,7 @@ function startDemo() {
                               "line-flat": false,
                               "line-width": 5.333,
                               "line-width-units": "points",
-                              "line-color": [255,255,255,64],
+                              "line-color": [255,255,0,80],
                               "zbuffer-offset": [-0.01,0,0]
                             },
                             "country-labels": {
@@ -577,7 +578,8 @@ function startDemo() {
                               "label": true,
                               "label-size": 19,
                               "zbuffer-offset": [-0.15,0,0],
-                              "z-index": 1
+                              "z-index": 1//,
+                              //"hysteresis": [1500,1500,"@id-solver2",true]
                             },
                             "state-labels": {
                               "filter": ["all",["==","#group","place"],["==","$class","state"]],
@@ -586,7 +588,8 @@ function startDemo() {
                               "label-size": 19,
                               "zbuffer-offset": [-0.15,0,0],
                               "z-index": 1,
-                              "visibility": 2200000
+                              "visibility": 2200000//,
+                              //"hysteresis": [1500,1500,"@id-solver2",true]
                             },
                             "city-labels": {
                               "filter": ["all",["==","#group","place"],["==","$class","city"],["<=","$rank",3]],
@@ -595,7 +598,8 @@ function startDemo() {
                               "label-size": 19,
                               "zbuffer-offset": [-0.15,0,0],
                               "z-index": 1,
-                              "visibility": 600000
+                              "visibility": 600000//,
+                              //"hysteresis": [1500,1500,"@id-solver2",true]
                             },
                             "city-labels2": {
                               "filter": ["all",["==","#group","place"],["==","$class","city"]],
@@ -604,7 +608,8 @@ function startDemo() {
                               "label-size": 19,
                               "zbuffer-offset": [-0.15,0,0],
                               "z-index": 1,
-                              "visibility": 150000
+                              "visibility": 150000//,
+                              //"hysteresis": [1500,1500,"@id-solver2",true]
                             },
                             "town-labels": {
                               "filter": ["all",["==","#group","place"],["==","$class","town"],["<=","$rank",12]],
@@ -613,7 +618,8 @@ function startDemo() {
                               "label-size": 19,
                               "zbuffer-offset": [-0.15,0,0],
                               "z-index": 1,
-                              "visibility": 80000
+                              "visibility": 80000//,
+                              //"hysteresis": [1500,1500,"@id-solver2",true]
                             },
                             "town-labels2": {
                               "filter": ["all",["==","#group","place"],["==","$class","town"],["<=","$rank",20]],
@@ -622,7 +628,8 @@ function startDemo() {
                               "label-size": 19,
                               "zbuffer-offset": [-0.5,0,0],
                               "z-index": 1,
-                              "visibility": 40000
+                              "visibility": 40000//,
+                              //"hysteresis": [1500,1500,"@id-solver2",true]
                             },
                             "town-labels3": {
                               "filter": ["all",["==","#group","place"],["==","$class","village"]],
@@ -631,7 +638,8 @@ function startDemo() {
                               "label-size": 19,
                               "zbuffer-offset": [-0.5,0,0],
                               "z-index": 1,
-                              "visibility": 10000
+                              "visibility": 10000//,
+                              //"hysteresis": [1500,1500,"@id-solver2",true]
                             },
                             "suburb-labels": {
                               "filter": ["all",["==","#group","place"],["==","$class","suburb"]],
@@ -640,7 +648,8 @@ function startDemo() {
                               "label-size": 19,
                               "zbuffer-offset": [-1,0,0],
                               "z-index": 1,
-                              "visibility": 10000
+                              "visibility": 10000//,
+                              //"hysteresis": [1500,1500,"@id-solver2",true]
                             },
                             "rivers": {
                               "filter": ["all",["==","#group","waterway"],["in","$class","river"]],
@@ -659,7 +668,7 @@ function startDemo() {
                               "line-label-size": {"lod-scaled":[17,7,1]},
                               //"line-label-color": [0,255,255,255],
                               //"line-label-color": [154,191,221,190],
-                              "line-labekl-color": [74,156,222,255],
+                              "line-label-color": [74,156,222,255],
                               "zbuffer-offset": [-10,-50,-50]
                             },
                             "rivers2": {
@@ -712,7 +721,8 @@ function startDemo() {
                               "dynamic-reduce": ["scr-count4","@prominence"],
                               "label": true,
                               //"label-color": {"linear2":["@peak-rank",[[1,[255,233,0,255]],[5,[230,230,230,255]]]]},
-                              "label-stick": {"linear2":["@peak-rank",[[1,[70,5,2,255,233,0,128]],[5,[70,5,2,230,230,230,128]]]]},
+                              //"label-stick": {"linear2":["@peak-rank",[[1,[70,5,2,255,233,0,128]],[5,[70,5,2,230,230,230,128]]]]},
+                              "label-stick": [70,5,2,255,255,255,128],
                               "label-size": {"discrete2":["@peak-rank",[[0,25.3],[1,24],[2,22.6],[3,21.3],[4,20],[5,18.6]]]},
                               "label-size-units": "points",
                               "label-source": "@peak-name2",
