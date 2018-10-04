@@ -18,6 +18,7 @@ function startDemo() {
     var params = vts.utils.getParamsFromUrl(window.location.href);
     
     for (key in params) {
+
         switch(key) {
             case 'rotate':
             case 'minViewExtent':
@@ -119,6 +120,7 @@ function startDemo() {
             case 'debugShader':
             case 'debugHeightmap':
             case 'debugRadar':
+            case 'debugGridCells':
             case 'view':
                 params[key] = decodeURIComponent(params[key]);
                 break;

@@ -130,6 +130,7 @@ function startDemo() {
             case 'debugShader':
             case 'debugHeightmap':
             case 'debugRadar':
+            case 'debugGridCells':
             case 'view':
                 params[key] = decodeURIComponent(params[key]);
                 break;
