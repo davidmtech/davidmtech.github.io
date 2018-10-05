@@ -532,7 +532,39 @@ function startDemo() {
 
 
                   //"//rigel.mlwn.se/store/stylesheet/osm-maptiler.style?13"
+                },
+
+                "peaklist-org-ultras": {
+                    "style": {
+                      "constants": {
+                        "@name-solver": {"if":[["has","$name"],"$name","$Name"]},
+                        "@ele": {"if":[["has","$elevation"],"$elevation","$Elevation"]},
+                        "@feet": {"round":{"mul":[3.2808399,{"str2num":"@ele"}]}},
+                        "@ele-solver": {"if":[["==","#metric",true],"{{'round': {'str2num':'@ele'}}} m","{@feet} ft"]},
+                        "@id-solver": "{@ele-solver} {@name-solver}",
+                        "@prom-solver": {"mul":[-1,{"str2num":{"if":[["has","$prom"],"$prom","$Prom"]}}]}
+
+                      },
+                      "layers": {
+                        "peak-labels": {
+                          //"reduce": ["bottom",100,"@prominence"],
+                          "dynamic-reduce": ["scr-count4","@prom-solver"],
+                          "label": true,
+                          "label-source": {"uppercase":"{@name-solver}\n{@ele-solver}"},
+                          "label-no-overlap": true,
+                          "label-no-overlap-factor": ["div-by-dist","@prom-solver"],
+                          "label-size": 19,
+                          "label-stick": [70,5,2,255,233,0,128],
+                          "label-color": [255,233,0,255],
+                          "zbuffer-offset": [-1,0,0],
+                          "culling": 92,
+                          "hysteresis": [1500,1500,"@id-solver",true]
+                        }
+                      }
+                    }
+
                 }
+
               }
             };
 
