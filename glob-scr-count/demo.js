@@ -19,6 +19,16 @@ function startDemo() {
     
     for (key in params) {
 
+        if (key == 'mapFeatureMaxOverlays') {
+            params['mapFeaturesPerSquareInch'] = params[key];
+            key = 'mapFeaturesPerSquareInch';
+        } 
+        
+        if (key == 'mapFeatureRadius') {
+            params['mapFeatureGridCells'] = params[key];
+            key = 'mapFeatureGridCells';
+        } 
+
         switch(key) {
             case 'rotate':
             case 'minViewExtent':
@@ -108,6 +118,7 @@ function startDemo() {
             case 'mapGridMode':
             case 'mapLoadMode':
             case 'mapGeodataLoadMode':
+            case 'mapFeaturesReduceMode':
             case 'navigationMode':
             case 'controlSearchUrl':
             case 'controlSearchSrs':
@@ -513,8 +524,7 @@ function startDemo() {
                               "filter": ["all",["==","#group","mountain_peak"]],
                               "visible": {"if":[["!=","@name-solver",""],true,false]},
                               "reduce": ["bottom",100,"@prominence"],
-                              //"dynamic-reduce": ["scr-count2",1,50],
-                              "dynamic-reduce": ["scr-count4","@prominence"],
+                              "dynamic-reduce": ["by-extenal-param","@prominence"],
                               "label": true,
                               "label-color": {"linear2":["@peak-rank",[[1,[255,233,0,255]],[5,[230,230,230,255]]]]},
                               "label-stick": {"linear2":["@peak-rank",[[1,[70,5,2,255,233,0,128]],[5,[70,5,2,230,230,230,128]]]]},
@@ -532,7 +542,37 @@ function startDemo() {
 
 
                   //"//rigel.mlwn.se/store/stylesheet/osm-maptiler.style?13"
+                },
+
+                "peaklist-org-ultras": {
+                  "style": {
+                      "constants": {
+                        "@name-solver": {"if":[["has","$name"],"$name","$Name"]},
+                        "@ele": {"if":[["has","$elevation"],"$elevation","$Elevation"]},
+                        "@feet": {"round":{"mul":[3.2808399,{"str2num":"@ele"}]}},
+                        "@ele-solver": {"if":[["==","#metric",true],"{{'round': {'str2num':'@ele'}}} m","{@feet} ft"]},
+                        "@id-solver": "{@ele-solver} {@name-solver}",
+                        "@prom-solver": {"mul":[-1,{"str2num":{"if":[["has","$prom"],"$prom","$Prom"]}}]}
+
+                      },
+                      "layers": {
+                        "peak-labels": {
+                          "dynamic-reduce": ["by-extenal-param","@prom-solver"],
+                          "label": true,
+                          "label-source": {"uppercase":"{@name-solver}\n{@ele-solver}"},
+                          "label-no-overlap": true,
+                          "label-no-overlap-factor": ["div-by-dist","@prom-solver"],
+                          "label-size": 19,
+                          "label-stick": [70,5,2,255,233,0,128],
+                          "label-color": [255,233,0,255],
+                          "zbuffer-offset": [-1,0,0],
+                          "culling": 92,
+                          "hysteresis": [1500,1500,"@id-solver",true]
+                        }
+                      }
+                    }
                 }
+
               }
             };
 
