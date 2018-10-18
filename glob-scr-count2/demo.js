@@ -19,6 +19,16 @@ function startDemo() {
     
     for (key in params) {
 
+        if (key == 'mapFeatureMaxOverlays') {
+            params['mapFeaturesPerSquareInch'] = params[key];
+            key = 'mapFeaturesPerSquareInch';
+        } 
+        
+        if (key == 'mapFeatureRadius') {
+            params['mapFeatureGridCells'] = params[key];
+            key = 'mapFeatureGridCells';
+        } 
+
         switch(key) {
             case 'rotate':
             case 'minViewExtent':
@@ -81,6 +91,7 @@ function startDemo() {
             case 'inertia':
             case 'sensitivity':
             case 'tiltConstrainThreshold':
+            case 'mapFeaturesReduceParams':
             case 'pan':
                 var value = decodeURIComponent(params[key]);
                 value = value.split(',');
@@ -108,6 +119,7 @@ function startDemo() {
             case 'mapGridMode':
             case 'mapLoadMode':
             case 'mapGeodataLoadMode':
+            case 'mapFeaturesReduceMode':
             case 'navigationMode':
             case 'controlSearchUrl':
             case 'controlSearchSrs':
@@ -512,9 +524,11 @@ function startDemo() {
                             "peaks": {
                               "filter": ["all",["==","#group","mountain_peak"]],
                               "visible": {"if":[["!=","@name-solver",""],true,false]},
-                              "reduce": ["bottom",100,"@prominence"],
-                              //"dynamic-reduce": ["scr-count2",1,50],
-                              "dynamic-reduce": ["scr-count4","@prominence"],
+    
+                              //"reduce": ["bottom",100,"@prominence"],
+                              //"dynamic-reduce": ["scr-count4","@prominence"],
+                              "importance-source": "@prominence",
+
                               "label": true,
                               "label-color": {"linear2":["@peak-rank",[[1,[255,233,0,255]],[5,[230,230,230,255]]]]},
                               "label-stick": {"linear2":["@peak-rank",[[1,[70,5,2,255,233,0,128]],[5,[70,5,2,230,230,230,128]]]]},
@@ -535,7 +549,7 @@ function startDemo() {
                 },
 
                 "peaklist-org-ultras": {
-                    "style": {
+                  "style": {
                       "constants": {
                         "@name-solver": {"if":[["has","$name"],"$name","$Name"]},
                         "@ele": {"if":[["has","$elevation"],"$elevation","$Elevation"]},
@@ -547,8 +561,10 @@ function startDemo() {
                       },
                       "layers": {
                         "peak-labels": {
-                          //"reduce": ["bottom",100,"@prominence"],
-                          "dynamic-reduce": ["scr-count4","@prom-solver"],
+
+                          //"dynamic-reduce": ["scr-count4","@prom-solver"],
+                          "importance-source": "@prom-solver",
+
                           "label": true,
                           "label-source": {"uppercase":"{@name-solver}\n{@ele-solver}"},
                           "label-no-overlap": true,
@@ -562,7 +578,6 @@ function startDemo() {
                         }
                       }
                     }
-
                 }
 
               }
