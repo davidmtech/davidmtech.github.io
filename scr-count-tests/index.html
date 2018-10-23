@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body style="font-family: Verdana, Tahoma, Geneva, Arial, Sans-serif;">
+
+<h2>VTS Browser Screen Count Tests</h2>
+<br>
+
+<h4>Local Screen Count (used on conferencies) - code name: scr-count2 </h4>
+<div style="padding-left: 50px; padding-bottom: 30px">
+<h5>divByDistance == false</h5>
+<ul>
+  <li><a target="_blank" href="https://davidlevinsky.github.io/glob-scr-count2/?mapFeaturesReduceMode=scr-count2&mapFeaturesReduceParams=1,50&pos=obj,11.059121,47.442054,fix,1590.14,-200.71,-27.48,0.00,10806.17,45.00">Optimization Level = 0</a></li>
+</ul>
+<h5>Algoritmus pracuje s předtříděnými daty a proto nelze rozšířit o divByDistance, musel by se napsat jinak a byl by velmi pomalý </h5>
+</div>
+
+
+<h4>Global Screen Count (Grid Cells) - code name: scr-count4 </h4>
+<div style="padding-left: 50px; padding-bottom: 30px">
+<h5>divByDistance == false</h5>
+<ul>
+  <li><a target="_blank" href="https://davidlevinsky.github.io/glob-scr-count2/?mapFeaturesReduceMode=scr-count4&mapFeaturesReduceParams=0.18,0,0&pos=obj,11.059121,47.442054,fix,1590.14,-200.71,-27.48,0.00,10806.17,45.00">Optimization Level = 0</a></li>
+</ul>
+<h5>divByDistance == true</h5>
+<ul>
+  <li><a target="_blank" href="https://davidlevinsky.github.io/glob-scr-count2/?mapFeaturesReduceMode=scr-count4&mapFeaturesReduceParams=0.18,0,1&pos=obj,11.059121,47.442054,fix,1590.14,-200.71,-27.48,0.00,10806.17,45.00">Optimization Level = 0</a></li>
+</ul>
+</div>
+
+
+<h4>Global Screen Count (Cartography algorithm) - code name: scr-count5 </h4>
+<div style="padding-left: 50px; padding-bottom: 30px">
+<h5>divByDistance == false</h5>
+<ul>
+  <li><a target="_blank" href="https://davidlevinsky.github.io/glob-scr-count2/?mapFeaturesReduceMode=scr-count5&mapFeaturesReduceParams=2,1,0&pos=obj,11.059121,47.442054,fix,1590.14,-200.71,-27.48,0.00,10806.17,45.00">Optimization Level = 0</a></li>
+</ul>
+<h5>divByDistance == true</h5>
+<ul>
+  <li><a target="_blank" href="https://davidlevinsky.github.io/glob-scr-count2/?mapFeaturesReduceMode=scr-count5&mapFeaturesReduceParams=2,1,1&pos=obj,11.059121,47.442054,fix,1590.14,-200.71,-27.48,0.00,10806.17,45.00">Optimization Level = 0</a></li>
+</ul>
+</div>
+
+
+</body>
+</html>
