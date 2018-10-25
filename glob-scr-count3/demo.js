@@ -91,6 +91,7 @@ function startDemo() {
             case 'inertia':
             case 'sensitivity':
             case 'tiltConstrainThreshold':
+            case 'mapFeaturesReduceParams':
             case 'pan':
                 var value = decodeURIComponent(params[key]);
                 value = value.split(',');
@@ -118,6 +119,7 @@ function startDemo() {
             case 'mapGridMode':
             case 'mapLoadMode':
             case 'mapGeodataLoadMode':
+            case 'mapFeaturesReduceMode':
             case 'navigationMode':
             case 'controlSearchUrl':
             case 'controlSearchSrs':
@@ -479,6 +481,7 @@ function startDemo() {
                 ]
               },
               "freeLayers": {
+
                 "osm-maptiler": {
                   "style": {
                           "constants": {
@@ -487,13 +490,31 @@ function startDemo() {
                             "@name-solver": {"if":[["has","$name"],{"if":[["any",["!has","$name:en"],["==",{"has-latin":"$name"},true]],"{$name}","{$name}\n{$name:en}"]},""]},
                             "@ele-solver": {"if":[["==","#metric",true],"{{'round': {'str2num':'$ele'}}} m","{@feet} ft"]},
                             "@peak-name": {"if":[["has","$ele"],"{@name-solver}\n({@ele-solver})","({@name-solver})"]},
-                            "@peak-name-diag": {"if":[["has","$ele"],"{@name-solver}\n {@ele-solver} {@prominence-name} r{@peak-rank}","{@name-solver} {@prominence-name} r{@peak-rank}"]},
-                            "@prominence": {"add":[{"if":[["has","$ele"],{"mul":[-0.0001,{"str2num":"$ele"}]},0]},{"if":[["has","$prominence"],{"mul":[-0.3048,{"str2num":"$prominence"}]},0]}]},
+                            "@peak-name-3": {"if":[["has","$ele"],"{@name-solver}\n {@ele-solver} {@prominence-name} r{@peak-rank}","{@name-solver} {@prominence-name} r{@peak-rank}"]},
+                            "@peak-name-2": "{@name-solver}\n {@prominence}}",
+                            //"@prominence": {"add":[{"if":[["has","$ele"],{"mul":[-0.0001,{"str2num":"$ele"}]},0]},{"if":[["has","$prominence"],{"mul":[-0.3048,{"str2num":"$prominence"}]},0]}]},
+                            //"@prominence": {"add":[{"if":[["has","$ele"],{"mul":[0.5,{"str2num":"$ele"}]},0]},{"if":[["has","$prominence"],{"add":[5000, {"mul":[0.1524,{"str2num":"$prominence"}]}]},0]}]},
+                            //"@prominence": {"sub":[10000,{"add":[{"if":[["has","$ele"],{"mul":[0.5,{"str2num":"$ele"}]},0]},{"if":[["has","$prominence"],{"add":[5000, {"mul":[0.1524,{"str2num":"$prominence"}]}]},0]}]}]},
+
+                            //"@prominence": {"add":[{"if":[["has","$ele"],{"mul":[0.5,{"str2num":"$ele"}]},0]},{"if":[["has","$prominence"],{"add":[5000, {"mul":[0.1524,{"str2num":"$prominence"}]}]},0]}]},
+
+                            "@prominence": {"add":[{"if":[["has","$ele"],{"mul":[0.0001,{"str2num":"$ele"}]},0]},{"if":[["has","$prominence"],{"mul":[0.1524,{"str2num":"$prominence"}]},0]}]},
+
+                            //"@prominence": {"add":[{"if":[["has","$ele"],{"mul":[0.0001,{"str2num":"$ele"}]},0]},{"if":[["has","$prominence"],{"mul":[0.1524,{"str2num":"$prominence"}]},0]}]},
+
+                            //"@prominence": {"div": [{"log":"@prominence-linear"}, {"log":1.0017}] },
+                            //"@prominence": {"log":"@prominence-linear"},
+
                             "@prominence-name": {"round":"@prominence"},
                             "@osmid": {"if":[["has","$osm_id"],"$osm_id",""]},
                             "@id-solver": "{@osmid} {@ele-solver} {@name-solver}",
-                            "@peak-rank": {"discrete2":["@prominence",[[-1501,0],[-1499,1],[-751,1],[-749,2],[-326,2],[-324,3],[-164,3],[-162,4],[-2,4],[-1,5]]]},
+                            //"@peak-rank": {"discrete2":["@prominence",[[-1501,0],[-1499,1],[-751,1],[-749,2],[-326,2],[-324,3],[-164,3],[-162,4],[-2,4],[-1,5]]]},
+
+                            "@peak-rank": {"discrete2":[{"mul": ["@prominence", 2]}, [[1,5],[2,4],[162,4],[164,3],[324,3],[326,2],[749,2],[751,1],[1499,1],[1501,0]]]},
+
                             "@peak-name2": {"if":[["==","@peak-rank",0],{"uppercase":"@peak-name"},"@peak-name"]}
+
+                            //"@peak-name2": "@peak-name-2"
 
                           },
                           "fonts": {
@@ -522,9 +543,11 @@ function startDemo() {
                             "peaks": {
                               "filter": ["all",["==","#group","mountain_peak"]],
                               "visible": {"if":[["!=","@name-solver",""],true,false]},
-                              "reduce": ["bottom",100,"@prominence"],
-                              //"dynamic-reduce": ["scr-count2",1,50],
-                              "dynamic-reduce": ["scr-count5","@prominence"],
+    
+                              //"reduce": ["bottom",100,"@prominence"],
+                              //"dynamic-reduce": ["scr-count4","@prominence"],
+                              "importance-source": "@prominence",
+
                               "label": true,
                               "label-color": {"linear2":["@peak-rank",[[1,[255,233,0,255]],[5,[230,230,230,255]]]]},
                               "label-stick": {"linear2":["@peak-rank",[[1,[70,5,2,255,233,0,128]],[5,[70,5,2,230,230,230,128]]]]},
@@ -543,6 +566,41 @@ function startDemo() {
 
                   //"//rigel.mlwn.se/store/stylesheet/osm-maptiler.style?13"
                 }
+
+                ,
+
+                "peaklist-org-ultras": {
+                  "style": {
+                      "constants": {
+                        "@name-solver": {"if":[["has","$name"],"$name","$Name"]},
+                        "@ele": {"if":[["has","$elevation"],"$elevation","$Elevation"]},
+                        "@feet": {"round":{"mul":[3.2808399,{"str2num":"@ele"}]}},
+                        "@ele-solver": {"if":[["==","#metric",true],"{{'round': {'str2num':'@ele'}}} m","{@feet} ft"]},
+                        "@id-solver": "{@ele-solver} {@name-solver}",
+                        "@prom-solver": {"mul":[1,{"str2num":{"if":[["has","$prom"],"$prom","$Prom"]}}]},
+                      },
+                      "layers": {
+                        "peak-labels": {
+
+                          //"dynamic-reduce": ["scr-count4","@prom-solver"],
+                          "importance-source": "@prom-solver",
+
+                          "label": true,
+                          "label-source": {"uppercase":"{@name-solver}\n{@ele-solver}"},
+                          //"label-source": "@peak-name2",
+                          "label-no-overlap": true,
+                          "label-no-overlap-factor": ["div-by-dist","@prom-solver"],
+                          "label-size": 19,
+                          "label-stick": [70,5,2,255,233,0,128],
+                          "label-color": [255,233,0,255],
+                          "zbuffer-offset": [-1,0,0],
+                          "culling": 92,
+                          "hysteresis": [1500,1500,"@id-solver",true]
+                        }
+                      }
+                    }
+                }
+
               }
             };
 
