@@ -473,7 +473,7 @@ function startDemo() {
 
     browser.on('map-mapconfig-loaded', (function(data){
 
-        data.boundLayers["terrain-viewfinder3"] = {
+        data.boundLayers["eox-it-sentinel2-cloudless"] = {
             "credits" : { "eox-it" : { "id" : 125, "notice" : "Datasource: [https://mapy.cz mapy.cz] by Seznam.cz" } },
             "lodRange" : [ 3, 18 ],
             "tileRange" : [ [ 0, 0 ], [ 16, 16 ] ],
