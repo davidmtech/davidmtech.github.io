@@ -487,16 +487,15 @@ function startDemo() {
                             "@main-font": ["noto-mix","noto-cjk"],
                             "@feet": {"round":{"mul":[3.2808399,{"str2num":"$ele"}]}},
                             "@name-solver": {"if":[["has","$name"],{"if":[["any",["!has","$name:en"],["==",{"has-latin":"$name"},true]],"{$name}","{$name}\n{$name:en}"]},""]},
+                            "@name-solver2": {"if":[["==","@peak-rank",0],{"uppercase":"@name-solver"},"@name-solver"]},
                             "@ele-solver": {"if":[["==","#metric",true],"{{'round': {'str2num':'$ele'}}} m","{@feet} ft"]},
-                            "@peak-name": {"if":[["has","$ele"],"{@name-solver}\n({@ele-solver})","({@name-solver})"]},
+                            "@peak-name": {"if":[["has","$ele"],"{@name-solver2}\n({@ele-solver})","({@name-solver})"]},
                             "@peak-name-diag": {"if":[["has","$ele"],"{@name-solver}\n {@ele-solver} {@prominence-name} r{@peak-rank}","{@name-solver} {@prominence-name} r{@peak-rank}"]},
                             "@prominence": {"add":[{"if":[["has","$ele"],{"mul":[-0.0001,{"str2num":"$ele"}]},0]},{"if":[["has","$prominence"],{"mul":[-0.3048,{"str2num":"$prominence"}]},0]}]},
                             "@prominence-name": {"round":"@prominence"},
                             "@osmid": {"if":[["has","$osm_id"],"$osm_id",""]},
                             "@id-solver": "{@osmid} {@ele-solver} {@name-solver}",
-                            "@peak-rank": {"discrete2":["@prominence",[[-1501,0],[-1499,1],[-751,1],[-749,2],[-326,2],[-324,3],[-164,3],[-162,4],[-2,4],[-1,5]]]},
-                            "@peak-name2": {"if":[["==","@peak-rank",0],{"uppercase":"@peak-name"},"@peak-name"]}
-
+                            "@peak-rank": {"discrete2":["@prominence",[[-1501,0],[-1499,1],[-751,1],[-749,2],[-326,2],[-324,3],[-164,3],[-162,4],[-2,4],[-1,5]]]}
                           },
                           "fonts": {
                             "noto-mix": "//cdn.melown.com/libs/vtsjs/fonts/noto-extended/1.0.0/noto.fnt",
@@ -533,7 +532,7 @@ function startDemo() {
                               "label-color": {"linear2":["@peak-rank",[[1,[255,233,0,255]],[5,[230,230,230,255]]]]},
                               "label-stick": {"linear2":["@peak-rank",[[1,[70,5,2,255,233,0,128]],[5,[70,5,2,230,230,230,128]]]]},
                               "label-size": {"discrete2":["@peak-rank",[[0,19],[1,18],[2,17],[3,16],[4,15],[5,14]]]},
-                              "label-source": "@peak-name2",
+                              "label-source": "@peak-name",
                               "label-font": "@main-font",
                               "label-no-overlap": true,
                               "label-no-overlap-factor": ["div-by-dist","@prominence"],
@@ -566,7 +565,7 @@ function startDemo() {
                           "importance-source": "@prom-solver",
 
                           "label": true,
-                          "label-source": "{@name-solver}\n{@ele-solver}",
+                          "label-source": "{@name-solver}\n({@ele-solver})",
                           "label-no-overlap": true,
                           "label-no-overlap-factor": ["div-by-dist","@prom-solver"],
                           "label-size": 19,
