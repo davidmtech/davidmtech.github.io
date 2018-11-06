@@ -547,7 +547,7 @@ function startDemo() {
                 "peaklist-org-ultras": {
                   "style": {
                       "constants": {
-                        "@name-solver": {"if":[["has","$name"],"$name","$Name"]},
+                        "@name-solver": {"uppercase":{"if":[["has","$name"],"$name","$Name"]}},
                         "@ele": {"if":[["has","$elevation"],"$elevation","$Elevation"]},
                         "@feet": {"round":{"mul":[3.2808399,{"str2num":"@ele"}]}},
                         "@ele-solver": {"if":[["==","#metric",true],"{{'round': {'str2num':'@ele'}}} m","{@feet} ft"]},
@@ -559,7 +559,7 @@ function startDemo() {
                         "peak-labels": {
                           "dynamic-reduce": ["by-extenal-param","@prom-solver"],
                           "label": true,
-                          "label-source": {"uppercase":"{@name-solver}\n{@ele-solver}"},
+                          "label-source": "{@name-solver}\n{@ele-solver}",
                           "label-no-overlap": true,
                           "label-no-overlap-factor": ["div-by-dist","@prom-solver"],
                           "label-size": 19,
