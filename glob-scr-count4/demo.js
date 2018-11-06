@@ -579,7 +579,7 @@ function startDemo() {
                         "@feet": {"round":{"mul":[3.2808399,{"str2num":"@ele"}]}},
                         "@ele-solver": {"if":[["==","#metric",true],"{{'round': {'str2num':'@ele'}}} m","{@feet} ft"]},
                         "@id-solver": "{@ele-solver} {@name-solver}",
-                        "@prom-solver": {"mul":[0.1,{"str2num":{"if":[["has","$prom"],"$prom","$Prom"]}}]},
+                        "@prom-solver": {"mul":[0.01,{"str2num":{"if":[["has","$prom"],"$prom","$Prom"]}}]},
                       },
                       "layers": {
                         "peak-labels": {
