@@ -170,7 +170,9 @@ function startDemo() {
             "tileRange" : [ [ 0, 0 ], [ 16, 16 ] ],
             "type" : "raster",
             //"url" : "https://mapserver.mapy.cz/mellown-base/{loclod}-{locx}-{locy}"
-            "url" : "https://mapserver.mapy.cz/mellown-roads/{loclod}-{locx}-{locy}"
+            //"url" : "https://mapserver.mapy.cz/mellown-roads/{loclod}-{locx}-{locy}"
+            "url" : "https://cdn.melown.com/vts/melown-roads/{loclod}-{locx}-{locy}"
+
             //"shaderFilter" : "c.rgb = mix(c.rgb, vec3(1.0), 0.5);"
         };
 
