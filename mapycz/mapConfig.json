@@ -110,17 +110,6 @@
                     "noto-cjk": "//cdn.melown.com/libs/vtsjs/fonts/noto-cjk/1.0.0/noto.fnt"
                 },
                 "layers": {
-                    "country-boundaries": {
-                        "filter": ["all", ["==", "#group", "boundary"],
-                            ["==", "$admin_level", "2"],
-                            ["!=", "$maritime", "1"]
-                        ],
-                        "line": true,
-                        "line-flat": false,
-                        "line-width": 3,
-                        "line-color": [0, 0, 0, 180],
-                        "zbuffer-offset": [-0.01, 0, 0]
-                    },
                     "country-labels": {
                       "filter": ["all",["==","#group","place"],["==","$class","country"]],
                       "importance-source": "@country-imp",
@@ -189,7 +178,6 @@
                         "hysteresis": [1500,1500,"{@id-solver-town} -z1",true]
                     },
 
-
                     "towns-labels-z2": {
                         "inherit" : "towns-labels-z0",
 
@@ -209,6 +197,7 @@
                         "visibility-rel": [230000,1, 9, 10000000],
                         "hysteresis": [1500,1500,"{@id-solver-town} -z3",true]
                     },
+
                     "peaks": {
                         "filter": ["all", ["==", "#group", "mountain_peak"]],
                         "visible": true,
@@ -316,12 +305,13 @@
     },
     "glue": [],
     "namedViews": {},
-    "params": {
+    "params": { },
+    "browserOptions" : {
         "mapFeaturesReduceMode" : "scr-count5",
         "mapLoadMode" : "fit",
         "rendererAnisotropic" : -1
     },
-    "position": ["obj", -101.3, 47.116, "float", 0, 0, -90, 0, 9800000, 45],
+    "position": ["obj", 16.128568515060117,49.97736194253066, "float",0.00,0.00,-90.00,0.00,1256070.13,45.00],
     "referenceFrame": {
         "body": "Earth",
         "description": "Earth, global geographic reference frame (Melown 2015)",
