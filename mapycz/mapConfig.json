@@ -30,7 +30,7 @@
                 [16, 16]
             ],
             "type": "raster",
-            "url" : "https://cdn.melown.com/vts/melown-outdoor/{loclod}-{locx}-{locy}"
+            "url" : "https://cdn.melown.com/vts/melown-outdoor/{loclod}-{locx}-{locy}?r=1"
         }
     },
     "credits": {
