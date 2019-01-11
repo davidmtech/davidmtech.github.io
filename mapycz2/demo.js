@@ -269,8 +269,7 @@ var mapczStyle = {
     }
 };
 
-var ultrasStyle = {};
-var ultrasStyle2 = {
+var ultrasStyle = {
     "constants": {
 
         "@main-font": ["noto-mix","noto-cjk"],
@@ -288,8 +287,10 @@ var ultrasStyle2 = {
         "@ele-solver": {"if":[["==","#metric",true],"{{'round': {'str2num':'@ele'}}} m","{@feet} ft"]},
         "@id-solver": "{@ele-solver} {@name-solver}",
         "@prom-solver": {"mul":[0.01,{"str2num":{"if":[["has","$prom"],"$prom","$Prom"]}}]},
+        "@prom2rank": {"clamp":[{"add":[{"mul":[ "@prom-solver", -0.270270 ]}, 14.810810 ]}, 0, 20]},
 
-        "@peak-imp": {"add":[40,{"mul":[0.333,"@prom-solver"]}]}
+        "@peak-imp-old": {"add":[40,{"mul":[0.333,"@prom-solver"]}]},
+        "@peak-imp": {"sub":[90,{"mul":[2.5,"@prom2rank"]}]},
       },
 
       "fonts": {
