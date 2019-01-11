@@ -1,0 +1,32 @@
+<html>
+<head>
+    <title>MapyCZ</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <!--MELOWN CSS-->
+    <link rel="stylesheet" type="text/css" href="./vts-browser.css" /></link>
+
+    <!-- MELOWN CORE API CODE -->
+
+    <script type="text/javascript" src="./build/vts-browser.js"></script>
+    <script src="//cdn.melown.com/libs/vtsjs/support/v2/start-browser.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
+
+    <!-- MELOWN DEMO CODE -->
+    <script type="text/javascript" src="./demo.js"></script>
+
+</head>
+<body style = "padding: 0; margin: 0; font-family: Verdana, Tahoma, Geneva, Arial, Sans-serif;" onload="startDemo()">
+
+    <div id="melown-demo" style="width:100%; height:100%;"></div>
+
+    <div id="count" style="position: absolute; top: 10px; right:95px; border-radius: 3px; background-color:fff; padding: 2px 5px; font-size: 21; border: solid 1px #000;z-index: 1000; cursor: pointer;" onclick="zoomOut();">7</div>
+
+    <div style="position: absolute; top: 10px; right:53px; border-radius: 3px; background-color:fff; padding: 2px 12px; font-size: 21; border: solid 1px #000;z-index: 1000; cursor: pointer;" onclick="zoomOut();">-</div>
+
+    <div style="position: absolute; top: 10px; right:10px; border-radius: 3px; background-color:fff; padding: 2px 10px; font-size: 21;border: solid 1px #000;z-index: 1000; cursor: pointer;" onclick="zoomIn();">+</div>
+
+
+</body>
+</html>
