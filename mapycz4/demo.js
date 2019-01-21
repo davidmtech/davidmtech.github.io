@@ -81,7 +81,7 @@ var mapczStyle = {
     "@id-solver-town": "@city-label",
     "@town-imp-old": {"sub":[90,{"str2num":"$rank"}]},
     "@town-imp2": {"sub":[90,{"mul":[2.5,{"str2num":"$rank"}]}]},
-    "@town-imp": {"sub":[90,{"mul":[1.6666666,{"str2num":"@population-to-rank"}]}]},
+    "@town-imp": {"sub":[90,{"mul":[1.6666666,"@population-to-rank"]}]},
 
     "@town-source-z7": {"if":[["has","$capital"],{"if":[["<=",{"str2num":"$capital"},2],{"uppercase":"@city-label"},"@city-label"]},"@city-label"]},
     "@town-size-z7": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],21,{"linear2":["@population-to-rank",[[7,19],[18,14]]]}]},
@@ -100,24 +100,30 @@ var mapczStyle = {
   
     "@town-source-z11": {"if":[["<=","@population-to-rank",11],{"uppercase":"@city-label"},"@city-label"]},
     "@town-font-z11": {"if":[["<=","@population-to-rank",20],"@bold-font","@main-font"]},
-    "@town-size-z11": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,42],[13,33],[20,22],[30,12]]]}]},
+    //"@town-size-z11": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,42],[13,33],[20,22],[30,12]]]}]},
+    "@town-size-z11": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,38],[13,33],[20,22],[30,12]]]}]},
 
     "@town-source-z12": {"if":[["<=","@population-to-rank",13],{"uppercase":"@city-label"},"@city-label"]},
     "@town-font-z12": {"if":[["<=","@population-to-rank",23],"@bold-font","@main-font"]},
-    "@town-size-z12": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,42],[13,38],[20,32],[30,12]]]}]},
+    //"@town-size-z12": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,42],[13,38],[20,32],[30,12]]]}]},
+    "@town-size-z12": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,38],[13,32],[20,31],[30,12]]]}]},
 
     "@town-source-z13": {"if":[["<=","@population-to-rank",18],{"uppercase":"@city-label"},"@city-label"]},
     "@town-font-z13": {"if":[["<=","@population-to-rank",23],"@bold-font","@main-font"]},
-    "@town-size-z13": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,42],[13,38],[20,32],[30,16]]]}]},
+    //"@town-size-z13": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,42],[13,38],[20,32],[30,16]]]}]},
+    "@town-size-z13": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,38],[13,32],[20,31],[30,16]]]}]},
 
     "@town-source-z14": {"if":[["<=","@population-to-rank",27],{"uppercase":"@city-label"},"@city-label"]},
     "@town-font-z14": {"if":[["<=","@population-to-rank",23],"@bold-font","@main-font"]},
-    "@town-size-z14": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,42],[13,38],[20,38],[30,18]]]}]},
+//    "@town-size-z14": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,42],[13,38],[20,38],[30,18]]]}]},
+    "@town-size-z14": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,38],[13,32],[20,31],[30,18]]]}]},
 
     "@town-source-z15": {"if":[["<=","@population-to-rank",29],{"uppercase":"@city-label"},"@city-label"]},
     "@town-font-z15": "@main-font",
-    "@town-size-z15": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,42],[13,38],[20,38],[30,28]]]}]},
+    //"@town-size-z15": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,42],[13,38],[20,38],[30,28]]]}]},
+    "@town-size-z15": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],38,{"linear2":["@population-to-rank",[[7,28],[13,28],[20,28],[30,18]]]}]},
 
+    /*
     "@town-source-z16": {"if":[["<=","@population-to-rank",29],{"uppercase":"@city-label"},"@city-label"]},
     "@town-font-z16": "@main-font",
     "@town-size-z16": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,42],[13,38],[20,38],[30,28]]]}]},
@@ -125,6 +131,7 @@ var mapczStyle = {
     "@town-source-z17": {"if":[["<=","@population-to-rank",29],{"uppercase":"@city-label"},"@city-label"]},
     "@town-font-z17": "@main-font",
     "@town-size-z17": {"if":[["all",[["has","$capital"],["<=",{"str2num":"$capital"},2]]],50,{"linear2":["@population-to-rank",[[7,42],[13,38],[20,38],[30,28]]]}]},
+    */
 
     "@z4": 5387767,
     "@z5": 2693883,
@@ -194,7 +201,7 @@ var mapczStyle = {
     },
     "towns-labels": {
       "filter": ["all",["==","#group","place"],["in","$class","city","town","village","hamlet"]],
-      "visibility-switch": [["@z17","towns-labels-z17"],["@z16","towns-labels-z16"],["@z15","towns-labels-z15"],["@z14","towns-labels-z14"],["@z13","towns-labels-z13"],["@z12","towns-labels-z12"],["@z11","towns-labels-z11"],["@z10","towns-labels-z10"],["@z9","towns-labels-z9"],["@z8","towns-labels-z8"],["@z7","towns-labels-z7"],["@z6","towns-labels-z6"],["@z5","towns-labels-z5"]],
+      "visibility-switch": [["@z15","towns-labels-z15"],["@z14","towns-labels-z14"],["@z13","towns-labels-z13"],["@z12","towns-labels-z12"],["@z11","towns-labels-z11"],["@z10","towns-labels-z10"],["@z9","towns-labels-z9"],["@z8","towns-labels-z8"],["@z7","towns-labels-z7"],["@z6","towns-labels-z6"],["@z5","towns-labels-z5"]],
       "culling": 84,
       "zbuffer-offset": [-0.15,0,0],
       "hysteresis": [1500,1500,"@id-solver-town",true]
@@ -424,7 +431,7 @@ function startDemo() {
 
         //params['mapFeaturesReduceMode'] = 'margin';
         //params['mapFeaturesReduceMode'] = 'margin';
-        params['mapFeaturesReduceParams'] = [0.1,1,0];
+        params['mapFeaturesReduceParams'] = [0.1,3,1];
 
 //    browser = vts.browser('melown-demo', { 'map': 'https://cdn.melown.com/vts/melown-assorted/map-config/mapycz/mapConfig.json', 'positionInUrl': true });
     browser = vts.browser('melown-demo', params);
