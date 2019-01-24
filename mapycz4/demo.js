@@ -55,7 +55,8 @@ var mapczStyle = {
     "@country-label": {"uppercase":{"if":[["==","@name-solver","Schweiz/Suisse/Svizzera/Svizra"],"Switzerland",{"if":[["==","@name-solver","België - Belgique - Belgien"],"België","{@name-solver}"]}]}},
     "@country-imp": {"sub":[95,{"str2num":"$rank"}]},
     "@feet": {"round":{"mul":[3.2808399,{"str2num":"$ele"}]}},
-    "@ele-solver": {"if":[["==","#metric",true],"{{'round': {'str2num':'$ele'}}} m","{@feet} ft"]},
+    "@ele-solver2": {"if":[["==","#metric",true],"{{'round': {'str2num':'$ele'}}} m","{@feet} ft"]},
+    "@ele-solver": "{{'round': {'str2num':'$ele'}}} m",
     "@peak-name": {"if":[["has","$ele"],"{@name-solver}\n{@ele-solver}","{@name-solver}"]},
     "@peak-name-3": {"if":[["has","$ele"],"{@name-solver}\n {@ele-solver} {@prominence-name} r{@peak-rank}","{@name-solver} {@prominence-name} r{@peak-rank}"]},
     "@peak-name-2": "{@name-solver}\n {@prominence}}",
@@ -73,7 +74,7 @@ var mapczStyle = {
     "@population-to-rank4-dbg": {"div":[{"round":{"mul":[10,{"sub":[47,{"div":[{"log":{"str2num":"$population"}},{"log":1.38}]}]}]}},10]},
     "@population-to-rank-dbg": {"div":[{"round":{"mul":[10,{"sub":[42,{"add":["@town-class",{"div":[{"log":{"str2num":"$population"}},{"log":1.5}]}]}]}]}},10]},
     "@population-to-rank2": {"if":[["has","$population"],{"sub":[42,{"add":["@town-class",{"div":[{"log":{"str2num":"$population"}},{"log":1.5}]}]}]},{"mul":[6,{"sub":[5,"@town-class"]}]}]},
-    "@population-to-rank": {"clamp":[{"if":[["has","$population"],{"sub":[42,{"add":["@town-class",{"div":[{"log":{"str2num":"$population"}},{"log":1.5}]}]}]},{"mul":[6,{"sub":[5,"@town-class"]}]}]},0,30]},
+    "@population-to-rank": {"clamp":[{"if":[["has","$population"],{"sub":[42,{"add":["@town-class",{"div":[{"log":{"str2num":"$population"}},{"log":1.5}]}]}]},30]},0,30]},
     "@is-capital": {"if":[["<=",{"str2num":"$capital"},2],1,0]},
     "@town-class": {"if":[["<=",{"str2num":"$capital"},2],4,{"if":[["==","$class","city"],3,{"if":[["==","$class","town"],2,{"if":[["==","$class","village"],1,0]}]}]}]},
     "@city-label-dbg": "{@name-solver}-{$rank}\n{$population}-{@population-to-rank2}\n{$class}-{@is-capital}",
@@ -226,6 +227,8 @@ var mapczStyle = {
       "icon-scale": 0.4,
       "icon-origin": "bottom-center",
       "icon-offset": [0,10],
+      "icon-no-overlap": true,
+      "icon-no-overlap-factor": ["div-by-dist","@town-imp"],
       "zbuffer-offset": [-0.15,0,0]
     },
     "towns-labels-z6": {
@@ -330,8 +333,10 @@ var mapczStyle = {
       "icon-scale": 0.3,
       "icon-origin": "bottom-center",
       "icon-offset": [0,10],
+      "icon-no-overlap": true,
+      "icon-no-overlap-factor": ["div-by-dist","@town-imp"],
       "zbuffer-offset": [-0.25,0,0],
-      "culling": 94,
+      "culling": 84,
       "hysteresis": [1500,1500,"@id-solver",true]
     }
   }
@@ -392,7 +397,7 @@ var ultrasStyle = {
             "icon-origin": "bottom-center",
             "icon-offset": [0, 10],
             "zbuffer-offset": [-1, 0, 0],
-            "culling": 92,
+            "culling": 84,
             "hysteresis": [1500, 1500, "@id-solver", true]
         }
     }
@@ -414,9 +419,10 @@ function startDemo() {
         //params['view'] = 'mapycz-default';
 
         params['mapLoadMode'] = 'fit';
+        //params['mapLoadMode'] = 'topdown';
         //params['mapGridSurrogatez'] =  true;
 
-        //params['mapGridUnderSurface'] =  0;
+        //params['mapGridUnderSurface'] =  1;
         //params['mapGridTextureLevel'] =  8;
         //params['mapGridTextureLayer'] =  "bing",
         //params['mapGridTextureLayer'] =  "eox-it-sentinel2-cloudless",
@@ -429,9 +435,15 @@ function startDemo() {
 
         params['positionInUrl'] =  true;
 
+        params['mapFeatureStickMode'] =  [0,0];
+        params['mapFeatureStickMode'] =  [1,1];
+        //params['mapFeatureStickMode'] =  [1,4];
+        //params['mapFeatureStickMode'] =  [2,4];
+
         //params['mapFeaturesReduceMode'] = 'margin';
         //params['mapFeaturesReduceMode'] = 'margin';
-        params['mapFeaturesReduceParams'] = [0.1,3,1];
+        //params['mapFeaturesReduceParams'] = [0.1,3,1];
+        //params['mapFeaturesReduceParams'] = [0.2,0,1];
 
 //    browser = vts.browser('melown-demo', { 'map': 'https://cdn.melown.com/vts/melown-assorted/map-config/mapycz/mapConfig.json', 'positionInUrl': true });
     browser = vts.browser('melown-demo', params);
