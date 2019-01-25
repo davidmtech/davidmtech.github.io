@@ -415,7 +415,8 @@ function startDemo() {
        
         //params['map'] = './mapConfig.json';
         //params['map'] = 'https://mapserver-3d.mapy.cz/scenes/current/mapConfig.json';
-        params['map'] = 'https://cdn.melown.com/vts/melown2015/test/seznamcz-outdoor/mapConfig.json';
+        //params['map'] = 'https://cdn.melown.com/vts/melown2015/test/seznamcz-outdoor/mapConfig.json';
+        params['map'] = 'https://cdn.melown.com/vts/melown2015/mapycz/live/mapConfig.json';
         //params['view'] = 'mapycz-default';
 
         params['mapLoadMode'] = 'fit';
@@ -455,6 +456,8 @@ function startDemo() {
 
         //return;
 
+        //data['view']['surfaces'] = {};
+
         var freeLayers = data['view']['freeLayers'];
 
         if (freeLayers) {
@@ -463,6 +466,11 @@ function startDemo() {
 
             for (var key in freeLayers) {
                 var layer = freeLayers[key];
+
+                //if (key != 'osm') {
+                  //  delete freeLayers[key];
+                  //  continue;
+                //}
 
                 if (layer.style && (typeof layer.style == 'string')) {
 
