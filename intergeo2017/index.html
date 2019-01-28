@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Melown - INTERGEO 2016</title>
+    <meta name="description"
+          content="Aerial surveys and country-wide 3D reconstruction and photogrammetry projects. Mass-scale 3D map streaming and rendering. Cloud-based 3D map APIs, and more.">
+    
+    
+    <meta property="og:title" content="Melown - Presentation of simple usage of our API" >
+    
+    <meta property="og:site_name" content="Melown" >
+    
+    <meta property="og:type" content="product" >
+    
+    <meta property="og:description" content="Example showing how easy it is to implement our API in real life." >
+    
+    <meta name="msvalidate.01" content="97BB9FACCFF36E2B93A3EAC4B93C2E44" />
+
+    <link rel="icon" type="image/png" href="//cdn.melown.com/static/web/img/core/favicon.png?1505846438"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,800">
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdn.melown.com/static/web/style/style.css?1505846438">
+    <link rel="canonical" href="https://www.melown.com/intergeo2016/">
+    <link rel="alternate"
+          href="/feed.xml"
+          type="application/rss+xml"
+          title="Melown" >
+
+    <style>
+        @import url({{'/assets/intergeo2016/opensans.css' | asset_url }});
+
+        @keyframes hidepanel {
+            0%   {right: 5px;}
+            100%  {right: 5px;}
+        }
+
+        @keyframes showpanel {
+            0%   {right: 5px;}
+            100%  {right: 5px;}
+        }
+
+        .map-navigation-panel {
+            position: fixed;
+            top: 80px;
+            right: 5px;
+            width: 440px;
+            height: calc(100vh - 80px);
+            background: none;
+            text-align: right;
+            overflow-y: scroll;
+            z-index: 100;
+            font-family: 'Open Sans',Verdana,Arial,Tahoma,Calibri,Geneva,sans-serif;
+            padding: 5px 0;
+            /*
+            animation-name: hidepanel;*/
+            animation-duration: 1.5s;
+            animation-fill-mode: forwards;
+        }
+
+        .map-navigation-panel h1 {
+            padding-bottom: 2px;
+        }
+
+        .map-navigation-panel .box {
+            width: 340px;
+            display: inline-block;
+            height: 200px;
+            margin: 0;
+            border: solid 5px #fff;
+            cursor: pointer;
+            position: relative;
+            left: 0;
+            top: 0;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .map-navigation-panel .box .image {
+            background-color: #fff;
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .map-navigation-panel .box .image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .map-navigation-panel .box .title {
+            position: absolute;
+            bottom: 0px;
+            left: 0;
+            color: #fff;
+            text-shadow: 2px 2px 2px #000;
+            background-color: rgba(0,0,0,0.4);
+            padding: 10px 10px 10px 20px;
+            border-radius: 5px;
+            text-align: left;
+            font-size: 18px;
+        }
+
+        .map-navigation-panel .box .title p {
+            font-size: 15px;
+            padding: 3px 0;
+            margin: 0;
+            font-weight: 100;
+            color: #fff;
+        }
+
+        .map-navigation-panel .box:hover {
+            width: 410px;
+            height: 230px;
+            transition: all 0.3s ease;
+        }
+
+        .map-navigation-panel .box.active {
+            border-color: #ff0000;
+        }
+
+        #panel-button { 
+            display: none;
+        }
+
+        #panel-button img { 
+            border-radius: 2px;
+            background-color: #fff;
+            width: 64px;
+            height: 64px;
+        }
+
+        #map-div {
+            position: absolute;
+            top: 80px;
+            left: 0;
+            height: calc(100vh - 80px);
+            width: calc(100% - 350px);
+            overflow: hidden;
+        }
+
+        @media screen and (max-width: 919px) {
+
+            @keyframes hidepanel {
+                0%   {right: 5px;}
+                100%  {right: -440px;}
+            }
+
+            @keyframes showpanel {
+                0%   {right: -440px;}
+                100%  {right: 5px;}
+            }
+
+            #map-div {
+                position: absolute;
+                top: 80px;
+                left: 0;
+                height: calc(100vh - 80px);
+                width: 100%;
+                overflow: hidden;
+            }
+
+            .map-navigation-panel .box:hover {
+                width: 350px;
+                display: inline-block;
+                height: 206px;
+            }
+
+            #panel-button { 
+                position: absolute;
+                right: 10px;
+                top: 90px;
+                cursor: pointer;
+                z-index: 4;
+                border-radius: 5px;
+                border: 2px solid rgba(255, 255, 255, 0.47);
+                opacity: 0.95;
+                display: block;
+            }
+
+        }
+
+    </style>
+
+
+<div id="map-div"></div>
+<div class="map-navigation-panel"></div>
+<div id="panel-button">
+    <img id="vts-compass-compass2" onclick="buttonClicked()" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NDkxMSwgMjAxMy8xMC8yOS0xMTo0NzoxNiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpFRUNFQjI4Q0IzMTIxMUU3QkI1M0IxN0QxRjhFNzI2NSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpFRUNFQjI4REIzMTIxMUU3QkI1M0IxN0QxRjhFNzI2NSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkVFQ0VCMjhBQjMxMjExRTdCQjUzQjE3RDFGOEU3MjY1IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkVFQ0VCMjhCQjMxMjExRTdCQjUzQjE3RDFGOEU3MjY1Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+hLNFUwAADJ9JREFUeNrsmwtwVNUZ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">
+</div>
+
+<script>
+var goToConsole = function() {
+    location.href = '/console';
+};
+</script>
+
+<!--
+<link rel="stylesheet" href="//cdn.melown.com/libs/vtsjs/browser/v2/vts-browser.min.css" />
+<script src="//cdn.melown.com/libs/vtsjs/browser/v2/vts-browser.min.js"></script>
+-->
+
+<link rel="stylesheet" type="text/css" href="./build/vts-browser.css" />
+<script type="text/javascript" src="./build/vts-browser.js"></script>
+
+<script src="//cdn.melown.com/libs/vtsjs/support/v2/start-browser.js"></script>
+
+<script src="./params.js"></script>
+<script>
+var scale = {};
+scale.last = null;
+scale.toggle = function(obj, flyTo, rotate) {
+    if(scale.last === obj) {
+        if(typeof flyTo !== 'undefined') {
+            browser_.autopilot.flyTo(flyTo);
+            browser_.autopilot.setAutorotate(rotate)
+        }
+        return;
+    }
+    if(obj.getAttribute('class').indexOf('scaled-up') !== -1) {
+        obj.setAttribute('class', 'box');
+    } else {
+        //document.getElementsByClassName('map-navigation-panel')[0].scrollTop = obj.offsetTop + 115 - window.innerHeight * 0.5;
+        scale.smoothScroll.func(obj.offsetTop + 115 - window.innerHeight * 0.5);
+        obj.setAttribute('class', 'box scaled-up active');
+    }
+    if(scale.last !== null) {
+        scale.last.setAttribute('class', 'box');
+    }
+    if(typeof flyTo !== 'undefined') {
+        browser_.autopilot.flyTo(flyTo);
+        browser_.autopilot.setAutorotate(rotate)
+    }
+    scale.last = obj;
+};
+</script>
+
+<script>
+    // No header handler
+    if(location.href.indexOf('&header=false') !== -1) {
+        document.getElementById('map-div').className = 'noHeader';
+        document.getElementsByClassName('map-navigation-panel')[0].className = 'map-navigation-panel noHeader';
+        document.getElementsByClassName('header')[0].className = 'header noHeader';
+    }
+</script>
+<script>
+    var browser_;
+    function MelownStartMapBrowser() {
+        var params_ = vtsParseUrlParams();
+
+        params_["jumpAllowed"] = true;
+        params_["positionInUrl"] = true;
+
+        params_["map"] = jsonParams.map.map;
+        if(location.href.indexOf('?pos=') === -1) {
+            if(jsonParams.map.position !== undefined) {
+                params_["position"] = jsonParams.map.position;
+            } else {
+                setTimeout(function() {
+                    if (browser_.map) {
+                        jsonParams.map.position = browser_.map.getPosition();
+                    }
+                }, 1000);
+            }
+        }
+        params_["authorization"] = jsonParams.map.authorization;
+        browser_ = vts.browser("map-div", params_);
+    }
+    MelownStartMapBrowser();
+</script>
+
+<script>
+    // This script generates individual boxes
+    // that can be clicked to start fly-over / fly-to
+    // action. It also features automatic clicking
+    // after some user inactivity.
+    var POIs = jsonParams.points;
+    POIs.forEach(function(e) {
+        var newBOX = document.createElement('div');
+        var newIMG = document.createElement('div');
+        var newIMGa = document.createElement('img');
+        var newTTL = document.createElement('div');
+
+            newBOX.className = 'box';
+            newBOX.onclick = function() {
+                if(e.rotate === undefined) {
+                    e.rotate = 0;
+                }
+
+               document.getElementsByClassName('map-navigation-panel')[0].style.animationName = 'hidepanel';
+
+                scale.toggle(this, e.position, e.rotate);
+            };
+
+            newIMG.className = 'image';
+            newIMGa.src = e.image;
+            newIMG.appendChild(newIMGa);
+
+            newTTL.className = 'title';
+            e.title = {
+                name: e.title.substr(0, e.title.indexOf('(')),
+                info: e.title.substr(e.title.indexOf('(') + 1, e.title.length - e.title.indexOf('(') - 2)
+            }
+            newTTL.innerHTML = e.title.name + '<p>' + e.title.info + '</p>';
+
+
+            newBOX.appendChild(newIMG);
+            newBOX.appendChild(newTTL);
+
+        document.getElementsByClassName('map-navigation-panel')[0].appendChild(newBOX);
+    });
+
+    scale.lastStop = 0;
+    scale.defaultTimer = 60000000000;
+    scale.click = function() {
+        if(scale.timer < 1) {
+            document.getElementsByClassName('box')[scale.lastStop].click();
+            scale.timer = scale.defaultTimer;
+            if(scale.lastStop + 1 >= jsonParams.points.length) {
+                scale.lastStop = 0;
+                setTimeout(function() {
+                    document.getElementsByClassName('map-navigation-panel')[0].scrollTop = 10000000;
+                }, 300);
+            } else {
+                scale.lastStop++;
+            }
+        } else {
+            scale.timer--;
+        }
+        setTimeout(scale.click, 1000);
+    };
+    scale.timer = scale.defaultTimer*5;
+    scale.click();
+
+    ("mousemove touchmove mousedown".split(" ")).forEach(function(e) {
+        window.addEventListener(e,function() {
+            scale.timer = scale.defaultTimer*5;
+        });
+    });
+
+    window.onhashchange = function() {
+        if(location.href.indexOf('#disable') !== -1) {
+            scale.defaultTimer = 60000000000;
+            scale.timer = scale.defaultTimer*5;
+        } else if(location.href.indexOf('#enable') !== -1) {
+            scale.defaultTimer = 60;
+            scale.timer = scale.defaultTimer*5;
+        }
+    };
+
+    /*window.addEventListener("keydown", function(e){
+        if (e.keyCode==72){
+            browser_.flyTo(jsonParams.map.position);
+            e.preventDefault();
+        }
+    });*/
+
+    scale.smoothScroll = {
+        timer: null,
+        func: function(target) {
+            clearTimeout(scale.smoothScroll.timer);
+            var scrollNow = document.getElementsByClassName('map-navigation-panel')[0].scrollTop;
+            var scrollDiff = (scrollNow - target) * 0.5;
+            document.getElementsByClassName('map-navigation-panel')[0].scrollTop = document.getElementsByClassName('map-navigation-panel')[0].scrollTop - scrollDiff;
+            if(Math.abs(scrollDiff) > 5) {
+                scale.smoothScroll.timer = setTimeout(function() {
+                    scale.smoothScroll.func(document.getElementsByClassName('map-navigation-panel')[0].scrollTop - scrollDiff);
+                }, 25);
+            }
+        }
+    };
+
+    function buttonClicked() {
+       document.getElementsByClassName('map-navigation-panel')[0].style.animationName = 'showpanel';
+    }
+
+</script>
+</body>
+</html>
