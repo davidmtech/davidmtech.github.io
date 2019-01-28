@@ -417,6 +417,7 @@ function startDemo() {
         //params['map'] = 'https://mapserver-3d.mapy.cz/scenes/current/mapConfig.json';
         //params['map'] = 'https://cdn.melown.com/vts/melown2015/test/seznamcz-outdoor/mapConfig.json';
         params['map'] = 'https://cdn.melown.com/vts/melown2015/mapycz/live/mapConfig.json';
+        //params['map'] = 'https://cdn.melown.com/vts/melown2015/mapycz/test/mapConfig.json';
         //params['view'] = 'mapycz-default';
 
         params['mapLoadMode'] = 'fit';

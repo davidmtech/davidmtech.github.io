@@ -2926,7 +2926,7 @@ var Core = function(element, config, coreInterface) {
         mapRefreshCycles : 3,
         mapSoftViewSwitch : true,
 
-        mapFeatureStickMode : [2,4],
+        mapFeatureStickMode : [1,1],
 
         map16bitMeshes : true,
         mapOnlyOneUVs : true,
@@ -3408,7 +3408,7 @@ string getCoreVersion()
 */
 
 function getCoreVersion(full) {
-    return (full ? 'Core: ' : '') + '2.17.5';
+    return (full ? 'Core: ' : '') + '2.17.6';
 }
 
 
@@ -22256,6 +22256,14 @@ InspectorInput.prototype.onKeyUp = function(event, press) {
                 case 97:
                     debug.drawLabelBoxes = !debug.drawLabelBoxes; break; //key A pressed
 
+                case 75:
+                case 107:
+                   debug.drawAllLabels = !debug.drawAllLabels; break; //key K pressed
+
+                case 73:
+                case 105:
+                    debug.drawGridCells = !debug.drawGridCells; break; //key I pressed
+
                 case 87:
                 case 119:
                     var value = debug.drawWireframe + 1;
@@ -27352,6 +27360,7 @@ var MapDraw = function(map) {
         drawCredits : false,
         drawOrder : false,
         drawLabelBoxes : false,
+        drawAllLabels : false,
         drawEarth : true, 
         drawGridCells : false,
         drawTileCounter : 0,
@@ -27500,6 +27509,8 @@ MapDraw.prototype.drawMap = function(skipFreeLayers) {
     renderer.cameraViewExtent2 = Math.pow(2.0, Math.max(1.0, Math.floor(Math.log(map.position.getViewExtent()) / Math.log(2))));
     renderer.drawLabelBoxes = this.debug.drawLabelBoxes;
     renderer.drawGridCells = this.debug.drawGridCells;
+    renderer.drawAllLabels = this.debug.drawAllLabels;
+    renderer.debug = this.debug;
     renderer.fmaxDist = Number.NEGATIVE_INFINITY;
     renderer.fminDist = Number.POSITIVE_INFINITY;
 
@@ -30748,9 +30759,9 @@ MapGeodataProcessor.prototype.setStylesheet = function(stylesheet, fontsOnly) {
 
         case 'scr-count6':
             if (!params) {
-                params = [0.5,0,0];
+                params = [0.2,0,0];
             } else {
-                params[0] = (isDef(params[0]) ? params[0] : 0.5);
+                params[0] = (isDef(params[0]) ? params[0] : 0.2);
                 params[1] = isDef(params[1]) ? params[1] : 0;
                 params[2] = isDef(params[2]) ? params[2] : 1;
                 params[3] = ppi;
@@ -30768,7 +30779,7 @@ MapGeodataProcessor.prototype.setStylesheet = function(stylesheet, fontsOnly) {
             case 'scr-count2': config.mapFeaturesReduceParams = [1, 50, 0]; break;
             case 'scr-count4': config.mapFeaturesReduceParams = [0.18, 0, 1]; break;
             case 'scr-count5': config.mapFeaturesReduceParams = [2, 1, 1]; break;
-            case 'scr-count6': config.mapFeaturesReduceParams = [0.5, 0, 1, ppi]; break;
+            case 'scr-count6': config.mapFeaturesReduceParams = [0.2, 0, 1, ppi]; break;
         }
     }
 
@@ -42194,39 +42205,42 @@ RendererDraw.prototype.drawGpuJob = function(gpu, gl, renderer, job, screenPixel
 
 
         if (job.reduce && (job.reduce[0] != 7 && job.reduce[0] != 8 && job.reduce[0] != 9)) {
-            var a;
+            var a, r = job.reduce;
 
-            if (job.reduce[0] > 4) {
+            if (r[0] > 4) {
                 
-                if (job.reduce[0] == 4) {
-                    a = Math.max(job.reduce[1], Math.floor(job.reduce[2] / Math.max(1, renderer.drawnGeodataTiles)));
+                if (r[0] == 4) {
+                    a = Math.max(r[1], Math.floor(r[2] / Math.max(1, renderer.drawnGeodataTiles)));
 
                     if (job.index >= a) {
                         return;
                     } 
+                    r[5] = a; //for debug
                 } else {
                     a = Math.pow(job.texelSize * job.tiltAngle, 0.5); 
-                    a = Math.max(job.reduce[1], Math.round(job.reduce[2] * (a / Math.max(0.00001, this.renderer.drawnGeodataTilesFactor))));
+                    a = Math.max(r[1], Math.round(r[2] * (a / Math.max(0.00001, this.renderer.drawnGeodataTilesFactor))));
 
                     if (job.index >= a) {
                         return;
                     } 
+                    r[5] = a; //for debug
                 }
 
             } else {
                 a = job.tiltAngle;
 
-                if (job.reduce[0] == 1) {
+                if (r[0] == 1) {
                     a = 1.0 - (Math.acos(a) * (1.0/(Math.PI*0.5)));
-                } else if (job.reduce[0] == 3) {
+                } else if (r[0] == 3) {
                     a = (Math.cos(Math.acos(a) * 2) + 1.0) * 0.5;
                 }
 
-                var indexLimit = (Math.round(job.reduce[1] + (a*job.reduce[2]))-1);
+                var indexLimit = (Math.round(r[1] + (a*r[2]))-1);
 
                 if (job.index > indexLimit) {
                     return;
                 } 
+                r[5] = indexLimit; //for debug
             }
         }
 
@@ -42472,7 +42486,7 @@ RendererDraw.prototype.drawGpuJob = function(gpu, gl, renderer, job, screenPixel
 
         var reduce78 = (job.reduce && (job.reduce[0] == 7 || job.reduce[0] == 8 || job.reduce[0] == 9));
 
-        if (job.noOverlap) { 
+        if (!renderer.drawAllLabels && job.noOverlap) { 
             if (!pp) {
                 pp = renderer.project2(job.center, renderer.camera.mvp, renderer.cameraPosition);
             }
@@ -42610,7 +42624,7 @@ RendererDraw.prototype.drawGpuJob = function(gpu, gl, renderer, job, screenPixel
                 pp = renderer.project2(job.center, renderer.camera.mvp, renderer.cameraPosition);
             }
 
-            this.drawLineString([[pp[0], pp[1]+stickShift, pp[2]], [pp[0], pp[1], pp[2]]], true, s[2], [s[3], s[4], s[5], s[6]], null, null, null, null, true);
+            this.drawLineString([[pp[0], pp[1]+stickShift+s[7], pp[2]], [pp[0], pp[1]+s[7], pp[2]]], true, s[2], [s[3], s[4], s[5], s[6]], null, null, null, null, true);
         }
 
         /*if (dinfo) { //debug only
@@ -42875,7 +42889,7 @@ RendererDraw.prototype.drawGpuSubJob = function(gpu, gl, renderer, screenPixelSi
         gpu.setState(hitmapRender ? renderer.lineLabelHitState : renderer.labelState);
 
         if (s[0] != 0 && s[2] != 0 && stickShift >= 4) {
-            this.drawLineString([[pp[0], pp[1]+stickShift-s[7], pp[2]], [pp[0], pp[1], pp[2]]], true, s[2], [s[3], s[4], s[5], ((fade !== null) ? s[6] * fade : s[6]) ], null, null, null, null, true);
+            this.drawLineString([[pp[0], pp[1]+stickShift+s[7], pp[2]], [pp[0], pp[1]+s[7], pp[2]]], true, s[2], [s[3], s[4], s[5], ((fade !== null) ? s[6] * fade : s[6]) ], null, null, null, null, true);
             //stickShift += s[7];
         }
 
@@ -42927,7 +42941,7 @@ RendererDraw.prototype.drawGpuSubJob = function(gpu, gl, renderer, screenPixelSi
     }
 
     if (s[0] != 0 && s[2] != 0 && stickShift >= 4) {
-        this.drawLineString([[pp[0], pp[1]+stickShift, pp[2]], [pp[0], pp[1], pp[2]]], true, s[2], [s[3], s[4], s[5], ((fade !== null) ? s[6] * fade : s[6]) ], null, null, null, null, true);
+        this.drawLineString([[pp[0], pp[1]+stickShift+s[7], pp[2]], [pp[0], pp[1]+s[7], pp[2]]], true, s[2], [s[3], s[4], s[5], ((fade !== null) ? s[6] * fade : s[6]) ], null, null, null, null, true);
     }
 
     var prog = job.program; //renderer.progIcon;
@@ -43403,6 +43417,7 @@ function processGMap(gpu, gl, renderer, screenPixelSize, draw) {
     var tileSize = Math.floor(Math.sqrt((screenLX*screenLY) / tileCount));
     var hitMap = renderer.gmapHit, usedFeatures = 0;
     var tileFeatures, count, feature;
+    var drawAllLabels = renderer.drawAllLabels;
 
     var colors = [
         [0, 0, 255, 255],
@@ -43541,7 +43556,7 @@ function processGMap(gpu, gl, renderer, screenPixelSize, draw) {
                     featureCache[index] = null;
 
                     //render job
-                    if (feature[6]) { //no-overlap 
+                    if (!drawAllLabels && feature[6]) { //no-overlap 
                         pp = feature[5];
                         o = feature[8];
                         if (!renderer.rmap.addRectangle(pp[0]+o[0], pp[1]+o[1], pp[0]+o[2], pp[1]+o[3], feature[7], feature[0].lastSubJob)) {
@@ -43661,6 +43676,7 @@ function processGMap4(gpu, gl, renderer, screenPixelSize, draw) {
     var screenLY = renderer.curSize[1];
     var i, li, top = renderer.config.mapFeaturesSortByTop, tmp;
     var feature, feature2, pp, pp2, o;
+    var drawAllLabels = renderer.drawAllLabels;
 
     //get top features
     var featureCache = renderer.gmap;
@@ -43772,7 +43788,7 @@ function processGMap4(gpu, gl, renderer, screenPixelSize, draw) {
                     index = hitCacheSize;
 
                     //render job
-                    if (feature[6]) { //no-overlap 
+                    if (!drawAllLabels && feature[6]) { //no-overlap 
                         pp = feature[5];
                         o = feature[8];
                         if (renderer.rmap.addRectangle(pp[0]+o[0], pp[1]+o[1], pp[0]+o[2], pp[1]+o[3], feature[7], feature[0].lastSubJob, true)) {
@@ -43818,6 +43834,7 @@ function processGMap5(gpu, gl, renderer, screenPixelSize, draw) {
     var screenLY = renderer.curSize[1];
     var i, li, top = renderer.config.mapFeaturesSortByTop, tmp;
     var feature, feature2, pp, pp2, o;
+    var drawAllLabels = renderer.drawAllLabels;
 
     //get top features
     var featureCache = renderer.gmap;
@@ -43884,24 +43901,20 @@ function processGMap5(gpu, gl, renderer, screenPixelSize, draw) {
                 // check                
 
                 //render job
-                if (feature[6]) { //no-overlap is always enabled
+                if (!drawAllLabels && feature[6]) { //no-overlap is always enabled
                     pp = feature[5];
                     o = feature[8];
                     if (renderer.rmap.addRectangle(pp[0]+o[0], pp[1]+o[1], pp[0]+o[2], pp[1]+o[3], feature[7], feature[0].lastSubJob, true)) {
                         //hitCache[hitCacheSize] = feature;
                     }
-                }
-
-                /* else {
+                } else {
                     if (feature[0].hysteresis) {
                         renderer.jobHBuffer[feature[0].id] = feature[0];
-                        renderer.jobtHBuffer[feature[0].id] = feature[0];
                     } else {
                         renderer.drawnJobs++;
                         draw.drawGpuSubJob(gpu, gl, renderer, screenPixelSize, feature[0].lastSubJob, null);
                     }
-                } */
-
+                }
             }
 
             hmapSize[i] = 0;  //zero size
@@ -44714,6 +44727,8 @@ GpuGroup.prototype.addIconJob = function(data, label, tile) {
             case 'scr-count5': job.reduce[0] = 8; break;
             case 'scr-count6': job.reduce[0] = 9; break;
         }
+
+        job.reduce[5] = 0; //zero debug value
 
         if (job.reduce[0] == 7 || job.reduce[0] == 8 || job.reduce[0] == 9) {
             job.reduce[2] = Math.abs(job.reduce[1]); //copy prominence for prom / dist support
@@ -46830,7 +46845,8 @@ var Renderer = function(core, div, onUpdate, onResize, config) {
     this.stencilLineState = null;
     this.drawLabelBoxes = false;
     this.drawGridCells = false;
-
+    this.drawAllLabels = false;
+    this.debug = {};
 
     this.geodataSelection = [];
     this.hoverFeatureCounter = 0;
@@ -46930,7 +46946,6 @@ var Renderer = function(core, div, onUpdate, onResize, config) {
     this.progMap = {};
     this.gridHmax = 0;
     this.gridHmin = 0;
-    this.debug = {};
 
     //hack for vts maps
     //this.vtsHack = true;
@@ -47417,6 +47432,7 @@ Renderer.prototype.getFont = function(url) {
 
 var RendererRMap = function(renderer, blockSize, maxBlockRectangles) {
     this.renderer = renderer;
+    this.drawAllLabels = false;
     this.maxBlockRectangles = maxBlockRectangles || 500;
     this.blockSize = blockSize;
     this.blockSizeFactor = 1/blockSize;
@@ -47475,6 +47491,8 @@ RendererRMap.prototype.clear = function() {
 
     }
 
+    this.drawAllLabels = this.renderer.debug.drawAllLabels;
+
     this.rectanglesCount = 0;
     this.counter = this.renderer.geoRenderCounter;
 };
@@ -47522,6 +47540,10 @@ RendererRMap.prototype.checkRectangle = function(x1, y1, x2, y2, y3) {
 RendererRMap.prototype.addRectangle = function(x1, y1, x2, y2, z, subjob, any) {
     var x, y, i, index, blockRectangles, blockRectanglesCount,
         rectangleIndex, t;
+
+    if (this.drawAllLabels) {
+        return true;
+    }
 
     if (x1 > x2) { t = x1; x1 = x2; x2 = t; }
     if (y1 > y2) { t = y1; y1 = y2; y2 = t; }
