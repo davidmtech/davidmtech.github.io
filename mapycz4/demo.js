@@ -336,7 +336,7 @@ var mapczStyle = {
       "icon-no-overlap": true,
       "icon-no-overlap-factor": ["div-by-dist","@town-imp"],
       "zbuffer-offset": [-0.25,0,0],
-      "culling": 84,
+      "culling": 89,
       "hysteresis": [1500,1500,"@id-solver",true]
     }
   }
@@ -397,7 +397,7 @@ var ultrasStyle = {
             "icon-origin": "bottom-center",
             "icon-offset": [0, 10],
             "zbuffer-offset": [-1, 0, 0],
-            "culling": 84,
+            "culling": 89,
             "hysteresis": [1500, 1500, "@id-solver", true]
         }
     }
