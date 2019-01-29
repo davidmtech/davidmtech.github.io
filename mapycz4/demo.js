@@ -313,7 +313,7 @@ var mapczStyle = {
       "label-outline": {"linear2":["@town-size-z17",[[14,[0.27,0.75,2.2,2.2]],[50,[0.52,0.75,2.2,2.2]]]]}
     },
     "peaks": {
-      "filter": ["all",["==","#group","mountain_peak"]],
+      "filter": ["all",["==","#group","mountain_peak"],["has","$name"],["!=","$name",""]],
       "visible": true,
       "importance-source": "@peak-imp",
       "pack": true,
