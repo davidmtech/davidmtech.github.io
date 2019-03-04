@@ -4,17 +4,17 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
     <!--MELOWN CSS-->
-    <link rel="stylesheet" type="text/css" href="./vts-browser.css" /></link>
+    <link rel="stylesheet" type="text/css" href="./vts-browser.css?2" /></link>
 
     <!-- MELOWN CORE API CODE -->
 
-    <script type="text/javascript" src="./vts-browser.js"></script>
+    <script type="text/javascript" src="./vts-browser.js?2"></script>
     <script src="//cdn.melown.com/libs/vtsjs/support/v2/start-browser.js"></script>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
 
     <!-- MELOWN DEMO CODE -->
-    <script type="text/javascript" src="./demo.js"></script>
+    <script type="text/javascript" src="./demo.js?2"></script>
 
 </head>
 <body style = "padding: 0; margin: 0; font-family: Verdana, Tahoma, Geneva, Arial, Sans-serif;" onload="startDemo()">
@@ -38,7 +38,10 @@
         <input id="se-f1" type="number" value="1" min="0" max="50" step="0.1" oninput="seChange(3, this.value)" onchange="seChange(3, this.value)"/>
         <br/>
         <span style="position: relative; top: -6px;">Fade:</span>
-        <input id="se-fade" type="range" min="0" max="100" value="100" oninput="fadeChange(this.value)" onchange="fadeChange(this.value)"/>
+        <input id="se-fade" style="margin-right: 20px" type="range" min="0" max="100" value="100" oninput="fadeChange(this.value)" onchange="fadeChange(this.value)"/>
+        <button type="button" style="position: relative; top: -5px;" onclick="seButton(0)" >None</button> 
+        <button type="button" style="position: relative; top: -5px;" onclick="seButton(1)">Medium</button>
+        <button type="button" style="position: relative; top: -5px;" onclick="seButton(2)">Strong</button>
 
     </div>
 

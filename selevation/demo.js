@@ -39,7 +39,7 @@ function setZoom() {
     document.getElementById('count').innerHTML = '' + (zoom+4);
 }
 
-var selevation = [1000,3,4000,1];
+var selevation = [0,2,4000,1.5];
 var sefade = 100;
 
 
@@ -68,6 +68,38 @@ function updateSE() {
                                            selevation[2], 1 + (selevation[3] - 1) * fade);
         browser.map.redraw();
     }      
+}
+
+function seButton(num) {
+//    browser.renderer.setSuperElevation([0,2,4000,1.5]);
+
+    //selevation = [0,2,4000,1.5];
+
+    sefade = 100;
+
+    switch(num) {
+        case 0: sefade = 0; break;
+        case 1: sefade = 100; selevation = [0,2,4000,1.5]; break;
+        case 2: sefade = 100; selevation = [0,3,4000,2.25]; break;
+    }
+
+    var view = browser.map.getView();
+
+
+    view.options = num == 0 ? {} : {
+        superelevation : [ [selevation[0],selevation[2]], [selevation[1],selevation[3]] ]
+    }
+
+    browser.map.setView(view);
+
+    
+    document.getElementById('se-h1').value = '' + selevation[0];
+    document.getElementById('se-f1').value = '' + selevation[1];
+    document.getElementById('se-h2').value = '' + selevation[2];
+    document.getElementById('se-f2').value = '' + selevation[3];
+    document.getElementById('se-fade').value = '' + sefade;
+    updateSE();
+    
 }
 
 var mapczStyle = {
