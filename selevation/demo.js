@@ -528,6 +528,8 @@ function startDemo() {
 
         //params['mapSeparateLoader'] =  true;
 
+        params['mapFeaturesReduceParams'] =  [0.2,0,0];
+
         params['mapFeatureStickMode'] =  [0,0];
         params['mapFeatureStickMode'] =  [1,1];
         //params['mapFeatureStickMode'] =  [1,4];

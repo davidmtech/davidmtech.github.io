@@ -3498,7 +3498,7 @@ string getCoreVersion()
 */
 
 function getCoreVersion(full) {
-    return (full ? 'Core: ' : '') + '2.18.4';
+    return (full ? 'Core: ' : '') + '2.19.0';
 }
 
 
@@ -45306,7 +45306,11 @@ GpuGroup.prototype.addIconJob = function(data, label, tile) {
             if (this.renderer.config.mapFeaturesReduceFactor == 1) { // prom / dists
                 job.reduce[1] = job.reduce[2];
             } else {
-                job.reduce[1] = Math.floor((Math.log(job.reduce[2] * 500) / Math.log(1.0017)) + 5000);
+                if (job.reduce[0] == 9) {
+                    job.reduce[1] = job.reduce[2];
+                } else {
+                    job.reduce[1] = Math.floor((Math.log(job.reduce[2] * 500) / Math.log(1.0017)) + 5000);
+                }
             }
         }
     }
