@@ -41,6 +41,13 @@ function setZoom() {
 
 var selevation = [0,2,4000,1.5];
 var sefade = 100;
+var senum = 1;
+
+var setable = [
+                [0,1,4000,1],
+                [0,2,4000,1.5],
+                [0,3,4000,2.25]
+        ];
 
 
 function seChange(num, value) {
@@ -67,31 +74,49 @@ function updateSE() {
         browser.renderer.setSuperElevation(selevation[0], 1 + (selevation[1] - 1) * fade,
                                            selevation[2], 1 + (selevation[3] - 1) * fade);
         browser.map.redraw();
-    }      
+    }
+
+    if (senum != -1) {
+
+        if (selevation[0] != setable[senum][0] || selevation[1] != setable[senum][1] ||
+            selevation[2] != setable[senum][2] || selevation[3] != setable[senum][3]) {
+            senum = -1;
+        } else if (sefade != (senum == 0 ? 0 : 100)) {
+            senum = -1;
+        }
+
+        document.getElementById('se-b1').style.borderStyle = "outset";
+        document.getElementById('se-b2').style.borderStyle = "outset";
+        document.getElementById('se-b3').style.borderStyle = "outset";
+
+        switch(senum) {
+            case 0: document.getElementById('se-b1').style.borderStyle = "inset"; break;
+            case 1: document.getElementById('se-b2').style.borderStyle = "inset"; break;
+            case 2: document.getElementById('se-b3').style.borderStyle = "inset"; break;
+        }
+
+    }
+
 }
 
 function seButton(num) {
-//    browser.renderer.setSuperElevation([0,2,4000,1.5]);
 
-    //selevation = [0,2,4000,1.5];
-
-    sefade = 100;
-
-    switch(num) {
-        case 0: sefade = 0; break;
-        case 1: sefade = 100; selevation = [0,2,4000,1.5]; break;
-        case 2: sefade = 100; selevation = [0,3,4000,2.25]; break;
+    if (num == 0) {
+        sefade = 0;
+    } else {
+        sefade = 100;
     }
 
-    var view = browser.map.getView();
+    senum = num;
+    selevation = setable[num].slice();
 
+    var view = browser.map.getView();
 
     view.options = num == 0 ? {} : {
         superelevation : [ [selevation[0],selevation[2]], [selevation[1],selevation[3]] ]
     }
 
     browser.map.setView(view);
-
     
     document.getElementById('se-h1').value = '' + selevation[0];
     document.getElementById('se-f1').value = '' + selevation[1];
@@ -467,6 +492,8 @@ var ultrasStyle = {
 
 
 function startDemo() {
+
+    updateSE();
 
     var params = vtsParseUrlParams();    
 
