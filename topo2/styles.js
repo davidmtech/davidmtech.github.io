@@ -90,7 +90,6 @@ var mapczStyle = {
     },
 
     "peaks": {
-      "visible": false,
       "filter": ["all",["==","#group","mountain_peak"],["has","$name"],["!=","$name",""]],
       "&imp": {"logScale": ["@peak-prominece", 8848.8848]},
       "&rank": {"discrete2":["&imp",[[1,19.71],[19.72,4],[56.04,4],[56.06,3],[63.64,3],[63.66,2],[72.84,2],[72.86,1],[80.47,1],[80.49,0]]]},
