@@ -1,0 +1,44 @@
+<html>
+<head>
+    <title>MapyCZ</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <!--MELOWN CSS-->
+    <link rel="stylesheet" type="text/css" href="../../build/vts-browser.css" /></link>
+
+    <!-- MELOWN CORE API CODE -->
+
+    <script type="text/javascript" src="../../build/vts-browser.js"></script>
+    <script src="//cdn.melown.com/libs/vtsjs/support/v2/start-browser.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
+
+    <!-- MELOWN DEMO CODE -->
+    <script type="text/javascript" src="./styles.js"></script>
+    <script type="text/javascript" src="./demo.js"></script>
+
+</head>
+<body style = "padding: 0; margin: 0; font-family: Verdana, Tahoma, Geneva, Arial, Sans-serif;" onload="startDemo()">
+
+    <div id="melown-demo" style="width:100%;height:100%;"></div>
+
+    <div id="se-panel" style="position: absolute; bottom: 30px; right:10px; border-radius: 3px; background-color:fff; padding: 5px 5px 1px 5px; font-size: 12; border: solid 1px #000;z-index: 1000;">  
+        <span>H1:</span>
+        <input id="se-h1" type="number" value="0" min="0" max="9000" step="100" oninput="seChange(0, this.value)" onchange="seChange(0, this.value)"/>
+        <span>F1:</span>
+        <input id="se-f1" type="number" value="1" min="0" max="50" step="0.1" oninput="seChange(1, this.value)" onchange="seChange(1, this.value)"/>
+        <span>H2:</span>
+        <input id="se-h2" type="number" value="4000" min="0" max="9000" step="100" oninput="seChange(2, this.value)" onchange="seChange(2, this.value)"/>
+        <span>F2:</span>
+        <input id="se-f2" type="number" value="1" min="0" max="50" step="0.1" oninput="seChange(3, this.value)" onchange="seChange(3, this.value)"/>
+        <br/>
+        <span style="position: relative; top: -6px;">Fade:</span>
+        <input id="se-fade" style="margin-right: 20px" type="range" min="0" max="100" value="0" oninput="fadeChange(this.value)" onchange="fadeChange(this.value)"/>
+        <button id="se-b1" type="button" style="position: relative; top: -5px;" onclick="seButton(0)" >None</button> 
+        <button id="se-b2" type="button" style="position: relative; top: -5px;" onclick="seButton(1)">Medium</button>
+        <button id="se-b3" type="button" style="position: relative; top: -5px;" onclick="seButton(2)">Strong</button>
+
+    </div>
+
+</body>
+</html>
