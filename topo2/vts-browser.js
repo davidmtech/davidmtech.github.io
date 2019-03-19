@@ -43177,7 +43177,7 @@ RendererDraw.prototype.drawGpuJob = function(gpu, gl, renderer, job, screenPixel
 
                 if (job.reduce) {
                     if (job.reduce[0] == 10) {
-                        this.drawText(pp[0]+o[0], pp[1]+o[3]-4*renderer.debug.debugTextSize, 4*renderer.debug.debugTextSize, ''+job.reduce[1].toFixed(2)+' '+job.reduce[3].toFixed(2)+' '+job.reduce[5].toFixed(0), [1,0,0,1], 0.5);
+                        this.drawText(pp[0]+o[0], pp[1]+o[3]-4*renderer.debug.debugTextSize, 4*renderer.debug.debugTextSize, ''+job.reduce[6].toFixed(3)+' '+job.reduce[1].toFixed(2)+' '+job.reduce[3].toFixed(2), [1,0,0,1], 0.5);
                     } else {
                         this.drawText(pp[0]+o[0], pp[1]+o[3]-4*renderer.debug.debugTextSize, 4*renderer.debug.debugTextSize, ''+job.reduce[1].toFixed(0)+' '+job.reduce[5].toFixed(0), [1,0,0,1], 0.5);
                     }
@@ -43460,7 +43460,7 @@ RendererDraw.prototype.drawGpuSubJob = function(gpu, gl, renderer, screenPixelSi
 
             if (job.reduce) {
                 if (job.reduce[0] == 10) {
-                    this.drawText(pp[0]+o[0], pp[1]+o[3]-4*renderer.debug.debugTextSize, 4*renderer.debug.debugTextSize, ''+job.reduce[1].toFixed(2)+' '+job.reduce[3].toFixed(2)+' '+job.reduce[5].toFixed(0), [1,0,0,1], 0.5);
+                    this.drawText(pp[0]+o[0], pp[1]+o[3]-4*renderer.debug.debugTextSize, 4*renderer.debug.debugTextSize, ''+job.reduce[6].toFixed(3)+' '+job.reduce[1].toFixed(2)+' '+job.reduce[3].toFixed(2), [1,0,0,1], 0.5);
                 } else {
                     this.drawText(pp[0]+o[0], pp[1]+o[3]-4*renderer.debug.debugTextSize, 4*renderer.debug.debugTextSize, ''+job.reduce[1].toFixed(0)+' '+job.reduce[5].toFixed(0), [1,0,0,1], 0.5);
                 }
@@ -43506,7 +43506,7 @@ RendererDraw.prototype.drawGpuSubJob = function(gpu, gl, renderer, screenPixelSi
 
         if (job.reduce) {
             if (job.reduce[0] == 10) {
-                this.drawText(pp[0]+o[0], pp[1]+o[3]-4*renderer.debug.debugTextSize, 4*renderer.debug.debugTextSize, ''+job.reduce[1].toFixed(2)+' '+job.reduce[3].toFixed(2)+' '+job.reduce[5].toFixed(0), [1,0,0,1], 0.5);
+                this.drawText(pp[0]+o[0], pp[1]+o[3]-4*renderer.debug.debugTextSize, 4*renderer.debug.debugTextSize, ''+job.reduce[6].toFixed(3)+' '+job.reduce[1].toFixed(2)+' '+job.reduce[3].toFixed(2), [1,0,0,1], 0.5);
             } else {
                 this.drawText(pp[0]+o[0], pp[1]+o[3]-4*renderer.debug.debugTextSize, 4*renderer.debug.debugTextSize, ''+job.reduce[1].toFixed(0)+' '+job.reduce[5].toFixed(0), [1,0,0,1], 0.5);
             }
@@ -44508,7 +44508,8 @@ function processGMap5(gpu, gl, renderer, screenPixelSize, draw) {
 
 function radixSortFeatures(renderer, input, inputSize, tmp) {
     var count = inputSize < (1 << 16) ? renderer.radixCountBuffer16 : renderer.radixCountBuffer32; 
-    var item, val, bunit32 = renderer.buffUint32, bfloat32 = renderer.buffFloat32, i, r, distanceFactor = 2;
+    var item, val, bunit32 = renderer.buffUint32, bfloat32 = renderer.buffFloat32, i, r;
+    var distanceFactor = renderer.config.mapFeaturesReduceFactor;
 
     if (count.fill) {
         count.fill(0);
@@ -44519,11 +44520,12 @@ function radixSortFeatures(renderer, input, inputSize, tmp) {
     }
 
     // count all bytes in one pass
-    if (renderer.config.mapFeaturesReduceFactor >= 1) {
+    if (distanceFactor >= 1) {
         for (i = 0; i < inputSize; i++) {
             r = input[i][0].reduce;
             val = r[3] - distanceFactor * Math.log(r[4]);
             if (val < 0) val = 0;
+            r[6] = val;
             bfloat32[0] = val;
             val = bunit32[0];
             r[5] = val;
