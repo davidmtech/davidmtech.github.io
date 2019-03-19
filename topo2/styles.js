@@ -1,4 +1,4 @@
-var mapczStyle = {
+var osmStyle = {
   "constants": {
     "@main-font": ["noto-mix","noto-cjk"],
     "@italic-font": ["noto-italic","noto-mix","noto-cjk"],
@@ -24,7 +24,7 @@ var mapczStyle = {
     "@peak-prominece": {"add":[{"if":[["has","$ele"],{"mul":[0.0001,{"str2num":"$ele"}]},0]},{"if":[["has","$prominence"],{"mul":[0.3048,{"str2num":"$prominence"}]},0]}]},
 
     "@ele-solver": "{{'round': {'str2num':'$ele'}}} m",
-    "@peak-name": {"if":[["has","$ele"],"{@name-solver}\n{@ele-solver}","{@name-solver}"]},
+    "@peak-name": {"if":[["has","$ele"],"{@name-solver}\n({@ele-solver})","{@name-solver}"]},
   },
 
   "fonts": {
@@ -101,7 +101,7 @@ var mapczStyle = {
       "label-stick": {"linear2":["&rank",[[1,[70,5,2,255,233,0,128]],[5,[70,5,2,230,230,230,128]]]]},
       "label-size": {"discrete2":["&rank",[[0,19],[1,18],[2,17],[3,16],[4,15],[5,14]]]},
       "label-source": "@peak-name",
-      "label-font": "@italic-font",
+      "label-font": "@main-font",
       "label-no-overlap": true,
       "zbuffer-offset": [-0.25,0,0],
       "culling": 89,
@@ -112,6 +112,7 @@ var mapczStyle = {
 
 var ultrasStyle = {
   "constants": {
+    "@main-font": ["noto-mix","noto-cjk"],
     "@italic-font": ["noto-italic","noto-mix","noto-cjk"],
     "@name-solver": {"uppercase":{"if":[["has","$name"],"$name","$Name"]}},
     "@ele": {"if":[["has","$elevation"],"$elevation","$Elevation"]},
@@ -134,11 +135,11 @@ var ultrasStyle = {
       "importance-weight": 1,
       "visible": true,
       "label": true,
-      "label-font": "@italic-font",
+      "label-font": "@main-font",
       "label-stick": [70,5,2,255,233,0,128],
       "label-color": [255,233,0,255],
       "label-size": 19,
-      "label-source": "{@name-solver}\n{@ele-solver}",
+      "label-source": "{@name-solver}\n({@ele-solver})",
       "label-offset": [0,0],
       "label-no-overlap": true,
       "zbuffer-offset": [-1,0,0],

@@ -94,14 +94,16 @@ function startDemo() {
 
     var params = vtsParseUrlParams();    
 
-    params['map'] = 'https://cdn.melown.com/vts/melown2015/mapycz/live/mapConfig.json';
+    //params['map'] = 'https://cdn.melown.com/vts/melown2015/mapycz/live/mapConfig.json';
+    params['map'] = 'https://rigel.mlwn.se/store/map-config/high-terrain/mapConfig.json';
+
     params['view'] = 'mapycz-default';
     params['jumpAllowed'] = true;
     params['positionInUrl'] =  true;
     params['mapFeaturesReduceMode'] = 'scr-count7';
 
     if (!params['mapFeaturesReduceParams']) {
-        params['mapFeaturesReduceParams'] =  [0.1,0.35,2];
+        params['mapFeaturesReduceParams'] =  [0.1,0.10,2];
     }
 
     browser = vts.browser('melown-demo', params);
@@ -109,49 +111,15 @@ function startDemo() {
     //hack replace free layers styles
     browser.on('map-mapconfig-loaded', (function(data){
 
-        var freeLayers = data['view']['freeLayers'];
-
-        if (freeLayers) {
-
-            for (var key in freeLayers) {
-                var layer = freeLayers[key];
-
-                if (layer.style && (typeof layer.style == 'string')) {
-
-                    if (layer.style.indexOf('mapycz.json') != -1) {
-                        layer.style = mapczStyle;
-                    } else if (layer.style.indexOf('ultras.json') != -1) {
-                        layer.style = ultrasStyle;
-                    }
-                }
+     var freeLayers = data['view']['freeLayers'] =
+          {
+            "osm-maptiler": {
+              "style": osmStyle
+            },
+            "peaklist-org-ultras": {
+              "style": ultrasStyle
             }
-        }
-
-        var namedViews= data['namedViews'];
-
-        for (var key in namedViews) {
-
-            freeLayers = namedViews[key]['freeLayers'];
-
-            if (freeLayers) {
-
-                for (var key2 in freeLayers) {
-                    var layer = freeLayers[key2];
-
-                    if (layer.style && (typeof layer.style == 'string')) {
-
-                        if (layer.style.indexOf('mapycz-aerial.json') != -1) {
-                            layer.style = mapczStyle;
-                        } else if (layer.style.indexOf('ultras-aerial.json') != -1) {
-                            layer.style = ultrasStyle;
-                        }
-                    }
-                }
-
-            }
-
-        }
-
+          };
     }));
 
 }
