@@ -102,8 +102,10 @@ function startDemo() {
     params['positionInUrl'] =  true;
     params['mapFeaturesReduceMode'] = 'scr-count7';
 
+    params['bigScreenMargins'] = true;
+
     if (!params['mapFeaturesReduceParams']) {
-        params['mapFeaturesReduceParams'] =  [0.1,0.10,2];
+        params['mapFeaturesReduceParams'] =  [0.1,0.10,2,1,1];
     }
 
     browser = vts.browser('melown-demo', params);
@@ -111,7 +113,34 @@ function startDemo() {
     //hack replace free layers styles
     browser.on('map-mapconfig-loaded', (function(data){
 
-     var freeLayers = data['view']['freeLayers'] =
+       data.boundLayers["eox-it-sentinel2-cloudless"] = 
+ {
+    "credits" : 
+    {
+        "eox-it" : 
+        {
+            "id" : 125,
+            "notice" : "Datasource: [https://s2maps.eu s2maps.eu] by EOX IT Services GmbH"
+        }
+    },
+    "lodRange" : [ 1, 15 ],
+    "maskUrl" : "http://cdn.melown.com/vts/melown2015/imagery/global/eox-it-sentinel2-cloudless/{lod}-{x}-{y}.mask?r=2",
+    "tileRange" : 
+    [
+        [ 0, 0 ],
+        [ 1, 1 ]
+    ],
+    "type" : "raster",
+    "url" : "http://cdn.melown.com/vts/melown2015/imagery/global/eox-it-sentinel2-cloudless/{lod}-{x}-{y}.jpg?r=2",
+
+    "options" : {
+         // "shaderFilter" : ""
+         "shaderFilter" : "c.rgb = mix(c.rgb, vec3(1.0), 0.5);"
+    }
+};
+
+
+     data['view']['freeLayers'] =
           {
             "osm-maptiler": {
               "style": osmStyle
