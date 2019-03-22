@@ -124,14 +124,14 @@ function startDemo() {
         }
     },
     "lodRange" : [ 1, 15 ],
-    "maskUrl" : "http://cdn.melown.com/vts/melown2015/imagery/global/eox-it-sentinel2-cloudless/{lod}-{x}-{y}.mask?r=2",
+    "maskUrl" : "https://cdn.melown.com/vts/melown2015/imagery/global/eox-it-sentinel2-cloudless/{lod}-{x}-{y}.mask?r=2",
     "tileRange" : 
     [
         [ 0, 0 ],
         [ 1, 1 ]
     ],
     "type" : "raster",
-    "url" : "http://cdn.melown.com/vts/melown2015/imagery/global/eox-it-sentinel2-cloudless/{lod}-{x}-{y}.jpg?r=2",
+    "url" : "https://cdn.melown.com/vts/melown2015/imagery/global/eox-it-sentinel2-cloudless/{lod}-{x}-{y}.jpg?r=2",
 
     "options" : {
          // "shaderFilter" : ""
