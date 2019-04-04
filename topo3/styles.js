@@ -23,8 +23,8 @@ var osmStyle = {
 
     "@peak-prominece": {"add":[{"if":[["has","$ele"],{"mul":[0.0001,{"str2num":"$ele"}]},0]},{"if":[["has","$prominence"],{"mul":[0.3048,{"str2num":"$prominence"}]},0]}]},
 
-    "@ele-solver": "{{'round': {'str2num':'$ele'}}} m",
-    "@peak-name": {"if":[["has","$ele"],"{@name-solver}\n({@ele-solver})","{@name-solver}"]},
+    "@ele-solver": "{{'round': {'str2num':'$ele'}}} m", 
+    "@peak-name": {"if":[["has","$ele"],"{@name-solver}\n({@ele-solver})","{@name-solver}"]} 
   },
 
   "fonts": {
@@ -81,7 +81,7 @@ var osmStyle = {
       "label-font": "@main-font",
       "label-source": "@city-label",
       "label-color": {"linear2":["&rank",[[1,[255,233,0,255]],[5,[230,230,230,255]]]]},
-      "label-stick": {"linear2":["&rank",[[1,[70,5,2,255,233,0,128]],[5,[70,5,2,230,230,230,128]]]]},
+      "label-stick": {"linear2":["&rank",[[1,[70,0,2,255,233,0,128]],[5,[70,5,2,230,230,230,128]]]]},
       "label-size": {"discrete2":["&rank",[[0,19],[1,18],[2,17],[3,16],[4,15],[5,14]]]},
       "label-offset": [0,0],
       "label-no-overlap": true,
@@ -98,7 +98,7 @@ var osmStyle = {
       "label": true,
       "label-offset": [0,0],
       "label-color": {"linear2":["&rank",[[1,[255,233,0,255]],[5,[230,230,230,255]]]]},
-      "label-stick": {"linear2":["&rank",[[1,[70,5,2,255,233,0,128]],[5,[70,5,2,230,230,230,128]]]]},
+      "label-stick": {"linear2":["&rank",[[1,[70,0,2,255,233,0,128]],[5,[70,5,2,230,230,230,128]]]]},
       "label-size": {"discrete2":["&rank",[[0,19],[1,18],[2,17],[3,16],[4,15],[5,14]]]},
       "label-source": "@peak-name",
       "label-font": "@main-font",

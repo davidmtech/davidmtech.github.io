@@ -107,7 +107,8 @@ function startDemo() {
     
 
     if (!params['mapFeaturesReduceParams']) {
-        params['mapFeaturesReduceParams'] =  [0.1,0.10,2,1,1];
+        params['mapFeaturesReduceParams'] =  [0.05,0.15,11,1,1000];
+        //params['mapFeaturesReduceParams'] =  [0.1,0.10,2,1,1];
     }
 
     browser = vts.browser('melown-demo', params);
@@ -142,7 +143,7 @@ function startDemo() {
     }
 };
 
-       data.boundLayers["flat"] = "//dfsdfds";
+       //data.boundLayers["flat"] = "//dfsdfds";
 
 
      data['view']['surfaces'] =
