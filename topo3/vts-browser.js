@@ -3005,7 +3005,7 @@ var Core = function(element, config, coreInterface) {
         mapStoreLoadStats : false,
         mapRefreshCycles : 3,
         mapSoftViewSwitch : true,
-        mapSortHysteresis : false,
+        mapSortHysteresis : true,
         mapSeparateLoader : true,
         mapGeodataBinaryLoad : true,
         mapPackLoaderEvents : true,
@@ -43648,7 +43648,7 @@ RendererDraw.prototype.drawGpuSubJob = function(gpu, gl, renderer, screenPixelSi
 
     var job = subjob[0], stickShift = subjob[1], texture = subjob[2],
         files = subjob[3], color = subjob[4], pp = subjob[5], s = job.stick,
-        o = job.noOverlap, localTilt;
+        o = job.noOverlap, localTilt, p2, p1, camVec;
 
     if (renderer.useSuperElevation) {
         if (job.seCounter != renderer.seCounter) {
@@ -43660,9 +43660,11 @@ RendererDraw.prototype.drawGpuSubJob = function(gpu, gl, renderer, screenPixelSi
     }
 
     if (job.hysteresis && job.id) {
+
+        /*
         if (job.culling != 180) {
-            var p2 = job.center2;
-            var p1 = renderer.cameraPosition;
+            p2 = job.center2;
+            p1 = renderer.cameraPosition;
             var camVec = [p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]];
             vec3.normalize(camVec);
                 
@@ -45872,6 +45874,10 @@ GpuGroup.prototype.addIconJob = function(data, label, tile) {
     job.reduced = false;
     job.ready = true;
     job.reduce = data['reduce'];
+
+    //if (job.id && job.id.indexOf('Longs Peak') != -1) {
+      //  console.log('tile: ' + JSON.stringify(tile.id));        
+    //}
 
     //console.log('id: ' + job.eventInfo['#id']);
 
