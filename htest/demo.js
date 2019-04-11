@@ -6,7 +6,7 @@ function startDemo() {
 
     var params = vtsParseUrlParams();    
 
-    params['map'] = 'https://rigel.mlwn.se/store/map-config/high-terrain/mapConfig.json';
+    params['map'] = 'https://rigel.mlwn.se/store/a-3d-mountain-map/map-config/map/mapConfig.json';
 
     params['jumpAllowed'] = true;
     params['positionInUrl'] =  true;
