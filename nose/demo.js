@@ -18,8 +18,12 @@ function startDemo() {
     //hack replace free layers styles
     browser.on('map-mapconfig-loaded', (function(data){
 
-		data["view"]["freeLayers"] = { "osm-maptiler": {
-			"style": {}
+		data["browserOptions"] = {};
+	
+		data["view"]["freeLayers"] = {};
+
+//	data["view"]["freeLayers"] = { "osm-maptiler": {
+	//		"style": {}
 /*			
 			
 {
