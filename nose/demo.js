@@ -19,6 +19,8 @@ function startDemo() {
     browser.on('map-mapconfig-loaded', (function(data){
 
 		data['view']['options'] = {};
+
+        data["surfaces"]["terrain-viewfinder3"] = ["eox-it-sentinel2-cloudless"];
 		
 	}));
 
