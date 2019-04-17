@@ -18,9 +18,9 @@ function startDemo() {
     //hack replace free layers styles
     browser.on('map-mapconfig-loaded', (function(data){
 
-		data["browserOptions"] = {};
+		//data["browserOptions"] = {};
 	
-		data["view"]["freeLayers"] = {};
+		//data["view"]["freeLayers"] = {};
 
 //	data["view"]["freeLayers"] = { "osm-maptiler": {
 	//		"style": {}
@@ -104,7 +104,7 @@ function startDemo() {
 	*/		
 	//	} }
 	
-		data['view']['options'] = {};
+	//	data['view']['options'] = {};
 
         data["view"]["surfaces"]["terrain-viewfinder3"] = ["eox-it-sentinel2-cloudless"];
 		
