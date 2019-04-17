@@ -16,7 +16,8 @@ function startDemo() {
     //hack replace free layers styles
     browser.on('map-mapconfig-loaded', (function(data){
 
-
-    data['view']['options'] = {};
+		data['view']['options'] = {};
+		
+	}));
 
 }
