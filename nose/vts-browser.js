@@ -15843,7 +15843,7 @@ GpuShaders.tileFragmentShader = 'precision mediump float;\n'+
 
                     '#ifdef externalTex\n'+
                         'vec4 c = texture2D(uSampler, vTexCoord.xy);\n'+'__FILTER__' +
-                        'vec4 cc = mix(c, fogColor, vTexCoord.z);\n'+
+                        'vec4 cc = c;\n'+ //mix(c, fogColor, vTexCoord.z);\n'+
                         '#ifdef mask\n'+
                             'vec4 c2 = texture2D(uSampler2, vTexCoord.xy);\n'+
                             'cc.w = c.w * uParams2.w * c2.x;\n'+
@@ -15854,7 +15854,7 @@ GpuShaders.tileFragmentShader = 'precision mediump float;\n'+
                         'gl_FragColor = cc;\n'+
                     '#else\n'+
                         //'gl_FragColor = mix(texture2D(uSampler, vTexCoord.xy), fogColor, vTexCoord.z);\n'+
-                        'gl_FragColor = texture2D(uSampler, vTexCoord.xy;\n'+
+                        'gl_FragColor = texture2D(uSampler, vTexCoord.xy);\n'+
                     '#endif\n'+
 
                 '#endif\n'+
