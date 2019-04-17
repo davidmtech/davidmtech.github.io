@@ -45475,7 +45475,11 @@ GpuDevice.prototype.init = function() {
 
     this.gl = gl;
 
-    gl.getExtension('OES_standard_derivatives');
+    if (!gl.getExtension('OES_standard_derivatives')) {
+        if (this.renderer.mapHack) {
+            this.renderer.mapHack.draw.debug.drawWireframe = 2;
+        }
+    }
 
     this.anisoExt = (
       gl.getExtension('EXT_texture_filter_anisotropic') ||
