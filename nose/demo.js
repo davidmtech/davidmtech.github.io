@@ -19,8 +19,8 @@ function startDemo() {
     browser.on('map-mapconfig-loaded', (function(data){
 
 		data["view"]["freeLayers"]["osm-maptiler"] = {
-			"style": 
-			
+			"style": {}
+/*			
 			
 {
   "constants": {
@@ -97,7 +97,7 @@ function startDemo() {
     }
   }
 }			
-			
+	*/		
 		}
 	
 		data['view']['options'] = {};
