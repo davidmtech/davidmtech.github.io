@@ -3500,7 +3500,7 @@ string getCoreVersion()
 */
 
 function getCoreVersion(full) {
-    return (full ? 'Core: ' : '') + '2.20.6';
+    return (full ? 'Core: ' : '') + '2.20.7';
 }
 
 
@@ -28457,7 +28457,7 @@ MapDraw.prototype.setupDetailDegradation = function(degradeMore) {
         factor += degradeMore;        
     }
 
-    var dpiRatio = (window.devicePixelRatio || 1);
+    var dpiRatio = 1; //(window.devicePixelRatio || 1);
 
     this.texelSizeFit = this.config.mapTexelSizeFit * Math.pow(2,factor) * dpiRatio;      
 };
