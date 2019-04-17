@@ -102,7 +102,7 @@ function startDemo() {
   }
 }			
 	*/		
-		} }
+	//	} }
 	
 		data['view']['options'] = {};
 
