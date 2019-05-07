@@ -136,7 +136,7 @@ var mapczStyle = {
     "@icon-hill": ["hill",0,0,63,63],
     "@base-color": [0,0,0,255],
     "@base-color2": [255,255,255,255],
-    "@base-stick": [70,5,2,0,0,0,100,14],
+    "@base-stick": [70,0,2,0,0,0,100],
     "@name-solver": {"if":[["has","$name"],{"if":[["any",["!has","$name:en"],["==",{"has-latin":"$name"},true]],"{$name}","{$name}\n{$name:en}"]},""]},
     "@z4": 5387767,
     "@z5": 2693883,
@@ -230,7 +230,7 @@ var mapczStyle = {
       "&size": 15,
       "pack": true,
       "label": true,
-      "label-offset": [0,-10],
+      "label-offset": [0,-12],
       "label-color": "@base-color",
       "label-color2": "@base-color2",
       "label-stick": "@base-stick",
@@ -244,7 +244,7 @@ var mapczStyle = {
       "icon-color": [255,255,255,255],
       "icon-scale": 0.4,
       "icon-origin": "bottom-center",
-      "icon-offset": [0,10],
+      "icon-offset": [0,7],
       "icon-no-overlap": true,
       "zbuffer-offset": [-0.15,0,0]
     },
@@ -333,7 +333,7 @@ var mapczStyle = {
       "icon-color": [50,50,50,255],
       "icon-scale": 0.3,
       "icon-origin": "bottom-center",
-      "icon-offset": [0,10],
+      "icon-offset": [0,7],
       "icon-no-overlap": true,
       "zbuffer-offset": [-0.25,0,0],
       "culling": 89,
@@ -352,7 +352,7 @@ var ultrasStyle = {
 
         "@base-color": [0,0,0,255],
         "@base-color2": [255,255,255,255],
-        "@base-stick": [70,5,2,0,0,0,100,14],
+        "@base-stick": [70,0,2,0,0,0,100],
 
         "@name-solver": {"if":[["has","$name"],"$name","$Name"]},
         "@ele": {"if":[["has","$elevation"],"$elevation","$Elevation"]},
@@ -385,13 +385,13 @@ var ultrasStyle = {
             "label-color2": "@base-color2",
             "label-stick": "@base-stick",
             "label-size": 15,
-            "label-offset": [0, -10],
+            "label-offset": [0, -12],
             "icon": true,
             "icon-source": "@icon-hill",
             "icon-color": [50, 50, 50, 255],
             "icon-scale": 0.3,
             "icon-origin": "bottom-center",
-            "icon-offset": [0, 10],
+            "icon-offset": [0, 7],
             "zbuffer-offset": [-1, 0, 0],
             "culling": 89,
             "hysteresis": [1500, 1500, "@id-solver", true]
@@ -429,7 +429,7 @@ function startDemo() {
         //params['mapGridTextureLayer'] =  "eox-it-sentinel2-cloudless",
 
         params['mapFeaturesReduceMode'] = "scr-count7";
-        params['mapFeaturesReduceParams'] = [ 0.05, 0.17, 11, 0, 1000 ];
+        params['mapFeaturesReduceParams'] = [ 0.05, 0.17, 11, 1, 1000 ];
 
         //params['mapFeaturesReduceMode'] = "margin";
         //params['mapFeaturesReduceParams'] = [ 0.20000000000000001, 0, 1 ];
