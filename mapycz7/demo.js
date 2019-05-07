@@ -230,7 +230,7 @@ var mapczStyle = {
       "&size": 15,
       "pack": true,
       "label": true,
-      "label-offset": [0,-12],
+      "label-offset": [0,-20],
       "label-color": "@base-color",
       "label-color2": "@base-color2",
       "label-stick": "@base-stick",
@@ -244,7 +244,7 @@ var mapczStyle = {
       "icon-color": [255,255,255,255],
       "icon-scale": 0.4,
       "icon-origin": "bottom-center",
-      "icon-offset": [0,7],
+      "icon-offset": [0,-2],
       "icon-no-overlap": true,
       "zbuffer-offset": [-0.15,0,0]
     },
@@ -324,7 +324,7 @@ var mapczStyle = {
       "label-color2": "@base-color2",
       "label-stick": "@base-stick",
       "label-size": 15,
-      "label-offset": [0,-10],
+      "label-offset": [0,-20],
       "label-source": "&text",
       "label-font": "@italic-font",
       "label-no-overlap": true,
@@ -333,7 +333,7 @@ var mapczStyle = {
       "icon-color": [50,50,50,255],
       "icon-scale": 0.3,
       "icon-origin": "bottom-center",
-      "icon-offset": [0,7],
+      "icon-offset": [0,-2],
       "icon-no-overlap": true,
       "zbuffer-offset": [-0.25,0,0],
       "culling": 89,
@@ -385,13 +385,13 @@ var ultrasStyle = {
             "label-color2": "@base-color2",
             "label-stick": "@base-stick",
             "label-size": 15,
-            "label-offset": [0, -12],
+            "label-offset": [0, -20],
             "icon": true,
             "icon-source": "@icon-hill",
             "icon-color": [50, 50, 50, 255],
             "icon-scale": 0.3,
             "icon-origin": "bottom-center",
-            "icon-offset": [0, 7],
+            "icon-offset": [0, -2],
             "zbuffer-offset": [-1, 0, 0],
             "culling": 89,
             "hysteresis": [1500, 1500, "@id-solver", true]
@@ -418,6 +418,7 @@ function startDemo() {
         //params['map'] = 'http://pomerol:8888/buffer/tilesets/vts/melown2015/halo1618v0/storage-overlap/mapConfig.json';
         //params['view'] = 'mapycz-default';
         params['jumpAllowed'] = true;
+        params['positionInUrl'] =  true;
 
         //params['mapLoadMode'] = 'fit';
         //params['mapLoadMode'] = 'topdown';
