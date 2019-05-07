@@ -429,7 +429,7 @@ function startDemo() {
         //params['mapGridTextureLayer'] =  "eox-it-sentinel2-cloudless",
 
         params['mapFeaturesReduceMode'] = "scr-count7";
-        params['mapFeaturesReduceParams'] = [ 0.05, 0.17, 11, 1, 1000 ];
+        params['mapFeaturesReduceParams'] = [ 0.05, 0.17, 11, 0, 1000 ];
 
         //params['mapFeaturesReduceMode'] = "margin";
         //params['mapFeaturesReduceParams'] = [ 0.20000000000000001, 0, 1 ];
