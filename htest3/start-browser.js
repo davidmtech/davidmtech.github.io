@@ -30,6 +30,8 @@ function vtsParseUrlParams(initialParams_, url_) {
             case 'mapGridUnderSurface':
             case 'mapGridTextureLevel':
             case 'mapHysteresisWait':
+			case 'mapDMapSize':
+			case 'mapDMapMode':
 			case 'rendererAnisotropic':         initialParams_[key_] = parseInt(params_[key_], 10); break;
             case 'panAllowed':
             case 'rotationAllowed':
@@ -124,6 +126,7 @@ function vtsParseUrlParams(initialParams_, url_) {
             case 'mapGeodataLoadMode':
 			case 'mapFeaturesReduceMode':
 			case 'mapGridTextureLayer':
+			case 'mapLanguage':
             case 'navigationMode':
             case 'controlSearchUrl':
             case 'controlSearchSrs':
