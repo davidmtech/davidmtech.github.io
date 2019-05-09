@@ -90,7 +90,7 @@ var vts =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 180);
+/******/ 	return __webpack_require__(__webpack_require__.s = 183);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -2654,7 +2654,7 @@ GpuTexture.prototype.readFramebufferPixels = function(x, y, lx, ly, fastMode, da
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ui_element_event__ = __webpack_require__(169);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ui_element_event__ = __webpack_require__(172);
 
 
 
@@ -2932,12 +2932,12 @@ utilsUrl.getProcessUrl = function(url, originUrl) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_proj4__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__map_map__ = __webpack_require__(139);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__inspector_inspector__ = __webpack_require__(119);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__renderer_renderer__ = __webpack_require__(165);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__renderer_interface__ = __webpack_require__(163);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__map_map__ = __webpack_require__(141);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__inspector_inspector__ = __webpack_require__(121);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__renderer_renderer__ = __webpack_require__(168);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__renderer_interface__ = __webpack_require__(166);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__map_position__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__map_interface__ = __webpack_require__(137);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__map_interface__ = __webpack_require__(139);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__utils_url__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__utils_platform__ = __webpack_require__(22);
@@ -3662,15 +3662,15 @@ function checkSupport() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__core__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__core__ = __webpack_require__(76);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Proj__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Point__ = __webpack_require__(59);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_toPoint__ = __webpack_require__(38);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__defs__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__transform__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_mgrs__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__version__ = __webpack_require__(110);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__projs__ = __webpack_require__(112);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Point__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_toPoint__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__defs__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__transform__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_mgrs__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__version__ = __webpack_require__(112);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__projs__ = __webpack_require__(114);
 
 
 
@@ -7010,12 +7010,12 @@ cb(GeographicLib);
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parseCode__ = __webpack_require__(80);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__extend__ = __webpack_require__(78);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__projections__ = __webpack_require__(81);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__deriveConstants__ = __webpack_require__(77);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__constants_Datum__ = __webpack_require__(70);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__datum__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parseCode__ = __webpack_require__(82);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__extend__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__projections__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__deriveConstants__ = __webpack_require__(79);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__constants_Datum__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__datum__ = __webpack_require__(77);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__match__ = __webpack_require__(29);
 
 
@@ -7403,6 +7403,425 @@ MapPosition.prototype.toArray = function() {
 
 /***/ }),
 /* 32 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+var GpuMesh = function(gpu, meshData, fileSize, core, direct, use16bit, verticesUnnormalized) {
+    this.gpu = gpu;
+    this.gl = gpu.gl;
+    this.bbox = meshData.bbox; //< bbox copy from Mesh
+    this.fileSize = fileSize; //used for stats
+    this.core = core;
+    this.vertexBuffer = null;
+    this.uvBuffer = null;
+    this.uv2Buffer = null;
+    this.use16bit = use16bit ? true : false;
+    this.verticesUnnormalized = verticesUnnormalized ? true : false;
+    this.size = 0;
+
+    var vertices = meshData.vertices;
+    var uvs = meshData.uvs;
+    var uvs2 = meshData.uvs2;
+    var indices = meshData.indices;
+    var vertexSize = meshData.vertexSize || 3;
+    var uvSize = meshData.uvSize || 2;
+    var uv2Size = meshData.uv2Size || 2;
+
+    var gl = this.gl;
+
+    if (!vertices || !gl) {
+        return;
+    }
+
+    //create vertex buffer
+    this.vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+
+    //when direct mode is used vertices can be also unit16
+    gl.bufferData(gl.ARRAY_BUFFER, direct ? vertices : (new Float32Array(vertices)), gl.STATIC_DRAW);
+    this.vertexBuffer.itemSize = vertexSize;
+    this.vertexBuffer.numItems = vertices.length / vertexSize;
+
+    if (uvs != null) {
+        //create texture coords buffer
+        this.uvBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.uvBuffer);
+
+        gl.bufferData(gl.ARRAY_BUFFER, direct ? uvs : (new Float32Array(uvs)), gl.STATIC_DRAW);
+        this.uvBuffer.itemSize = uvSize;
+        this.uvBuffer.numItems = uvs.length / uvSize;
+    }
+
+    if (uvs2 != null) {
+        //create texture coords buffer
+        this.uv2Buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.uv2Buffer);
+
+        gl.bufferData(gl.ARRAY_BUFFER, direct ? uvs2 : (new Float32Array(uvs2)), gl.STATIC_DRAW);
+        this.uv2Buffer.itemSize = uv2Size;
+        this.uv2Buffer.numItems = uvs2.length / uv2Size;
+    }
+
+    if (indices != null) {
+        //create index buffer
+        this.indexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, direct ? indices : (new Uint16Array(indices)), gl.STATIC_DRAW);
+        this.indexBuffer.itemSize = 1;
+        this.indexBuffer.numItems = indices.length;
+    }
+
+    var varSize = this.use16bit ? 2 : 4;
+    this.size = this.vertexBuffer.numItems * vertexSize * varSize;
+    this.size += (uvs) ? this.uvBuffer.numItems * uvSize * varSize : 0;
+    this.size += (uvs2) ? this.uv2Buffer.numItems * uv2Size * varSize : 0;
+    this.size += (indices) ? indices.length * 2 : 0;
+    this.polygons = (indices) ? indices.length / 3 : this.vertexBuffer.numItems / 3;
+
+    this.valid = true;
+};
+
+//destructor
+GpuMesh.prototype.kill = function() {
+    if (!this.gl || !this.valid) {
+        return;
+    }
+
+    if (this.vertexBuffer) {
+        this.gl.deleteBuffer(this.vertexBuffer);
+    }
+    
+    if (this.uvBuffer) {
+        this.gl.deleteBuffer(this.uvBuffer);
+    }
+
+    if (this.uv2Buffer) {
+        this.gl.deleteBuffer(this.uv2Buffer);
+    }
+
+    if (this.indexBuffer) {
+        this.gl.deleteBuffer(this.indexBuffer);
+    }
+    
+    this.vertexBuffer = null;
+    this.uvBuffer = null;
+    this.uv2Buffer = null;
+    this.indexBuffer = null;
+};
+
+// Draws the mesh, given the two vertex shader attributes locations.
+GpuMesh.prototype.draw = function(program, attrVertex, attrUV, attrUV2, attrBarycenteric, skipDraw) {
+    var gl = this.gl;
+    if (gl == null || !this.valid) {
+        return;
+    }
+
+    if (this.use16bit) {
+        //bind vetex positions
+        var vertexAttribute = program.getAttribute(attrVertex);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+        gl.vertexAttribPointer(vertexAttribute, this.vertexBuffer.itemSize, gl.UNSIGNED_SHORT, !this.verticesUnnormalized, 0, 0);
+
+        //bind texture coords
+        if (this.uvBuffer && attrUV) {
+            var uvAttribute = program.getAttribute(attrUV);
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.uvBuffer);
+            gl.vertexAttribPointer(uvAttribute, this.uvBuffer.itemSize, gl.UNSIGNED_SHORT, true, 0, 0);
+        }
+
+        if (this.uv2Buffer && attrUV2) {
+            var uv2Attribute = program.getAttribute(attrUV2);
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.uv2Buffer);
+            gl.vertexAttribPointer(uv2Attribute, this.uv2Buffer.itemSize, gl.UNSIGNED_SHORT, true, 0, 0);
+        }
+    } else {
+        //bind vetex positions
+        var vertexAttribute = program.getAttribute(attrVertex);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+        gl.vertexAttribPointer(vertexAttribute, this.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        //bind texture coords
+        if (this.uvBuffer && attrUV) {
+            var uvAttribute = program.getAttribute(attrUV);
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.uvBuffer);
+            gl.vertexAttribPointer(uvAttribute, this.uvBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        }
+
+        if (this.uv2Buffer && attrUV2) {
+            var uv2Attribute = program.getAttribute(attrUV2);
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.uv2Buffer);
+            gl.vertexAttribPointer(uv2Attribute, this.uv2Buffer.itemSize, gl.FLOAT, false, 0, 0);
+        }
+    }
+
+    if (attrBarycenteric && attrBarycenteric) {
+        var barycentericAttribute = program.getAttribute(attrBarycenteric);
+        
+        if (barycentericAttribute != -1) {
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.gpu.barycentricBuffer);
+            gl.vertexAttribPointer(barycentericAttribute, this.gpu.barycentricBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        }
+    }
+
+    //draw polygons
+    if (this.indexBuffer) {
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+
+        if (!skipDraw) gl.drawElements(gl.TRIANGLES, this.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }  else {
+        if (!skipDraw) gl.drawArrays(gl.TRIANGLES, 0, this.vertexBuffer.numItems);
+    }
+};
+
+
+// Returns GPU RAM used, in bytes.
+GpuMesh.prototype.getSize = function(){ return this.size; };
+
+
+GpuMesh.prototype.getBBox = function(){ return this.bbox; };
+
+
+GpuMesh.prototype.getPolygons = function(){ return this.polygons; };
+
+
+/* harmony default export */ __webpack_exports__["a"] = (GpuMesh);
+
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+var GpuProgram = function(gpu, vertex, fragment) {
+    this.gpu = gpu;
+    this.gl = gpu.gl;
+    this.vertex = vertex;
+    this.fragment = fragment;
+    this.program = null;
+    this.uniformLocationCache = [];
+    this.attributeLocationCache = [];
+    this.m = new Float32Array(16);
+    this.ready = false;
+    this.createProgram(vertex, fragment);
+};
+
+
+GpuProgram.prototype.createShader = function(source, vertexShader) {
+    var gl = this.gl;
+
+    if (!source || !gl) {
+        return null;
+    }
+
+    var shader;
+
+    if (vertexShader !== true) {
+        shader = gl.createShader(gl.FRAGMENT_SHADER);
+    } else {
+        shader = gl.createShader(gl.VERTEX_SHADER);
+    }
+
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        var info = gl.getShaderInfoLog(shader);
+        console.log('An error occurred compiling the ' + ((vertexShader !== true) ? 'fragment' : 'vertex') + ' shaders: ' + info);
+        this.gpu.renderer.core.callListener('renderer-shader-error', { 'where':'compilation', 'info' : info });
+        return null;
+    }
+
+    return shader;
+};
+
+
+GpuProgram.prototype.createProgram = function(vertex, fragment) {
+    var gl = this.gl;
+    if (gl == null) return;
+
+    var vertexShader = this.createShader(vertex, true);
+    var fragmentShader = this.createShader(fragment, false);
+
+    if (!vertexShader ||  !fragmentShader) {
+        return;
+    }
+
+    var program = gl.createProgram();
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.log('Unable to initialize the shader program.');
+        this.gpu.renderer.core.callListener('renderer-shader-error', { 'where':'linking' });
+    }
+
+    gl.useProgram(program);
+
+    this.program = program;
+    this.ready = true;
+};
+
+
+GpuProgram.prototype.setSampler = function(name, index) {
+    var gl = this.gl;
+    if (gl == null || this.program == null) return;
+
+    var key = this.getUniform(name);
+    if (key != null) {
+        gl.uniform1i(key, index);
+    }
+};
+
+GpuProgram.prototype.isReady = function(name, index) {
+    return this.ready;
+};
+
+GpuProgram.prototype.setMat4 = function(name, m, zoffset) {
+    var gl = this.gl;
+    if (gl == null || this.program == null) return;
+
+    var key = this.getUniform(name);
+    if (key != null) {
+        if (zoffset) {
+            zoffset = ((1+zoffset)*2)-1;
+           
+            var m3 = this.m;
+            
+            m3[0] = m[0];  
+            m3[1] = m[1];  
+            m3[2] = m[2] * zoffset;  
+            m3[3] = m[3];  
+
+            m3[4] = m[4];  
+            m3[5] = m[5];  
+            m3[6] = m[6] * zoffset;  
+            m3[7] = m[7];  
+
+            m3[8] = m[8];
+            m3[9] = m[9];
+            m3[10] = m[10] * zoffset;  
+            m3[11] = m[11];
+
+            m3[12] = m[12];  
+            m3[13] = m[13];  
+            m3[14] = m[14] * zoffset;  
+            m3[15] = m[15];  
+
+            gl.uniformMatrix4fv(key, false, m3);
+            
+        } else {
+            gl.uniformMatrix4fv(key, false, m);
+        }
+    }
+};
+
+
+GpuProgram.prototype.setMat3 = function(name, m) {
+    var gl = this.gl;
+    if (gl == null || this.program == null) return;
+
+    var key = this.getUniform(name);
+    if (key != null) {
+        gl.uniformMatrix3fv(key, false, m);
+    }
+};
+
+
+GpuProgram.prototype.setVec2 = function(name, m) {
+    var gl = this.gl;
+    if (gl == null || this.program == null) return;
+
+    var key = this.getUniform(name);
+    if (key != null) {
+        gl.uniform2fv(key, m);
+    }
+};
+
+
+GpuProgram.prototype.setVec3 = function(name, m) {
+    var gl = this.gl;
+    if (gl == null || this.program == null) return;
+
+    var key = this.getUniform(name);
+    if (key != null) {
+        gl.uniform3fv(key, m);
+    }
+};
+
+
+GpuProgram.prototype.setVec4 = function(name, m) {
+    var gl = this.gl;
+    if (gl == null || this.program == null) return;
+
+    var key = this.getUniform(name);
+    if (key != null) {
+        gl.uniform4fv(key, m);
+    }
+};
+
+
+GpuProgram.prototype.setFloat = function(name, value) {
+    var gl = this.gl;
+    if (gl == null || this.program == null) return;
+
+    var key = this.getUniform(name);
+    if (key != null) {
+        gl.uniform1f(key, value);
+    }
+};
+
+
+GpuProgram.prototype.setFloatArray = function(name, array) {
+    var gl = this.gl;
+    if (gl == null || this.program == null) return;
+
+    var key = this.getUniform(name);
+    if (key != null) {
+        gl.uniform1fv(key, array);
+    }
+};
+
+
+GpuProgram.prototype.getAttribute = function(name) {
+    var gl = this.gl;
+    if (gl == null || this.program == null) return;
+
+    var location = this.attributeLocationCache[name];
+
+    if (location == null) {
+        location = gl.getAttribLocation(this.program, name);
+        this.attributeLocationCache[name] = location;
+    }
+
+    return location;
+};
+
+
+GpuProgram.prototype.getUniform = function(name) {
+    var gl = this.gl;
+    if (gl == null || this.program == null) return;
+
+    var location = this.uniformLocationCache[name];
+
+    if (location == null) {
+        location = gl.getUniformLocation(this.program, name);
+        this.uniformLocationCache[name] = location;
+    }
+    
+    return location;
+};
+
+
+/* harmony default export */ __webpack_exports__["a"] = (GpuProgram);
+
+
+/***/ }),
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8053,7 +8472,7 @@ earcut.flatten = function (data) {
 
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8809,7 +9228,7 @@ function getMinNorthing(zoneLetter) {
 
 
 /***/ }),
-/* 34 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8824,7 +9243,7 @@ function getMinNorthing(zoneLetter) {
 
 
 /***/ }),
-/* 35 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8854,7 +9273,7 @@ var C88 = 0.3076171875;
 });
 
 /***/ }),
-/* 36 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8885,7 +9304,7 @@ var MAX_ITER = 20;
 
 
 /***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8896,7 +9315,7 @@ var MAX_ITER = 20;
 });
 
 /***/ }),
-/* 38 */
+/* 40 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8915,7 +9334,7 @@ var MAX_ITER = 20;
 });
 
 /***/ }),
-/* 39 */
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9170,13 +9589,13 @@ function geocentricFromWgs84(p, datum_type, datum_params) {
 
 
 /***/ }),
-/* 40 */
+/* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__global__ = __webpack_require__(79);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__projString__ = __webpack_require__(41);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_wkt_parser__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__global__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__projString__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_wkt_parser__ = __webpack_require__(46);
 
 
 
@@ -9235,13 +9654,13 @@ __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__global__["a" /* default */])(
 
 
 /***/ }),
-/* 41 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_values__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__constants_PrimeMeridian__ = __webpack_require__(72);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__constants_units__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__constants_PrimeMeridian__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__constants_units__ = __webpack_require__(75);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__match__ = __webpack_require__(29);
 
 
@@ -9381,16 +9800,16 @@ __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__global__["a" /* default */])(
 
 
 /***/ }),
-/* 42 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_sinh__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_hypot__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_asinhy__ = __webpack_require__(62);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_gatg__ = __webpack_require__(66);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__common_clens__ = __webpack_require__(63);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__common_clens_cmplx__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_sinh__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_hypot__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_asinhy__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_gatg__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__common_clens__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__common_clens_cmplx__ = __webpack_require__(66);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__common_adjust_lon__ = __webpack_require__(3);
 /* unused harmony export init */
 /* unused harmony export forward */
@@ -9564,16 +9983,16 @@ var names = ["Extended_Transverse_Mercator", "Extended Transverse Mercator", "et
 
 
 /***/ }),
-/* 43 */
+/* 45 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_values__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__datum_transform__ = __webpack_require__(76);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__datumUtils__ = __webpack_require__(39);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__adjust_axis__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__datum_transform__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__datumUtils__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__adjust_axis__ = __webpack_require__(62);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Proj__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__common_toPoint__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__common_toPoint__ = __webpack_require__(40);
 /* harmony export (immutable) */ __webpack_exports__["a"] = transform;
 
 
@@ -9667,12 +10086,12 @@ function transform(source, dest, point) {
 
 
 /***/ }),
-/* 44 */
+/* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser__ = __webpack_require__(113);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__process__ = __webpack_require__(114);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__parser__ = __webpack_require__(115);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__process__ = __webpack_require__(116);
 var D2R = 0.01745329251994329577;
 
 
@@ -9834,7 +10253,7 @@ function cleanWKT(wkt) {
 
 
 /***/ }),
-/* 45 */
+/* 47 */
 /***/ (function(module, exports) {
 
 // http://stackoverflow.com/questions/10343913/how-to-create-a-web-worker-from-a-string
@@ -9866,7 +10285,7 @@ module.exports = function(content, url) {
 
 
 /***/ }),
-/* 46 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10121,15 +10540,15 @@ MapBoundLayer.prototype.getMaskUrl = function(id, skipBaseUrl) {
 
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_matrix__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_math__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__renderer_gpu_group__ = __webpack_require__(160);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__geodata_processor_processor__ = __webpack_require__(136);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__renderer_gpu_group__ = __webpack_require__(163);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__geodata_processor_processor__ = __webpack_require__(138);
 
 
 
@@ -10440,7 +10859,7 @@ MapGeodataView.prototype.draw = function(cameraPos) {
 
 
 /***/ }),
-/* 48 */
+/* 50 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10625,11 +11044,11 @@ MapGeodata.prototype.onLoaded = function(data) {
 
 
 /***/ }),
-/* 49 */
+/* 51 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__texture__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__texture__ = __webpack_require__(56);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_math__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_geographiclib__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_geographiclib___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_geographiclib__);
@@ -11076,7 +11495,7 @@ MapSrs.prototype.convertWGSToGeocent = function(coords, srs, coords2, index, ind
 
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11229,7 +11648,7 @@ MapStylesheet.prototype.onLoaded = function(data) {
 
 
 /***/ }),
-/* 51 */
+/* 53 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11757,12 +12176,12 @@ MapSubtexture.prototype.getHeightMapValue = function(x, y) {
 
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_matrix__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__surface_tile__ = __webpack_require__(151);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__surface_tile__ = __webpack_require__(153);
 
 
 
@@ -13225,13 +13644,13 @@ MapSurfaceTree.prototype.traceAreaTiles = function(tile, priority, nodeReadyOnly
 
 
 /***/ }),
-/* 53 */
+/* 55 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__credit__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__stylesheet__ = __webpack_require__(50);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__surface_tree__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__stylesheet__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__surface_tree__ = __webpack_require__(54);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__renderer_bbox__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_url__ = __webpack_require__(12);
@@ -13639,11 +14058,11 @@ MapSurface.prototype.getMonoGeodataUrl = function(id, skipBaseUrl) {
   
 
 /***/ }),
-/* 54 */
+/* 56 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__subtexture__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__subtexture__ = __webpack_require__(53);
 
 
 
@@ -14026,7 +14445,7 @@ MapTexture.prototype.getTransform = function() {
 
 
 /***/ }),
-/* 55 */
+/* 57 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14127,431 +14546,1476 @@ MapView.prototype.getInfo = function() {
 
 
 /***/ }),
-/* 56 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-var GpuMesh = function(gpu, meshData, fileSize, core, direct, use16bit, verticesUnnormalized) {
-    this.gpu = gpu;
-    this.gl = gpu.gl;
-    this.bbox = meshData.bbox; //< bbox copy from Mesh
-    this.fileSize = fileSize; //used for stats
-    this.core = core;
-    this.vertexBuffer = null;
-    this.uvBuffer = null;
-    this.uv2Buffer = null;
-    this.use16bit = use16bit ? true : false;
-    this.verticesUnnormalized = verticesUnnormalized ? true : false;
-    this.size = 0;
-
-    var vertices = meshData.vertices;
-    var uvs = meshData.uvs;
-    var uvs2 = meshData.uvs2;
-    var indices = meshData.indices;
-    var vertexSize = meshData.vertexSize || 3;
-    var uvSize = meshData.uvSize || 2;
-    var uv2Size = meshData.uv2Size || 2;
-
-    var gl = this.gl;
-
-    if (!vertices || !gl) {
-        return;
-    }
-
-    //create vertex buffer
-    this.vertexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-
-    //when direct mode is used vertices can be also unit16
-    gl.bufferData(gl.ARRAY_BUFFER, direct ? vertices : (new Float32Array(vertices)), gl.STATIC_DRAW);
-    this.vertexBuffer.itemSize = vertexSize;
-    this.vertexBuffer.numItems = vertices.length / vertexSize;
-
-    if (uvs != null) {
-        //create texture coords buffer
-        this.uvBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.uvBuffer);
-
-        gl.bufferData(gl.ARRAY_BUFFER, direct ? uvs : (new Float32Array(uvs)), gl.STATIC_DRAW);
-        this.uvBuffer.itemSize = uvSize;
-        this.uvBuffer.numItems = uvs.length / uvSize;
-    }
-
-    if (uvs2 != null) {
-        //create texture coords buffer
-        this.uv2Buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.uv2Buffer);
-
-        gl.bufferData(gl.ARRAY_BUFFER, direct ? uvs2 : (new Float32Array(uvs2)), gl.STATIC_DRAW);
-        this.uv2Buffer.itemSize = uv2Size;
-        this.uv2Buffer.numItems = uvs2.length / uv2Size;
-    }
-
-    if (indices != null) {
-        //create index buffer
-        this.indexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, direct ? indices : (new Uint16Array(indices)), gl.STATIC_DRAW);
-        this.indexBuffer.itemSize = 1;
-        this.indexBuffer.numItems = indices.length;
-    }
-
-    var varSize = this.use16bit ? 2 : 4;
-    this.size = this.vertexBuffer.numItems * vertexSize * varSize;
-    this.size += (uvs) ? this.uvBuffer.numItems * uvSize * varSize : 0;
-    this.size += (uvs2) ? this.uv2Buffer.numItems * uv2Size * varSize : 0;
-    this.size += (indices) ? indices.length * 2 : 0;
-    this.polygons = (indices) ? indices.length / 3 : this.vertexBuffer.numItems / 3;
-
-    this.valid = true;
-};
-
-//destructor
-GpuMesh.prototype.kill = function() {
-    if (!this.gl || !this.valid) {
-        return;
-    }
-
-    if (this.vertexBuffer) {
-        this.gl.deleteBuffer(this.vertexBuffer);
-    }
-    
-    if (this.uvBuffer) {
-        this.gl.deleteBuffer(this.uvBuffer);
-    }
-
-    if (this.uv2Buffer) {
-        this.gl.deleteBuffer(this.uv2Buffer);
-    }
-
-    if (this.indexBuffer) {
-        this.gl.deleteBuffer(this.indexBuffer);
-    }
-    
-    this.vertexBuffer = null;
-    this.uvBuffer = null;
-    this.uv2Buffer = null;
-    this.indexBuffer = null;
-};
-
-// Draws the mesh, given the two vertex shader attributes locations.
-GpuMesh.prototype.draw = function(program, attrVertex, attrUV, attrUV2, attrBarycenteric, skipDraw) {
-    var gl = this.gl;
-    if (gl == null || !this.valid) {
-        return;
-    }
-
-    if (this.use16bit) {
-        //bind vetex positions
-        var vertexAttribute = program.getAttribute(attrVertex);
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-        gl.vertexAttribPointer(vertexAttribute, this.vertexBuffer.itemSize, gl.UNSIGNED_SHORT, !this.verticesUnnormalized, 0, 0);
-
-        //bind texture coords
-        if (this.uvBuffer && attrUV) {
-            var uvAttribute = program.getAttribute(attrUV);
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.uvBuffer);
-            gl.vertexAttribPointer(uvAttribute, this.uvBuffer.itemSize, gl.UNSIGNED_SHORT, true, 0, 0);
-        }
-
-        if (this.uv2Buffer && attrUV2) {
-            var uv2Attribute = program.getAttribute(attrUV2);
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.uv2Buffer);
-            gl.vertexAttribPointer(uv2Attribute, this.uv2Buffer.itemSize, gl.UNSIGNED_SHORT, true, 0, 0);
-        }
-    } else {
-        //bind vetex positions
-        var vertexAttribute = program.getAttribute(attrVertex);
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-        gl.vertexAttribPointer(vertexAttribute, this.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-        //bind texture coords
-        if (this.uvBuffer && attrUV) {
-            var uvAttribute = program.getAttribute(attrUV);
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.uvBuffer);
-            gl.vertexAttribPointer(uvAttribute, this.uvBuffer.itemSize, gl.FLOAT, false, 0, 0);
-        }
-
-        if (this.uv2Buffer && attrUV2) {
-            var uv2Attribute = program.getAttribute(attrUV2);
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.uv2Buffer);
-            gl.vertexAttribPointer(uv2Attribute, this.uv2Buffer.itemSize, gl.FLOAT, false, 0, 0);
-        }
-    }
-
-    if (attrBarycenteric && attrBarycenteric) {
-        var barycentericAttribute = program.getAttribute(attrBarycenteric);
-        
-        if (barycentericAttribute != -1) {
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.gpu.barycentricBuffer);
-            gl.vertexAttribPointer(barycentericAttribute, this.gpu.barycentricBuffer.itemSize, gl.FLOAT, false, 0, 0);
-        }
-    }
-
-    //draw polygons
-    if (this.indexBuffer) {
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-
-        if (!skipDraw) gl.drawElements(gl.TRIANGLES, this.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
-    }  else {
-        if (!skipDraw) gl.drawArrays(gl.TRIANGLES, 0, this.vertexBuffer.numItems);
-    }
-};
-
-
-// Returns GPU RAM used, in bytes.
-GpuMesh.prototype.getSize = function(){ return this.size; };
-
-
-GpuMesh.prototype.getBBox = function(){ return this.bbox; };
-
-
-GpuMesh.prototype.getPolygons = function(){ return this.polygons; };
-
-
-/* harmony default export */ __webpack_exports__["a"] = (GpuMesh);
-
-
-
-/***/ }),
-/* 57 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-var GpuProgram = function(gpu, vertex, fragment) {
-    this.gpu = gpu;
-    this.gl = gpu.gl;
-    this.vertex = vertex;
-    this.fragment = fragment;
-    this.program = null;
-    this.uniformLocationCache = [];
-    this.attributeLocationCache = [];
-    this.m = new Float32Array(16);
-    this.ready = false;
-    this.createProgram(vertex, fragment);
-};
-
-
-GpuProgram.prototype.createShader = function(source, vertexShader) {
-    var gl = this.gl;
-
-    if (!source || !gl) {
-        return null;
-    }
-
-    var shader;
-
-    if (vertexShader !== true) {
-        shader = gl.createShader(gl.FRAGMENT_SHADER);
-    } else {
-        shader = gl.createShader(gl.VERTEX_SHADER);
-    }
-
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        var info = gl.getShaderInfoLog(shader);
-        console.log('An error occurred compiling the ' + ((vertexShader !== true) ? 'fragment' : 'vertex') + ' shaders: ' + info);
-        this.gpu.renderer.core.callListener('renderer-shader-error', { 'where':'compilation', 'info' : info });
-        return null;
-    }
-
-    return shader;
-};
-
-
-GpuProgram.prototype.createProgram = function(vertex, fragment) {
-    var gl = this.gl;
-    if (gl == null) return;
-
-    var vertexShader = this.createShader(vertex, true);
-    var fragmentShader = this.createShader(fragment, false);
-
-    if (!vertexShader ||  !fragmentShader) {
-        return;
-    }
-
-    var program = gl.createProgram();
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.log('Unable to initialize the shader program.');
-        this.gpu.renderer.core.callListener('renderer-shader-error', { 'where':'linking' });
-    }
-
-    gl.useProgram(program);
-
-    this.program = program;
-    this.ready = true;
-};
-
-
-GpuProgram.prototype.setSampler = function(name, index) {
-    var gl = this.gl;
-    if (gl == null || this.program == null) return;
-
-    var key = this.getUniform(name);
-    if (key != null) {
-        gl.uniform1i(key, index);
-    }
-};
-
-GpuProgram.prototype.isReady = function(name, index) {
-    return this.ready;
-};
-
-GpuProgram.prototype.setMat4 = function(name, m, zoffset) {
-    var gl = this.gl;
-    if (gl == null || this.program == null) return;
-
-    var key = this.getUniform(name);
-    if (key != null) {
-        if (zoffset) {
-            zoffset = ((1+zoffset)*2)-1;
-           
-            var m3 = this.m;
-            
-            m3[0] = m[0];  
-            m3[1] = m[1];  
-            m3[2] = m[2] * zoffset;  
-            m3[3] = m[3];  
-
-            m3[4] = m[4];  
-            m3[5] = m[5];  
-            m3[6] = m[6] * zoffset;  
-            m3[7] = m[7];  
-
-            m3[8] = m[8];
-            m3[9] = m[9];
-            m3[10] = m[10] * zoffset;  
-            m3[11] = m[11];
-
-            m3[12] = m[12];  
-            m3[13] = m[13];  
-            m3[14] = m[14] * zoffset;  
-            m3[15] = m[15];  
-
-            gl.uniformMatrix4fv(key, false, m3);
-            
-        } else {
-            gl.uniformMatrix4fv(key, false, m);
-        }
-    }
-};
-
-
-GpuProgram.prototype.setMat3 = function(name, m) {
-    var gl = this.gl;
-    if (gl == null || this.program == null) return;
-
-    var key = this.getUniform(name);
-    if (key != null) {
-        gl.uniformMatrix3fv(key, false, m);
-    }
-};
-
-
-GpuProgram.prototype.setVec2 = function(name, m) {
-    var gl = this.gl;
-    if (gl == null || this.program == null) return;
-
-    var key = this.getUniform(name);
-    if (key != null) {
-        gl.uniform2fv(key, m);
-    }
-};
-
-
-GpuProgram.prototype.setVec3 = function(name, m) {
-    var gl = this.gl;
-    if (gl == null || this.program == null) return;
-
-    var key = this.getUniform(name);
-    if (key != null) {
-        gl.uniform3fv(key, m);
-    }
-};
-
-
-GpuProgram.prototype.setVec4 = function(name, m) {
-    var gl = this.gl;
-    if (gl == null || this.program == null) return;
-
-    var key = this.getUniform(name);
-    if (key != null) {
-        gl.uniform4fv(key, m);
-    }
-};
-
-
-GpuProgram.prototype.setFloat = function(name, value) {
-    var gl = this.gl;
-    if (gl == null || this.program == null) return;
-
-    var key = this.getUniform(name);
-    if (key != null) {
-        gl.uniform1f(key, value);
-    }
-};
-
-
-GpuProgram.prototype.setFloatArray = function(name, array) {
-    var gl = this.gl;
-    if (gl == null || this.program == null) return;
-
-    var key = this.getUniform(name);
-    if (key != null) {
-        gl.uniform1fv(key, array);
-    }
-};
-
-
-GpuProgram.prototype.getAttribute = function(name) {
-    var gl = this.gl;
-    if (gl == null || this.program == null) return;
-
-    var location = this.attributeLocationCache[name];
-
-    if (location == null) {
-        location = gl.getAttribLocation(this.program, name);
-        this.attributeLocationCache[name] = location;
-    }
-
-    return location;
-};
-
-
-GpuProgram.prototype.getUniform = function(name) {
-    var gl = this.gl;
-    if (gl == null || this.program == null) return;
-
-    var location = this.uniformLocationCache[name];
-
-    if (location == null) {
-        location = gl.getUniformLocation(this.program, name);
-        this.uniformLocationCache[name] = location;
-    }
-    
-    return location;
-};
-
-
-/* harmony default export */ __webpack_exports__["a"] = (GpuProgram);
-
-
-/***/ }),
 /* 58 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__texture__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
+
+
+
+
+//get rid of compiler mess
+var GpuTexture = __WEBPACK_IMPORTED_MODULE_0__texture__["a" /* default */];
+var utils = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["a" /* utils */];
+
+
+var GpuFont = function(gpu, core, font, size, path) {
+    this.bbox = null;
+    this.gpu = gpu;
+    this.gl = gpu.gl;
+    this.core = core;
+
+    this.data = null;
+    this.path = path;
+
+    this.texture = {width:256, height:256}; //hack
+
+    this.textures = [];
+    this.images = [];
+    this.ready = false;    
+    this.version = 1;    
+
+    this.load(path);
+};
+
+
+//destructor
+GpuFont.prototype.kill = function() {
+};
+
+// Returns GPU RAM used, in bytes.
+GpuFont.prototype.getSize = function(){ return this.size; };
+
+
+GpuFont.prototype.load = function(path) {
+    utils.loadBinary(path, this.onLoaded.bind(this), this.onError.bind(this));
+};
+
+GpuFont.prototype.onLoaded = function(data) {
+    this.data = data;
+    this.ready = true;    
+    this.core.markDirty();
+};
+
+GpuFont.prototype.isReady = function() {
+    return this.ready;
+};
+
+GpuFont.prototype.onError = function() {
+
+};
+
+GpuFont.prototype.onFileLoaded = function(index, data) {
+    this.core.markDirty();
+    this.textures[index].createFromData(256, 256, new Uint8Array(data), 'linear');
+};
+
+GpuFont.prototype.onFileLoadError = function() {
+};
+
+GpuFont.prototype.areTexturesReady = function(files) {
+    var ready = true;
+    for (var i = 0, li = files.length; i < li; i++) {
+        var index = files[i];//Math.round( (planes[i] - (planes[i] % 3)) );
+
+        if (!this.textures[index]) {
+            utils.loadBinary(this.path + (index+2), this.onFileLoaded.bind(this, index), this.onFileLoadError.bind(this));
+            this.textures[index] = new GpuTexture(this.gpu, null, this.core);
+            ready = false;
+        } else {
+            ready = (ready && this.textures[index].loaded);
+        }
+    }
+
+    return ready;
+};
+
+GpuFont.prototype.getTexture = function(file) {
+    //if (!this.textures[file]) {
+        //debugger;
+    //}
+
+    return this.textures[file];
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (GpuFont);
+
+
+
+
+/***/ }),
+/* 59 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+var GpuShaders = {};
+
+GpuShaders.bboxVertexShader =
+    'attribute vec3 aPosition;\n'+
+    'uniform mat4 uMVP;\n'+
+    'void main(){ \n'+
+        'gl_Position = uMVP * vec4(aPosition, 1.0);\n'+
+    '}';
+
+
+GpuShaders.bbox2VertexShader =
+    'attribute vec3 aPosition;\n'+
+    'uniform mat4 uMVP;\n'+
+    'uniform float uPoints[8*3];\n'+
+    'void main(){ \n'+
+        'int index = int(aPosition.z) * 3; \n'+
+        'gl_Position = uMVP * vec4(uPoints[index], uPoints[index+1], uPoints[index+2], 1.0);\n'+
+    '}';
+
+
+GpuShaders.bboxFragmentShader = 'precision mediump float;\n'+
+    'void main() {\n'+
+        'gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);\n'+
+    '}';
+
+GpuShaders.text2VertexShader =
+    'attribute vec4 aPosition;\n'+
+    'void main(){ \n'+
+    '}';
+
+
+GpuShaders.lineVertexShader = //line
+    'uniform mat4 uMVP;\n'+
+
+    '#ifdef pixelLine\n'+
+        'attribute vec4 aPosition;\n'+
+        'attribute vec4 aNormal;\n'+
+
+        '#ifdef dataPoints\n'+
+            'uniform vec3 uScale;\n'+
+            'uniform vec3 uPoints[32];\n'+
+        '#else\n'+
+            'uniform vec2 uScale;\n'+
+        '#endif\n'+
+    '#else\n'+
+
+        '#ifdef lineLabel\n'+
+            'attribute vec4 aPosition;\n'+
+            'attribute vec4 aTexCoord;\n'+
+            'uniform vec4 uVec;\n'+
+            'uniform float uFile;\n'+
+            'varying vec2 vTexCoord;\n'+
+        '#else\n'+
+            'attribute vec3 aPosition;\n'+
+        '#endif\n'+
+
+        '#ifdef dynamicWidth\n'+
+            'attribute vec4 aNormal;\n'+
+            'uniform vec4 uParams;\n'+
+        '#endif\n'+
+
+    '#endif\n'+
+
+    '#ifdef applySE\n'+
+        'uniform mat4 uParamsSE;\n'+
+    '#endif\n'+
+
+    '#ifdef withElements\n'+
+        'attribute float aElement;\n'+
+        'varying float vElement;\n'+
+    '#endif\n'+
+
+    'void main() {\n'+
+
+        '#ifdef withElements\n'+
+            'vElement = aElement;\n'+
+        '#endif\n'+
+
+        '#ifdef dataPoints\n'+
+            'vec3 p1 = uPoints[int(aPosition.x)];\n'+
+        '#else\n'+
+            'vec3 p1 = aPosition.xyz;\n'+
+        '#endif\n'+
+
+        '#ifdef pixelLine\n'+
+            '#ifdef dataPoints\n'+
+                'vec3 p2 = uPoints[int(aPosition.y)];\n'+
+            '#else\n'+
+                'vec3 p2 = aNormal.xyz;\n'+
+            '#endif\n'+
+        '#endif\n'+
+
+        '#ifdef applySE\n'+
+            'vec3 geoPos2 = p1.xyz*vec3(uParamsSE[0][3],uParamsSE[1][0],uParamsSE[1][1]);\n'+
+            'vec3 geoPos = geoPos2+vec3(uParamsSE[0][0],uParamsSE[0][1],uParamsSE[0][2]);\n'+
+            'geoPos.z *= uParamsSE[3][3];\n'+
+            'float ll = length(geoPos);\n'+
+            'vec3 v = geoPos * (1.0/(ll+0.0001));\n'+
+            'float h = ll - uParamsSE[3][2];\n'+
+            'float h2 = clamp(h, uParamsSE[2][1], uParamsSE[2][3]);\n'+
+            'float h3 = h;\n'+
+            'h *= (uParamsSE[2][2] + ((h2 - uParamsSE[2][1]) * uParamsSE[3][0]) * uParamsSE[3][1]);\n'+
+            'geoPos2.xyz += v * (h - h3);\n'+
+
+            '#ifdef pixelLine\n'+
+
+                'vec4 pp0 = uMVP * vec4(geoPos2, 1.0);\n'+
+
+                'if (aNormal.w == 0.0) {\n'+
+                    'gl_Position = pp0 + vec4((vec3(aNormal.x*uScale.x*pp0.w, aNormal.y*uScale.y*pp0.w, 0.0)), 0.0);\n'+
+                '} else {\n'+
+                    'geoPos2 = p2.xyz*vec3(uParamsSE[0][3],uParamsSE[1][0],uParamsSE[1][1]);\n'+
+                    'geoPos = geoPos2+vec3(uParamsSE[0][0],uParamsSE[0][1],uParamsSE[0][2]);\n'+
+                    'geoPos.z *= uParamsSE[3][3];\n'+
+                    'll = length(geoPos);\n'+
+                    'v = geoPos * (1.0/(ll+0.0001));\n'+
+                    'h = ll - uParamsSE[3][2];\n'+
+                    'h2 = clamp(h, uParamsSE[2][1], uParamsSE[2][3]);\n'+
+                    'h3 = h;\n'+
+                    'h *= (uParamsSE[2][2] + ((h2 - uParamsSE[2][1]) * uParamsSE[3][0]) * uParamsSE[3][1]);\n'+
+                    'geoPos2.xyz += v * (h - h3);\n'+
+
+                    'vec4 pp3 = uMVP * vec4(geoPos2, 1.0);\n'+
+                    'vec2 pp1 = pp0.xy / pp0.w;\n'+
+                    'vec2 pp2 = pp3.xy / pp3.w;\n'+
+                    'vec2 n = normalize(pp2 - pp1);\n'+
+                    'gl_Position = pp0 + vec4((vec3(-n.y*uScale.x*aNormal.w*pp0.w, n.x*uScale.y*aNormal.w*pp0.w, 0.0)), 0.0);\n'+
+                '}\n'+
+
+            '#else\n'+
+
+                '#ifdef lineLabel\n'+
+
+                    'vTexCoord = aTexCoord.xy;\n'+
+                    'if (dot(uVec.xyz, vec3(aTexCoord.z, aTexCoord.w, aPosition.w)) < 0.0) {\n'+
+                        'gl_Position = uMVP * vec4(8.0, 0.0, 0.0, 1.0);\n'+
+                    '}else{\n'+
+                        'float file = floor(aTexCoord.y/4.0);\n'+
+                        'vTexCoord.y = mod(aTexCoord.y,4.0);\n'+
+                        'if (file != floor(uFile)) {\n'+
+                            'gl_Position = uMVP * vec4(8.0, 0.0, 0.0, 1.0);\n'+
+                        '}else{\n'+
+                            'gl_Position = uMVP * vec4(geoPos2, 1.0);\n'+
+                        '}\n'+
+                    '}\n'+
+
+                '#else\n'+
+
+                    'gl_Position = uMVP * vec4(geoPos2, 1.0);\n'+
+
+                '#endif\n'+
+
+            '#endif\n'+
+
+        '#else\n'+
+
+            '#ifdef pixelLine\n'+
+
+                'vec4 pp0 = (uMVP * vec4(p1.xyz, 1.0));\n'+
+
+                '#ifdef dataPoints\n'+
+
+                    'if (p1.y < 0.0) {\n'+
+                        'if (p1.y == -1.0) {\n'+
+                            'gl_Position = pp0;\n'+
+                        '} else {\n'+
+                            'gl_Position = pp0 + vec4((vec3(-sin(p1.z)*uScale.x*uScale.z, cos(p1.z)*uScale.y*uScale.z, 0.0)), 0.0);\n'+
+                        '}\n'+
+                    '} else {\n'+
+                        'vec4 pp3 = (uMVP * vec4(p2.xyz, 1.0));\n'+
+                        'vec2 pp1 = pp0.xy / pp0.w;\n'+
+                        'vec2 pp2 = pp3.xy / pp3.w;\n'+
+                        'vec2 n = normalize(pp2 - pp1);\n'+
+                        'gl_Position = pp0 + vec4((vec3(-n.y*uScale.x*aPosition.z*uScale.z, n.x*uScale.y*aPosition.z*uScale.z, 0.0)), 0.0);\n'+
+                    '}\n'+
+
+                '#else\n'+
+
+                    'if (aNormal.w == 0.0) {\n'+
+                        'gl_Position = pp0 + vec4((vec3(aNormal.x*uScale.x*pp0.w, aNormal.y*uScale.y*pp0.w, 0.0)), 0.0);\n'+
+                    '} else {\n'+
+                        'vec4 pp3 = (uMVP * vec4(p2.xyz, 1.0));\n'+
+                        'vec2 pp1 = pp0.xy / pp0.w;\n'+
+                        'vec2 pp2 = pp3.xy / pp3.w;\n'+
+                        'vec2 n = normalize(pp2 - pp1);\n'+
+                        'gl_Position = pp0 + vec4((vec3(-n.y*uScale.x*aNormal.w*pp0.w, n.x*uScale.y*aNormal.w*pp0.w, 0.0)), 0.0);\n'+
+                    '}\n'+
+
+                '#endif\n'+
+
+            '#else\n'+
+
+                '#ifdef lineLabel\n'+
+
+                    'vTexCoord = aTexCoord.xy;\n'+
+                    'if (dot(uVec.xyz, vec3(aTexCoord.z, aTexCoord.w, aPosition.w)) < 0.0) {\n'+
+                        'gl_Position = uMVP * vec4(8.0, 0.0, 0.0, 1.0);\n'+
+                    '}else{\n'+
+                        'float file = floor(aTexCoord.y/4.0);\n'+
+                        'vTexCoord.y = mod(aTexCoord.y,4.0);\n'+
+                        'if (file != floor(uFile)) {\n'+
+                            'gl_Position = uMVP * vec4(8.0, 0.0, 0.0, 1.0);\n'+
+                        '}else{\n'+
+                            'gl_Position = uMVP * vec4(aPosition.xyz, 1.0);\n'+
+                        '}\n'+
+                    '}\n'+
+
+                '#else\n'+
+
+                    '#ifdef dynamicWidth\n'+
+                        'gl_Position = uMVP * vec4(aPosition.xyz + aNormal.xyz*(abs(aNormal.w)*uParams[3]), 1.0);\n'+
+                    '#else\n'+
+                        'gl_Position = uMVP * vec4(aPosition, 1.0);\n'+
+                    '#endif\n'+
+
+                '#endif\n'+
+
+            '#endif\n'+
+
+        '#endif\n'+
+        
+    '}';
+
+
+GpuShaders.lineFragmentShader = 'precision mediump float;\n'+ //line
+
+    'uniform vec4 uColor;\n'+
+
+    '#ifdef withElements\n'+
+        'varying float vElement;\n'+
+    '#endif\n'+
+
+    'void main() {\n'+
+
+        '#ifdef withElements\n'+
+            'gl_FragColor.xyz = fract(vec3(1.0/255.0, 1.0/65025.0, 1.0/16581375.0) * vElement) + (-0.5/255.0);\n'+
+            'gl_FragColor.w = 1.0;\n'+
+        '#else\n'+
+            'gl_FragColor = uColor;\n'+
+        '#endif\n'+
+
+    '}';
+
+GpuShaders.tlineVertexShader = // textured line
+    'attribute vec4 aPosition;\n'+
+    'attribute vec4 aNormal;\n'+
+    'uniform mat4 uMVP;\n'+
+    'uniform vec2 uScale;\n'+
+    'uniform vec4 uParams;\n'+
+    'varying vec2 vTexCoord;\n'+
+    'void main(){ \n'+
+        'vec4 p=vec4(aPosition.xyz, 1.0);\n'+
+        'p.xyz+=aNormal.xyz*(abs(aNormal.w)*uParams[3]);\n'+
+        'if (aNormal.w < 0.0){\n'+
+            'vTexCoord=vec2(abs(aPosition.w)*uParams[0], (uParams[1]+uParams[2])*0.5);\n'+
+        '} else {\n'+
+            'vTexCoord=vec2(abs(aPosition.w)*uParams[0], aPosition.w < 0.0 ? uParams[1] : uParams[2]);\n'+
+        '}\n'+
+
+        'gl_Position = uMVP * p;\n'+
+    '}';
+
+
+GpuShaders.etlineVertexShader = // textured line elements
+    'attribute vec4 aPosition;\n'+
+    'attribute vec4 aNormal;\n'+
+    'attribute float aElement;\n'+
+    'uniform mat4 uMVP;\n'+
+    'uniform vec2 uScale;\n'+
+    'uniform vec4 uParams;\n'+
+    'varying float vElement;\n'+
+    'void main(){ \n'+
+        'vec4 p=vec4(aPosition.xyz, 1.0);\n'+
+        'p.xyz+=aNormal.xyz*(abs(aNormal.w)*uParams[3]);\n'+
+        'vElement = aElement;\n'+
+        'gl_Position = uMVP * p;\n'+
+    '}';
+
+GpuShaders.tplineVertexShader = // textured pixel line
+    'attribute vec4 aPosition;\n'+
+    'attribute vec4 aNormal;\n'+
+    'uniform mat4 uMVP;\n'+
+    'uniform vec2 uScale;\n'+
+    'uniform vec4 uParams;\n'+
+    'varying vec2 vTexCoord;\n'+
+    'void main(){ \n'+
+        'vec4 pp0 = (uMVP * vec4(aPosition.xyz, 1.0));\n'+
+        'vTexCoord=vec2(abs(aPosition.w)*uParams[0], aPosition.w < 0.0 ? uParams[1] : uParams[2]);\n'+
+        'if (aNormal.w == 0.0) {\n'+
+            'gl_Position = pp0 + vec4((vec3(aNormal.x*uParams[3]*uScale.x*pp0.w, aNormal.y*uParams[3]*uScale.y*pp0.w, 0.0)), 0.0);\n'+
+        '} else {\n'+
+            'vec2 pp1 = pp0.xy / pp0.w;\n'+
+            'vec4 pp3 = (uMVP * vec4(aNormal.xyz, 1.0));\n'+
+            'vec2 pp2 = pp3.xy / pp3.w;\n'+
+            'vec2 n = normalize(pp2 - pp1);\n'+
+            'gl_Position = pp0 + vec4((vec3(-n.y*uParams[3]*uScale.x*aNormal.w*pp0.w, n.x*uParams[3]*uScale.y*aNormal.w*pp0.w, 0.0)), 0.0);\n'+
+        '}\n'+
+    '}';
+
+GpuShaders.etplineVertexShader = // textured pixel line elements
+    'attribute vec4 aPosition;\n'+
+    'attribute vec4 aNormal;\n'+
+    'attribute float aElement;\n'+
+    'uniform mat4 uMVP;\n'+
+    'uniform vec2 uScale;\n'+
+    'uniform vec4 uParams;\n'+
+    'varying float vElement;\n'+
+    'void main(){ \n'+
+        'vec4 pp0 = (uMVP * vec4(aPosition.xyz, 1.0));\n'+
+        'vElement = aElement;\n'+
+        'if (aNormal.w == 0.0) {\n'+
+            'gl_Position = pp0 + vec4((vec3(aNormal.x*uParams[3]*uScale.x*pp0.w, aNormal.y*uParams[3]*uScale.y*pp0.w, 0.0)), 0.0);\n'+
+        '} else {\n'+
+            'vec2 pp1 = pp0.xy / pp0.w;\n'+
+            'vec4 pp3 = (uMVP * vec4(aNormal.xyz, 1.0));\n'+
+            'vec2 pp2 = pp3.xy / pp3.w;\n'+
+            'vec2 n = normalize(pp2 - pp1);\n'+
+            'gl_Position = pp0 + vec4((vec3(-n.y*uParams[3]*uScale.x*aNormal.w*pp0.w, n.x*uParams[3]*uScale.y*aNormal.w*pp0.w, 0.0)), 0.0);\n'+
+        '}\n'+
+    '}';
+
+GpuShaders.tlineFragmentShader = 'precision mediump float;\n'+ // textured line
+    'uniform sampler2D uSampler;\n'+
+    'uniform vec4 uColor;\n'+
+    'uniform vec4 uColor2;\n'+
+    'varying vec2 vTexCoord;\n'+
+    'void main() {\n'+
+        'vec4 c=texture2D(uSampler, vTexCoord)*uColor;\n'+
+        'gl_FragColor = c;\n'+
+    '}';
+
+
+GpuShaders.tblineFragmentShader = 'precision mediump float;\n'+  // textured line with background color
+    'uniform sampler2D uSampler;\n'+
+    'uniform vec4 uColor;\n'+
+    'uniform vec4 uColor2;\n'+
+    'varying vec2 vTexCoord;\n'+
+    'void main() {\n'+
+        'vec4 c1=texture2D(uSampler, vTexCoord)*uColor;\n'+
+        'vec4 c2=uColor2,c=c1;\n'+
+        'c.xyz*=c.w; c2.xyz*=c2.w;\n'+
+        'c=mix(c,c2,1.0-c.w);\n'+
+        'c.xyz/=(c.w+0.00001);\n'+
+        'c.w=max(c1.w,c2.w);\n'+
+        'gl_FragColor = c;\n'+
+    '}';
+
+
+GpuShaders.polygonVertexShader =
+    'attribute vec3 aPosition;\n'+
+    'attribute vec3 aNormal;\n'+
+    'uniform mat4 uMVP;\n'+
+    'uniform mat4 uRot;\n'+
+    'uniform vec4 uColor;\n'+
+    'varying vec4 vColor;\n'+
+    'void main(){ \n'+
+        'float l = dot((uRot*vec4(aNormal,1.0)).xyz, vec3(0.0,0.0,1.0)) * 0.5;\n'+
+        'vec3 c = uColor.xyz;\n'+
+        'c = (l > 0.0) ? mix(c,vec3(1.0,1.0,1.0),l) : mix(vec3(0.0,0.0,0.0),c,1.0+l);\n'+
+        'vColor = vec4(c, uColor.w);\n'+
+        'gl_Position = uMVP * vec4(aPosition, 1.0);\n'+
+    '}';
+
+
+GpuShaders.polygonFragmentShader = 'precision mediump float;\n'+
+    'varying vec4 vColor;\n'+
+    'void main() {\n'+
+        'gl_FragColor = vColor;\n'+
+    '}';
+
+
+GpuShaders.iconVertexShader =
+    'attribute vec4 aPosition;\n'+
+    'attribute vec4 aTexCoord;\n'+
+    'attribute vec3 aOrigin;\n'+
+    'uniform mat4 uMVP;\n'+
+    'uniform vec4 uScale;\n'+
+    'varying vec2 vTexCoord;\n'+
+    'void main(){ \n'+
+        'vTexCoord = aTexCoord.xy * uScale[2];\n'+
+        'vec4 pos = (uMVP * vec4(aOrigin, 1.0));\n'+
+        'gl_Position = pos + vec4(aPosition.x*uScale.x*pos.w, (aPosition.y+uScale.w)*uScale.y*pos.w, 0.0, 0.0);\n'+
+    '}';
+
+GpuShaders.icon2VertexShader =
+    'attribute vec4 aPosition;\n'+
+    'attribute vec4 aTexCoord;\n'+
+    'attribute vec3 aOrigin;\n'+
+    'uniform mat4 uMVP;\n'+
+    'uniform vec4 uScale;\n'+
+    'uniform float uFile;\n'+
+    'varying vec2 vTexCoord;\n'+
+    //'float round(float x) { return floor(x + 0.5); }\n'+
+    'void main(){ \n'+
+        'vTexCoord = aTexCoord.xy * uScale[2];\n'+
+        'float file = floor(aTexCoord.y/4.0);\n'+
+        'vTexCoord.y = mod(aTexCoord.y,4.0);\n'+
+        'if (file != floor(uFile)) {\n'+
+            'gl_Position = uMVP * vec4(8.0, 0.0, 0.0, 1.0);\n'+
+        '}else{\n'+
+            'vec4 pos = (uMVP * vec4(aOrigin, 1.0));\n'+
+            //'pos.x = (floor((pos.x/pos.w)*800.0+0.5)/800.0)*pos.w;\n'+
+            //'pos.y = (floor((pos.y/pos.w)*410.0+0.5)/410.0)*pos.w;\n'+
+            'gl_Position = pos + vec4(aPosition.x*uScale.x*pos.w, (aPosition.y+uScale.w)*uScale.y*pos.w, 0.0, 0.0);\n'+
+        '}'+
+    '}';
+
+
+GpuShaders.icon3VertexShader =
+    'attribute vec2 aPosition;\n'+
+    'uniform mat4 uProjectionMatrix;\n'+
+    'uniform vec4 uScale;\n'+
+    'uniform vec3 uOrigin;\n'+
+    'uniform vec4 uData[DSIZE];\n'+
+    'uniform float uFile;\n'+
+    'varying vec2 vTexCoord;\n'+
+    'void main(){ \n'+
+        'int index = int(aPosition.x);\n'+
+        'vec4 data = uData[index];\n'+
+        'vec4 data2 = uData[index+1];\n'+
+        'vec4 v;\n'+
+        'int corner = int(aPosition.y);\n'+
+        'if (corner==0) v = vec4(data.x, data.y, data2.x, data2.y);\n'+
+        'if (corner==1) v = vec4(data.z, data.y, data2.z, data2.y);\n'+
+        'if (corner==2) v = vec4(data.z, data.w, data2.z, data2.w);\n'+
+        'if (corner==3) v = vec4(data.x, data.w, data2.x, data2.w);\n'+
+        'vTexCoord = vec2(v.z, v.w);\n'+
+        'float file = floor(v.w/4.0);\n'+
+        //'vTexCoord.y = mod(v.w,4.0);\n'+
+        'vTexCoord.y = (v.w-file*4.0);\n'+
+
+        'if (file != floor(uFile)) {\n'+
+            'gl_Position = uProjectionMatrix * vec4(2.0, 0.0, 0.0, 2.0);\n'+
+        '}else{\n'+
+            'vec4 pos = (uProjectionMatrix * vec4(uOrigin.xyz, 1.0));\n'+
+            'gl_Position = pos + vec4(v.x*uScale.x*pos.w, v.y*uScale.y*pos.w, 0.0, 0.0);\n'+
+        '}'+
+    '}';
+
+GpuShaders.textFragmentShader = 'precision mediump float;\n'+
+    'uniform sampler2D uSampler;\n'+
+    'uniform vec4 uColor;\n'+
+    'varying vec2 vTexCoord;\n'+
+    'void main() {\n'+
+        'vec4 c=texture2D(uSampler, vTexCoord);\n'+
+        'if(c.w < 0.01){ discard; }\n'+
+        'gl_FragColor = c*uColor;\n'+
+    '}';
+
+GpuShaders.text2FragmentShader = 'precision mediump float;\n'+
+    'uniform sampler2D uSampler;\n'+
+    'uniform vec4 uColor;\n'+
+    'uniform vec2 uParams;\n'+
+    'varying vec2 vTexCoord;\n'+
+    'float round(float x) { return floor(x + 0.5); }\n'+
+
+    'void main() {\n'+
+        'vec2 uv=(vTexCoord);\n'+
+        'uv.y=fract(uv.y);\n'+
+        'vec4 c=texture2D(uSampler, uv);\n'+
+
+        'float r = 0.0;\n'+
+        'int i=int(floor(vTexCoord.y));\n'+
+
+        'if (i == 0) r=c.x;else\n'+
+        'if (i == 1) r=c.y;else\n'+
+        'if (i == 2) r=c.z;else\n'+
+        'if (i == 3) r=c.w;\n'+
+        
+        'float u_buffer = uParams[0];\n'+
+        'float u_gamma = uParams[1];\n'+
+        'float alpha = uColor.a * smoothstep(u_buffer - u_gamma, u_buffer + u_gamma, r);\n'+
+
+        'if(alpha < 0.01){ discard; }\n'+
+        'gl_FragColor = vec4(uColor.rgb, alpha);\n'+
+        //'gl_FragColor = vec4(1.0);\n'+
+    '}';
+
+GpuShaders.skydomeVertexShader =
+    'attribute vec3 aPosition;\n'+
+    'attribute vec2 aTexCoord;\n'+
+    'uniform mat4 uMVP;\n'+
+    'varying vec2 vTexCoord;\n'+
+    'void main(){ \n'+
+        'gl_Position = uMVP * vec4(aPosition, 1.0);\n'+
+        'vTexCoord = aTexCoord;\n'+
+    '}';
+
+
+GpuShaders.skydomeFragmentShader = 'precision mediump float;\n'+
+    'uniform sampler2D uSampler;\n'+
+    'varying vec2 vTexCoord;\n'+
+    'const vec4 gray = vec4(0.125, 0.125, 0.125, 1.0);\n'+
+    'void main() {\n'+
+        'float fade = smoothstep(0.51, 0.55, vTexCoord.t);\n'+
+        'gl_FragColor = mix(texture2D(uSampler, vTexCoord), gray, fade);\n'+
+    '}';
+
+
+GpuShaders.stardomeFragmentShader = 'precision mediump float;\n'+
+    'uniform sampler2D uSampler;\n'+
+    'varying vec2 vTexCoord;\n'+
+    'void main() {\n'+
+        'gl_FragColor = texture2D(uSampler, vTexCoord);\n'+
+    '}';
+
+
+GpuShaders.atmoVertexShader =
+    'attribute vec3 aPosition;\n'+
+    'attribute vec2 aTexCoord;\n'+
+    'uniform mat4 uMV, uProj;\n'+
+    'uniform mat3 uNorm;\n'+
+    'varying vec3 vNormal;\n'+
+    'varying vec4 vPosition;\n'+
+    'void main(){ \n'+
+        'vec4 camSpacePos = uMV * vec4(aPosition, 1.0);\n'+
+        'gl_Position = uProj * camSpacePos;\n'+
+        'vec4 c = uMV * vec4(aPosition, 1.0);\n'+
+        'vNormal = (aPosition.xyz - vec3(0.5));\n'+
+        'vPosition = camSpacePos;\n'+
+    '}';
+
+
+GpuShaders.atmoFragmentShader = 'precision mediump float;\n'+
+    'uniform sampler2D uSampler;\n'+
+    'uniform vec4 uParams;\n'+       //[radius, atmoSize, 0 ,0]
+    'uniform vec4 uParams2;\n'+       //[radius, atmoSize, 0 ,0]
+    'varying vec4 vPosition;\n'+
+    'varying vec3 vNormal;\n'+
+    'uniform vec4 uFogColor;\n'+ //= vec4(216.0/255.0, 232.0/255.0, 243.0/255.0, 1.0);\n'+
+    'uniform vec4 uFogColor2;\n'+ //= vec4(72.0/255.0, 154.0/255.0, 255.0/255.0, 1.0);\n'+
+    'void main() {\n'+
+        'float l = dot(normalize(vNormal),-uParams2.xyz);\n'+
+        'l = (1.0-pow(abs(l),uParams.x));\n'+
+        'vec4 c = mix(uFogColor2, uFogColor, l);\n'+
+        'gl_FragColor = vec4(c.xyz, c.w*l);\n'+
+    '}';
+
+
+GpuShaders.atmoFragmentShader2 = 'precision mediump float;\n'+
+    'uniform sampler2D uSampler;\n'+
+    'uniform float uNFactor;\n'+
+    'uniform vec2 uRadius;\n'+
+    'uniform vec3 uPos;\n'+
+    'varying vec4 vPosition;\n'+
+    'varying vec3 vNormal;\n'+
+    'uniform vec4 uFogColor;\n'+ //= vec4(216.0/255.0, 232.0/255.0, 243.0/255.0, 1.0);\n'+
+    'void main() {\n'+
+        'vec3 ldir = normalize(-vPosition.xyz);\n'+
+        'vec3 diff = uPos;\n'+
+        'float a = dot(ldir, ldir);\n'+
+        'float b = 2 * dot(ldir, diff);\n'+
+        'float c = dot(diff, diff) - (uRadius[0] * uRadius[0]);\n'+
+        'float i = 0;\n'+
+        'float discr = b * b - 4 * a * c;\n'+
+        'if (discr > 0.0) {}\n'+
+
+        '}\n'+
+        'gl_FragColor = uFogColor;\n'+
+    '}';
+
+
+GpuShaders.atmoVertexShader3 =
+    'attribute vec3 aPosition;\n'+
+    //'attribute vec2 aTexCoord;\n'+
+    'uniform mat4 uMV, uProj;\n'+
+    //"uniform mat3 uNorm;\n"+
+    'uniform vec4 uParams;\n'+       //[surfaceRadius, surfaceRadius, strech ,safetyfactor]
+    'uniform vec4 uParams2;\n'+       //[cameraPos, 1]
+
+    'varying vec2 vTexcoords;\n'+
+
+    'void main(){ \n'+
+        'gl_Position = uProj * (uMV * vec4(aPosition, 1.0));\n'+
+
+        'vec3 position = (aPosition.xyz - vec3(0.5)) * vec3(uParams.w * 2.0);\n'+
+        'vec4 camPos = uParams2;\n'+
+        'float SurfaceRadius = uParams.x;\n'+ 
+        'float AtmosphereRadius = uParams.y;\n'+ 
+        'float StretchAmt = uParams.z;\n'+ 
+     
+        'float camHeight = length(camPos.xyz);\n'+
+        'vec3 camToPos = position - camPos.xyz;\n'+
+        'float farDist = length(camToPos);\n'+
+    
+        // get distance to surface horizon
+        'float altitude = max(0.0,camHeight - SurfaceRadius);\n'+
+        'float horizonDist = sqrt((altitude*altitude) + (2.0 * SurfaceRadius * altitude));\n'+
+        'float maxDot = horizonDist / camHeight;\n'+
+     
+        // get distance to atmosphere horizon - use max(0,...) because we can go into the atmosphere
+        'altitude = max(0.0,camHeight - AtmosphereRadius);\n'+
+        'horizonDist = sqrt((altitude*altitude) + (2.0 * AtmosphereRadius * altitude));\n'+
+     
+        // without this, the shift between inside and outside atmosphere is  jarring
+        'float tweakAmount = 0.1;\n'+
+        'float minDot = max(tweakAmount,horizonDist / camHeight);\n'+
+     
+        // scale minDot from 0 to -1 as we enter the atmosphere
+        'float minDot2 = ((camHeight - SurfaceRadius) * (1.0 / (AtmosphereRadius  - SurfaceRadius))) - (1.0 - tweakAmount);\n'+
+        'minDot = min(minDot, minDot2);\n'+
+      
+        // get dot product of the vertex we're looking out
+        'float posDot = dot(camToPos / farDist,-camPos.xyz / camHeight) - minDot;\n'+
+     
+        // calculate the height from surface in range 0..1
+        'float height = posDot * (1.0 / (maxDot - minDot));\n'+
+    
+        'vTexcoords.y = height;\n'+ 
+     
+        'height -= min(0.0,minDot2 + ((1.0 + StretchAmt) * minDot2));\n'+
+        'vTexcoords.x = height;\n'+
+    '}';
+
+
+GpuShaders.atmoFragmentShader3 = 'precision mediump float;\n'+
+    'varying vec2 vTexcoords;\n'+
+    'uniform vec4 uParams3;\n'+       //[treshold, mutiplier, 0,0]
+    'uniform vec4 uFogColor;\n'+ // = vec4(216.0/255.0, 232.0/255.0, 243.0/255.0, 1.0);\n'+
+    'uniform vec4 uFogColor2;\n'+ // = vec4(72.0/255.0, 154.0/255.0, 255.0/255.0, 1.0);\n'+
+    'const vec4 fogColor3 = vec4(0.0/255.0, 0.0/255.0, 0.0/255.0, 1.0);\n'+
+
+    'void main() {\n'+
+        'float l = vTexcoords.y;\n'+
+        'if (l > uParams3.z){ discard; } else {\n'+
+            'float l2 = clamp((l*l)*0.9+0.1, 0.0, 1.5);\n'+
+            'vec4 c = mix(uFogColor2, uFogColor, l2);\n'+
+            'gl_FragColor = vec4(c.xyz, c.w*l);\n'+
+        
+            'if (l > uParams3.x){ gl_FragColor.xyz = mix(gl_FragColor.xyz, fogColor3.xyz, (l-uParams3.x)*uParams3.y); }\n'+
+        '}'+
+
+    '}';
+
+
+//heightmap tile
+GpuShaders.heightmapVertexShader =
+    'attribute vec3 aPosition;\n'+
+    'attribute vec2 aTexCoord;\n'+
+    'uniform mat4 uMV, uProj;\n'+
+    'uniform float uFogDensity;\n'+
+    'uniform mat4 uGridMat;\n'+
+    'uniform float uGridStep1, uGridStep2;\n'+
+    'const int HMSize = 5;\n'+
+    'const float HMSize1 = float(HMSize-1);\n'+
+    'uniform float uHeight[HMSize*HMSize];\n'+
+    'varying vec2 vTexCoord1;\n'+
+    'varying vec2 vTexCoord2;\n'+
+    'varying float vFogFactor;\n'+
+    'float round(float x) { return floor(x + 0.5); }\n'+
+    'void main() {\n'+
+        'vec3 pos = aPosition;\n'+
+        'float z = uHeight[int(round(pos.y*HMSize1)*float(HMSize) + round(pos.x*HMSize1))];\n'+
+        'vec4 camSpacePos = uMV * vec4(pos.xy, z, 1.0);\n'+
+        'gl_Position = uProj * camSpacePos;\n'+
+        'float camDist = length(camSpacePos.xyz);\n'+
+        'vFogFactor = exp(uFogDensity * camDist);\n'+
+        'vec4 gridCoord = uGridMat * vec4(pos, 1.0);\n'+
+        'vTexCoord1 = aTexCoord;\n'+
+        'vTexCoord1 = gridCoord.xy * vec2(uGridStep1);\n'+
+        'vTexCoord2 = gridCoord.xy * vec2(uGridStep2);\n'+
+    '}';
+
+
+GpuShaders.heightmapFragmentShader = 'precision mediump float;\n'+
+    'uniform sampler2D uSampler;\n'+
+    'uniform float uGridBlend;\n'+
+    'varying vec2 vTexCoord1;\n'+
+    'varying vec2 vTexCoord2;\n'+
+    'varying float vFogFactor;\n'+
+    'uniform vec4 uFogColor;\n'+ // = vec4(216.0/255.0, 232.0/255.0, 243.0/255.0, 1.0);\n'+
+    'void main() {\n'+
+        'vec4 gridColor = mix(texture2D(uSampler, vTexCoord1), texture2D(uSampler, vTexCoord2), uGridBlend);\n'+
+        'gl_FragColor = mix(uFogColor, gridColor, vFogFactor);\n'+
+    '}';
+
+
+//depth encoded heightmap tile
+GpuShaders.heightmapDepthVertexShader =
+    'attribute vec3 aPosition;\n'+
+    'attribute vec2 aTexCoord;\n'+
+    'uniform mat4 uMV, uProj;\n'+
+    'uniform float uFogDensity;\n'+
+    'uniform mat4 uGridMat;\n'+
+    'uniform float uGridStep1, uGridStep2;\n'+
+    'const int HMSize = 5;\n'+
+    'const float HMSize1 = float(HMSize-1);\n'+
+    'uniform float uHeight[HMSize*HMSize];\n'+
+    'varying vec2 vTexCoord1;\n'+
+    'varying vec2 vTexCoord2;\n'+
+    'varying float vDepth;\n'+
+    'float round(float x) { return floor(x + 0.5); }\n'+
+    'void main() {\n'+
+        'vec3 pos = aPosition;\n'+
+        'float z = uHeight[int(round(pos.y*HMSize1)*float(HMSize) + round(pos.x*HMSize1))];\n'+
+        'vec4 camSpacePos = uMV * vec4(pos.xy, z, 1.0);\n'+
+        'gl_Position = uProj * camSpacePos;\n'+
+        'float camDist = length(camSpacePos.xyz);\n'+
+        'vDepth = camDist;\n'+
+        'vec4 gridCoord = uGridMat * vec4(pos, 1.0);\n'+
+        'vTexCoord1 = aTexCoord;\n'+
+        'vTexCoord1 = gridCoord.xy * vec2(uGridStep1);\n'+
+        'vTexCoord2 = gridCoord.xy * vec2(uGridStep2);\n'+
+    '}';
+
+
+GpuShaders.heightmapDepthFragmentShader = 'precision mediump float;\n'+
+    'uniform sampler2D uSampler;\n'+
+    'uniform float uGridBlend;\n'+
+    'varying vec2 vTexCoord1;\n'+
+    'varying vec2 vTexCoord2;\n'+
+    'varying float vDepth;\n'+
+    'void main() {\n'+
+        'gl_FragColor = fract(vec4(1.0, 1.0/255.0, 1.0/65025.0, 1.0/16581375.0) * vDepth) + (-0.5/255.0);\n'+
+    '}';
+
+GpuShaders.quadPoint = 
+    'vec3 quadPoint(int i1, int i2, int i3, float t, float t2) {\n'+
+        'float p1x = uPoints[i1], p1y = uPoints[i1+1], p1z = uPoints[i1+2];\n'+
+        'float p3x = uPoints[i3], p3y = uPoints[i3+1], p3z = uPoints[i3+2];\n'+
+        'float p2x = 2.0*uPoints[i2]-p1x*0.5-p3x*0.5;\n'+
+        'float p2y = 2.0*uPoints[i2+1]-p1y*0.5-p3y*0.5;\n'+
+        'float p2z = 2.0*uPoints[i2+2]-p1z*0.5-p3z*0.5;\n'+
+        'return vec3(t2*t2*p1x+2.0*t2*t*p2x+t*t*p3x, t2*t2*p1y+2.0*t2*t*p2y+t*t*p3y, t2*t2*p1z+2.0*t2*t*p2z+t*t*p3z); }\n';
+
+   
+GpuShaders.planeVertexShader =
+    'attribute vec3 aPosition;\n'+
+    'attribute vec2 aTexCoord;\n'+
+    'uniform mat4 uMV, uProj;\n'+
+    'uniform vec4 uParams;\n'+    //[uGridStep1, fogDensity, indexFactor, uGridStep2]
+    'uniform vec4 uParams3;\n'+    //[px, py, sx, sy]
+    'uniform float uPoints[9*3];\n'+
+    'varying vec2 vTexCoord;\n'+
+    'varying vec2 vTexCoord2;\n'+
+    'varying float vFogFactor;\n'+ GpuShaders.quadPoint +
+    'void main() {\n'+
+        'vec3 indices = aPosition;\n'+
+        'float t = aPosition.y * uParams[2];\n'+  //vertical index
+        'float t2 = (1.0-t);\n'+
+        'vec3 p1 = quadPoint(0, 3, 6, t, t2);\n'+
+        'vec3 p2 = quadPoint(9, 9+3, 9+6, t, t2);\n'+
+        'vec3 p3 = quadPoint(18, 18+3, 18+6, t, t2);\n'+
+        't = aPosition.x * uParams[2];\n'+  //horizontal index
+        't2 = (1.0-t);\n'+
+        'float p2x = 2.0*p2.x-p1.x*0.5-p3.x*0.5;\n'+
+        'float p2y = 2.0*p2.y-p1.y*0.5-p3.y*0.5;\n'+
+        'float p2z = 2.0*p2.z-p1.z*0.5-p3.z*0.5;\n'+
+        'vec4 p = vec4(t2*t2*p1.x+2.0*t2*t*p2x+t*t*p3.x, t2*t2*p1.y+2.0*t2*t*p2y+t*t*p3.y, t2*t2*p1.z+2.0*t2*t*p2z+t*t*p3.z, 1);\n'+
+        'vec4 camSpacePos = uMV * p;\n'+
+        'gl_Position = uProj * camSpacePos;\n'+
+        'float camDist = length(camSpacePos.xyz);\n'+
+        'vFogFactor = exp(uParams[1] * camDist);\n'+
+        'vec2 uv;\n'+
+        'uv.x = aTexCoord.y * uParams3[2] + uParams3[0];\n'+
+        'uv.y = 1.0-(aTexCoord.x * uParams3[3] + uParams3[1]);\n'+
+        'vTexCoord = uv;\n'+
+    '}';
+
+
+GpuShaders.planeFragmentShader = 'precision mediump float;\n'+
+    'uniform sampler2D uSampler;\n'+
+    'uniform vec4 uParams2;\n'+    //[uGridStep1, uGridStep2, uGridBlend, 0]
+    'varying vec2 vTexCoord;\n'+
+    'varying float vFogFactor;\n'+
+    'uniform vec4 uFogColor;\n'+ // = vec4(216.0/255.0, 232.0/255.0, 243.0/255.0, 1.0);\n'+
+    'void main() {\n'+
+        'vec4 c = mix(texture2D(uSampler, vTexCoord), texture2D(uSampler, vTexCoord*8.0), uParams2[2]);\n'+
+        'gl_FragColor = mix(uFogColor, c, vFogFactor);\n'+
+    '}';
+
+GpuShaders.planeVertex2Shader =
+    'attribute vec3 aPosition;\n'+
+    'attribute vec2 aTexCoord;\n'+
+    'uniform mat4 uMV, uProj;\n'+
+    'uniform vec4 uParams;\n'+    //[uGridStep1, fogDensity, indexFactor, uGridStep2]
+    'uniform vec4 uParams3;\n'+    //[px, py, sx, sy]
+    'uniform float uPoints[9*3];\n'+
+    'varying vec2 vTexCoord;\n'+
+    'varying vec2 vTexCoord2;\n'+
+    'varying float vFogFactor;\n'+ GpuShaders.quadPoint +
+    'void main() {\n'+
+        'vec3 indices = aPosition;\n'+
+        'float t = aPosition.y * uParams[2];\n'+  //vertical index
+        'float t2 = (1.0-t);\n'+
+        'vec3 p1 = quadPoint(0, 3, 6, t, t2);\n'+
+        'vec3 p2 = quadPoint(9, 9+3, 9+6, t, t2);\n'+
+        'vec3 p3 = quadPoint(18, 18+3, 18+6, t, t2);\n'+
+        't = aPosition.x * uParams[2];\n'+  //horizontal index
+        't2 = (1.0-t);\n'+
+        'float p2x = 2.0*p2.x-p1.x*0.5-p3.x*0.5;\n'+
+        'float p2y = 2.0*p2.y-p1.y*0.5-p3.y*0.5;\n'+
+        'float p2z = 2.0*p2.z-p1.z*0.5-p3.z*0.5;\n'+
+        'vec4 p = vec4(t2*t2*p1.x+2.0*t2*t*p2x+t*t*p3.x, t2*t2*p1.y+2.0*t2*t*p2y+t*t*p3.y, t2*t2*p1.z+2.0*t2*t*p2z+t*t*p3.z, 1);\n'+
+        'vec4 camSpacePos = uMV * p;\n'+
+        'gl_Position = uProj * camSpacePos;\n'+
+        'float camDist = length(camSpacePos.xyz);\n'+
+        'vFogFactor = exp(uParams[1] * camDist);\n'+
+        'vec2 uv;\n'+
+        'uv.x = aTexCoord.y * uParams3[2] + uParams3[0];\n'+
+        'uv.y = 1.0-(aTexCoord.x * uParams3[3] + uParams3[1]);\n'+
+        'vTexCoord = uv;\n'+
+        'vTexCoord2 = p.xy;\n'+
+    '}';
+
+
+GpuShaders.planeFragment2Shader = 'precision mediump float;\n'+
+    'uniform sampler2D uSampler;\n'+
+    'uniform vec4 uParams2;\n'+    //[uGridStep1, uGridStep2, uGridBlend, 0]
+    'uniform vec4 uParams4;\n'+    //[pole-x, pole-y, pole-radius, 0]
+    'varying vec2 vTexCoord;\n'+
+    'varying vec2 vTexCoord2;\n'+
+    'varying float vFogFactor;\n'+
+    'uniform vec4 uFogColor;\n'+ // = vec4(216.0/255.0, 232.0/255.0, 243.0/255.0, 1.0);\n'+
+    'void main() {\n'+
+        'if (length(uParams4.xy - vTexCoord2.xy) > uParams4.z){ discard; }'+ 
+        'vec4 c = mix(texture2D(uSampler, vTexCoord), texture2D(uSampler, vTexCoord*8.0), uParams2[2]);\n'+
+        'gl_FragColor = mix(uFogColor, c, vFogFactor);\n'+
+    '}';
+
+GpuShaders.planeVertex3Shader =
+    'attribute vec3 aPosition;\n'+
+    'attribute vec2 aTexCoord;\n'+
+    'uniform mat4 uMV, uProj;\n'+
+    'uniform vec4 uParams;\n'+    //[uGridStep1, fogDensity, indexFactor, uGridStep2]
+    'uniform vec4 uParams3;\n'+    //[px, py, sx, sy]
+    'uniform float uPoints[9*3];\n'+
+    'uniform vec3 uVector;\n'+  
+    'uniform float uHeights[9];\n'+
+    'varying vec2 vTexCoord;\n'+
+    'varying vec2 vTexCoord2;\n'+
+    'varying float vFogFactor;\n'+ GpuShaders.quadPoint + 
+    'float linearHeight(float x, float y) {\n'+
+        'int ix = int(x);\n'+
+        'int iy = int(y);\n'+
+        'int index = (2-iy)*3+ix;\n'+
+        'int index2 = (2-(iy+1))*3+ix;\n'+
+        'float fx = fract(x);\n'+
+        'float fy = fract(y);\n'+
+        'float w0 = (uHeights[index] + (uHeights[index+1] - uHeights[index])*fx);\n'+
+        'float w1 = (uHeights[index2] + (uHeights[index2+1] - uHeights[index2])*fx);\n'+
+        'return (w0 + (w1 - w0)*fy);\n'+
+    '}\n'+
+    'void main() {\n'+
+        'vec3 indices = aPosition;\n'+
+        'float t = aPosition.y * uParams[2];\n'+  //vertical index
+        'float tt = t;\n'+
+        'float t2 = (1.0-t);\n'+
+        'vec3 p1 = quadPoint(0, 3, 6, t, t2);\n'+
+        'vec3 p2 = quadPoint(9, 9+3, 9+6, t, t2);\n'+
+        'vec3 p3 = quadPoint(18, 18+3, 18+6, t, t2);\n'+
+        't = aPosition.x * uParams[2];\n'+  //horizontal index
+        'float tt2 = t;\n'+
+        't2 = (1.0-t);\n'+
+        'float p2x = 2.0*p2.x-p1.x*0.5-p3.x*0.5;\n'+
+        'float p2y = 2.0*p2.y-p1.y*0.5-p3.y*0.5;\n'+
+        'float p2z = 2.0*p2.z-p1.z*0.5-p3.z*0.5;\n'+
+        'vec4 p = vec4(t2*t2*p1.x+2.0*t2*t*p2x+t*t*p3.x, t2*t2*p1.y+2.0*t2*t*p2y+t*t*p3.y, t2*t2*p1.z+2.0*t2*t*p2z+t*t*p3.z, 1);\n'+
+        'p.xyz += uVector * linearHeight(tt*2.0, tt2*2.0);\n'+
+        'vec4 camSpacePos = uMV * p;\n'+
+        'gl_Position = uProj * camSpacePos;\n'+
+        'float camDist = length(camSpacePos.xyz);\n'+
+        'vFogFactor = exp(uParams[1] * camDist);\n'+
+        'vec2 uv;\n'+
+        'uv.x = aTexCoord.y * uParams3[2] + uParams3[0];\n'+
+        'uv.y = (1.0-aTexCoord.x) * uParams3[3] + uParams3[1];\n'+
+        'vTexCoord = uv;\n'+
+    '}';
+
+GpuShaders.getHFNormal =
+    'vec3 getHFNormal(vec2 uv, float texelSize, float heightDelta) {\n'+
+        'vec4 h;\n'+
+        'h[0] = texture2D(uSampler2, uv + (texelSize * vec2( 0.0,-1.0))).r * heightDelta;\n'+
+        'h[1] = texture2D(uSampler2, uv + (texelSize * vec2(-1.0, 0.0))).r * heightDelta;\n'+
+        'h[2] = texture2D(uSampler2, uv + (texelSize * vec2( 1.0, 0.0))).r * heightDelta;\n'+
+        'h[3] = texture2D(uSampler2, uv + (texelSize * vec2( 0.0, 1.0))).r * heightDelta;\n'+
+        'return normalize(vec3(h[1] - h[2], h[3] - h[0], 2.0));}\n';
+
+GpuShaders.getHFNormal2 =
+    'vec2 getHFNormal2(vec2 uv, float texelSize, float heightDelta) {\n'+
+        'vec4 h;\n'+
+        'h[0] = texture2D(uSampler2, uv + (texelSize * vec2( 0.0,-1.0))).r * heightDelta;\n'+
+        'h[1] = texture2D(uSampler2, uv + (texelSize * vec2(-1.0, 0.0))).r * heightDelta;\n'+
+        'h[2] = texture2D(uSampler2, uv + (texelSize * vec2( 1.0, 0.0))).r * heightDelta;\n'+
+        'h[3] = texture2D(uSampler2, uv + (texelSize * vec2( 0.0, 1.0))).r * heightDelta;\n'+
+        'return vec2(h[1] - h[2], h[3] - h[0]);}\n';
+
+GpuShaders.planeVertex4Shader =
+    '#define newspace\n'+
+    'uniform sampler2D uSampler2;\n'+
+    'attribute vec3 aPosition;\n'+
+    //'attribute vec2 aTexCoord;\n'+
+    //'attribute vec3 aBarycentric;\n'+
+    'uniform mat4 uMV, uProj;\n'+
+    'uniform vec4 uParams;\n'+    //[uGridStep1, fogDensity, indexFactor, uGridStep2]
+    'uniform vec4 uParams3;\n'+    //[px, py, sx, sy]
+    'uniform float uPoints[9*3];\n'+
+    'uniform vec3 uVector;\n'+  
+    'uniform vec3 uHeights;\n'+   //[hmin, hmax]
+    'uniform vec4 uTransform;\n'+
+    //'uniform vec4 uTransform2;\n'+
+    'varying vec2 vTexCoord;\n'+
+    'varying vec2 vTexCoord2;\n'+
+    'varying vec3 vBarycentric;\n'+
+
+    '#ifdef newspace\n'+
+        'varying mat3 vTBN;\n'+
+    '#else\n'+
+        'varying vec3 vNormal;\n'+
+    '#endif\n'+
+
+    'varying float vFogFactor;\n'+ GpuShaders.quadPoint +  GpuShaders.getHFNormal + GpuShaders.getHFNormal2 +
+    //'float random(vec2 p) { return fract(cos(dot(p,vec2( 23.14069263277926, 2.665144142690225)))*12345.6789);}\n'+
+
+    'void main() {\n'+
+        'vec3 indices = aPosition;\n'+
+        'float t = aPosition.y * uParams[2];\n'+  //vertical index
+        'float tt = t;\n'+
+        'float t2 = (1.0-t);\n'+
+        'vec3 p1 = quadPoint(0, 3, 6, t, t2);\n'+
+        'vec3 p2 = quadPoint(9, 9+3, 9+6, t, t2);\n'+
+        'vec3 p3 = quadPoint(18, 18+3, 18+6, t, t2);\n'+
+        't = aPosition.x * uParams[2];\n'+  //horizontal index
+        'float tt2 = t;\n'+
+        't2 = (1.0-t);\n'+
+        'float p2x = 2.0*p2.x-p1.x*0.5-p3.x*0.5;\n'+
+        'float p2y = 2.0*p2.y-p1.y*0.5-p3.y*0.5;\n'+
+        'float p2z = 2.0*p2.z-p1.z*0.5-p3.z*0.5;\n'+
+        'vec4 p = vec4(t2*t2*p1.x+2.0*t2*t*p2x+t*t*p3.x, t2*t2*p1.y+2.0*t2*t*p2y+t*t*p3.y, t2*t2*p1.z+2.0*t2*t*p2z+t*t*p3.z, 1);\n'+
+        'vec2 uv2 = vec2(tt, 1.0-tt2);\n'+
+        'uv2 = vec2(uTransform[0] * uv2[0] + uTransform[2], uTransform[1] * uv2[1] + uTransform[3]);\n'+
+
+        'p.xyz += uVector * (uHeights[0] + (uHeights[1]-uHeights[0])*texture2D(uSampler2, uv2).x);\n'+
+
+        'vec4 camSpacePos = uMV * p;\n'+
+        'gl_Position = uProj * camSpacePos;\n'+
+        'float camDist = length(camSpacePos.xyz);\n'+
+        'vFogFactor = exp(uParams[1] * camDist);\n'+
+
+        'vec2 uv = vec2(tt, 1.0-tt2);\n'+
+        'uv.x = uv.x * uParams3[0] + uParams3[2];\n'+
+        'uv.y = uv.y * uParams3[1] + uParams3[3];\n'+
+        'vTexCoord = uv;\n'+
+
+        'vBarycentric = camSpacePos.xyz;\n'+
+
+        '#ifdef newspace\n'+
+            'vec2 d = getHFNormal2(uv2, 1.0/(128.0), (uHeights[1]-uHeights[0]) * uHeights[2]);\n'+
+            'vec3 T = vec3(2.0,0.0,-d.x); vec3 B = vec3(0.0,2.0,-d.y);\n'+
+            'vTBN = mat3(normalize(T), normalize(B), cross(T,B));\n'+
+        '#else\n'+
+            'vec3 n = getHFNormal(uv2, 1.0/(128.0), (uHeights[1]-uHeights[0]) * uHeights[2]);\n'+
+            'vNormal = normalize(n);\n'+
+        '#endif\n'+
+
+    '}';    
+
+GpuShaders.planeFragmentShader2 = 'precision mediump float;\n'+
+    '#extension GL_OES_standard_derivatives : enable\n'+
+    '#define newspace\n'+
+    'uniform sampler2D uSampler;\n'+
+    'uniform vec4 uParams2;\n'+    //[uGridStep1, uGridStep2, uGridBlend, 0]
+    'uniform mat3 uSpace;\n'+  
+    'varying vec2 vTexCoord;\n'+
+    'varying float vFogFactor;\n'+
+    'varying vec3 vBarycentric;\n'+
+
+    '#ifdef newspace\n'+
+        'varying mat3 vTBN;\n'+
+    '#else\n'+
+        'varying vec3 vNormal;\n'+
+    '#endif\n'+
+
+    'uniform vec4 uFogColor;\n'+ // = vec4(216.0/255.0, 232.0/255.0, 243.0/255.0, 1.0);\n'+
+    'void main() {\n'+
+        'vec3 ldir = normalize(-vBarycentric);\n'+
+        
+        '#ifdef flat\n'+
+            'vec3 nx = dFdx(vBarycentric);\n'+
+            'vec3 ny = dFdy(vBarycentric);\n'+
+            'vec3 normal2 = normalize(cross(nx,ny));\n'+
+            'vec4 c2 = vec4(vec3(max(0.0,normal2.z*(204.0/255.0))+(32.0/255.0)),1.0);\n'+
+        '#else\n'+
+
+            '#ifdef newspace\n'+
+                //'vec3 normal = cross(normalize(vTangent), normalize(vBitangent));\n'+
+
+                '#ifdef nmix\n'+
+                    'vec3 normal = vTBN * normalize((texture2D(uSampler, vTexCoord).xyz-0.5)*2.0);\n'+
+                '#else\n'+
+                    'vec3 normal = vTBN * vec3(0.0,0.0,1.0);\n'+
+                '#endif\n'+
+
+            '#else\n'+
+                'vec3 normal = vNormal;\n'+
+            '#endif\n'+
+
+            'normal = normalize(uSpace * normal);\n'+
+
+            'vec3 eyeDir = ldir;\n'+
+            'vec3 refDir = reflect(-ldir, normal);\n'+
+            'float specW = min(1.0, pow(max(dot(refDir, eyeDir), 0.0), 90.0));\n'+
+            'float diffW = min(1.0, max(dot(normal, ldir), 0.0));\n'+
+            'float lcolor = (dot(normal, ldir) + 1.0) * 0.5;\n'+
+            //'float lcolor = 0.25+(0.5*diffW)+(0.25*specW);\n'+
+            //'float lcolor = 0.25+(0.75*diffW);\n'+
+
+            '#ifdef normals\n'+
+                'vec4 c2 = vec4(normal*0.5+0.5,1.0);\n'+        
+            '#else\n'+
+                'vec4 c2 = vec4(vec3(dot(vec3(0.0,0.0,1.0), normal)),1.0);\n'+        
+            '#endif\n'+
+            //'vec4 c2 = vec4(normalize(ldir)*0.5+0.5,1.0);\n'+
+            //'vec4 c2 = vec4(vec3(lcolor),1.0);\n'+
+        '#endif\n'+
+
+        '#ifdef grid\n'+
+            'vec4 c = mix(texture2D(uSampler, vTexCoord), texture2D(uSampler, vTexCoord*8.0), uParams2[2]);\n'+
+            'c = mix(c, c2, 0.5);\n'+
+        '#else\n'+
+            '#ifdef exmap\n'+
+
+                'vec4 c = texture2D(uSampler, vTexCoord);\n'+
+
+                '#ifdef classmap\n'+
+                    'int i = int(c.x*255.0);\n'+
+
+                    /*
+                    'if (i == 0) c = vec4(0.3, 0.44, 0.64, 1.0);\n'+
+                    'if (i == 1) c = vec4(0.0, 0.24, 0.0, 1.0);\n'+
+                    'if (i == 2) c = vec4(0.58, 0.61, 0.44, 1.0);\n'+
+                    'if (i == 3) c = vec4(0.0, 0.39, 0.0, 1.0);\n'+
+                    'if (i == 4) c = vec4(0.12, 0.67, 0.02, 1.0);\n'+
+                    'if (i == 5) c = vec4(0.08, 0.55, 0.24, 1.0);\n'+
+                    'if (i == 6) c = vec4(0.36, 0.46, 0.17, 1.0);\n'+
+                    'if (i == 7) c = vec4(0.7, 0.62, 0.18, 1.0);\n'+
+                    'if (i == 8) c = vec4(0.7, 0.54, 0.2, 1.0);\n'+
+                    'if (i == 9) c = vec4(0.91, 0.86, 0.37, 1.0);\n'+
+                    'if (i == 10) c = vec4(0.88, 0.81, 0.54, 1.0);\n'+
+                    'if (i == 11) c = vec4(0.61, 0.46, 0.33, 1.0);\n'+
+                    'if (i == 12) c = vec4(0.73, 0.83, 0.56, 1.0);\n'+
+                    'if (i == 13) c = vec4(0.25, 0.54, 0.45, 1.0);\n'+
+                    'if (i == 14) c = vec4(0.42, 0.64, 0.54, 1.0);\n'+
+                    'if (i == 15) c = vec4(0.9, 0.68, 0.4, 1.0);\n'+
+                    'if (i == 16) c = vec4(0.66, 0.67, 0.68, 1.0);\n'+
+                    'if (i == 17) c = vec4(0.86, 0.13, 0.15, 1.0);\n'+
+                    'if (i == 18) c = vec4(0.3, 0.44, 0.64, 1.0);\n'+
+                    'if (i == 19) c = vec4(1.0, 0.98, 1.0, 1.0);\n'+
+                    'c = c * c2;\n'+
+                    */
+
+                    'if (i == 1 || i == 2 || i == 5 || i == 6) c = vec4(146.0, 178.0, 144.0, 255.0);\n'+
+                    'if (i == 3 || i == 4) c = vec4(94.0, 169.0, 133.0, 255.0);\n'+
+                    'if (i == 8 || i == 11) c = vec4(238.0, 221.0, 185.0, 255.0);\n'+
+                    'if (i == 7) c = vec4(226.0, 192.0, 154.0, 255.0);\n'+
+                    'if (i == 9 || i == 10 || i == 12) c = vec4(250.0, 246.0, 167.0, 255.0);\n'+
+                    'if (i == 13 || i == 16) c = vec4(245.0, 236.0, 211.0, 255.0);\n'+
+                    'if (i == 14) c = vec4(139.0, 185.0, 166.0, 255.0);\n'+
+                    'if (i == 15) c = vec4(199.0, 219.0, 155.0, 255.0);\n'+
+                    'if (i == 17) c = vec4(149.0, 132.0, 162.0, 255.0);\n'+
+                    'if (i == 18 || i == 0) c = vec4(188.0, 221.0, 255.0, 255.0);\n'+
+                    'if (i == 19) c = vec4(255.0, 255.0, 255.0, 255.0);\n'+
+                    'c = (c*(1.0/255.0)) * c2;\n'+
+                '#endif\n'+
+
+            '#else\n'+
+                'vec4 c = c2;\n'+
+            '#endif\n'+
+        '#endif\n'+
+
+        '#ifdef fog\n'+
+            'gl_FragColor = mix(uFogColor, c, vFogFactor);\n'+
+        '#else\n'+
+            'gl_FragColor = c;\n'+
+        '#endif\n'+
+    '}';
+
+
+//textured tile mesh
+GpuShaders.tileVertexShader =
+    'attribute vec3 aPosition;\n'+
+
+    '#ifdef onlyFog\n'+
+        'varying float vFogFactor;\n'+
+    '#else\n'+
+
+        '#ifdef externalTex\n'+
+            'attribute vec2 aTexCoord2;\n'+
+        '#else\n'+
+            'attribute vec2 aTexCoord;\n'+
+        '#endif\n'+
+    
+        'varying vec3 vTexCoord;\n'+  //u,v,fogFactor
+
+    '#endif\n'+
+
+    '#ifdef depth\n'+
+        'varying float vDepth;\n'+
+    '#endif\n'+
+
+    '#ifdef flatShadeVar\n'+
+        ///'attribute vec3 aBarycentric;\n'+
+        'varying vec3 vBarycentric;\n'+
+    '#endif\n'+
+
+                                             //0-3                            4-7          8-11            12-15 
+    'uniform mat4 uMV, uProj, uParams;\n'+  //[zfactor, fogDensity, scale.xy][camVec.xyzw][transform.xyzw][scale.z, trans.xyz]
+
+    '#ifdef applySE\n'+
+        'uniform mat4 uParamsSE;\n'+
+    '#endif\n'+
+
+    'void main() {\n'+
+
+        '#ifdef applySE\n'+
+            'vec3 geoPos2 = aPosition*vec3(uParamsSE[0][3],uParamsSE[1][0],uParamsSE[1][1]);\n'+
+            'vec3 geoPos = geoPos2+vec3(uParamsSE[0][0],uParamsSE[0][1],uParamsSE[0][2]);\n'+
+            'geoPos.z *= uParamsSE[3][3];\n'+
+            'float ll = length(geoPos);\n'+
+            'vec3 v = geoPos * (1.0/(ll+0.0001));\n'+
+            'float h = ll - uParamsSE[3][2];\n'+
+            'float h2 = clamp(h, uParamsSE[2][1], uParamsSE[2][3]);\n'+
+            'float h3 = h;\n'+
+            'h *= (uParamsSE[2][2] + ((h2 - uParamsSE[2][1]) * uParamsSE[3][0]) * uParamsSE[3][1]);\n'+
+            'geoPos2.xyz += v * (h - h3);\n'+
+            'vec4 camSpacePos = uMV * vec4(geoPos2, 1.0);\n'+
+            'float l = dot(v, vec3(uParams[1][0],uParams[1][1],uParams[1][2]));\n'+
+        '#else\n'+
+            'vec4 camSpacePos = uMV * vec4(aPosition, 1.0);\n'+
+            'vec3 worldPos = vec3(aPosition.x * uParams[0][2] + uParams[3][1], aPosition.y * uParams[0][3] + uParams[3][2], aPosition.z * uParams[3][0] + uParams[3][3]);\n'+
+            'float l = dot(normalize(worldPos.xyz), vec3(uParams[1][0],uParams[1][1],uParams[1][2]));\n'+
+        '#endif\n'+
+
+        'gl_Position = uProj * camSpacePos;\n'+
+        'float camDist = length(camSpacePos.xyz);\n'+
+
+        '#ifdef depth\n'+
+            'vDepth = camDist;\n'+
+        '#endif\n'+
+
+        '#ifdef flatShadeVar\n'+
+            'vBarycentric = camSpacePos.xyz;\n'+
+        '#endif\n'+
+
+        'float fogFactor = 1.0-exp(uParams[0][1] * camDist);\n'+
+        'fogFactor = clamp((1.0-abs(l))*uParams[1][3] + fogFactor, 0.0, 1.0);\n'+
+
+        '#ifdef onlyFog\n'+
+            'vFogFactor = fogFactor;\n'+
+        '#else\n'+
+            'vTexCoord.z = fogFactor;\n'+
+
+            '#ifdef externalTex\n'+
+                'vTexCoord.xy = vec2(uParams[2][0] * aTexCoord2[0] + uParams[2][2], uParams[2][1] * aTexCoord2[1] + uParams[2][3]);\n'+
+            '#else\n'+
+                'vTexCoord.xy = aTexCoord;\n'+
+            '#endif\n'+
+
+        '#endif\n'+
+    '}';
+
+GpuShaders.tileFragmentShader = 'precision mediump float;\n'+
+
+    '#ifdef onlyFog\n'+
+        'varying float vFogFactor;\n'+
+    '#else\n'+
+
+        'varying vec3 vTexCoord;\n'+
+        'uniform sampler2D uSampler;\n'+
+
+        '#ifdef mask\n'+
+            'uniform sampler2D uSampler2;\n'+
+        '#endif\n'+
+
+    '#endif\n'+
+
+    '#ifdef depth\n'+
+        'varying float vDepth;\n'+
+    '#endif\n'+
+
+    '#ifdef flatShadeVar\n'+
+        '#extension GL_OES_standard_derivatives : enable\n'+
+        'varying vec3 vBarycentric;\n'+
+
+        '#ifdef fogAndColor\n'+
+            'uniform vec4 uColor;\n'+
+        '#endif\n'+
+
+    '#endif\n'+
+
+    'uniform vec4 uParams2;\n'+        
+    'void main() {\n'+
+
+        '#ifdef flatShadeVar\n'+
+
+            '#ifdef flatShadeVarFallback\n'+
+                'vec4 flatShadeData = vec4(1.0);\n'+
+            '#else\n'+
+                '#ifdef GL_OES_standard_derivatives\n'+
+                    'vec3 nx = dFdx(vBarycentric);\n'+
+                    'vec3 ny = dFdy(vBarycentric);\n'+
+                    'vec3 normal=normalize(cross(nx,ny));\n'+
+                    'vec4 flatShadeData = vec4(vec3(max(0.0,normal.z*(204.0/255.0))+(32.0/255.0)),1.0);\n'+
+                '#else\n'+
+                    'vec4 flatShadeData = vec4(1.0);\n'+
+                '#endif\n'+
+            '#endif\n'+
+
+        '#endif\n'+
+
+        '#ifdef flatShade\n'+
+
+            '#ifdef fogAndColor\n'+
+               // 'gl_FragColor = vec4(mix(uColor.xyz * flatShadeData.xyz, uParams2.xyz, vTexCoord.z), uColor.w);\n'+
+                'gl_FragColor = vec4(uColor.xyz * flatShadeData.xyz, uColor.w);\n'+
+            '#else\n'+
+                'gl_FragColor = vec4(flatShadeData.xyz, 1.0);\n'+
+            '#endif\n'+
+
+        '#else\n'+
+
+            'vec4 fogColor = vec4(uParams2.xyz, 1.0);\n'+
+
+            '#ifdef onlyFog\n'+
+                'gl_FragColor = vec4(fogColor.xyz, vFogFactor);\n'+
+            '#else\n'+
+
+                '#ifdef depth\n'+
+                    'gl_FragColor = fract(vec4(1.0, 1.0/255.0, 1.0/65025.0, 1.0/16581375.0) * vDepth) + (-0.5/255.0);\n'+
+                '#else\n'+
+
+                    '#ifdef externalTex\n'+
+                        'vec4 c = texture2D(uSampler, vTexCoord.xy);\n'+'__FILTER__' +
+                        'vec4 cc = mix(c, fogColor, vTexCoord.z);\n'+
+                        '#ifdef mask\n'+
+                            'vec4 c2 = texture2D(uSampler2, vTexCoord.xy);\n'+
+                            'cc.w = c.w * uParams2.w * c2.x;\n'+
+                        '#else\n'+
+                            'cc.w = c.w * uParams2.w;\n'+
+                        '#endif\n'+
+
+                        'gl_FragColor = cc;\n'+
+                    '#else\n'+
+                        'gl_FragColor = mix(texture2D(uSampler, vTexCoord.xy), fogColor, vTexCoord.z);\n'+
+                    '#endif\n'+
+
+                '#endif\n'+
+
+            '#endif\n'+
+
+        '#endif\n'+
+    '}';
+
+
+GpuShaders.shadedMeshVertexShader =
+    'attribute vec3 aPosition;\n'+
+    'attribute vec2 aTexCoord;\n'+
+    'attribute vec3 aNormal;\n'+
+    'uniform mat4 uMV, uProj;\n'+
+    'uniform mat3 uNorm;\n'+
+    'uniform float uFogDensity;\n'+
+    'varying vec2 vTexCoord;\n'+
+    'varying vec4 vPosition;\n'+
+    'varying vec3 vNormal;\n'+
+    'varying float vFogFactor;\n'+
+    'void main() {\n'+
+        'vec4 camSpacePos = uMV * vec4(aPosition, 1.0);\n'+
+        'gl_Position = uProj * camSpacePos;\n'+
+        'float camDist = length(camSpacePos.xyz);\n'+
+        'vFogFactor = exp(uFogDensity * camDist);\n'+
+        'vTexCoord = aTexCoord;\n'+
+        'vPosition = camSpacePos;\n'+
+        'vNormal = aNormal * uNorm;\n'+
+    '}';
+
+
+GpuShaders.shadedMeshFragmentShader = 'precision mediump float;\n'+
+    '#ifdef textured\n'+
+        'uniform sampler2D uSampler;\n'+
+        'varying vec2 vTexCoord;\n'+
+    '#endif\n'+
+    'varying vec4 vPosition;\n'+
+    'varying vec3 vNormal;\n'+
+    'uniform mat4 uMaterial;\n'+
+    'varying float vFogFactor;\n'+
+    'uniform vec4 uFogColor;\n'+
+    'void main() {\n'+
+        'vec3 ldir = normalize(-vPosition.xyz);\n'+
+        'vec3 normal = normalize(vNormal);\n'+
+        'vec3 eyeDir = ldir;\n'+
+        'vec3 refDir = reflect(-ldir, normal);\n'+
+        'float specW = min(1.0, pow(max(dot(refDir, eyeDir), 0.0), uMaterial[3][0]));\n'+
+        'float diffW = min(1.0, max(dot(normal, ldir), 0.0));\n'+
+        'vec4 lcolor = uMaterial[0]+(uMaterial[1]*diffW)+(uMaterial[2]*specW);\n'+
+        '#ifdef textured\n'+
+            'vec4 tcolor = texture2D(uSampler, vTexCoord);\n'+
+            'gl_FragColor = mix(uFogColor, vec4(lcolor.xyz*(1.0/255.0), 1.0) * tcolor, vFogFactor); gl_FragColor.w *= uMaterial[3][1];\n'+
+        '#else\n'+
+            'gl_FragColor = mix(uFogColor, vec4(lcolor.xyz*(1.0/255.0), 1.0), vFogFactor);  gl_FragColor.w = uMaterial[3][1];\n'+
+        '#endif\n'+
+
+    '}';
+
+GpuShaders.tileWireFrameBasicShader = 'precision mediump float;\n'+
+    'uniform vec4 uColor;\n'+
+    'void main() {\n'+
+        'gl_FragColor = uColor;\n'+
+    '}';
+
+
+//used for 2d images
+GpuShaders.imageVertexShader = '\n'+
+    'attribute vec4 aPosition;\n'+
+    'uniform mat4 uProjectionMatrix;\n'+
+    'uniform mat4 uData;\n'+
+    'uniform vec4 uColor;\n'+
+    'uniform float uDepth;\n'+
+    'varying vec4 vColor;\n'+
+    'varying vec2 vTexcoords;\n'+
+    'void main(void){\n'+
+        'int i=int(aPosition.x);\n'+
+        //"gl_Position=uProjectionMatrix*vec4(floor(uData[i][0]+0.1),floor(uData[i][1]+0.1),0.0,1.0);\n"+
+        //IE11 :(
+
+        'vec4 p;\n'+
+
+        'if(i==0) p = vec4(floor(uData[0][0]+0.1),floor(uData[0][1]+0.1),uDepth,1.0), vTexcoords=vec2(uData[0][2], uData[0][3]);\n'+
+        'if(i==1) p = vec4(floor(uData[1][0]+0.1),floor(uData[1][1]+0.1),uDepth,1.0), vTexcoords=vec2(uData[1][2], uData[1][3]);\n'+
+        'if(i==2) p = vec4(floor(uData[2][0]+0.1),floor(uData[2][1]+0.1),uDepth,1.0), vTexcoords=vec2(uData[2][2], uData[2][3]);\n'+
+        'if(i==3) p = vec4(floor(uData[3][0]+0.1),floor(uData[3][1]+0.1),uDepth,1.0), vTexcoords=vec2(uData[3][2], uData[3][3]);\n'+
+
+        'gl_Position=uProjectionMatrix*p;\n'+
+        'vec4 c=uColor;\n'+
+        'c.w*=1.0;\n'+
+        'vColor=c;\n'+
+    '}';
+
+
+GpuShaders.imageFragmentShader = 'precision mediump float;\n'+
+    'varying vec4 vColor;\n'+
+    'varying vec2 vTexcoords;\n'+
+    'uniform sampler2D uSampler;\n'+
+    'void main(void){\n'+
+        'vec4 c=texture2D(uSampler, vec2(vTexcoords.x, vTexcoords.y) );\n'+
+        'c*=vColor;\n'+
+        'if(c.w < 0.01){ discard; }\n'+
+        'gl_FragColor = c;\n'+
+    '}';
+    
+
+/* harmony default export */ __webpack_exports__["a"] = (GpuShaders);
+
+
+
+
+
+
+
+/***/ }),
+/* 60 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_proj4__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_earcut__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_earcut__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_earcut___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_earcut__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__core__ = __webpack_require__(13);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CoreInterface; });
@@ -14656,11 +16120,11 @@ CoreInterface.prototype.callListener = function(name, event) {
 
 
 /***/ }),
-/* 59 */
+/* 61 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mgrs__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mgrs__ = __webpack_require__(35);
 
 
 function Point(x, y, z) {
@@ -14698,7 +16162,7 @@ Point.prototype.toMGRS = function(accuracy) {
 
 
 /***/ }),
-/* 60 */
+/* 62 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14757,7 +16221,7 @@ Point.prototype.toMGRS = function(accuracy) {
 
 
 /***/ }),
-/* 61 */
+/* 63 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14779,12 +16243,12 @@ Point.prototype.toMGRS = function(accuracy) {
 
 
 /***/ }),
-/* 62 */
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__hypot__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__log1py__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__hypot__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__log1py__ = __webpack_require__(70);
 
 
 
@@ -14797,7 +16261,7 @@ Point.prototype.toMGRS = function(accuracy) {
 
 
 /***/ }),
-/* 63 */
+/* 65 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14819,12 +16283,12 @@ Point.prototype.toMGRS = function(accuracy) {
 
 
 /***/ }),
-/* 64 */
+/* 66 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sinh__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__cosh__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sinh__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__cosh__ = __webpack_require__(67);
 
 
 
@@ -14860,7 +16324,7 @@ Point.prototype.toMGRS = function(accuracy) {
 
 
 /***/ }),
-/* 65 */
+/* 67 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14871,7 +16335,7 @@ Point.prototype.toMGRS = function(accuracy) {
 });
 
 /***/ }),
-/* 66 */
+/* 68 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14893,7 +16357,7 @@ Point.prototype.toMGRS = function(accuracy) {
 
 
 /***/ }),
-/* 67 */
+/* 69 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14933,7 +16397,7 @@ Point.prototype.toMGRS = function(accuracy) {
 
 
 /***/ }),
-/* 68 */
+/* 70 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14946,7 +16410,7 @@ Point.prototype.toMGRS = function(accuracy) {
 
 
 /***/ }),
-/* 69 */
+/* 71 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14955,7 +16419,7 @@ Point.prototype.toMGRS = function(accuracy) {
 });
 
 /***/ }),
-/* 70 */
+/* 72 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15060,7 +16524,7 @@ exports.rnb72 = {
 
 
 /***/ }),
-/* 71 */
+/* 73 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15328,7 +16792,7 @@ exports.sphere = {
 
 
 /***/ }),
-/* 72 */
+/* 74 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15352,7 +16816,7 @@ exports.oslo = 10.722916666667; //"10d43'22.5\"E"
 
 
 /***/ }),
-/* 73 */
+/* 75 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15363,12 +16827,12 @@ exports.oslo = 10.722916666667; //"10d43'22.5\"E"
 
 
 /***/ }),
-/* 74 */
+/* 76 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Proj__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__transform__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__transform__ = __webpack_require__(45);
 
 
 var wgs84 = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__Proj__["a" /* default */])('WGS84');
@@ -15446,7 +16910,7 @@ function proj4(fromProj, toProj, coord, retProj) {
 /* harmony default export */ __webpack_exports__["a"] = (proj4);
 
 /***/ }),
-/* 75 */
+/* 77 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15489,12 +16953,12 @@ function datum(datumCode, datum_params, a, b, es, ep2) {
 
 
 /***/ }),
-/* 76 */
+/* 78 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_values__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__datumUtils__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__datumUtils__ = __webpack_require__(41);
 
 
 
@@ -15537,12 +17001,12 @@ function checkParams(type) {
 
 
 /***/ }),
-/* 77 */
+/* 79 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_values__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__constants_Ellipsoid__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__constants_Ellipsoid__ = __webpack_require__(73);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__match__ = __webpack_require__(29);
 /* harmony export (immutable) */ __webpack_exports__["b"] = eccentricity;
 /* harmony export (immutable) */ __webpack_exports__["a"] = sphere;
@@ -15597,7 +17061,7 @@ function sphere(a, b, rf, ellps, sphere) {
 
 
 /***/ }),
-/* 78 */
+/* 80 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15618,7 +17082,7 @@ function sphere(a, b, rf, ellps, sphere) {
 
 
 /***/ }),
-/* 79 */
+/* 81 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15636,13 +17100,13 @@ function sphere(a, b, rf, ellps, sphere) {
 
 
 /***/ }),
-/* 80 */
+/* 82 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defs__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_wkt_parser__ = __webpack_require__(44);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__projString__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__defs__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_wkt_parser__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__projString__ = __webpack_require__(43);
 
 
 
@@ -15682,12 +17146,12 @@ function parse(code){
 
 
 /***/ }),
-/* 81 */
+/* 83 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__projections_merc__ = __webpack_require__(95);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__projections_longlat__ = __webpack_require__(94);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__projections_merc__ = __webpack_require__(97);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__projections_longlat__ = __webpack_require__(96);
 /* unused harmony export add */
 /* unused harmony export get */
 /* unused harmony export start */
@@ -15733,7 +17197,7 @@ function start() {
 
 
 /***/ }),
-/* 82 */
+/* 84 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15879,7 +17343,7 @@ var names = ["Albers_Conic_Equal_Area", "Albers", "aea"];
 
 
 /***/ }),
-/* 83 */
+/* 85 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16107,7 +17571,7 @@ var names = ["Azimuthal_Equidistant", "aeqd"];
 
 
 /***/ }),
-/* 84 */
+/* 86 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16236,14 +17700,14 @@ var names = ["Cassini", "Cassini_Soldner", "cass"];
 
 
 /***/ }),
-/* 85 */
+/* 87 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_adjust_lon__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_qsfnz__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_msfnz__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iqsfnz__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iqsfnz__ = __webpack_require__(69);
 /* unused harmony export init */
 /* unused harmony export forward */
 /* unused harmony export inverse */
@@ -16321,7 +17785,7 @@ var names = ["cea"];
 
 
 /***/ }),
-/* 86 */
+/* 88 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16382,7 +17846,7 @@ var names = ["Equirectangular", "Equidistant_Cylindrical", "eqc"];
 
 
 /***/ }),
-/* 87 */
+/* 89 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16520,11 +17984,11 @@ var names = ["Equidistant_Conic", "eqdc"];
 
 
 /***/ }),
-/* 88 */
+/* 90 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_srat__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_srat__ = __webpack_require__(71);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__constants_values__ = __webpack_require__(0);
 /* unused harmony export init */
 /* unused harmony export forward */
@@ -16585,7 +18049,7 @@ var names = ["gauss"];
 
 
 /***/ }),
-/* 89 */
+/* 91 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16611,7 +18075,7 @@ var names = ["geocent"];
 });
 
 /***/ }),
-/* 90 */
+/* 92 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16729,7 +18193,7 @@ var names = ["gnom"];
 
 
 /***/ }),
-/* 91 */
+/* 93 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -16847,7 +18311,7 @@ var names = ["Krovak", "krovak"];
 
 
 /***/ }),
-/* 92 */
+/* 94 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17163,7 +18627,7 @@ var names = ["Lambert Azimuthal Equal Area", "Lambert_Azimuthal_Equal_Area", "la
 
 
 /***/ }),
-/* 93 */
+/* 95 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17319,7 +18783,7 @@ var names = ["Lambert Tangential Conformal Conic Projection", "Lambert_Conformal
 
 
 /***/ }),
-/* 94 */
+/* 96 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17346,7 +18810,7 @@ var names = ["longlat", "identity"];
 
 
 /***/ }),
-/* 95 */
+/* 97 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17462,7 +18926,7 @@ var names = ["Mercator", "Popular Visualisation Pseudo Mercator", "Mercator_1SP"
 
 
 /***/ }),
-/* 96 */
+/* 98 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17526,7 +18990,7 @@ var names = ["Miller_Cylindrical", "mill"];
 
 
 /***/ }),
-/* 97 */
+/* 99 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17622,7 +19086,7 @@ var names = ["Mollweide", "moll"];
 
 
 /***/ }),
-/* 98 */
+/* 100 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17861,7 +19325,7 @@ var names = ["New_Zealand_Map_Grid", "nzmg"];
 
 
 /***/ }),
-/* 99 */
+/* 101 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -18047,7 +19511,7 @@ var names = ["Hotine_Oblique_Mercator", "Hotine Oblique Mercator", "Hotine_Obliq
 
 
 /***/ }),
-/* 100 */
+/* 102 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -18152,7 +19616,7 @@ var names = ["ortho"];
 
 
 /***/ }),
-/* 101 */
+/* 103 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -18307,7 +19771,7 @@ var names = ["Polyconic", "poly"];
 
 
 /***/ }),
-/* 102 */
+/* 104 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -18687,15 +20151,15 @@ var names = ["Quadrilateralized Spherical Cube", "Quadrilateralized_Spherical_Cu
 
 
 /***/ }),
-/* 103 */
+/* 105 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_adjust_lon__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_adjust_lat__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_pj_enfn__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_pj_enfn__ = __webpack_require__(37);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_pj_mlfn__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__common_pj_inv_mlfn__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__common_pj_inv_mlfn__ = __webpack_require__(38);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__constants_values__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__common_asinz__ = __webpack_require__(7);
 /* unused harmony export init */
@@ -18820,7 +20284,7 @@ var names = ["Sinusoidal", "sinu"];
 
 
 /***/ }),
-/* 104 */
+/* 106 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -18917,7 +20381,7 @@ var names = ["somerc"];
 
 
 /***/ }),
-/* 105 */
+/* 107 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -19109,11 +20573,11 @@ var names = ["stere", "Stereographic_South_Pole", "Polar Stereographic (variant 
 
 
 /***/ }),
-/* 106 */
+/* 108 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gauss__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gauss__ = __webpack_require__(90);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_adjust_lon__ = __webpack_require__(3);
 /* unused harmony export init */
 /* unused harmony export forward */
@@ -19186,13 +20650,13 @@ var names = ["Stereographic_North_Pole", "Oblique_Stereographic", "Polar_Stereog
 
 
 /***/ }),
-/* 107 */
+/* 109 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_pj_enfn__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_pj_enfn__ = __webpack_require__(37);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_pj_mlfn__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_pj_inv_mlfn__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_pj_inv_mlfn__ = __webpack_require__(38);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_adjust_lon__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__constants_values__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__common_sign__ = __webpack_require__(11);
@@ -19376,12 +20840,12 @@ var names = ["Transverse_Mercator", "Transverse Mercator", "tmerc"];
 
 
 /***/ }),
-/* 108 */
+/* 110 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_adjust_zone__ = __webpack_require__(61);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__etmerc__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_adjust_zone__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__etmerc__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__constants_values__ = __webpack_require__(0);
 /* unused harmony export dependsOn */
 /* unused harmony export init */
@@ -19417,7 +20881,7 @@ var names = ["Universal Transverse Mercator System", "utm"];
 
 
 /***/ }),
-/* 109 */
+/* 111 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -19560,18 +21024,18 @@ var names = ["Van_der_Grinten_I", "VanDerGrinten", "vandg"];
 
 
 /***/ }),
-/* 110 */
+/* 112 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__package_json__ = __webpack_require__(111);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__package_json__ = __webpack_require__(113);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__package_json___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__package_json__);
 /* harmony reexport (binding) */ if(__webpack_require__.o(__WEBPACK_IMPORTED_MODULE_0__package_json__, "version")) __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__package_json__["version"]; });
 
 
 
 /***/ }),
-/* 111 */
+/* 113 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -19690,36 +21154,36 @@ module.exports = {
 };
 
 /***/ }),
-/* 112 */
+/* 114 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_projections_tmerc__ = __webpack_require__(107);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_projections_etmerc__ = __webpack_require__(42);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lib_projections_utm__ = __webpack_require__(108);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lib_projections_sterea__ = __webpack_require__(106);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__lib_projections_stere__ = __webpack_require__(105);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__lib_projections_somerc__ = __webpack_require__(104);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__lib_projections_omerc__ = __webpack_require__(99);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__lib_projections_lcc__ = __webpack_require__(93);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__lib_projections_krovak__ = __webpack_require__(91);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__lib_projections_cass__ = __webpack_require__(84);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__lib_projections_laea__ = __webpack_require__(92);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__lib_projections_aea__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__lib_projections_gnom__ = __webpack_require__(90);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__lib_projections_cea__ = __webpack_require__(85);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__lib_projections_eqc__ = __webpack_require__(86);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__lib_projections_poly__ = __webpack_require__(101);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__lib_projections_nzmg__ = __webpack_require__(98);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__lib_projections_mill__ = __webpack_require__(96);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__lib_projections_sinu__ = __webpack_require__(103);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__lib_projections_moll__ = __webpack_require__(97);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__lib_projections_eqdc__ = __webpack_require__(87);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__lib_projections_vandg__ = __webpack_require__(109);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__lib_projections_aeqd__ = __webpack_require__(83);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__lib_projections_ortho__ = __webpack_require__(100);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__lib_projections_geocent__ = __webpack_require__(89);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__lib_projections_qsc__ = __webpack_require__(102);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lib_projections_tmerc__ = __webpack_require__(109);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lib_projections_etmerc__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lib_projections_utm__ = __webpack_require__(110);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__lib_projections_sterea__ = __webpack_require__(108);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__lib_projections_stere__ = __webpack_require__(107);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__lib_projections_somerc__ = __webpack_require__(106);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__lib_projections_omerc__ = __webpack_require__(101);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__lib_projections_lcc__ = __webpack_require__(95);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__lib_projections_krovak__ = __webpack_require__(93);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__lib_projections_cass__ = __webpack_require__(86);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__lib_projections_laea__ = __webpack_require__(94);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__lib_projections_aea__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__lib_projections_gnom__ = __webpack_require__(92);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__lib_projections_cea__ = __webpack_require__(87);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__lib_projections_eqc__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__lib_projections_poly__ = __webpack_require__(103);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__lib_projections_nzmg__ = __webpack_require__(100);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__lib_projections_mill__ = __webpack_require__(98);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__lib_projections_sinu__ = __webpack_require__(105);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__lib_projections_moll__ = __webpack_require__(99);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__lib_projections_eqdc__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__lib_projections_vandg__ = __webpack_require__(111);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__lib_projections_aeqd__ = __webpack_require__(85);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__lib_projections_ortho__ = __webpack_require__(102);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__lib_projections_geocent__ = __webpack_require__(91);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__lib_projections_qsc__ = __webpack_require__(104);
 
 
 
@@ -19776,7 +21240,7 @@ module.exports = {
 });
 
 /***/ }),
-/* 113 */
+/* 115 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -19952,7 +21416,7 @@ function parseString(txt) {
 
 
 /***/ }),
-/* 114 */
+/* 116 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -20066,23 +21530,23 @@ function sExpr(v, obj) {
 
 
 /***/ }),
-/* 115 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = function() {
-	return __webpack_require__(45)("/*!\n * Copyright (c) 2017 Melown Technologies SE\n * \n * Redistribution and use in source and binary forms, with or without\n * modification, are permitted provided that the following conditions are met:\n * \n * *  Redistributions of source code must retain the above copyright notice,\n *    this list of conditions and the following disclaimer.\n * \n * *  Redistributions in binary form must reproduce the above copyright\n *    notice, this list of conditions and the following disclaimer in the\n *    documentation and/or other materials provided with the distribution.\n * \n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n * POSSIBILITY OF SUCH DAMAGE.\n * \n */\n/******/ (function(modules) { // webpackBootstrap\n/******/ \t// The module cache\n/******/ \tvar installedModules = {};\n/******/\n/******/ \t// The require function\n/******/ \tfunction __webpack_require__(moduleId) {\n/******/\n/******/ \t\t// Check if module is in cache\n/******/ \t\tif(installedModules[moduleId]) {\n/******/ \t\t\treturn installedModules[moduleId].exports;\n/******/ \t\t}\n/******/ \t\t// Create a new module (and put it into the cache)\n/******/ \t\tvar module = installedModules[moduleId] = {\n/******/ \t\t\ti: moduleId,\n/******/ \t\t\tl: false,\n/******/ \t\t\texports: {}\n/******/ \t\t};\n/******/\n/******/ \t\t// Execute the module function\n/******/ \t\tmodules[moduleId].call(module.exports, module, module.exports, __webpack_require__);\n/******/\n/******/ \t\t// Flag the module as loaded\n/******/ \t\tmodule.l = true;\n/******/\n/******/ \t\t// Return the exports of the module\n/******/ \t\treturn module.exports;\n/******/ \t}\n/******/\n/******/\n/******/ \t// expose the modules object (__webpack_modules__)\n/******/ \t__webpack_require__.m = modules;\n/******/\n/******/ \t// expose the module cache\n/******/ \t__webpack_require__.c = installedModules;\n/******/\n/******/ \t// identity function for calling harmony imports with the correct context\n/******/ \t__webpack_require__.i = function(value) { return value; };\n/******/\n/******/ \t// define getter function for harmony exports\n/******/ \t__webpack_require__.d = function(exports, name, getter) {\n/******/ \t\tif(!__webpack_require__.o(exports, name)) {\n/******/ \t\t\tObject.defineProperty(exports, name, {\n/******/ \t\t\t\tconfigurable: false,\n/******/ \t\t\t\tenumerable: true,\n/******/ \t\t\t\tget: getter\n/******/ \t\t\t});\n/******/ \t\t}\n/******/ \t};\n/******/\n/******/ \t// getDefaultExport function for compatibility with non-harmony modules\n/******/ \t__webpack_require__.n = function(module) {\n/******/ \t\tvar getter = module && module.__esModule ?\n/******/ \t\t\tfunction getDefault() { return module['default']; } :\n/******/ \t\t\tfunction getModuleExports() { return module; };\n/******/ \t\t__webpack_require__.d(getter, 'a', getter);\n/******/ \t\treturn getter;\n/******/ \t};\n/******/\n/******/ \t// Object.prototype.hasOwnProperty.call\n/******/ \t__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };\n/******/\n/******/ \t// __webpack_public_path__\n/******/ \t__webpack_require__.p = \"\";\n/******/\n/******/ \t// Load entry module and return exports\n/******/ \treturn __webpack_require__(__webpack_require__.s = 9);\n/******/ })\n/************************************************************************/\n/******/ ([\n/* 0 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return globals; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"d\", function() { return clamp; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"g\", function() { return vec3Normalize; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"h\", function() { return vec3Length; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"i\", function() { return vec3Cross; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"e\", function() { return simpleFmtCall; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"f\", function() { return getHash; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"j\", function() { return stringToUint8Array; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"b\", function() { return unint8ArrayToString; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"c\", function() { return Utf8ArrayToStr; });\n\nvar globals = {\n    stylesheetData : {},\n    stylesheetLayers : {},\n    stylesheetBitmaps : {},\n    stylesheetFonts : {},\n    stylesheetConstants : {},\n    stylesheetVariables : {},\n    insidePack : false,\n    directPoints : [],\n    directPoint : null,\n    fonts : {},\n    fontsMap : {},\n    fontsStorage : {},\n    forceOrigin : false,\n    forceScale : [1,1,1],\n    bboxMin : [0,0,0],\n    bboxMax : [1,1,1],\n    geocent : false,\n    tileX : 0,\n    tileY : 0,\n    tileLod : 0,\n    tileSize : 1,\n    hitState : 0,\n    pixelFactor : 1,\n    alwaysEventInfo : false,\n    metricUnits : true,\n    language : 'en',\n    groupOptimize : true,\n    groupOrigin : [0,0,0],\n    messageBuffer : new Array(65536),\n    messageBufferIndex : 0,\n    messageBufferSize : 65536,\n    messagePackSize : 0,\n    signatureCounter : 0,\n    autoLod : false,\n    featureType : null,\n    groupId : null,\n    disableLog : false,\n    reduceMode : 'scr-count4',\n    reduceParams : null,\n};\n\n\nfunction clamp(value, min, max) {\n    if (value < min) {\n        value = min;\n    }\n\n    if (value > max) {\n        value = max;\n    }\n\n    return value;\n}\n\n\nfunction vec3Normalize(a, b) {\n    b || (b = a);\n    var c = a[0],\n        d = a[1],\n        e = a[2],\n        g = Math.sqrt(c * c + d * d + e * e);\n    if (g) {\n        if (g == 1) {\n            b[0] = c;\n            b[1] = d;\n            b[2] = e;\n            return b;\n        }\n    } else {\n        b[0] = 0;\n        b[1] = 0;\n        b[2] = 0;\n        return b;\n    }\n    g = 1 / g;\n    b[0] = c * g;\n    b[1] = d * g;\n    b[2] = e * g;\n    return b;\n}\n\n\nfunction vec3Length(a) {\n    var b = a[0],\n        c = a[1];\n    a = a[2];\n    return Math.sqrt(b * b + c * c + a * a);\n}\n\n\nfunction vec3Cross(a, b, c) {\n    c || (c = a);\n    var d = a[0],\n        e = a[1];\n    a = a[2];\n    var g = b[0],\n        f = b[1];\n    b = b[2];\n    c[0] = e * b - a * f;\n    c[1] = a * g - d * b;\n    c[2] = d * f - e * g;\n    return c;\n}\n\n\nfunction getHash(str) {\n    if (!str || str.length === 0) {\n        return 0;    \n    }\n\n    var hash = 0, c;\n    for (var i = 0, li = str.length; i < li; i++) {\n        c   = str.charCodeAt(i);\n        hash  = ((hash << 5) - hash) + c;\n        hash |= 0; // Convert to 32bit integer\n    }\n\n    return hash;\n}\n\n\nvar simpleFmtCall = (function obj(str, call) {\n    if (!str || str == '') {\n        return '';\n    }\n\n    var i = str.indexOf('{'), li, str2;\n\n    if (i == -1) {\n        return str;\n    } else {\n        str2 = i > 0 ? str.substring(0, i) : '';\n    }\n\n    var counter = 0;\n    var begin = -1;\n\n    for (li = str.length; i < li; i++) {\n        var c = str.charAt(i);\n\n        if (c == '{') {\n            if (counter == 0) {\n                begin = i;\n            }\n\n            counter++;\n        } else if (c == '}') {\n            counter--;\n\n            if (counter == 0) {\n                str2 += call(str.substring(begin+1, i));\n            }\n            \n        } else if (counter == 0) {\n            str2 += c;\n        }\n    }\n\n    return str2;\n});\n\n/*\nfunction copyArrayToBuffer(view, index, array) {\n    for (var i = 0, li = array.length; i < li; i++) {\n        view.setFloat32(index, array[i]); index += 4;\n    }\n\n    return index;\n}\n\nfunction copyDynamicArrayToBuffer(view, index, array) {\n    if (array) {\n        view.setUint8(index, array.length); index += 1;\n\n        for (var i = 0, li = array.length; i < li; i++) {\n            view.setFloat32(index, array[i]); index += 4;\n        }\n    } else {\n        view.setUint8(index, 0); index += 1;\n    }\n\n    return index;\n}\n\nfunction copyDynamicArrayOfArraysToBuffer(view, index, array) {\n    if (array) {\n        view.setUint16(index, array.length); index += 2;\n\n        for (var i = 0, li = array.length; i < li; i++) {\n            var subarray = array[i];\n\n            for (var j = 0, lj = array.length; j < lj; j++) {\n                view.setUint16(index, subarray[j]); index += 2;\n            }\n        }\n    } else {\n        view.setUint16(index, 0); index += 2;\n    }\n\n    return index;\n}\n\nfunction getSizeOfArrayOfArrays(array) {\n    var size = 0;\n\n    for (var i = 0, li = array.length; i < li; i++) {\n        size += array[i].length;\n    }\n\n    return size;\n}\n*/\n\n//var textEncoderUtf8 = null; //(typeof TextEncoder !== 'undefined') ? (new TextEncoder('utf-8')) : null;\nvar textEncoderUtf8 = (typeof TextEncoder !== 'undefined') ? (new TextEncoder('utf-8')) : null;\n\nfunction stringToUint8Array(str) {\n    if (textEncoderUtf8) {\n        return textEncoderUtf8.encode(str);\n    } else {\n\n        /*\n        console.log('' + (str.length * 2));\n\n        var buffer = new ArrayBuffer(str.length * 2);\n        var view = new Uint16Array(buffer);\n        for (var i = 0, li = str.length; i < li; i++) {\n            view[i] = str.charCodeAt(i);\n        }\n        return new Uint8Array(buffer);\n        */\n\n\n        // 1. Let S be the DOMString value.\n        var s = String(str);\n\n        // 2. Let n be the length of S.\n        var n = s.length;\n\n        // 3. Initialize i to 0.\n        var i = 0;\n\n        // 4. Initialize U to be an empty sequence of Unicode characters.\n        var u = [];\n\n        // 5. While i < n:\n        while (i < n) {\n\n          // 1. Let c be the code unit in S at index i.\n          var c = s.charCodeAt(i);\n\n          // 2. Depending on the value of c:\n\n          // c < 0xD800 or c > 0xDFFF\n          if (c < 0xD800 || c > 0xDFFF) {\n            // Append to U the Unicode character with code point c.\n            u.push(c);\n          }\n\n          // 0xDC00 ≤ c ≤ 0xDFFF\n          else if (0xDC00 <= c && c <= 0xDFFF) {\n            // Append to U a U+FFFD REPLACEMENT CHARACTER.\n            u.push(0xFFFD);\n          }\n\n          // 0xD800 ≤ c ≤ 0xDBFF\n          else if (0xD800 <= c && c <= 0xDBFF) {\n            // 1. If i = n−1, then append to U a U+FFFD REPLACEMENT\n            // CHARACTER.\n            if (i === n - 1) {\n              u.push(0xFFFD);\n            }\n            // 2. Otherwise, i < n−1:\n            else {\n              // 1. Let d be the code unit in S at index i+1.\n              var d = s.charCodeAt(i + 1);\n\n              // 2. If 0xDC00 ≤ d ≤ 0xDFFF, then:\n              if (0xDC00 <= d && d <= 0xDFFF) {\n                // 1. Let a be c & 0x3FF.\n                var a = c & 0x3FF;\n\n                // 2. Let b be d & 0x3FF.\n                var b = d & 0x3FF;\n\n                // 3. Append to U the Unicode character with code point\n                // 2^16+2^10*a+b.\n                u.push(0x10000 + (a << 10) + b);\n\n                // 4. Set i to i+1.\n                i += 1;\n              }\n\n              // 3. Otherwise, d < 0xDC00 or d > 0xDFFF. Append to U a\n              // U+FFFD REPLACEMENT CHARACTER.\n              else  {\n                u.push(0xFFFD);\n              }\n            }\n          }\n\n          // 3. Set i to i+1.\n          i += 1;\n        }\n\n        // 6. Return U.\n        return new Uint8Array((new Uint32Array(u)).buffer);        \n    }\n}\n\n/*\nvar textDecoderUtf8 = TextEncoder ? (new TextDecoder('utf-8')) : null;\n\nfunction unint8ArrayToString(array) {\n    if (textDecoderUtf8) {\n        return textDecoderUtf8.decode(array);\n    } else {\n        return String.fromCharCode.apply(null, new Uint8Array(array.buffer));\n    }\n}\n*/\n\n\nvar textDecoderUtf8 = (typeof TextDecoder !== 'undefined') ? (new TextDecoder('utf-8')) : null;\n\nfunction unint8ArrayToString(array, skip) {\n    if (textDecoderUtf8 && !skip) {\n        return textDecoderUtf8.decode(array);\n    } else {\n        // return String.fromCharCode.apply(null, new Uint8Array(array.buffer)); //works only for small strings\n\n        var s = '';\n        //var code_points2 = new Uint8Array(array.buffer, array.byteOffset, array.byteLength);\n        var code_points2 = new Uint8Array(array.byteLength);\n        code_points2.set(array);\n        var code_points = new Uint32Array(code_points2.buffer);\n\n        for (var i = 0, li = code_points.length; i < li; ++i) {\n          var cp = code_points[i];\n          if (cp <= 0xFFFF) {\n            s += String.fromCharCode(cp);\n          } else {\n            cp -= 0x10000;\n            s += String.fromCharCode((cp >> 10) + 0xD800,\n                                     (cp & 0x3FF) + 0xDC00);\n          }\n        }\n        return s;\n\n    }\n}\n\n\nfunction Utf8ArrayToStr(array, skip) {  //more universal\n    if (textDecoderUtf8 && !skip) {\n        return textDecoderUtf8.decode(array);\n    } else {\n\n        var out, i, len, c;\n        var char2, char3;\n\n        array = new Uint8Array(array);\n\n        out = \"\";\n        len = array.length;\n        i = 0;\n\n        while(i < len) {\n            c = array[i++];\n\n            switch(c >> 4) { \n              case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:\n                // 0xxxxxxx\n                out += String.fromCharCode(c);\n                break;\n              case 12: case 13:\n                // 110x xxxx   10xx xxxx\n                char2 = array[i++];\n                out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F));\n                break;\n              case 14:\n                // 1110 xxxx  10xx xxxx  10xx xxxx\n                char2 = array[i++];\n                char3 = array[i++];\n                out += String.fromCharCode(((c & 0x0F) << 12) |\n                               ((char2 & 0x3F) << 6) |\n                               ((char3 & 0x3F) << 0));\n                break;\n            }\n        }\n\n        return out;\n    }\n}\n\n\n\n\n/***/ }),\n/* 1 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"b\", function() { return optimizeGroupMessages; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"c\", function() { return postGroupMessageFast; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return postGroupMessageLite; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"d\", function() { return postPackedMessage; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"e\", function() { return postPackedMessages; });\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */], stringToUint8Array = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"j\" /* stringToUint8Array */];\nvar tmpVertexBuffer = new Uint8Array(65536*4*4*4*4);\nvar tmpVertexBuffer2 = new Uint8Array(65536*4*4*4*4);\nvar packedEvents = [];\nvar packedTransferables = [];\n\n\nfunction postPackedMessage(message, transferables) {\n\n    if (globals.config.mapPackLoaderEvents) {\n\n        packedEvents.push(message);\n\n        if (transferables) {\n            packedTransferables = packedTransferables.concat(transferables);\n        }\n\n    } else {\n\n        if (transferables) {\n            postMessage(message, transferables);\n        } else {\n            postMessage(message);\n        }\n    }\n}\n\n\nfunction postGroupMessageFast(command, type, message, buffers, signature) {\n\n    var message2 = stringToUint8Array(JSON.stringify(message));\n    var messageSize = 1+1+4+message2.byteLength, i, li;\n\n    for (i = 0, li = buffers.length; i < li; i++) {\n        messageSize += 4+buffers[i].byteLength;\n    }\n\n    var buff = new Uint8Array(messageSize);\n    var view = new DataView(buff.buffer), index = 0, index2 = 0;\n\n    view.setUint8(index, command); index += 1;\n    view.setUint8(index, type); index += 1;\n    view.setUint32(index, message2.byteLength); index += 4;\n    buff.set(message2, index); index += message2.byteLength;\n    index2 = index;\n\n    for (i = 0, li = buffers.length; i < li; i++) {\n        view.setUint32(index, buffers[i].length); index += 4;\n        buff.set( new Uint8Array(buffers[i].buffer), index); index += buffers[i].byteLength;\n    }\n\n    postGroupMessageDirect(command, type, buff.buffer, index2, signature, message['hitable'], message['totalPoints'], (type == 11) ? message : null);\n}\n\n\nfunction postGroupMessageLite(command, type, number) {\n    var messageSize = 1+1+4, index = 0;\n\n    var buff = new ArrayBuffer(messageSize);\n    var view = new DataView(buff), index = 0;\n\n    view.setUint8(index, command); index += 1;\n    view.setUint8(index, type); index += 1;\n    view.setUint32(index, (number ? number : 0)); index += 4;\n\n    postGroupMessageDirect(command, type, buff, index, \"\");\n}\n\n\nfunction postGroupMessageDirect(command, type, message, buffersIndex, signature, hitable, totalPoints, job2) {\n\n    if (globals.messageBufferIndex >= globals.messageBufferSize) { \n        var oldBuffer = globals.messageBuffer; \n        globals.messageBufferSize += 65536;\n        globals.messageBuffer = new Array(globals.messageBufferSize);\n        \n        for (var i = 0, li = globals.messageBufferIndex; i < li; i++) {\n            globals.messageBuffer[i] = oldBuffer[i];\n        }\n    }\n    \n    globals.messageBuffer[globals.messageBufferIndex] = { command: command, type: type, job : message, buffersIndex: buffersIndex, signature: signature, hitable: hitable, totalPoints: totalPoints, job2: job2 };\n    globals.messageBufferIndex++;\n    globals.messagePackSize += message.byteLength;\n}\n\n\nfunction setToTmpBuffer(index, buffer2, offset) {\n    var buffer = (index == 1) ? tmpVertexBuffer2 : tmpVertexBuffer;\n\n    if (buffer.byteLength <= buffer2.byteLength + offset) {\n        var buffer3 = new Uint8Array(buffer.byteLength * 2);\n        buffer3.set(buffer, 0);\n        buffer = buffer3;\n\n        if (index == 1) {\n            tmpVertexBuffer2 = buffer;\n        } else {\n            tmpVertexBuffer = buffer;\n        }\n    }\n\n    buffer.set(buffer2, offset);\n}\n\n\nfunction optimizeGroupMessages() {\n\n    //loop messages\n    var messages = globals.messageBuffer;\n    var j, lk, k, message2, job2, bufferSize, buffer, view, index, length, buff, buff2, index, count, totalVertices;\n\n\n    for (var i = 0, li = globals.messageBufferIndex; i < li; i++) {\n        var message = messages[i];\n        var job = message.job;\n        var type = message.type;\n        var signature = message.signature;\n\n        //console.log('command: ' + message.command + ' type:' + message.type);\n        \n        if (!message.hitable && !message.reduced && \n            (type >= 6 && type <= 12)) {\n            \n            switch(type) {\n            case 12:\n            case 6:\n                count = 0;\n\n                //get message vertices length and copy vertices to buffer\n                length = (new DataView(message.job)).getUint32(message.buffersIndex) * 4;\n\n                //tmpVertexBuffer.set(new Uint8Array(message.job, message.buffersIndex+4, length), 0);\n                setToTmpBuffer(0, new Uint8Array(message.job, message.buffersIndex+4, length), 0);\n                bufferSize = length;\n\n                for (j = i + 1; j < li; j++) {\n                    message2 = messages[j];\n\n                    if (message2.signature == signature) {\n                        message2.reduced = true;\n                        count++;\n\n                        //get message2 vertices length\n                        length = (new DataView(message2.job)).getUint32(message2.buffersIndex) * 4;\n\n                        // copy vertices to buffer\n                        //tmpVertexBuffer.set(new Uint8Array(message2.job, message2.buffersIndex+4, length), bufferSize);\n                        setToTmpBuffer(0, new Uint8Array(message2.job, message2.buffersIndex+4, length), bufferSize);\n                        bufferSize += length;\n                    }\n                }\n\n                if (count > 0) {\n\n                    //create new message with merged vertices\n                    buffer = new Uint8Array(message.buffersIndex+2*(4+bufferSize));\n                    view = new DataView(buffer.buffer);\n                    buffer.set(new Uint8Array(message.job, 0, message.buffersIndex), 0);\n\n                    view.setUint32(message.buffersIndex, bufferSize / 4);\n                    buffer.set(new Uint8Array(tmpVertexBuffer.buffer, 0, bufferSize), message.buffersIndex + 4);\n\n                    globals.messagePackSize -= message.job.byteLength;\n                    globals.messagePackSize += buffer.byteLength;\n                    message.job = buffer.buffer;\n                }\n\n                break;\n                    \n            case 9:\n            case 11:\n            case 7:\n\n                count = 0;\n                totalVertices = 0;\n\n                //get message vertices length and copy vertices to buffer\n                length = (new DataView(message.job)).getUint32(message.buffersIndex);\n                //console.log('count: ' + count + ' totalPoints:' + message.totalPoints + ' length: ' + length);\n                length *= 4;\n                totalVertices += length;\n\n\n                //tmpVertexBuffer.set(new Uint8Array(message.job, message.buffersIndex+4, length), 0);\n                //tmpVertexBuffer2.set(new Uint8Array(message.job, message.buffersIndex+4+length+4, length), 0);\n                setToTmpBuffer(0, new Uint8Array(message.job, message.buffersIndex+4, length), 0);\n                setToTmpBuffer(1, new Uint8Array(message.job, message.buffersIndex+4+length+4, length), 0);\n                bufferSize = length;\n\n                for (j = i + 1; j < li; j++) {\n                    message2 = messages[j];\n\n                    if (message2.signature == signature) {\n                        message2.reduced = true;\n                        globals.messagePackSize -= message2.job.byteLength;\n                        count++;\n\n                        //get message2 vertices length\n                        length = (new DataView(message2.job)).getUint32(message2.buffersIndex);\n                        //console.log('count:' + count + ' totalPoints:' + message2.totalPoints + ' length:' + length + ' jobl:' + message2.job.byteLength + ' remaning:' + (message2.job.byteLength - (message2.buffersIndex+4)) + ' bufferSize:' + bufferSize + ' totalVertices:' + totalVertices);\n                        length *= 4;\n                        totalVertices += length;\n\n\n                        // copy vertices to buffer\n                        //tmpVertexBuffer.set(new Uint8Array(message2.job, message2.buffersIndex+4, length), bufferSize);\n                        setToTmpBuffer(0, new Uint8Array(message2.job, message2.buffersIndex+4, length), bufferSize);\n\n                        // copy normals to buffer\n                        //tmpVertexBuffer2.set(new Uint8Array(message2.job, message2.buffersIndex+4+length+4, length), bufferSize);\n                        setToTmpBuffer(1, new Uint8Array(message2.job, message2.buffersIndex+4+length+4, length), bufferSize);\n                        bufferSize += length;\n\n                        if (type == 11) {\n                            var files = message.job2['files'];\n                            var files2 = message2.job2['files'];\n\n                            for (k = 0, lk = files2.length; k < lk; k++) {\n                                if (!files[k]) {\n                                    files[k] = [];\n                                }\n\n                                for (var m = 0, lm = files2[k].length; m < lm; m++) {\n                                    if (files[k].indexOf(files2[k][m]) == -1) {\n                                        files[k].push(files2[k][m]);\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n\n                if (count > 0) {\n\n                    //create new message with merged vertices\n\n                    if (type == 11) { //we have to rebuild header\n                        var buffjob = stringToUint8Array(JSON.stringify(message.job2));\n\n                        buffer = new Uint8Array(1+1+4+buffjob.byteLength+2*(4+bufferSize));\n                        view = new DataView(buffer.buffer), index = 0;\n\n                        view.setUint8(index, message.command); index += 1;\n                        view.setUint8(index, type); index += 1;\n                        view.setUint32(index, buffjob.byteLength); index += 4;\n                        buffer.set(buffjob, index); index += buffjob.byteLength;\n\n                        message.buffersIndex = index;\n                    } else {\n                        buffer = new Uint8Array(message.buffersIndex+2*(4+bufferSize));\n                        view = new DataView(buffer.buffer);\n                        buffer.set(new Uint8Array(message.job, 0, message.buffersIndex), 0);\n                    }\n\n                    view.setUint32(message.buffersIndex, bufferSize / 4);\n                    buffer.set(new Uint8Array(tmpVertexBuffer.buffer, 0, bufferSize), message.buffersIndex + 4);\n\n                    view.setUint32(message.buffersIndex + 4 + bufferSize, bufferSize / 4);\n                    buffer.set(new Uint8Array(tmpVertexBuffer2.buffer, 0, bufferSize), message.buffersIndex + 4 + bufferSize + 4 );\n\n                    globals.messagePackSize -= message.job.byteLength;\n                    globals.messagePackSize += buffer.byteLength;\n                    message.job = buffer.buffer;\n\n                }\n\n                break;\n            }\n        \n        }\n    }\n\n    var buffer = new Uint8Array(globals.messagePackSize), index = 0;\n\n    for (var i = 0, li = globals.messageBufferIndex; i < li; i++) {\n        var message = globals.messageBuffer[i];\n\n        if (!message.reduced) {\n            buffer.set(new Uint8Array(message.job), index);\n            index += globals.messageBuffer[i].job.byteLength;\n        }\n    }\n\n    //console.log('send:' + buffer.length);\n\n    postPackedMessage({'command' : 'addPackedCommands', 'buffer': buffer}, [buffer.buffer]);\n\n    globals.messageBufferIndex = 0;\n    globals.messagePackSize = 0;\n} \n\n\nfunction postPackedMessages() {\n    if (packedEvents.length > 0) {\n        if (packedTransferables.length > 0) {\n            postMessage({'command': 'packed-events', 'messages':packedEvents}, packedTransferables);\n        } else {\n            postMessage({'command': 'packed-events', 'messages':packedEvents});\n        }\n\n        packedEvents = [];\n        packedTransferables = [];\n    }\n}\n\n\n\n\n\n\n/***/ }),\n/* 2 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__worker_text_js__ = __webpack_require__(3);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"e\", function() { return getFilterResult; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"d\", function() { return processStylesheet; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"b\", function() { return getLayer; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"c\", function() { return getLayerPropertyValue; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"g\", function() { return getLayerExpresionValue; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"f\", function() { return getLayerPropertyValueInner; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return makeFasterFilter; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"h\", function() { return hasLayerProperty; });\n\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */];\nvar clamp = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"d\" /* clamp */];\nvar simpleFmtCall = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"e\" /* simpleFmtCall */];\nvar getHash = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"f\" /* getHash */];\nvar hasLatin = __WEBPACK_IMPORTED_MODULE_1__worker_text_js__[\"c\" /* hasLatin */], isCJK = __WEBPACK_IMPORTED_MODULE_1__worker_text_js__[\"d\" /* isCJK */];\nvar areTextCharactersAvailable = __WEBPACK_IMPORTED_MODULE_1__worker_text_js__[\"e\" /* areTextCharactersAvailable */];\n\n\nvar getLayer = function(layerId, featureType, index) {\n    var layer = globals.stylesheetData.layers[layerId];\n    if (layer == null) {\n        logError('wrong-Layer', layerId, null, null, index, featureType);\n        return {};\n    } else {\n        return layer;\n    }\n};\n\n\nvar getLayerExpresionValue = function(layer, value, feature, lod, key, depth) {\n    var finalValue;\n    if (!depth) {\n        depth = 0;\n    }\n    if (depth > 100) {\n        return void(0);\n    }\n\n\n    switch(typeof value) {\n    case 'string':\n\n        if (value.length > 0) {\n\n            switch (value.charAt(0)) {\n                case '#': \n                case '$':\n                case '@':\n                case '&':\n                case '%':\n\n                    finalValue = getLayerPropertyValueInnerString(layer, key, feature, lod, value, depth + 1);\n\n                    if (typeof finalValue == 'undefined') {\n                        logError('wrong-expresion', layer['$$layer-id'], value, value, null, 'feature-property');\n                    }\n\n                    return finalValue;\n            }\n\n\n            return simpleFmtCall(value, (function(str){  \n\n                if (str.length > 0) {\n\n                    switch (str.charAt(0)) {\n                        case '#': \n                        case '$':\n                        case '@':\n                        case '&':\n                        case '%':\n\n                            finalValue = getLayerPropertyValueInnerString(layer, key, feature, lod, str, depth + 1);\n\n                            if (typeof finalValue == 'undefined') {\n                                logError('wrong-expresion', layer['$$layer-id'], value, value, null, 'feature-property');\n                            }\n        \n                            return finalValue;\n                    }\n\n                    if (str.indexOf('{') != -1) {\n\n                        try {\n                            str = str.replace(/'/g, '\"');\n                            finalValue = JSON.parse(str);\n                        } catch(e) {\n                            logError('wrong-expresion', layer['$$layer-id'], value, value, null, 'feature-property');\n                            return \"\";\n                        }\n\n                        if (typeof finalValue == 'undefined') {\n                            logError('wrong-expresion', layer['$$layer-id'], value, value, null, 'feature-property');\n                            return \"\";\n                        } else {\n                            return getLayerPropertyValueInner(layer, key, feature, lod, finalValue, depth + 1);\n                        }\n\n                    } else {\n                        return str;\n                    }\n\n                }\n\n            }));\n        }\n\n        break;\n    }\n    \n    return value;\n};\n\n\nvar hasLayerProperty = function(layer, key) {\n    return (typeof layer[key] !== 'undefined');\n};\n\n\nvar getLayerPropertyValue = function(layer, key, feature, lod) {\n    var value = getLayerPropertyValueInner(layer, key, feature, lod);\n    return validateLayerPropertyValue(layer['$$layer-id'], key, value);\n};\n\n\nvar getLayerPropertyValueInnerString = function(layer, key, feature, lod, value, depth) {\n    var finalValue = value;\n\n    //is it feature property, variable or constant?\n    switch(value.charAt(0)) {\n        case '$': finalValue = feature.properties[value.substr(1)]; break;\n        case '@': finalValue = globals.stylesheetConstants[value]; break;\n        case '%': finalValue = globals.stylesheetVariables[value.substr(1)]; break;\n        case '&': finalValue = globals.stylesheetLocals[value]; break;\n        case '#': \n            //debugger;\n            switch(value) {\n                case '#id':        return feature.id;\n                case '#type':      return globals.featureType;\n                case '#group':     return globals.groupId;\n                case '#lod':       return globals.tileLod;\n                case '#tileSize':  return globals.tileSize;\n                case '#pixelSize': return globals.pixelSize;\n                case '#metric':    return globals.metricUnits;\n                case '#dpr':       return globals.pixelFactor;\n                case '#language':  return globals.language;\n            }\n            break;\n    }\n\n    if (value.charAt(0) == '&') {\n        if (typeof finalValue === 'undefined') {\n            finalValue = layer[value];\n            if (typeof finalValue !== 'undefined') {\n\n                if (typeof finalValue === 'string') {\n                    finalValue = getLayerExpresionValue(layer, finalValue, feature, lod, key, depth+1);\n                } else {\n                    if (typeof finalValue !== 'undefined') {\n                        finalValue = getLayerPropertyValueInner(layer, key, feature, lod, finalValue, depth+1);\n                    }\n                }\n\n                globals.stylesheetLocals[value] = finalValue;\n            }\n        }\n    } else { // @,$,%\n\n        if (typeof finalValue === 'string') {\n            finalValue = getLayerExpresionValue(layer, finalValue, feature, lod, key, depth+1);\n        } else {\n            if (typeof finalValue !== 'undefined' && value.charAt(0) == '@') {\n                finalValue = getLayerPropertyValueInner(layer, key, feature, lod, finalValue, depth+1);\n            }\n        }\n\n    }\n\n    return finalValue;\n};\n\nvar getLayerPropertyValueInner = function(layer, key, feature, lod, value, depth) {\n    var index = 0, i, li, finalValue, root, v1, v2, v3, v4;\n    var tmpValue;\n\n    \n    if ((typeof value) === 'undefined') {\n        /*\n        if (layer[key]) {\n            value = JSON.parse(JSON.stringify(layer[key])); //make copy\n        } else {\n            value = layer[key];\n        }*/\n\n        value = layer[key];\n\n        root = true;\n        depth = 0;\n    } else {\n        if (depth > 100) {\n            return void(0);\n        }\n    }\n\n    switch(typeof value) {\n    case 'string':\n\n        if (value.length > 0) {\n            finalValue = getLayerPropertyValueInnerString(layer, key, feature, lod, value, depth);\n\n            if (typeof finalValue !== 'undefined') {\n                return finalValue;\n            } else {\n                logError('wrong-object', layer['$$layer-id'], key, value, null, 'feature-property');\n                \n                if (root) {\n                    return getDefaultLayerPropertyValue(key);\n                } else {\n                    return void(0);\n                }\n            }\n        }\n\n        return value;\n\n    case 'object':\n\n            //is it null?\n        if (value == null) {\n            if (root) {\n                return getDefaultLayerPropertyValue(key);\n            } else {\n                return void(0);\n            }\n        }\n\n        //is it array (rgb, rgba, vec2)?\n        if (Array.isArray(value)) {\n\n            if (key == 'icon-source') {\n                //index++;\n                if (globals.stylesheetBitmaps[value[0]] == null) {\n                    logError('wrong-object', layer['$$layer-id'], key, value, null, 'bitmap');\n\n                    if (root) {\n                        return getDefaultLayerPropertyValue(key);\n                    } else {\n                        return void(0);\n                    }\n                }\n            }\n\n            if (key != 'filter') {\n                tmpValue = new Array(value.length);\n\n                for (i = index, li = value.length; i < li; i++) {\n                    tmpValue[i] = getLayerPropertyValueInner(layer, key, feature, lod, value[i], depth + 1);\n                }\n\n                return tmpValue;\n            }\n\n            return value;\n        }\n\n        var functionName, functionValue, functionError, finalValue;\n\n        for (functionName in value) {\n            break;\n        }\n\n        if (!functionName) {\n            if (root) {\n                return getDefaultLayerPropertyValue(key);\n            } else {\n                return void(0);\n            }\n        }\n\n        functionValue = value[functionName];\n\n        switch (functionName) {\n            case 'if':\n\n                if (!Array.isArray(functionValue) || functionValue.length != 3) {\n                    functionError = true;\n                } else {\n                    if (getFilterResult(functionValue[0], feature, globals.featureType, globals.groupId, layer, key, lod, 0)) {\n                        finalValue = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[1], depth + 1);\n                    } else {\n                        finalValue = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[2], depth + 1);\n                    }\n\n                    if (typeof finalValue === 'undefined') {\n                        functionError = true;\n                    } else {\n                        return finalValue;\n                    }\n                }\n\n                break;\n\n            case 'add':\n            case 'sub':\n            case 'mul':\n            case 'div':\n            case 'pow':\n            case 'tofixed':\n            case 'atan2':\n            case 'random':\n\n                if (!Array.isArray(functionValue) || functionValue.length != 2) {\n                    functionError = true;\n                } else {\n\n                    v1 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[0], depth + 1);\n                    v2 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[1], depth + 1);\n\n                    if (typeof v1 !== 'number' || typeof v2 !== 'number') {\n                        functionError = true;\n                    } else {\n                        switch (functionName) {\n                            case 'add':    return v1 + v2;\n                            case 'sub':    return v1 - v2;\n                            case 'mul':    return v1 * v2;\n                            case 'div':    return v1 / v2;\n                            case 'pow':    return Math.pow(v1, v2);\n                            case 'atan2':  return Math.atan2(v1, v2);\n                            case 'tofixed': return v1.tofixed(v2);\n                            case 'random': return v1 + Math.random() * (v2-v1);\n                        }\n                    }\n                }\n\n                break;\n\n            case 'clamp':\n\n                if (!Array.isArray(functionValue) || functionValue.length != 3) {\n                    functionError = true;\n                } else {\n\n                    v1 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[0], depth + 1);\n                    v2 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[1], depth + 1);\n                    v3 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[2], depth + 1);\n\n                    if (typeof v1 !== 'number' || typeof v2 !== 'number' || typeof v3 !== 'number') {\n                        functionError = true;\n                    } else {\n                        return clamp(v1, v2, v3);\n                    }\n                }\n\n                break;\n\n            case 'logScale':\n            case 'log-scale':\n\n                if (!Array.isArray(functionValue) || functionValue.length < 2) {\n                    functionError = true;\n                } else {\n\n                    v1 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[0], depth + 1);\n                    v2 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[1], depth + 1);\n                    v3 = 0, v4 = 100;\n\n                    if (functionValue.length > 2) {\n                        v3 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[2], depth + 1);                        \n\n                        if (typeof v3 !== 'number') {\n                            functionError = true;\n                        }\n                    }\n\n                    if (functionValue.length > 3) {\n                        v4 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[3], depth + 1);                        \n\n                        if (typeof v4 !== 'number') {\n                            functionError = true;\n                        }\n                    }\n\n                    if (functionError || typeof v1 !== 'number' || typeof v2 !== 'number') {\n                        functionError = true;\n                    } else {\n                        var imax = v4, imin = v3, smax = v2, s = v1, p, i;\n\n                        if (s > smax) s = smax; \n\n                        p = (imax - imin) / Math.log(smax + 1);\n                        i = p * Math.log(s + 1) + imin;\n\n                        return i;\n                    }\n                }\n\n                break;\n\n\n            case 'sgn':\n            case 'sin':\n            case 'cos':\n            case 'tan':\n            case 'asin':\n            case 'acos':\n            case 'atan':\n            case 'sqrt':\n            case 'abs':\n            case 'log':\n            case 'round':\n            case 'floor':\n            case 'ceil':\n            case 'deg2rad':\n            case 'rad2deg':\n\n                functionValue = getLayerPropertyValueInner(layer, key, feature, lod, functionValue, depth + 1);\n\n                if (typeof functionValue !== 'number') {\n                    functionError = true;\n                } else {\n                    switch (functionName) {\n                        case 'sgn':  return functionValue < 0 ? -1 : 1;\n                        case 'sin':  return Math.sin(functionValue);\n                        case 'cos':  return Math.cos(functionValue);\n                        case 'tan':  return Math.tan(functionValue);\n                        case 'asin': return Math.asin(functionValue);\n                        case 'acos': return Math.acos(functionValue);\n                        case 'atan': return Math.atan(functionValue);\n                        case 'sqrt': return Math.sqrt(functionValue);\n                        case 'abs':  return Math.abs(functionValue);\n                        case 'log':  return Math.log(functionValue);\n                        case 'round': return Math.round(functionValue);\n                        case 'floor': return Math.floor(functionValue);\n                        case 'ceil':  return Math.ceil(functionValue);\n                        case 'deg2rad':  return (functionValue / 180) * Math.PI;\n                        case 'rad2deg':  return (functionValue / Math.PI) * 180;\n                    }\n                }\n\n                break;\n\n            case 'strlen':\n            case 'trim':\n            case 'str2num':\n            case 'lowercase':\n            case 'uppercase':\n            case 'capitalize':\n            case 'has-fonts':\n            case 'has-latin':\n            case 'is-cjk':\n                functionValue = getLayerPropertyValueInner(layer, key, feature, lod, functionValue, depth + 1);\n\n                if (typeof functionValue !== 'string') {\n                    if (typeof functionValue === 'number') {\n                        return functionValue;\n                    } else {\n                        functionError = true;\n                    }\n                } else {\n                    switch (functionName) {\n                        case 'strlen':     return functionValue.length;\n                        case 'trim':       return functionValue.trim();\n                        case 'str2num':    return parseFloat(functionValue);\n                        case 'lowercase':  return functionValue.toLowerCase();\n                        case 'uppercase':  return functionValue.toUpperCase();\n                        case 'capitalize': return functionValue.replace(/(?:^|\\s)\\S/g, function(a) { return a.toUpperCase(); });\n                        case 'has-fonts':  return areTextCharactersAvailable(functionValue);\n                        case 'has-latin':  return hasLatin(functionValue);\n                        case 'is-cjk':     return isCJK(functionValue); \n                    }\n                }\n\n                break;\n\n            case 'find':\n            case 'replace':\n            case 'substr':\n\n                if (Array.isArray(functionValue) && functionValue.length >= 2) {\n\n                    v1 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[0], depth + 1);\n                    v2 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[1], depth + 1);\n\n                    if (functionName == 'find' && typeof v1 === 'string' && typeof v2 === 'string') {\n                        return v1.indexOf(v2);\n                    }\n\n                    if (functionName == 'replace' && functionValue.length == 3) {\n\n                        v3 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[2], depth + 1);\n\n                        if (typeof v1 === 'string' && typeof v2 === 'string' && typeof v3 === 'string') {\n                            return v1.replace(v2,v3);\n                        }\n                    }\n\n                    if (functionName == 'substr') {\n\n                        if (functionValue.length == 2) {\n                            if (typeof v1 === 'string' && typeof v2 === 'number') {\n                                return v1.substr(v2);\n                            }\n                        } else {\n                            v3 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[2], depth + 1);\n\n                            if (typeof v1 === 'string' && typeof v2 === 'number' && typeof v3 === 'number') {\n                                return v1.substr(v2,v3);\n                            }\n                        }\n                    }\n\n                }\n\n                functionError = true;\n                break;\n\n            case 'min':\n            case 'max':\n\n                if (!Array.isArray(functionValue)) {\n                    functionError = true;\n                } else {\n\n                    finalValue = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[0], depth + 1);\n\n                    for (i = index, li = functionValue.length; i < li; i++) {\n                        tmpValue = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[i], depth + 1);\n\n                        if (typeof tmpValue !== 'number') {\n                            functionError = true;\n                            break;\n                        }\n\n                        if (functionName == 'max') {\n                            finalValue = Math.max(finalValue, tmpValue);\n                        } else {\n                            finalValue = Math.min(finalValue, tmpValue);\n                        }\n                    }\n\n                    return finalValue;\n                }\n\n                break;\n\n            case 'map':\n\n                if (!Array.isArray(functionValue)) {\n                    functionError = true;\n                } else {\n\n                    finalValue = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[0], depth + 1);\n\n                    var mapItems = functionValue[1];\n\n                    if (!Array.isArray(mapItems)) {\n                        functionError = true;\n                    } else {\n\n                        for (i = index, li = mapItems.length; i < li; i++) {\n                            var item = mapItems[i];\n\n                            if (!Array.isArray(item)) {\n                                functionError = true;\n                                break;\n                            } else {\n\n                                var itemValue = getLayerPropertyValueInner(layer, key, feature, lod, item[0], depth + 1);\n\n                                if (finalValue == itemValue) {\n                                    return getLayerPropertyValueInner(layer, key, feature, lod, item[1], depth + 1);\n                                }\n                            }\n                        }\n                    }\n\n                    return getLayerPropertyValueInner(layer, key, feature, lod, functionValue[2], depth + 1);\n                }\n\n                break;\n\n            case 'linear':\n            case 'linear2':\n            case 'discrete':\n            case 'discrete2':\n            case 'lod-scaled':\n\n                //LOD based functions\n                var stops = null;\n                var lodScaledArray = null;\n                var functionValue = lod;\n\n                if (value['lod-scaled'] != null) {\n                    var array = value['lod-scaled'];\n\n                    if ((typeof array[1]) == 'number') {\n                        return array[1] * Math.pow(2*array[2], array[0] - lod);\n                    }\n\n                    stops = array[1];\n                    lodScaledArray = array;\n\n                } if (value['discrete2'] != null || value['linear2'] != null) {\n                    var array = value['discrete2'] || value['linear2'];\n                    stops = array[1];\n                    functionValue = getLayerPropertyValueInner(layer, key, feature, lod, array[0], depth + 1);\n                } else {\n                    stops = value['discrete'] || value['linear'];\n                }\n\n                var lastLod = stops[0][0];\n                var lastValue = stops[0][1];\n                var valueType = (typeof lastValue);\n                var newValue = lastValue;\n\n                var currentLod, currentValue;\n\n                for (var i = 0, li = stops.length; i <= li; i++) {\n\n                    if (i == li) {\n                        newValue = lastValue;\n                        break;\n                    }\n\n                    if (stops[i][0] > functionValue) {\n\n                        if (value['discrete'] != null || value['discrete2'] != null || lodScaledArray != null) { //no interpolation\n                            newValue = lastValue;\n                            break;\n                        } else { //interpolate\n\n                            currentLod = stops[i][0];\n                            currentValue = stops[i][1];\n\n                            if (currentLod == lastLod) { //end of array no interpolation needed\n                                break;\n                            }\n\n                            switch(valueType) {\n\n                            case 'boolean':\n                                lastValue = lastValue ? 1 : 0;\n                                currentValue = lastValue ? 1 : 0;\n                                newValue = lastValue + (currentValue - lastValue) * ((functionValue - lastLod) / (currentLod - lastLod));\n\n                                newValue = newValue > 0.5 ? true : false;\n                                break;\n\n                            case 'number':\n                                newValue = lastValue + (currentValue - lastValue) * ((functionValue - lastLod) / (currentLod - lastLod));\n                                break;\n\n                            case 'object':\n                                newValue = [];\n\n                                for (var j = 0, lj= lastValue.length; j < lj; j++) {\n                                    newValue[j] = lastValue[j] + (currentValue[j] - lastValue[j]) * ((functionValue - lastLod) / (currentLod - lastLod));\n                                }\n\n                                break;\n                            }\n\n                            break;\n                        }\n                    }\n\n                    lastLod = stops[i][0];\n                    lastValue = stops[i][1];\n                }\n\n                if (lodScaledArray != null) {\n                    newValue *= Math.pow(2*lodScaledArray[2], lodScaledArray[0] - functionValue);\n                }\n\n                return newValue;\n\n            default: \n                functionError = true;\n                break;\n        }\n\n        if (functionError) {\n            if (root) {\n                return getDefaultLayerPropertyValue(key);\n            } else {\n                return void(0);\n            }\n        }\n\n\n    case 'number':\n    case 'boolean':\n        return value;\n    }\n\n    if (root) {\n        return getDefaultLayerPropertyValue(key);\n    } else {\n        return void(0);\n    }\n};\n\n\nvar inheritLayer = function(layerId, layer, layerData, stylesheetLayersData, depth) {\n    if (depth > 100) {\n        logError('custom', 'infinite inherit loop in Layer: ' + layerId);\n        return;\n    }\n\n    //do we need inherite Layer?\n    if (layerData['inherit'] != null) {\n        //get inherited Layer\n        var LayerToInherit = stylesheetLayersData['layers'][layerData['inherit']];\n\n        if (LayerToInherit != null) {\n\n            if (LayerToInherit['inherit'] != null) {\n                inheritLayer(layerData['inherit'], layer, LayerToInherit, stylesheetLayersData, depth++);\n            }\n\n            //copy inherited Layer properties\n            for (var key in LayerToInherit) {\n                layer[key] = LayerToInherit[key];\n            }\n        } else {\n            logError('wrong-object', layerId, 'inherit', LayerToInherit, 'Layer');\n            return getDefaultLayerPropertyValue(key);\n        }\n    }\n};\n\n\nvar copyLayer = function(layerId, layer, layerData, stylesheetLayersData) {\n    //do we need inherite Layer?\n    if (layerData['inherit'] != null) {\n        inheritLayer(layerId, layer, layerData, stylesheetLayersData, 0);\n    }\n\n    //copy Layer properties\n    //if inherited properties are present then they will be overwriten\n    for (var key in layerData) {\n        layer[key] = layerData[key];\n    }\n\n    //store layer id\n    layer['$$layer-id'] = layerId;\n};\n\n\nvar logError = function(errorType, layerId, key, value, index, subkey) {\n    if (globals.disableLog) {\n        return;\n    }\n\n    if ((typeof value) == 'object') {\n        value = JSON.stringify(value);\n    }\n    \n    var str = null;\n\n    switch(errorType) {\n    case 'wrong-property-value':\n        str = 'Error: wrong layer property ' + (subkey ? ('\\'' + subkey + '\\'') : '') + ': ' + layerId + '.' + key + ' = ' + value;\n        break;\n\n    case 'wrong-property-value[]':\n        str = 'Error: wrong layer property ' + (subkey ? ('\\'' + subkey + '\\'') : '') + '['+index+']: ' + layerId + '.' + key + ' = ' + value;\n        break;\n\n    case 'wrong-object':\n        str = 'Error: reffered '+ subkey + ' does not exist: ' + layerId + '.' + key + ' = ' + value;\n        break;\n\n    case 'wrong-object[]':\n        str = 'Error: reffered '+ subkey + ' does not exist: ' + layerId + '.' + key + '['+index+'] = ' + value;\n        break;\n\n    case 'wrong-Layer':\n        str = 'Error: reffered '+ subkey + ' Layer does not exist: ' + subkey + '['+index+'].Layer = ' + layerId;\n        break;\n\n    case 'wrong-bitmap':\n        str = 'Error: wrong definition of bitmap: ' + layerId;\n        break;\n\n    case 'custom':\n        str = 'Error: ' + layerId;\n        break;\n    }\n    \n    if (str && globals.log) {\n         // eslint-disable-next-line \n        console.log(str);\n        //throw str;\n    }\n};\n\n\nvar getUnitsNormalizedValue = function(value, screen, fallbackUnits) {\n    if (typeof value === 'string') {\n        if (value == '0' || value.length == 0) return 0;\n\n        value = value.trim();\n\n        if (value.length >= 2) {\n\n            var factor = 1, pf = globals.pixelsPerMM, ipf = globals.invPixelsPerMM;\n\n            switch(value.substr(-2, 2)) {\n                case 'km': factor = screen ? pf * 1000 * 1000 : 1000; break;\n                case 'cm': factor = screen ? pf * 10 : 1/100; break;\n                case 'mm': factor = screen ? pf : 1/1000; break;\n                case 'px': factor = screen ? 1 : ipf * 1/1000; break;\n                case 'pc': factor = screen ? pf * 2.54 * 1/6 : ipf * 1/1000 * 2.54 * 1/6; break;\n                case 'pt': factor = screen ? pf * 2.54 * 1/72 : ipf * 1/1000 * 2.54 * 1/72; break;\n                case 'in': factor = screen ? pf * 2.54 : ipf * 1/1000 * 2.54; break;\n\n                default:\n\n                    if (value.charAt(value.length - 1) == 'm') {\n                        return (screen ? pf * 1000 : 1) * parseFloat(value.substr(0, value.length - 1));\n                    } else {\n                        return parseFloat(value);\n                    }\n\n            }\n\n            return factor * parseFloat(value.substr(0, value.length - 2));\n\n        } else {\n\n            //fallbackUnits\n\n            return parseFloat(value);\n        }\n\n    } else if (typeof value === 'number') {\n        return value;\n    }\n}\n\n\nvar validateValue = function(layerId, key, value, type, arrayLength, min, max) {\n    var i, li;\n\n    //check for object\n    if (value != null && (typeof value) == 'object' && !Array.isArray(value)) {\n        logError('wrong-property-value', layerId, key, value);\n        return getDefaultLayerPropertyValue(key);\n    }\n\n    //check value type\n    if ((typeof value) != type) {\n        //check for exceptions\n        if (!(value === null && (key == 'icon-source' || key == 'visibility' || key == 'label-no-overlap-factor'))) {\n            logError('wrong-property-value', layerId, key, value);\n            return getDefaultLayerPropertyValue(key);\n        }\n    }\n\n    //check value\n    switch(typeof value) {\n\n    case 'object':\n\n        //accepted cases for null value\n        if (value === null && (key == 'line-style-texture' || key == 'icon-source' || 'dynamic-reduce' || 'reduce' ||\n            key == 'hysteresis' || key == 'visibility' || key == 'visibility-abs' || key == 'visibility-rel' || key == 'next-pass')) {\n            return value;\n        }\n\n        //check reduce\n        if (key == 'reduce' || key == 'dynamic-reduce' || key == 'label-no-overlap-factor' || key == 'line-points') {\n            if (Array.isArray(value) && value.length > 0 && (typeof value[0] === 'string')) {\n\n                if (key == 'line-points') {\n\n                    if (!(value[0] == 'vertices' || value[0] == 'by-length' || value[0] == 'by-ratio' || value[0] == 'endpoints' ||\n                          value[0] == 'start' || value[0] == 'end' || value[0] == 'middle' || value[0] == 'midpoint')) {\n                        logError('wrong-property-value', layerId, key, value);\n                        return getDefaultLayerPropertyValue(key);\n                    } \n\n                } else if (key == 'dynamic-reduce') {\n                    if (value[0] == 'by-extenal-param') {\n                        value[0] = globals.reduceMode;\n                    }\n\n                    if (!((value[0] == 'tilt' || value[0] == 'tilt-cos' || value[0] == 'tilt-cos2' || value[0] == 'scr-count' || value[0] == 'scr-count2' ||\n                           value[0] == 'scr-count3' || value[0] == 'scr-count4' || value[0] == 'scr-count5' || value[0] == 'scr-count6' || value[0] == 'scr-count7' || value[0] == 'scr-count8') &&\n                        (typeof value[1] === 'number') && ((typeof value[2] === 'number') || value[0] == 'scr-count4' || value[0] == 'scr-count5' || value[0] == 'scr-count6' || value[0] == 'scr-count7' || value[0] == 'scr-count8'))) {\n                        logError('wrong-property-value', layerId, key, value);\n                        return getDefaultLayerPropertyValue(key);\n                    }\n                } else if (key == 'reduce') {\n                    if (value[0] != 'odd' && value != 'even') {\n                        if ((typeof value[1] !== 'number') || ((value[0] != 'top' || value != 'bottom') && (typeof value[2] !== 'string'))) {\n                            logError('wrong-property-value', layerId, key, value);\n                            return getDefaultLayerPropertyValue(key);\n                        }\n                    }\n                } else if (key == 'label-no-overlap-factor') {\n                    if (!(value[0] == 'direct' || value[0] == 'div-by-dist')) {\n                        logError('wrong-property-value', layerId, key, value);\n                        return getDefaultLayerPropertyValue(key);\n                    }\n                }\n\n            } else {\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        //check multipasss\n        if (key == 'next-pass' || key == 'visibility-switch') {\n            var vswitch = (key == 'visibility-switch');\n            if (Array.isArray(value) && value.length > 0) {\n\n                for (i = 0; i < li; i++) {\n                    var valueItem = value[i];\n\n                    if (!(typeof valueItem == 'object' &&\n                            Array.isArray(valueItem) &&\n                            valueItem.length == 2 &&\n                            typeof valueItem[0] == 'number' &&\n                            (typeof valueItem[1] == 'string' || (vswitch && valueItem[1] === null)))) {\n\n                        logError('wrong-property-value[]', layerId, key, value, i);\n                        return getDefaultLayerPropertyValue(key);\n                    } else {\n                        //fast constant \n                        if (typeof valueItem[1] == 'string' && valueItem[1].charAt(0) == '@') {\n                            if (typeof globals.stylesheetConstants[valueItem[1]] == 'undefined') {\n                                logError('wrong-property-value[]', layerId, key, value, i);\n                                return getDefaultLayerPropertyValue(key);\n                            } else {\n                                valueItem[1] = globals.stylesheetConstants[valueItem[1]];\n                            }\n                        }\n                    }\n                }\n\n            } else {\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        if (key == 'label-font' || key == 'line-label-font') {\n\n            if (!Array.isArray(value) || value.length < 1) {\n                logError('wrong-property-value[]', layerId, key, value, 0);\n                return getDefaultLayerPropertyValue(key);\n            } else {\n                for (i = 0, li = value.length; i < li; i++) {\n                    if (typeof value[i] != 'string' || !globals.fonts[value[i]]) {\n                        logError('wrong-property-value[]', layerId, key, value, 0);\n                        return getDefaultLayerPropertyValue(key);\n                    }\n                }\n            }\n\n            return value;\n        }\n\n        //check array\n        if (arrayLength != null) {\n            if (Array.isArray(value) && (value.length == arrayLength || ((key == 'icon-stick' || 'label-stick') && value.length >= 7) )) {\n\n                //validate array values\n                i = 0;\n\n                if (key == 'icon-source' || key == 'line-style-texture') {\n                    if (typeof value[0] != 'string') {\n                        logError('wrong-property-value[]', layerId, key, value, 0);\n                        return getDefaultLayerPropertyValue(key);\n                    }\n\n                    if (globals.stylesheetBitmaps[value[0]] == null) {\n                        logError('wrong-object', layerId, key, value, null, 'bitmap');\n                        return getDefaultLayerPropertyValue(key);\n                    }\n\n                    i = 1;\n                }\n\n                for (li = value.length; i < li; i++) {\n                    if (typeof value[i] != 'number') {\n                        logError('wrong-property-value[]', layerId, key, value, i);\n                        return getDefaultLayerPropertyValue(key);\n                    }\n                }\n\n                if ((key == 'icon-stick' || 'label-stick') && value.length == 7) {\n                    value[7] = 0;\n                }\n\n                return value;\n            } else {\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        return value;\n\n    case 'string':\n\n        if (key == 'line-type' || key == 'point-type') {\n            switch(value) {\n            case 'screen':\n            case 'flat':\n            case 'screen-flat': return value;\n            default:\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        //validate line Layer enum\n        if (key == 'line-style') {\n            switch(value) {\n            case 'solid':\n            case 'texture': return value;\n            default:\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        if (key == 'label-size-units') {\n            switch(value) {\n            case 'pixels':\n            case 'points': return value;\n            default:\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        if (key == 'line-width-units') {\n            switch(value) {\n            case 'pixels':\n            case 'points':\n            case 'meters':\n            case 'ratio': return value;\n            default:\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        //validate origin enum\n        if (key == 'label-origin' || key == 'icon-origin') {\n            switch(value) {\n            case 'top-left':\n            case 'top-right':\n            case 'top-center':\n            case 'center-left':\n            case 'center-right':\n            case 'center-center':\n            case 'bottom-left':\n            case 'bottom-right':\n            case 'bottom-center':   return value;\n            default:\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        //validate align enum\n        if (key == 'label-align') {\n            switch(value) {\n            case 'left':\n            case 'right':\n            case 'center':  return value;\n            default:\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        return value;\n\n    case 'number':\n\n        if (value > max || value < min) {\n            logError('wrong-property-value', layerId, key, value);\n            return getDefaultLayerPropertyValue(key);\n        }\n\n        return value;\n\n    case 'boolean':\n        return value;\n    }\n};\n\n\nvar validateLayerPropertyValue = function(layerId, key, value) {\n\n    switch(key) {\n\n    case 'inherit' :        return validateValue(layerId, key, value, 'string');\n    case 'reduce':          return validateValue(layerId, key, value, 'object');\n    case 'dynamic-reduce':  return validateValue(layerId, key, value, 'object');\n    case 'line-points':     return validateValue(layerId, key, value, 'object');\n\n    case 'line':              return validateValue(layerId, key, value, 'boolean');\n    case 'line-type':         return validateValue(layerId, key, value, 'string');\n    case 'line-flat':         return validateValue(layerId, key, value, 'boolean');\n    case 'line-width':        return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'line-width-units':  return validateValue(layerId, key, value, 'string');\n    case 'line-color':        return validateValue(layerId, key, value, 'object', 4, 0, 255);\n    case 'line-style':        return validateValue(layerId, key, value, 'string');\n    case 'line-style-texture':    return validateValue(layerId, key, value, 'object', 3, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'line-style-background': return validateValue(layerId, key, value, 'object', 4, 0, 255);\n\n    case 'line-label':         return validateValue(layerId, key, value, 'boolean');\n    case 'line-label-source':  return validateValue(layerId, key, value, 'string');\n    case 'line-label-color':   return validateValue(layerId, key, value, 'object', 4, 0, 255);\n    case 'line-label-color2':  return validateValue(layerId, key, value, 'object', 4, 0, 255);\n    case 'line-label-size':    return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'line-label-offset':  return validateValue(layerId, key, value, 'number', null, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'line-label-spacing': return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'line-label-line-height': return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n\n    case 'point':        return validateValue(layerId, key, value, 'boolean');\n    case 'point-type':   return validateValue(layerId, key, value, 'string');\n    case 'point-flat':   return validateValue(layerId, key, value, 'boolean');\n    case 'point-radius': return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'point-Layer':  return validateValue(layerId, key, value, 'string');\n\n    case 'point-color':  return validateValue(layerId, key, value, 'object', 4, 0, 255);\n\n    case 'icon':             return validateValue(layerId, key, value, 'boolean');\n    case 'icon-source':      return validateValue(layerId, key, value, 'object', 5, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'icon-scale':       return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'icon-offset':      return validateValue(layerId, key, value, 'object', 2, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'icon-origin':      return validateValue(layerId, key, value, 'string');\n    case 'icon-stick':       return validateValue(layerId, key, value, 'object', 8, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'icon-color':       return validateValue(layerId, key, value, 'object', 4, 0, 255);\n    case 'icon-no-overlap':  return validateValue(layerId, key, value, 'boolean');\n    case 'icon-no-overlap-factor': return validateValue(layerId, key, value, 'object');\n    case 'icon-no-overlap-margin': return validateValue(layerId, key, value, 'object', 2, -Number.MAX_VALUE, Number.MAX_VALUE);\n\n    case 'label':             return validateValue(layerId, key, value, 'boolean');\n    case 'label-color':       return validateValue(layerId, key, value, 'object', 4, 0, 255);\n    case 'label-color2':      return validateValue(layerId, key, value, 'object', 4, 0, 255);\n    case 'label-source':      return validateValue(layerId, key, value, 'string');\n    case 'label-size':        return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'label-size-units':  return validateValue(layerId, key, value, 'string');\n    case 'label-spacing':     return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'label-line-height': return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'label-offset':      return validateValue(layerId, key, value, 'object', 2, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'label-origin':      return validateValue(layerId, key, value, 'string');\n    case 'label-align':       return validateValue(layerId, key, value, 'string');\n    case 'label-stick':       return validateValue(layerId, key, value, 'object', 8, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'label-width':       return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'label-no-overlap':  return validateValue(layerId, key, value, 'boolean');\n    case 'label-no-overlap-factor': return validateValue(layerId, key, value, 'object');\n    case 'label-no-overlap-margin': return validateValue(layerId, key, value, 'object', 2, -Number.MAX_VALUE, Number.MAX_VALUE);\n\n    case 'polygon':             return validateValue(layerId, key, value, 'boolean');\n    case 'polygon-style':       return validateValue(layerId, key, value, 'string');\n    case 'polygon-use-stencil': return validateValue(layerId, key, value, 'boolean');\n    case 'polygon-culling':     return validateValue(layerId, key, value, 'string');\n    case 'polygon-color':       return validateValue(layerId, key, value, 'object', 4, 0, 255);\n    case 'polygon-extrude':     return validateValue(layerId, key, value, 'number', 0, -Number.MAX_VALUE, Number.MAX_VALUE);\n\n    case 'z-index':        return validateValue(layerId, key, value, 'number', null, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'zbuffer-offset': return validateValue(layerId, key, value, 'object', 3, 0, Number.MAX_VALUE);\n\n    case 'selected-hover-layer':  return validateValue(layerId, key, value, 'string');\n    case 'selected-layer':  return validateValue(layerId, key, value, 'string');\n    case 'hover-event':     return validateValue(layerId, key, value, 'boolean');\n    case 'hover-layer':     return validateValue(layerId, key, value, 'string');\n    case 'enter-event':     return validateValue(layerId, key, value, 'boolean');\n    case 'leave-event':     return validateValue(layerId, key, value, 'boolean');\n    case 'click-event':     return validateValue(layerId, key, value, 'boolean');\n    case 'draw-event':      return validateValue(layerId, key, value, 'boolean');\n    case 'advanced-hit':    return validateValue(layerId, key, value, 'boolean');\n    case 'export-geometry': return validateValue(layerId, key, value, 'boolean');\n    case 'pack':            return validateValue(layerId, key, value, 'boolean');\n\n    case 'visible':           return validateValue(layerId, key, value, 'boolean');\n    case 'visibility':        return validateValue(layerId, key, value, 'number', null, 0.00001, Number.MAX_VALUE);\n    case 'visibility-abs':    return validateValue(layerId, key, value, 'object', 2, 0.00001, Number.MAX_VALUE);\n    case 'visibility-rel':    return validateValue(layerId, key, value, 'object', 4, 0.00001, Number.MAX_VALUE);\n    case 'visibility-switch': return validateValue(layerId, key, value, 'object');\n\n    case 'hysteresis':  return validateValue(layerId, key, value, 'object');\n    case 'culling':     return validateValue(layerId, key, value, 'number', 180, 0.0001, 180);\n    case 'next-pass':   return validateValue(layerId, key, value, 'object');\n\n    case 'importance-source':  return validateValue(layerId, key, value, 'string');\n    case 'importance-weight':  return validateValue(layerId, key, value, 'number', null, 0, Number.MAX_VALUE);\n\n    }\n\n    return value; //custom property\n};\n\n\nvar getDefaultLayerPropertyValue = function(key) {\n    switch(key) {\n    case 'inherit':          return '';\n    case 'filter':           return null;\n    case 'reduce':           return null;\n    case 'dynamic-reduce':   return null;\n    case 'line-points':      return ['vertices',0,0];\n\n    case 'line':             return false;\n    case 'line-type':        return 'screen';\n    case 'line-flat':        return false;\n    case 'line-width':       return 1;\n    case 'line-width-units': return 'meters';\n    case 'line-color':       return [255,255,255,255];\n    case 'line-style':       return 'solid';\n    case 'line-style-texture':    return null;\n    case 'line-style-background': return [0,0,0,0];\n\n    case 'line-label':         return false;\n    case 'line-label-font':    return ['#default'];\n    case 'line-label-color':   return [255,255,255,255];\n    case 'line-label-color2':  return [0,0,0,255];\n    case 'line-label-outline': return [0.27,0.75,2.2,2.2];\n    case 'line-label-source':  return '$name';\n    case 'line-label-size':    return 1;\n    case 'line-label-offset':  return 0;\n    case 'line-label-spacing': return 1;\n    case 'line-label-line-height': return 1;\n\n    case 'point':        return false;\n    case 'point-type':   return 'screen';\n    case 'point-flat':   return false;\n    case 'point-radius': return 1;\n    case 'point-Layer':  return 'solid';\n    case 'point-color':  return [255,255,255,255];\n\n    case 'icon':         return false;\n    case 'icon-source':  return null;\n    case 'icon-scale':   return 1;\n    case 'icon-offset':  return [0,0];\n    case 'icon-origin':  return 'bottom-center';\n    case 'icon-stick':   return [0,0,0,255,255,255,255,0];\n    case 'icon-color':   return [255,255,255,255];\n    case 'icon-no-overlap':  return false;\n    case 'icon-no-overlap-factor': return null;\n    case 'icon-no-overlap-margin': return [5,5];\n\n    case 'label':             return false;\n    case 'label-font':        return ['#default'];\n    case 'label-color':       return [255,255,255,255];\n    case 'label-color2':      return [0,0,0,255];\n    case 'label-outline':     return [0.27,0.75,2.2,2.2];\n    case 'label-source':      return '$name';\n    case 'label-size':        return 10;\n    case 'label-size-units':  return 'pixels';\n    case 'label-spacing':     return 1;\n    case 'label-line-height': return 1;\n    case 'label-offset':      return [0,0];\n    case 'label-origin':      return 'bottom-center';\n    case 'label-align':       return 'center';\n    case 'label-stick':       return [0,0,0,255,255,255,255,0];\n    case 'label-width':       return 200;\n    case 'label-no-overlap':  return true;\n    case 'label-no-overlap-factor': return null;\n    case 'label-no-overlap-margin': return [5,5];\n       \n    case 'polygon':             return false;\n    case 'polygon-style':       return 'solid';\n    case 'polygon-use-stencil': return true;\n    case 'polygon-culling':     return 'none';\n    case 'polygon-color':  return [255,255,255,255];\n\n    case 'z-index':        return 0;\n    case 'zbuffer-offset': return [0,0,0];\n\n    case 'selected-hover-layer':  return '';\n    case 'selected-layer':  return '';\n    case 'hover-event':     return false;\n    case 'hover-layer':     return '';\n    case 'enter-event':     return false;\n    case 'leave-event':     return false;\n    case 'click-event':     return false;\n    case 'draw-event':      return false;\n    case 'advanced-hit':    return false;\n    case 'export-geometry': return false;\n    case 'pack':            return false;\n\n    case 'visible':           return true;\n    case 'visibility':        return null;\n    case 'visibility-abs':    return null;\n    case 'visibility-rel':    return null;\n    case 'visibility-switch': return null;\n\n    case 'hysteresis':      return null;\n    case 'culling':         return 180;\n    case 'next-pass':       return null;\n\n    case 'importance-source':  return null; //''\n    case 'importance-weight':  return 1;\n    }\n};\n\n\nfunction getFilterResult(filter, feature, featureType, group, layer, key, lod, depth, fast) {\n    var result, i, li;\n\n    if (!filter || !Array.isArray(filter)) {\n        return false;\n    }\n\n    if (depth > 100) {\n        return false;\n    }\n\n    switch(filter[0]) {\n        case 'all': \n            for (i = 1, li = filter.length; i < li; i++) {\n                result = getFilterResult(filter[i], feature, featureType, group, layer, key, lod, depth + 1, fast);\n\n                if (!result) {\n                    return false;\n                }\n            }\n               \n            return true;                         \n\n        case 'any':\n            for (i = 1, li = filter.length; i < li; i++) {\n                result = getFilterResult(filter[i], feature, featureType, group, key, lod, depth + 1, fast);\n\n                if (result) {\n                    return true;\n                }\n            }\n               \n            return false;                         \n\n        case 'none':\n            for (i = 1, li = filter.length; i < li; i++) {\n                result = getFilterResult(filter[i], feature, featureType, group, key, lod, depth + 1, fast);\n\n                if (result) {\n                    return false;\n                }\n            }\n               \n            return true;\n                              \n        case 'skip': return false; \n    }\n\n    var value, value2;\n\n    if (fast && filter[2]) {\n        value = filter[1];\n    } else {\n        globals.disableLog = (filter[0] == 'has' || filter[0] == '!has');\n        value = getLayerPropertyValueInner(layer, key, feature, lod, filter[1], 0);\n        globals.disableLog = false;\n    }\n\n    switch(filter[0]) {\n    case '==':\n    case '!=':\n    case '>=':\n    case '<=':\n    case '>':\n    case '<':\n        value2 = filter[fast ? 3 : 2];\n\n        if (typeof value2 == 'undefined') {\n            return false;\n        }\n\n        if (!(fast && filter[4])) {\n            value2 = getLayerPropertyValueInner(layer, key, feature, lod, value2, 0);\n        }\n\n        break;\n    }\n\n    switch(filter[0]) {\n    case '==': return (value == value2);\n    case '!=': return (value != value2);\n    case '>=': return (value >= value2);\n    case '<=': return (value <= value2);\n    case '>': return (value > value2);\n    case '<': return (value < value2);\n        \n    case 'has': return (typeof value != 'undefined');\n    case '!has': return (typeof value == 'undefined');\n        \n    case 'in':\n        for (i = fast ? 3 : 2, li = filter.length; i < li; i++) {\n            if (filter[i] == value) {\n                return true;\n            }\n        } \n        return false;\n        \n    case '!in':\n        for (i = fast ? 3 : 2, li = filter.length; i < li; i++) {\n            if (filter[i] == value) {\n                return false;\n            }\n        } \n        return true;\n    }            \n\n    return false;    \n}\n\n\nfunction isSimpleValue(value) {\n    switch(typeof value) {\n        case 'number':  return true;\n        case 'string': \n            \n            if (value.length > 0) {\n                switch(value.charAt(0)) {\n                    case '#': \n                    case '$':\n                    case '@':\n                    case '&':\n                        break;\n                    \n                    default: \n\n                        if (value.indexOf('{') == -1) {\n                            return true;\n                        }\n\n                        break;\n                }\n            } else {\n                return true;\n            }\n\n            break;\n    }\n\n    return false;\n}\n\n\nfunction makeFasterFilter(filter) {\n    if (!filter || !Array.isArray(filter)) {\n        return filter;\n    }\n\n    var i, li, value, simple, result = [filter[0]];\n\n    switch(filter[0]) {\n    case 'all': \n    case 'any':\n    case 'none':\n    case 'skip':\n        for (i = 1, li = filter.length; i < li; i++) {\n            result[i] = makeFasterFilter(filter[i]);\n        }\n\n        return result;\n    }\n\n    result[1] = filter[1];\n    result[2] = isSimpleValue(filter[1]);\n\n    switch(filter[0]) {\n    case '==':\n    case '!=':\n    case '>=':\n    case '<=':\n    case '>':\n    case '<':\n        result[3] = filter[2];\n        result[4] = isSimpleValue(filter[2]);\n        break;\n\n    case 'in':\n    case '!in':\n\n        for (i = 2, li = filter.length; i < li; i++) {\n            result[i+1] = filter[i];\n        } \n\n    }\n\n    return result;\n}\n\nvar processLayer = function(layerId, layerData, stylesheetLayersData) {\n    var layer = {}, key, value;\n\n    //copy Layer and inherit Layer if needed\n    copyLayer(layerId, layer, layerData, stylesheetLayersData);\n\n    //replace constants and validate properties\n    for (key in layer) {\n\n        value = layer[key];\n\n        //replace constant with value\n        if ((typeof value) == 'string') {\n            if (value.length > 0) {\n                //is it constant?\n                switch(value.charAt(0)) {\n                    case '@':\n                        if (globals.stylesheetConstants[value] != null) {\n                            //replace constant with value\n                            layer[key] = globals.stylesheetConstants[value];\n                        } else {\n                            logError('wrong-object', layerId, key, value, null, 'constant');\n\n                            //replace constant with deafault value\n                            layer[key] = getDefaultLayerPropertyValue(key);\n                        }\n                        break;\n\n                    case '%':  // reserved for variators\n\n                        if (globals.stylesheetLocals[value] != null) {\n                            if (!layer['$$layer-variables']) {\n                                layer['$$layer-variables'] = {};\n                            }\n\n                            layer['$$layer-variables'][key] = value;\n\n                            //replace variable with value\n                            layer[key] = globals.stylesheetLocals[value];\n\n                        } else {\n                            logError('wrong-object', layerId, key, value, null, 'variable');\n\n                            //replace constant with deafault value\n                            layer[key] = getDefaultLayerPropertyValue(key);\n                        }\n                        break;\n                }\n            }\n        }\n\n        //copy constats to vswitch\n        if (key == 'visibility-switch') {\n            if (Array.isArray(value) && value.length > 0) {\n                for (var i = 0, li = value.length; i < li; i++) {\n                    var valueItem = value[i];\n                    var wrong = false;\n\n                    if (!(typeof valueItem == 'object' && Array.isArray(valueItem) && valueItem.length == 2)) {\n                        wrong = true;\n                    } else {\n                        if (typeof valueItem[0] == 'string' && valueItem[0].charAt(0) == '@') {\n                            if (typeof globals.stylesheetConstants[valueItem[0]] == 'undefined') {\n                                wrong = true;\n                            } else {\n                                valueItem[0] = globals.stylesheetConstants[valueItem[0]];\n                            }\n                        }\n\n                        if (!(typeof valueItem[0] == 'number' && (typeof valueItem[1] == 'string' || valueItem[1] === null))) {\n                            wrong = true;\n                        }\n                    }\n\n                    if (wrong) {\n                        logError('wrong-property-value[]', layerId, key, value, i);\n                    }\n                }\n\n            } else {\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n    }\n\n    return layer;\n};\n\n\nvar processStylesheet = function(stylesheetLayersData) {\n    var key;\n    globals.stylesheetBitmaps = {};\n    globals.stylesheetFonts = {};\n    globals.stylesheetConstants = stylesheetLayersData['constants'] || {};\n    globals.stylesheetVariables = stylesheetLayersData['variables'] || {};\n    globals.stylesheetLocals = {};\n\n    //get bitmaps\n    var bitmaps = stylesheetLayersData['bitmaps'] || {};\n\n    //build map\n    for (key in bitmaps) {\n        var bitmap = bitmaps[key];\n        //var skip = false;\n\n        if ((typeof bitmap) == 'string') {\n            bitmap = {'url':bitmap, 'hash': getHash(bitmap) };\n        } else if((typeof bitmap) == 'object'){\n            if (bitmap['url'] == null) {\n                bitmap['hash'] = 'null';\n                logError('wrong-bitmap', key);\n            } else {\n                bitmap['hash'] = getHash(bitmap['url']);\n            }\n        } else {\n            logError('wrong-bitmap', key);\n        }\n\n        globals.stylesheetBitmaps[key] = bitmap;\n    }\n\n    //load bitmaps\n    postMessage({'command':'loadBitmaps', 'bitmaps': globals.stylesheetBitmaps});\n\n    //remove urls\n    bitmaps = globals.stylesheetBitmaps;\n\n    for (key in bitmaps) {\n        bitmap = bitmaps[key];\n        bitmap['url'] = null;\n    }\n\n    //get fonts\n    var fonts = stylesheetLayersData['fonts'] || {};\n\n    //build map\n    for (key in fonts) {\n        var font = fonts[key];\n\n        if ((typeof font) == 'string') {\n            font = {'url':font};\n        } else if((typeof font) == 'object'){\n            if (font['url'] == null) {\n                logError('wrong-font', key);\n            }\n        } else {\n            logError('wrong-font', key);\n        }\n\n        globals.stylesheetFonts[key] = font;\n    }\n\n    //load fonts\n    postMessage({'command':'loadFonts', 'fonts': globals.stylesheetFonts});\n\n\n    //get layers\n    globals.stylesheetData = {\n        layers : {}\n    };\n\n    var layers = stylesheetLayersData['layers'] || {};\n\n    globals.stylesheetLayers = globals.stylesheetData.layers;\n\n    //process layers\n    for (key in layers) {\n        globals.stylesheetData.layers[key] = processLayer(key, layers[key], stylesheetLayersData);\n    }\n};\n\n\n\n\n\n/***/ }),\n/* 3 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__worker_font_js__ = __webpack_require__(8);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"n\", function() { return addStreetTextOnPath; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"i\", function() { return getTextLength; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"m\", function() { return getLineHeight; });\n/* unused harmony export getFontFactor */\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"g\", function() { return getSplitIndex; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"e\", function() { return areTextCharactersAvailable; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"f\", function() { return addText; });\n/* unused harmony export addTextOnPath */\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return setFont; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"b\", function() { return setFontMap; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"l\", function() { return getCharVerticesCount; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"j\", function() { return getFonts; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"k\", function() { return getFontsStorage; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"c\", function() { return hasLatin; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"d\", function() { return isCJK; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"h\", function() { return getTextGlyphs; });\n\n\n\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */],\n    vec3Normalize = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"g\" /* vec3Normalize */], vec3Length = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"h\" /* vec3Length */],\n    vec3Cross = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"i\" /* vec3Cross */],\n    Typr = __WEBPACK_IMPORTED_MODULE_1__worker_font_js__[\"a\" /* Typr */];\n\n\nvar setFont = function(fontData) {\n    //console.log('setFont ' + fontData['url']);\n    //debugger;\n\n    var font = Typr.parse(fontData['data']);\n\n    globals.fontsStorage[fontData['url']] = font;\n};\n\n\nvar setFontMap = function(fontMap) {\n    var fonts = fontMap['map'];\n    for (var key in fonts) {\n        globals.fonts[key] = globals.fontsStorage[fonts[key]];\n    }\n\n    globals.fontsMap = fonts;\n};\n\n\nvar addChar = function(pos, dir, verticalShift, char, factor, spacing, index, index2, textVector, fonts, vertexBuffer, texcoordsBuffer, flat, planes, fontIndex, singleBuffer) {\n    var n, font = fonts[fontIndex];\n    var up = [0,0,0];\n\n    if (globals.geocent && !flat) {\n        n = [0,0,0];\n        vec3Normalize(globals.bboxMin, up);\n        vec3Cross(up, dir, n);\n    } else {\n        n = [-dir[1],dir[0],0];\n    }\n\n    vec3Cross(dir, n, up);\n\n    var p1 = [pos[0], pos[1], pos[2]];\n    var p2 = [p1[0], p1[1], p1[2]];\n\n    //var chars = font.chars;\n    \n    var fc = font.glyphs[char];\n    char = 0; // hack\n\n    if (!fc) {\n        return [pos, index, index2, 0];\n    }\n\n    var l = 0;\n    var nx = textVector[0];\n    var ny = textVector[1];\n    var nz = textVector[2];\n\n    if (char == 9 || char == 32) {  //tab or space\n        fc = chars[32]; //space\n\n        if (fc) {\n            pos[0] += dir[0] * (fc.step) * factor * spacing;\n            pos[1] += dir[1] * (fc.step) * factor * spacing;\n            l = fc.lx * factor;\n        }\n    } else {\n        if (fc.lx == 0) {\n            pos[0] = pos[0] + dir[0] * fc.step * factor * spacing;\n            pos[1] = pos[1] + dir[1] * fc.step * factor * spacing;\n            l = fc.lx * factor;\n        } else {\n            var planeShift = fontIndex * 4000;\n            var plane = fc.plane + planeShift;\n\n            if (planes) {\n                if (!planes[fontIndex]) {\n                    planes[fontIndex] = {};\n                }\n                \n                planes[fontIndex][plane] = true;\n            }\n\n            var factorX = fc.lx * factor;\n            var factorY = fc.ly * factor;\n\n            if (singleBuffer) {\n\n                if (globals.procesLineLabel) {\n\n                    p1[0] = p1[0] + dir[0] * fc.sx * factor;\n                    p1[1] = p1[1] + dir[1] * fc.sx * factor;\n                    p1[2] = p1[2] + dir[2] * fc.sx * factor;\n                    p1[0] = p1[0] + n[0] * (fc.sy - font.size) * factor;\n                    p1[1] = p1[1] + n[1] * (fc.sy - font.size) * factor;\n                    p1[2] = p1[2] + n[2] * (fc.sy - font.size) * factor;\n\n                    singleBuffer[index] = p1[0];\n                    singleBuffer[index+1] = p1[1];\n                    singleBuffer[index+2] = p1[2];\n\n                    var m = [ [dir[0], dir[1], dir[2]], \n                              [n[0], n[1], n[2]], \n                              [up[0], up[1], up[2]] ];\n\n                    //more robust code can be found there\n                    //http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/\n\n                    singleBuffer[index+3] = Math.sqrt(1.0 + m[0][0] + m[1][1] + m[2][2]) / 2.0; // w\n                    var  w4 = (4.0 * w);\n                    singleBuffer[index+4] = (m[2][1] - m[1][2]) / w4 ;  //x\n                    singleBuffer[index+5] = (m[0][2] - m[2][0]) / w4 ;  //y\n                    singleBuffer[index+6] = (m[1][0] - m[0][1]) / w4 ;  //z\n                   \n                    singleBuffer[index+7] = factorX;\n                    singleBuffer[index+8] = factorY;\n                    singleBuffer[index+9] = fc.u1;\n                    singleBuffer[index+10] = fc.v1 + planeShift;\n                    singleBuffer[index+11] = fc.u2;\n                    singleBuffer[index+12] = fc.v2 + planeShift;\n\n                } else {\n                    singleBuffer[index] = p1[0] + fc.sx * factor;\n                    singleBuffer[index+1] = p1[1] + (fc.sy - font.size) * factor;\n                    singleBuffer[index+2] = singleBuffer[index] + factorX;\n                    singleBuffer[index+3] = singleBuffer[index+1] - factorY;\n                    singleBuffer[index+4] = fc.u1;\n                    singleBuffer[index+5] = fc.v1 + planeShift;\n                    singleBuffer[index+6] = fc.u2;\n                    singleBuffer[index+7] = fc.v2 + planeShift;\n\n                    index += 8;\n                }\n\n            } else {\n\n                var n2 = [n[0] * verticalShift, n[1] * verticalShift, n[2] * verticalShift];\n                var n3 = [n2[0] + n[0] * factorY, n2[1] + n[1] * factorY, n2[2] + n[2] * factorY];\n                \n                p1[0] = p1[0] + dir[0] * fc.sx * factor;\n                p1[1] = p1[1] + dir[1] * fc.sx * factor;\n                p1[2] = p1[2] + dir[2] * fc.sx * factor;\n                p1[0] = p1[0] + n[0] * (fc.sy - font.size) * factor;\n                p1[1] = p1[1] + n[1] * (fc.sy - font.size) * factor;\n                p1[2] = p1[2] + n[2] * (fc.sy - font.size) * factor;\n\n                p2[0] = p1[0] + dir[0] * factorX;\n                p2[1] = p1[1] + dir[1] * factorX;\n                p2[2] = p1[2] + dir[2] * factorX;\n\n                //first polygon\n                vertexBuffer[index] = p1[0] - n2[0];\n                vertexBuffer[index+1] = p1[1] - n2[1];\n                vertexBuffer[index+2] = p1[2] - n2[2];\n                vertexBuffer[index+3] = nz;\n\n                texcoordsBuffer[index2] = fc.u1;\n                texcoordsBuffer[index2+1] = fc.v1 +  planeShift;\n                texcoordsBuffer[index2+2] = nx;\n                texcoordsBuffer[index2+3] = ny;\n\n                vertexBuffer[index+4] = p1[0] - n3[0];\n                vertexBuffer[index+5] = p1[1] - n3[1];\n                vertexBuffer[index+6] = p1[2] - n3[2];\n                vertexBuffer[index+7] = nz;\n\n                texcoordsBuffer[index2+4] = fc.u1;\n                texcoordsBuffer[index2+5] = fc.v2 +  planeShift;\n                texcoordsBuffer[index2+6] = nx;\n                texcoordsBuffer[index2+7] = ny;\n\n                vertexBuffer[index+8] = p2[0] - n2[0];\n                vertexBuffer[index+9] = p2[1] - n2[1];\n                vertexBuffer[index+10] = p2[2] - n2[2];\n                vertexBuffer[index+11] = nz;\n\n                texcoordsBuffer[index2+8] = fc.u2;\n                texcoordsBuffer[index2+9] = fc.v1 +  planeShift;\n                texcoordsBuffer[index2+10] = nx;\n                texcoordsBuffer[index2+11] = ny;\n\n\n                //next polygon\n                vertexBuffer[index+12] = p1[0] - n3[0];\n                vertexBuffer[index+13] = p1[1] - n3[1];\n                vertexBuffer[index+14] = p1[2] - n3[2];\n                vertexBuffer[index+15] = nz;\n\n                texcoordsBuffer[index2+12] = fc.u1;\n                texcoordsBuffer[index2+13] = fc.v2 +  planeShift;\n                texcoordsBuffer[index2+14] = nx;\n                texcoordsBuffer[index2+15] = ny;\n\n                vertexBuffer[index+16] = p2[0] - n3[0];\n                vertexBuffer[index+17] = p2[1] - n3[1];\n                vertexBuffer[index+18] = p2[2] - n3[2];\n                vertexBuffer[index+19] = nz;\n\n                texcoordsBuffer[index2+16] = fc.u2;\n                texcoordsBuffer[index2+17] = fc.v2 +  planeShift;\n                texcoordsBuffer[index2+18] = nx;\n                texcoordsBuffer[index2+19] = ny;\n\n                vertexBuffer[index+20] = p2[0] - n2[0];\n                vertexBuffer[index+21] = p2[1] - n2[1];\n                vertexBuffer[index+22] = p2[2] - n2[2];\n                vertexBuffer[index+23] = nz;\n\n                texcoordsBuffer[index2+20] = fc.u2;\n                texcoordsBuffer[index2+21] = fc.v1 +  planeShift;\n                texcoordsBuffer[index2+22] = nx;\n                texcoordsBuffer[index2+23] = ny;\n\n                index += 24;\n                index2 += 24;\n            }\n\n            pos[0] = pos[0] + dir[0] * fc.step * factor * spacing;\n            pos[1] = pos[1] + dir[1] * fc.step * factor * spacing;\n            l = fc.lx * factor;\n        }\n    }\n\n    return [pos, index, index2, l * spacing];\n};\n\n\nvar getCharVerticesCount = function(origin) {\n    return (origin ? 3 : 4) * 3 * 2;\n};\n\n\nvar addText = function(pos, dir, text, size, spacing, fonts, vertexBuffer, texcoordsBuffer, flat, index, planes, glyphsRes, singleBuffer) {\n    var textVector = [0,1,0];\n    var p1 = [pos[0], pos[1], pos[2]];\n\n    var res = glyphsRes ? glyphsRes : Typr.U.stringToGlyphs(fonts, text);\n    var glyphs = res[0];\n    var gfonts = res[1];\n\n    for (var i = 0, li = glyphs.length; i < li; i++) {\n        var glyph = glyphs[i];\n        var font = fonts[gfonts[i]];\n\n        if (font) {\n            var factor = getFontFactor(size, font);\n\n            var shift = addChar(p1, dir, 0, glyph, factor, spacing, index, index, textVector, fonts, vertexBuffer, texcoordsBuffer, flat, planes, gfonts[i], singleBuffer);\n\n            //var gid2 = (i<gls.length-1 && gls[i+1]!=-1)  ? gls[i+1] : 0;\n            //x += Typr.U.getPairAdjustment(font, gid, gid2);\n\n            p1 = shift[0];\n            index = shift[1];\n        }\n    }\n\n    return index;\n};\n\n\nvar addTextOnPath = function(points, distance, text, size, spacing, textVector, fonts, verticalOffset, vertexBuffer, texcoordsBuffer, index, planes, glyphsRes) {\n    if (textVector == null) {\n        textVector = [0,1,0];\n    }\n\n    var p1 = points[0];\n    //var newLineSpace = getLineHeight(size, fonts);\n    //var s = [p1[0], p1[1], p1[2]];\n\n    p1 = [p1[0], p1[1], p1[2]];\n    var l = distance;\n\n    var res = glyphsRes ? glyphsRes : Typr.U.stringToGlyphs(fonts, text);\n    var glyphs = res[0];\n    var gfonts = res[1];\n\n    for (var i = 0, li = glyphs.length; i < li; i++) {\n        /*  \n        var char = text.charCodeAt(i);\n\n        if (char == 10) { //new line\n            s[0] += -dir[1] * newLineSpace;\n            s[1] += dir[0] * newLineSpace;\n            p1 = [s[0], s[1], s[2]];\n            continue;\n        }\n\n        if (char == 9) { //tab\n            char = 32;\n        }\n        */\n\n        var glyph = glyphs[i];\n        var font = fonts[gfonts[i]];\n\n        if (font) {\n            var factor = getFontFactor(size, font);\n\n            var ll = 0.01;\n            var fc = font.glyphs[glyph];\n            if (fc) {\n                ll = fc.step * factor * spacing;\n            }\n\n            var posAndDir = getPathPositionAndDirection(points, l);\n            var posAndDir2 = getPathPositionAndDirection(points, l+ll);\n\n            //average dir\n            var dir = [(posAndDir2[1][0] + posAndDir[1][0])*0.5,\n                (posAndDir2[1][1] + posAndDir[1][1])*0.5,\n                (posAndDir2[1][2] + posAndDir[1][2])*0.5];\n\n            vec3Normalize(dir);\n\n            var shift = addChar(posAndDir[0], dir, -factor*font.size*0.7+verticalOffset, glyph, factor, spacing, index, index, textVector, fonts, vertexBuffer, texcoordsBuffer, null, planes, gfonts[i]);\n\n            p1 = shift[0];\n            index = shift[1];\n            //index2 = shift[2];\n            l += ll;\n        }\n    }\n\n    return index;\n};\n\n\nvar addStreetTextOnPath = function(points, text, size, spacing, fonts, verticalOffset, vertexBuffer, texcoordsBuffer, index, planes, glyphsRes) {\n    var textLength = getTextLength(text, size, spacing, fonts, glyphsRes);\n    var pathLength = getPathLength(points);\n    var shift = (pathLength -  textLength)*0.5;\n    if (shift < 0) {\n        shift = 0;\n    }\n\n    if (textLength > pathLength) {\n        return;\n    }\n\n    var textVector = getPathTextVector(points, shift, text, size, spacing, fonts, glyphsRes);\n\n    return addTextOnPath(points, shift, text, size, spacing, textVector, fonts, verticalOffset, vertexBuffer, texcoordsBuffer, index, planes, glyphsRes);\n};\n\n\nvar getFontFactor = function(size, font) {\n    return font ? ((size / font.size) * 1.52) : 1;\n};\n\n\nvar getLineHeight = function(size, lineHeight, fonts) {\n    var factor = getFontFactor(size, fonts[0]);\n    //return font.space * factor;\n    return fonts[0].cly * factor * lineHeight;\n};\n\n\nvar getTextLength = function(text, size, spacing, fonts, glyphsRes) {\n    var l = 0;\n\n    var res = glyphsRes ? glyphsRes : Typr.U.stringToGlyphs(fonts, text);\n    var glyphs = res[0];\n    var gfonts = res[1];\n\n    for (var i = 0, li = glyphs.length; i < li; i++) {\n        var glyph = glyphs[i];\n        var font = fonts[gfonts[i]];\n\n        if (font) {\n            var factor = getFontFactor(size, font) * spacing;\n            var fc = font.glyphs[glyph];\n\n            if (fc) {\n                if (i == (li-1)) {\n                    l += fc.lx * factor;\n                } else {\n                    l += fc.step * factor;\n                }\n            }\n        }\n    }\n\n    return l;\n};\n\n\nvar getSplitIndex = function(text, width, size, spacing, fonts, glyphsRes) {\n    var l = 0;\n\n    var res = glyphsRes ? glyphsRes : Typr.U.stringToGlyphs(fonts, text);\n    var glyphs = res[0];\n    var gfonts = res[1];\n    var codes = res[2];\n\n    for (var i = 0, li = glyphs.length; i < li; i++) {\n        var glyph = glyphs[i];\n        var char = codes[i];//text.charCodeAt(i);\n\n        if (l > width && (char == 10 || char == 9 || char == 32)) {\n            return i;\n        }\n\n        if (char == 10) { //new line\n            continue;\n        }\n\n        var font = fonts[gfonts[i]];\n\n        if (font) {\n            var factor = getFontFactor(size, font) * spacing;\n            var fc = font.glyphs[glyph];\n\n            if (fc) {\n                if (i == (li-1)) {\n                    l += fc.lx * factor;\n                } else {\n                    l += fc.step * factor;\n                }\n            }\n        }\n    }\n\n    return li;\n};\n\n\nvar getPathLength = function(points) {\n    var l = 0;\n\n    for (var i = 0, li = points.length-1; i < li; i++) {\n        var p1 = points[i];\n        var p2 = points[i+1];\n        var dir = [p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]];\n\n        l += vec3Length(dir);\n    }\n\n    return l;\n};\n\n\nvar getPathPositionAndDirection = function(points, distance) {\n    var l = 0;\n    var p1 = [0,0,0];\n    var dir = [1,0,0];\n\n    for (var i = 0, li = points.length-1; i < li; i++) {\n        p1 = points[i];\n        var p2 = points[i+1];\n        dir = [p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]];\n\n        var ll = vec3Length(dir);\n\n        if ((l + ll) > distance) {\n\n            var factor = (distance - l) / (ll);\n            var p = [p1[0] + dir[0] * factor,\n                p1[1] + dir[1] * factor,\n                p1[2] + dir[2] * factor];\n\n            vec3Normalize(dir);\n\n            return [p, dir];\n        }\n\n        l += ll;\n    }\n\n    return [p1, dir];\n};\n\n\nvar getPathTextVector = function(points, shift, text, size, spacing, fonts, glyphsRes) {\n    var l = 0;\n    var p1 = [0,0,0];\n    var dir = [1,0,0];\n    var textDir = [0,0,0];\n    var textStart = shift;\n    var textEnd = shift + getTextLength(text, size, spacing, fonts, glyphsRes);\n    var bboxMin = globals.bboxMin;\n    var geocent = globals.geocent;\n\n    for (var i = 0, li = points.length-1; i < li; i++) {\n        p1 = points[i];\n        var p2 = points[i+1];\n        dir = [p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]];\n\n        l += vec3Length(dir);\n\n        if (l > textStart) {\n            vec3Normalize(dir);\n            textDir[0] += dir[0];\n            textDir[1] += dir[1];\n            textDir[2] += dir[2];\n        }\n\n        if (l > textEnd) {\n            vec3Normalize(textDir);\n\n            if (geocent) {\n                var nn = [0,0,0];\n                vec3Normalize(bboxMin, nn);\n                vec3Cross(nn, textDir, nn);\n                return nn;\n            } else {\n                return [-textDir[1], textDir[0],0];\n            }\n        }\n    }\n\n    return textDir;\n};\n\n\nvar areTextCharactersAvailable = function(text, fonts, glyphsRes) {\n    if (!text || text == '') {\n        return false;\n    }\n\n    var res = glyphsRes ? glyphsRes : Typr.U.stringToGlyphs(fonts, text);\n    var glyphs = res[0];\n    //var gfonts = res[1];\n\n    if (glyphs.indexOf(0) != -1) {\n        return false;\n    }\n\n    return true;\n};\n\n\nvar hasLatin = function(str) {\n    for (var i = 0, li = str.length; i < li; i++) {\n        var c = str.charCodeAt(i);\n        if ((c >= 0x41 && c <= 0x5a) || (c >= 0x61 && c <= 0x7a) ||\n            ((c >= 0xc0 && c <= 0xff) && c!= 0xd7 && c!= 0xf7) || (c >= 0x100 && c <= 0x17f)) {\n            return true;\n        }\n    }\n\n    return false;\n};\n\n\nvar isCJK = function(str) {\n    for (var i = 0, li = str.length; i < li; i++) {\n        var c = str.charCodeAt(i);\n\n        if (!((c >= 0x4E00 && c <= 0x62FF) || (c >= 0x6300 && c <= 0x77FF) ||\n              (c >= 0x7800 && c <= 0x8CFF) || (c >= 0x8D00 && c <= 0x9FFF) || \n              (c >= 0x3400 && c <= 0x4DBF) || (c >= 0x20000 && c <= 0x215FF) || \n              (c >= 0x21600 && c <= 0x230FF) || (c >= 0x23100 && c <= 0x245FF) || \n              (c >= 0x24600 && c <= 0x260FF) || (c >= 0x26100 && c <= 0x275FF) || \n              (c >= 0x27600 && c <= 0x290FF) || (c >= 0x29100 && c <= 0x2A6DF) || \n              (c >= 0x2A700 && c <= 0x2B73F) || (c >= 0x2B740 && c <= 0x2B81F) || \n              (c >= 0x2B820 && c <= 0x2CEAF) || (c >= 0x2CEB0 && c <= 0x2EBEF) || \n              (c >= 0xF900 && c <= 0xFAFF) || (c >= 0x3300 && c <= 0x33FF) || \n              (c >= 0xFE30 && c <= 0xFE4F) || (c >= 0xF900 && c <= 0xFAFF) || \n              (c >= 0x2F800 && c <= 0x2FA1F) || \n              (c >= 0x0 && c <= 0x40) || (c >= 0xa0 && c <= 0xbf)  )) { //neutral\n            return false;\n        }\n    }\n\n    return true;\n};\n\n\nvar getFonts = function(fonts) {\n    var fontsMap = [];\n    for (var i = 0, li = fonts.length; i < li; i++) {\n        fontsMap.push(globals.fonts[fonts[i]]);\n    }\n\n    return fontsMap;\n};\n\n\nvar getFontsStorage = function(fonts) {\n    var fontsMap = [];\n    for (var i = 0, li = fonts.length; i < li; i++) {\n        fontsMap.push(globals.fontsMap[fonts[i]]);\n    }\n\n    return fontsMap;\n};\n\n\nvar getTextGlyphs = function(text, fonts) {\n    return Typr.U.stringToGlyphs(fonts, text);\n};\n\n\n\n\n\n\n\n/***/ }),\n/* 4 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__worker_style_js__ = __webpack_require__(2);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__worker_text_js__ = __webpack_require__(3);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__worker_message_js__ = __webpack_require__(1);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return processPointArrayPass; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"c\", function() { return processPointArrayGeometry; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"b\", function() { return processPointArrayVSwitchPass; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"d\", function() { return checkDPoints; });\n\n\n\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */], clamp = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"d\" /* clamp */];\nvar getLayerPropertyValue = __WEBPACK_IMPORTED_MODULE_1__worker_style_js__[\"c\" /* getLayerPropertyValue */], getLayerExpresionValue = __WEBPACK_IMPORTED_MODULE_1__worker_style_js__[\"g\" /* getLayerExpresionValue */];\nvar addText = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"f\" /* addText */], getSplitIndex = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"g\" /* getSplitIndex */], getTextGlyphs = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"h\" /* getTextGlyphs */],\n    getTextLength = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"i\" /* getTextLength */], getFonts = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"j\" /* getFonts */], getFontsStorage = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"k\" /* getFontsStorage */],\n    areTextCharactersAvailable = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"e\" /* areTextCharactersAvailable */], getCharVerticesCount = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"l\" /* getCharVerticesCount */], getLineHeight = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"m\" /* getLineHeight */];\nvar postGroupMessageFast = __WEBPACK_IMPORTED_MODULE_3__worker_message_js__[\"c\" /* postGroupMessageFast */];\n\n\nvar checkDPoints = function(pointArray) {\n    var pointsGroups = []; \n    var i, li, g, gl, points, p, pp;\n\n    if (pointArray['d-points'] || pointArray['d-lines']) {  //converty d-lines/points to lines/points\n        pointsGroups = pointArray['d-points'] || pointArray['d-lines'];\n\n        if (Array.isArray(pointsGroups) && points.length > 0) {\n\n            for (g = 0, gl = pointsGroups; g < gl; g++) {\n                points = pointsGroups[g];\n                \n                if (Array.isArray(points) && points.length > 0) {\n                    p = points[0];\n                    \n                    p[0] = (p[0] >> 1) ^ (-(p[0] & 1));\n                    p[1] = (p[1] >> 1) ^ (-(p[1] & 1));\n                    p[2] = (p[2] >> 1) ^ (-(p[2] & 1));\n\n                    for (i = 1, li = points.length; i < li; i++) {\n                        p = points[i-1];\n                        pp = points[i];\n\n                        pp[0] = ((pp[0] >> 1) ^ (-(pp[0] & 1))) + p[0];\n                        pp[1] = ((pp[1] >> 1) ^ (-(pp[1] & 1))) + p[1];\n                        pp[2] = ((pp[2] >> 1) ^ (-(pp[2] & 1))) + p[2];\n                    }\n                }\n            }\n        }\n\n        if (pointArray['d-points']) {\n            pointArray['points'] = pointArray['d-points'];\n            delete pointArray['d-points'];\n        } else {\n            pointArray['lines'] = pointArray['d-lines'];\n            delete pointArray['d-lines'];\n        }\n    }\n};\n\n\nvar processPointArrayPass = function(pointArray, lod, style, featureIndex, zIndex, eventInfo) {\n    var pointsGroups = []; \n    var i, li, g, gl, points, p, pp;\n\n    checkDPoints(pointArray);\n\n    if (pointArray['lines']) {  //use lines as points\n        pointsGroups = pointArray['lines'];\n    } else {\n        pointsGroups = [pointArray['points']];\n    }\n    \n    if (!pointsGroups || pointsGroups.length == 0) {\n        return;\n    }\n\n    var visibility = getLayerPropertyValue(style, 'visibility-rel', pointArray, lod) || \n                     getLayerPropertyValue(style, 'visibility-abs', pointArray, lod) ||\n                     getLayerPropertyValue(style, 'visibility', pointArray, lod);\n    var culling = getLayerPropertyValue(style, 'culling', pointArray, lod);\n    var hoverEvent = getLayerPropertyValue(style, 'hover-event', pointArray, lod);\n    var clickEvent = getLayerPropertyValue(style, 'click-event', pointArray, lod);\n    var drawEvent = getLayerPropertyValue(style, 'draw-event', pointArray, lod);\n    var enterEvent = getLayerPropertyValue(style, 'enter-event', pointArray, lod);\n    var leaveEvent = getLayerPropertyValue(style, 'leave-event', pointArray, lod);\n    var advancedHit = getLayerPropertyValue(style, 'advanced-event', pointArray, lod);\n    var linePoints = getLayerPropertyValue(style, 'line-points', pointArray, lod);\n\n    var zbufferOffset = getLayerPropertyValue(style, 'zbuffer-offset', pointArray, lod);\n\n    var point = getLayerPropertyValue(style, 'point', pointArray, lod);\n    var pointFlat = getLayerPropertyValue(style, 'point-flat', pointArray, lod);\n    var pointColor = getLayerPropertyValue(style, 'point-color', pointArray, lod);\n    var pointRadius = 0.5 * getLayerPropertyValue(style, 'point-radius', pointArray, lod);\n\n    var source, bufferSize, bufferSize2, totalPoints = 0, noOverlap;\n    //zIndex = (zIndex !== null) ? zIndex : getLayerPropertyValue(style, \"z-index\", pointArray, lod);\n\n    for (g = 0, gl = pointsGroups.length; g < gl; g++) {\n        points = pointsGroups[g];\n        if (Array.isArray(points) && points.length > 0) {\n            totalPoints += points.length;\n        }\n    }\n\n    var icon = getLayerPropertyValue(style, 'icon', pointArray, lod);\n    if (icon) {\n        source = getLayerPropertyValue(style, 'icon-source', pointArray, lod);\n        \n        if (source) {\n            bufferSize = getCharVerticesCount() * totalPoints;\n            bufferSize2 = getCharVerticesCount(true) * totalPoints;\n    \n            var iconData = {\n                color : getLayerPropertyValue(style, 'icon-color', pointArray, lod),\n                scale : getLayerPropertyValue(style, 'icon-scale', pointArray, lod),\n                offset : getLayerPropertyValue(style, 'icon-offset', pointArray, lod),\n                stick : getLayerPropertyValue(style, 'icon-stick', pointArray, lod),\n                reduce : getLayerPropertyValue(style, 'dynamic-reduce', pointArray, lod),\n                origin : getLayerPropertyValue(style, 'icon-origin', pointArray, lod),\n                source : getLayerPropertyValue(style, 'icon-source', pointArray, lod),\n                noOverlap : getLayerPropertyValue(style, 'icon-no-overlap', pointArray, lod),\n                noOverlapMargin : getLayerPropertyValue(style, 'icon-no-overlap-margin', pointArray, lod),\n                noOverlapFactor : getLayerPropertyValue(style, 'icon-no-overlap-factor', pointArray, lod),\n                index : 0,\n                index2 : 0\n            };\n\n            if (totalPoints > 1) {\n                iconData.vertexBuffer = new Float32Array(bufferSize);\n                iconData.originBuffer = new Float32Array(bufferSize2);\n                iconData.texcoordsBuffer = new Float32Array(bufferSize);\n            } else {\n                iconData.singleBuffer = new Float32Array(16);\n            }\n\n        } else {\n            icon = false;\n        }\n    }\n\n    var label = getLayerPropertyValue(style, 'label', pointArray, lod);\n    if (label) {\n        source = getLayerPropertyValue(style, 'label-source', pointArray, lod);\n\n        var text = getLayerExpresionValue(style, source, pointArray, lod, source);\n        text = text ? text.replace('\\r\\n', '\\n').replace('\\r', '\\n') : '';\n        var size = getLayerPropertyValue(style, 'label-size', pointArray, lod);\n        var fontNames = getLayerPropertyValue(style, 'label-font', pointArray, lod);\n        var fonts = getFonts(fontNames);\n        var glyphsRes = getTextGlyphs(text, fonts);\n        \n        if (source == '$name') {\n            if (!areTextCharactersAvailable(text, fonts, glyphsRes)) {\n                var text2 = getLayerExpresionValue(style, '$name:en', pointArray, lod, source);\n                text2 = text2 ? text2.replace('\\r\\n', '\\n').replace('\\r', '\\n') : '';\n                var glyphsRes2 = getTextGlyphs(text2, fonts);\n                \n                if (areTextCharactersAvailable(text2, fonts)) {\n                    text = text2;                     \n                    glyphsRes = glyphsRes2;\n                }\n            }\n        }\n        if (text && text != '' && Math.abs(size) > 0.0001) {\n            noOverlap = getLayerPropertyValue(style, 'label-no-overlap', pointArray, lod);\n            bufferSize = getCharVerticesCount() * text.length * (noOverlap ? 1 : totalPoints);\n            bufferSize2 = getCharVerticesCount(true) * text.length * (noOverlap ? 1 : totalPoints);\n\n            var useSingleBuffer = (totalPoints == 1);\n\n            var factor = 1;\n            if (getLayerPropertyValue(style, 'label-size-units', pointArray, lod) == 'points') {\n                factor = globals.pixelFactor / ((1 / 72) * (96));\n            }\n\n            var labelData = {\n                color : getLayerPropertyValue(style, 'label-color', pointArray, lod),\n                color2 : getLayerPropertyValue(style, 'label-color2', pointArray, lod),\n                outline : getLayerPropertyValue(style, 'label-outline', pointArray, lod),\n                reduce : getLayerPropertyValue(style, 'dynamic-reduce', pointArray, lod),\n                size : size * factor,\n                spacing: getLayerPropertyValue(style, 'label-spacing', pointArray, lod),\n                lineHeight: getLayerPropertyValue(style, 'label-line-height', pointArray, lod),\n                offset : getLayerPropertyValue(style, 'label-offset', pointArray, lod),\n                stick : getLayerPropertyValue(style, 'label-stick', pointArray, lod),\n                origin : getLayerPropertyValue(style, 'label-origin', pointArray, lod),\n                align : getLayerPropertyValue(style, 'label-align', pointArray, lod),\n                fonts : fonts,\n                fontsStorage : getFontsStorage(fontNames),\n                text : text,\n                hysteresis : getLayerPropertyValue(style, 'hysteresis', pointArray, lod),\n                width : factor * getLayerPropertyValue(style, 'label-width', pointArray, lod),\n                noOverlap : noOverlap,\n                noOverlapMargin : getLayerPropertyValue(style, 'label-no-overlap-margin', pointArray, lod),\n                noOverlapFactor : getLayerPropertyValue(style, 'label-no-overlap-factor', pointArray, lod),\n                vertexBuffer : (useSingleBuffer) ? null : (new Float32Array(bufferSize)),\n                originBuffer : (useSingleBuffer) ? null : (new Float32Array(bufferSize2)),\n                texcoordsBuffer : (useSingleBuffer) ? null : (new Float32Array(bufferSize)),\n                singleBuffer : (useSingleBuffer) ? (new Float32Array(text.length * 4 * 2)) : null,\n                index : 0,\n                index2 : 0,\n                glyphsRes : glyphsRes\n            };\n\n            if (labelData.stick) {\n                labelData.stick = labelData.stick.slice();\n                labelData.stick[2] *= factor;\n                //labelData.stick[7] *= factor;\n            }\n\n        } else {\n            label = false;\n        }\n    }\n\n    var index = 0;\n    var index2 = 0;\n\n    \n    var center = [0,0,0];\n    var forceOrigin = globals.forceOrigin;\n    var bboxMin = globals.bboxMin;\n    var tileX = globals.tileX;\n    var tileY = globals.tileY;\n    var forceScale = globals.forceScale;\n    var labelBBox, iconBBox, p, p1, p2, pp, pp2;\n\n    var generatePoint = (function(pindex) {\n\n        if (icon && (!iconData.noOverlap)) {\n            iconBBox = processIcon(pp, iconData) ;//, pointArray, lod, style, zIndex);\n        }\n\n        if (label && (!labelData.noOverlap)) {\n            labelBBox = processLabel(pp, labelData); //, pointArray, lod, style, zIndex);\n        }\n\n        if (point) {\n\n            for (var j = 0; j < circleSides; j++) {\n\n                if (pointFlat) {\n\n                    //add polygon\n                    vertexBuffer[index] = pp[0];\n                    vertexBuffer[index+1] = pp[1];\n                    vertexBuffer[index+2] = pp[2];\n\n                    vertexBuffer[index+3] = pp[0] + circleBuffer[j][0] * pointRadius;\n                    vertexBuffer[index+4] = pp[1] + circleBuffer[j][1] * pointRadius;\n                    vertexBuffer[index+5] = pp[2];\n\n                    vertexBuffer[index+6] = pp[0] + circleBuffer[j+1][0] * pointRadius;\n                    vertexBuffer[index+7] = pp[1] + circleBuffer[j+1][1] * pointRadius;\n                    vertexBuffer[index+8] = pp[2];\n\n                    index += 9;\n\n                } else {\n\n                    //add polygon\n                    vertexBuffer[index] = pp[0];\n                    vertexBuffer[index+1] = pp[1];\n                    vertexBuffer[index+2] = pp[2];\n                    vertexBuffer[index+3] = 0;\n                    normalBuffer[index2] = 0;\n                    normalBuffer[index2+1] = 0;\n                    normalBuffer[index2+2] = 0;\n                    normalBuffer[index2+3] = 0;\n\n                    vertexBuffer[index+4] = pp[0];\n                    vertexBuffer[index+5] = pp[1];\n                    vertexBuffer[index+6] = pp[2];\n                    vertexBuffer[index+7] = 0;\n                    normalBuffer[index2+4] = circleBuffer[j][0] * pointRadius;\n                    normalBuffer[index2+5] = circleBuffer[j][1] * pointRadius;\n                    normalBuffer[index2+6] = 0;\n                    normalBuffer[index2+7] = 0;\n\n                    vertexBuffer[index+8] = pp[0];\n                    vertexBuffer[index+9] = pp[1];\n                    vertexBuffer[index+10] = pp[2];\n                    vertexBuffer[index+11] = 0;\n                    normalBuffer[index2+8] = circleBuffer[j+1][0] * pointRadius;\n                    normalBuffer[index2+9] = circleBuffer[j+1][1] * pointRadius;\n                    normalBuffer[index2+10] = 0;\n                    normalBuffer[index2+11] = 0;\n\n                    index += 12;\n                    index2 += 12;\n                }\n            }\n        }\n    });\n\n\n    var getLinePoint = (function(length) {\n\n        var l1 = 0;\n        var l2 = 0;\n\n        p = points[0];\n        p1 = [p[0], p[1], p[2]];\n\n        if (forceOrigin) {\n            p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n        }\n\n        if (forceScale != null) {\n            p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n        }\n\n        if (length == 0) {\n            return p1;\n        }\n\n        for (var k = 0, lk = points.length - 1; k < lk; k++) {\n            p = points[k+1];\n            p2 = [p[0], p[1], p[2]];\n\n            if (forceOrigin) {\n                p2 = [p2[0] - tileX, p2[1] - tileY, p2[2]];\n            }\n\n            if (forceScale != null) {\n                p2 = [p2[0] * forceScale[0], p2[1] * forceScale[1], p2[2] * forceScale[2]];\n            }\n\n            var dx = p2[0] - p1[0], dy = p2[1] - p1[1], dz = p2[2] - p1[2]; \n            var l = Math.sqrt(dx*dx+dy*dy+dz*dz);\n\n            l1 = l2;\n            l2 += l;\n\n            if (length >= l1 && length <= l2) {\n                var d = (length - l1) / l;\n\n                return [p1[0] + dx * d,  p1[1] + dy * d, p1[2] + dz * d];\n            }\n\n            p1 = p2;\n        }\n\n    });\n\n    var pointsBuffer = new Array(2048), pointsBufferLength = 0;\n\n\n    for (g = 0, gl = pointsGroups.length; g < gl; g++) {\n        points = pointsGroups[g];\n        \n        if (Array.isArray(points) && points.length > 0) {\n\n            var totalLength = 0, lengths = null;\n\n            if (linePoints[0] != 'vertices') {\n                lengths = new Array(points.length);\n                lengths[0] = 0;\n            }\n\n            //add ponints\n            for (i = 0, li = points.length; i < li; i++) {\n                p = points[i];\n                p1 = [p[0], p[1], p[2]];\n\n                if (forceOrigin) {\n                    p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n                }\n        \n                if (forceScale != null) {\n                    p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n                }\n                \n                if (i + 1 < li) {\n                    p = points[i+1];\n                    p2 = [p[0], p[1], p[2]];\n\n                    if (forceOrigin) {\n                        p2 = [p2[0] - tileX, p2[1] - tileY, p2[2]];\n                    }\n            \n                    if (forceScale != null) {\n                        p2 = [p2[0] * forceScale[0], p2[1] * forceScale[1], p2[2] * forceScale[2]];\n                    }\n\n                    var dx = p2[0] - p1[0], dy = p2[1] - p1[1], dz = p2[2] - p1[2]; \n                    var l = Math.sqrt(dx*dx+dy*dy+dz*dz);\n\n                    if (lengths) {\n                        lengths[i] = l;\n                    }\n\n                    totalLength += l;\n                }\n        \n                center[0] += p1[0];\n                center[1] += p1[1];\n                center[2] += p1[2];\n\n                if (linePoints[0] == 'vertices') {\n                    pointsBuffer[pointsBufferLength] = p1;\n                    pointsBufferLength++;\n                }\n            }\n\n            if (linePoints[0] == 'by-length' || linePoints[0] == 'by-ratio') {\n                var period = linePoints[1];\n                var offset = linePoints[2] || 0;\n\n                if (linePoints[0] == 'by-ratio') {\n                    period *= totalLength;\n                    offset *= totalLength;\n                }\n\n                if (period <= 0) {\n                    pointsBuffer[pointsBufferLength] = getLinePoint(offset);\n                    if (pointsBuffer[pointsBufferLength]) {\n                        pointsBufferLength++;\n                    }\n                } else {\n                    for (i = offset; i < totalLength; i += period) {\n                        pointsBuffer[pointsBufferLength] = getLinePoint(i);\n                        if (pointsBuffer[pointsBufferLength]) {\n                            pointsBufferLength++;\n                        }\n                    }\n                }\n            }\n\n            if (linePoints[0] == 'start') {\n                pointsBuffer[pointsBufferLength] = getLinePoint(0);\n                pointsBufferLength++;\n            }\n\n            if (linePoints[0] == 'end') {\n                pointsBuffer[pointsBufferLength] = getLinePoint(totalLength);\n                pointsBufferLength++;\n            }\n\n            if (linePoints[0] == 'endpoints') {\n                pointsBuffer[pointsBufferLength] = getLinePoint(0);\n                pointsBufferLength++;\n                pointsBuffer[pointsBufferLength] = getLinePoint(totalLength);\n                pointsBufferLength++;\n            }\n\n            if (linePoints[0] == 'middle' || linePoints[0] == 'midpoint') {\n                pointsBuffer[pointsBufferLength] = getLinePoint(totalLength * 0.5);\n                pointsBufferLength++;\n            }\n        }\n    }\n\n    var pointsVertices, vertexBuffer, pointsNormals, normalBuffer, bufferPoints = pointsBufferLength;\n\n    if (point) {\n        var circleBuffer = [];\n        var circleSides = clamp(pointRadius * 8 * 0.5, 8, 32);\n\n        var angle = 0, step = (2.0*Math.PI) / circleSides;\n\n        for (i = 0; i < circleSides; i++) {\n            circleBuffer[i] = [-Math.sin(angle), Math.cos(angle)];\n            angle += step;\n        }\n\n        circleBuffer[circleSides] = [0, 1.0];\n\n        //allocate buffers\n        if (!pointFlat) {\n            pointsVertices = circleSides * 3 * 4;\n            vertexBuffer = new Float32Array(bufferPoints * pointsVertices);\n            pointsNormals = circleSides * 3 * 4;\n            normalBuffer = new Float32Array(bufferPoints * pointsNormals);\n        } else {\n            pointsVertices = circleSides * 3 * 3;\n            vertexBuffer = new Float32Array(bufferPoints * pointsVertices);\n        }\n    }\n\n    if (!pointsBufferLength) {\n        return;\n    }\n\n    //if (pointsBufferLength > 1) {\n      //  globals.directPoints = pointsBuffer.slice(1,pointsBufferLength);\n    //}\n \n    globals.directPoints = pointsBuffer.slice(0,pointsBufferLength);\n\n    for (i = 0; i < pointsBufferLength; i++) {\n        pp = pointsBuffer[i];\n        generatePoint(i);\n    }\n\n    if (totalPoints > 0) {\n        center[0] /= totalPoints;\n        center[1] /= totalPoints;\n        center[2] /= totalPoints;\n    }\n\n    center[0] += bboxMin[0];//groupOrigin[0];\n    center[1] += bboxMin[1];//groupOrigin[1];\n    center[2] += bboxMin[2];//groupOrigin[2];\n\n    var hitable = hoverEvent || clickEvent || enterEvent || leaveEvent;\n    var message, messageSize;\n\n    globals.signatureCounter++;\n    var signature = (\"\"+globals.signatureCounter);\n\n    if (visibility && !Array.isArray(visibility)) {\n        visibility = [visibility];\n    }\n\n    if (point) {\n        if (pointFlat) {\n            postGroupMessageFast(5, 6, {\n                'color':pointColor, 'z-index':zIndex, 'visibility': visibility, 'center': center,\n                'hover-event':hoverEvent, 'click-event':clickEvent, 'draw-event':drawEvent, 'advancedHit': advancedHit,\n                'enter-event':enterEvent, 'leave-event':leaveEvent, 'zbuffer-offset':zbufferOffset,\n                'hitable':hitable, 'state':globals.hitState, 'eventInfo': (globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {}, \n                'lod':(globals.autoLod ? null : globals.tileLod) }, [vertexBuffer], signature);\n        } else {\n            postGroupMessageFast(5, 9, {\n                'color':pointColor, 'z-index':zIndex, 'visibility': visibility, 'center': center,\n                'hover-event':hoverEvent, 'click-event':clickEvent, 'draw-event':drawEvent,\n                'enter-event':enterEvent, 'leave-event':leaveEvent, 'zbuffer-offset':zbufferOffset,\n                'hitable':hitable, 'state':globals.hitState, 'eventInfo': (globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {}, \n                'lod':(globals.autoLod ? null : globals.tileLod) }, [vertexBuffer, normalBuffer], signature);\n        }\n    }\n\n    var sendIconMessage = (function(){\n\n        if (icon) {\n\n            globals.signatureCounter++;\n            signature = (\"\"+globals.signatureCounter);\n\n            if (iconData.noOverlap) {\n                var margin = iconData.noOverlapMargin;\n                var factorType = null, factorValue = null;\n\n                if (iconData.noOverlapFactor !== null) {\n                    switch(iconData.noOverlapFactor[0]) {\n                        case 'direct':      factorType = 0;      break;\n                        case 'div-by-dist': factorType = 1; break;\n                    }\n\n                    factorValue = iconData.noOverlapFactor[1];\n                }\n\n                var noOverlap = [iconBBox[0]-margin[0], iconBBox[1]-margin[1], iconBBox[2]+margin[0], iconBBox[3]+margin[1], factorType, factorValue];\n            }\n\n            if ((iconData.singleBuffer && iconData.singleBuffer.length > 0) || (iconData.vertexBuffer && iconData.vertexBuffer.length > 0)) {\n\n                postGroupMessageFast(5, (iconData.singleBuffer) ? 3 : 4, {\n                    'icon':globals.stylesheetBitmaps[iconData.source[0]], 'color':iconData.color, 'z-index':zIndex,\n                    'visibility': visibility, 'culling': culling, 'center': pp2, 'stick': iconData.stick,\n                    'hover-event':hoverEvent, 'click-event':clickEvent, 'draw-event':drawEvent, 'advancedHit': advancedHit,\n                    'enter-event':enterEvent, 'leave-event':leaveEvent, 'zbuffer-offset':zbufferOffset, 'noOverlap' : (iconData.noOverlap ? noOverlap: null),\n                    'hitable':hitable, 'state':globals.hitState, 'eventInfo': (globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {},\n                    'index': featureIndex, 'reduce': iconData.reduce, 'lod':(globals.autoLod ? null : globals.tileLod) },\n                    (iconData.singleBuffer) ? [iconData.singleBuffer] : [iconData.vertexBuffer, iconData.originBuffer, iconData.texcoordsBuffer],\n                    signature);\n            }\n        }\n\n    });\n\n    var sendLabelMessage = (function(){\n\n        if (label) {\n            globals.signatureCounter++;\n            signature = (\"\"+globals.signatureCounter);\n\n            if (labelData.noOverlap) {\n                var margin = labelData.noOverlapMargin;\n                var factorType = null, factorValue = null;\n\n                if (labelData.noOverlapFactor !== null) {\n                    switch(labelData.noOverlapFactor[0]) {\n                        case 'direct':      factorType = 0;      break;\n                        case 'div-by-dist': factorType = 1; break;\n                    }\n\n                    factorValue = labelData.noOverlapFactor[1];\n                }\n\n                var noOverlap = [labelBBox[0]-margin[0], labelBBox[1]-margin[1], labelBBox[2]+margin[0], labelBBox[3]+margin[1], factorType, factorValue];\n            }\n\n            if ((labelData.singleBuffer && labelData.singleBuffer.length > 0) || (labelData.vertexBuffer && labelData.vertexBuffer.length > 0)) {\n\n                postGroupMessageFast(5, (labelData.singleBuffer) ? 1 : 2, {\n                    'size':labelData.size, 'origin':labelData.pos, 'color':labelData.color,\n                    'color2':labelData.color2, 'outline':labelData.outline, 'z-index':zIndex, 'visibility': visibility,\n                    'culling': culling, 'center': pp2, 'stick': labelData.stick, 'noOverlap' : (labelData.noOverlap ? noOverlap: null),\n                    'hover-event':hoverEvent, 'click-event':clickEvent, 'draw-event':drawEvent, 'files':labelData.files, 'index': featureIndex,\n                    'enter-event':enterEvent, 'leave-event':leaveEvent, 'zbuffer-offset':zbufferOffset, 'fonts': labelData.fontsStorage,\n                    'hitable':hitable, 'state':globals.hitState, 'advancedHit': advancedHit, 'reduce': labelData.reduce, 'hysteresis': labelData.hysteresis, \n                    'eventInfo': (globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {}, 'lod':(globals.autoLod ? null : globals.tileLod) },\n                    (labelData.singleBuffer) ? [labelData.singleBuffer] : [labelData.vertexBuffer, labelData.originBuffer, labelData.texcoordsBuffer],\n                    signature);\n            }\n        }\n\n    });\n\n    if (icon && (!iconData.noOverlap)) {\n        pp2 = center;\n        sendIconMessage();\n    }\n\n    if (label && (!labelData.noOverlap)) {\n        pp2 = center;\n        sendLabelMessage();\n    }\n\n    for (i = 0, li = globals.insidePack ? 1 : globals.directPoints.length; i < li; i++) {\n        pp = globals.directPoints[i];\n        pp2 = [pp[0] + bboxMin[0], pp[1] + bboxMin[1], pp[2] + bboxMin[2]];\n\n        if (icon && (iconData.noOverlap)) {\n            iconBBox = processIcon(pp, iconData, iconBBox) ;//, pointArray, lod, style, zIndex);\n            sendIconMessage();\n        }\n\n        if (label && (labelData.noOverlap)) {\n            labelBBox = processLabel(pp, labelData, labelBBox); //, pointArray, lod, style, zIndex);\n            sendLabelMessage();\n        }\n    }\n\n};\n\n\nvar processPointArrayVSwitchPass = function(pointArray, lod, style, featureIndex, zIndex, eventInfo) {\n    var pointsGroups = []; \n    var i, li;\n\n    checkDPoints(pointArray);\n\n    if (pointArray['lines']) {  //use lines as points\n        pointsGroups = pointArray['lines'];\n    } else {\n        pointsGroups = [pointArray['points']];\n    }\n    \n    if (!pointsGroups || pointsGroups.length == 0) {\n        return;\n    }\n\n\n    var visibility = getLayerPropertyValue(style, 'visibility-rel', pointArray, lod) || \n                     getLayerPropertyValue(style, 'visibility-abs', pointArray, lod) ||\n                     getLayerPropertyValue(style, 'visibility', pointArray, lod);\n    var culling = getLayerPropertyValue(style, 'culling', pointArray, lod);\n    var hysteresis = getLayerPropertyValue(style, 'hysteresis', pointArray, lod);\n\n    var points, g, gl, totalPoints = 0;\n\n    for (g = 0, gl = pointsGroups.length; g < gl; g++) {\n        points = pointsGroups[g];\n        if (Array.isArray(points) && points.length > 0) {\n            totalPoints += points.length;\n        }\n    }\n\n    var center = [0,0,0];\n    var forceOrigin = globals.forceOrigin;\n    var bboxMin = globals.bboxMin;\n    var tileX = globals.tileX;\n    var tileY = globals.tileY;\n    var forceScale = globals.forceScale;\n    var p, p1;\n\n    for (g = 0, gl = pointsGroups.length; g < gl; g++) {\n        points = pointsGroups[g];\n        \n        if (Array.isArray(points) && points.length > 0) {\n       \n            //add ponints\n            for (i = 0, li = points.length; i < li; i++) {\n                p = points[i];\n                p1 = [p[0], p[1], p[2]];\n        \n                if (forceOrigin) {\n                    p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n                }\n        \n                if (forceScale != null) {\n                    p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n                }\n        \n                center[0] += p1[0];\n                center[1] += p1[1];\n                center[2] += p1[2];\n            }\n        }\n    }\n   \n    if (totalPoints > 0) {\n        center[0] /= totalPoints;\n        center[1] /= totalPoints;\n        center[2] /= totalPoints;\n    }\n\n    center[0] += bboxMin[0];//groupOrigin[0];\n    center[1] += bboxMin[1];//groupOrigin[1];\n    center[2] += bboxMin[2];//groupOrigin[2];\n\n    globals.signatureCounter++;\n    var signature = (\"\"+globals.signatureCounter);\n\n    postGroupMessageFast(5, 19, {\n        'z-index':zIndex, 'hysteresis' : hysteresis,\n        'visibility': visibility, 'culling': culling, 'center': center, 'eventInfo': {} /*(globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {}*/,\n         'index': featureIndex, 'lod':(globals.autoLod ? null : globals.tileLod) }, [], signature);\n};\n\n\nvar getOriginOffset = function(origin, width, height) {\n    switch(origin) {\n    case 'top-left':        return [0, 0];\n    case 'top-right':       return [-width, 0];\n    case 'top-center':      return [-width*0.5, 0];\n    case 'center-left':     return [0, -height*0.5];\n    case 'center-right':    return [-width, -height*0.5];\n    case 'center-center':   return [-width*0.5, -height*0.5];\n    case 'bottom-left':     return [0, -height];\n    case 'bottom-right':    return [-width, -height];\n    case 'bottom-center':   return [-width*0.5, -height];\n    }\n};\n\n\nvar processIcon = function(point, iconData, cloneBuffers) {\n\n    if (cloneBuffers) {\n        iconData.index = 0;\n        iconData.index2 = 0;\n        iconData.vertexBuffer = iconData.vertexBuffer ?  (new Float32Array(iconData.vertexBuffer.length)) : null;\n        iconData.originBuffer = iconData.originBuffer ?  (new Float32Array(iconData.originBuffer.length)) : null;\n        iconData.singleBuffer = iconData.singleBuffer ?  (new Float32Array(iconData.singleBuffer.length)) : null;\n    }\n\n    var icon = iconData.source;\n    var index = iconData.index;\n    var index2 = iconData.index2;\n    var lastIndex = index;\n\n    var width = Math.abs(icon[3] * iconData.scale * 0.5);\n    var height = Math.abs(icon[4] * iconData.scale * 0.5);\n\n    //get offset\n    var originOffset = getOriginOffset(iconData.origin, width, height);\n    var offsetX = originOffset[0] + iconData.offset[0];\n    var offsetY = originOffset[1] + iconData.offset[1];\n\n    if (iconData.singleBuffer) {\n        var b = iconData.singleBuffer;\n\n        b[0] = offsetX; b[1] = offsetY;\n        b[2] = icon[1];\n        b[3] = icon[2];\n\n        b[4] = width + offsetX; b[5] = offsetY;\n        b[6] = icon[1]+icon[3];\n        b[7] = icon[2];\n\n        b[8] = width + offsetX; b[9] = height + offsetY;\n        b[10] = icon[1]+icon[3];\n        b[11] = icon[2]+icon[4];\n\n        b[12] = offsetX; b[13] = height + offsetY;\n        b[14] = icon[1];\n        b[15] = icon[2]+icon[4];\n\n        return [offsetX * 0.5, offsetY * 0.5, (offsetX + width) * 0.5 + 1, (offsetY + height) *0.5];\n    }\n\n    var vertexBuffer = iconData.vertexBuffer;\n    var texcoordsBuffer = iconData.texcoordsBuffer;\n    var originBuffer = iconData.originBuffer;\n\n    //add polygon\n    vertexBuffer[index] = 0;\n    vertexBuffer[index+1] = 0;\n    vertexBuffer[index+2] = 0;\n    vertexBuffer[index+3] = 0;\n\n    vertexBuffer[index+4] = width;\n    vertexBuffer[index+5] = 0;\n    vertexBuffer[index+6] = 0;\n    vertexBuffer[index+7] = 0;\n\n    vertexBuffer[index+8] = width;\n    vertexBuffer[index+9] = -height;\n    vertexBuffer[index+10] = 0;\n    vertexBuffer[index+11] = 0;\n\n    texcoordsBuffer[index] = icon[1];\n    texcoordsBuffer[index+1] = icon[2];\n    texcoordsBuffer[index+2] = 0;\n    texcoordsBuffer[index+3] = 0;\n\n    texcoordsBuffer[index+4] = icon[1]+icon[3];\n    texcoordsBuffer[index+5] = icon[2];\n    texcoordsBuffer[index+6] = 0;\n    texcoordsBuffer[index+7] = 0;\n\n    texcoordsBuffer[index+8] = icon[1]+icon[3];\n    texcoordsBuffer[index+9] = icon[2]+icon[4];\n    texcoordsBuffer[index+10] = 0;\n    texcoordsBuffer[index+11] = 0;\n\n    index += 12;\n\n    //add polygon\n    vertexBuffer[index] = 0;\n    vertexBuffer[index+1] = 0;\n    vertexBuffer[index+2] = 0;\n    vertexBuffer[index+3] = 0;\n\n    vertexBuffer[index+4] = 0;\n    vertexBuffer[index+5] = -height;\n    vertexBuffer[index+6] = 0;\n    vertexBuffer[index+7] = 0;\n\n    vertexBuffer[index+8] = width;\n    vertexBuffer[index+9] = -height;\n    vertexBuffer[index+10] = 0;\n    vertexBuffer[index+11] = 0;\n\n    texcoordsBuffer[index] = icon[1];\n    texcoordsBuffer[index+1] = icon[2];\n    texcoordsBuffer[index+2] = 0;\n    texcoordsBuffer[index+3] = 0;\n\n    texcoordsBuffer[index+4] = icon[1];\n    texcoordsBuffer[index+5] = icon[2]+icon[4];\n    texcoordsBuffer[index+6] = 0;\n    texcoordsBuffer[index+7] = 0;\n\n    texcoordsBuffer[index+8] = icon[1]+icon[3];\n    texcoordsBuffer[index+9] = icon[2]+icon[4];\n    texcoordsBuffer[index+10] = 0;\n    texcoordsBuffer[index+11] = 0;\n    \n    index += 12;\n\n    var p1 = point[0];\n    var p2 = point[1];\n    var p3 = point[2];\n\n    //set origin buffer and apply offset\n    for (var i = lastIndex; i < index; i+=4) {\n        vertexBuffer[i] += offsetX;\n        vertexBuffer[i+1] -= offsetY;\n\n        originBuffer[index2] = p1;\n        originBuffer[index2 + 1] = p2;\n        originBuffer[index2 + 2] = p3;\n        index2 += 3;\n    }\n\n    iconData.index = index;\n    iconData.index2 = index2;\n\n    return [offsetX * 0.5, offsetY * 0.5, (offsetX + width) * 0.5 + 1, (offsetY + height) *0.5];\n};\n\n\nvar processLabel = function(point, labelData, cloneBuffers) {\n\n    if (cloneBuffers) {\n        labelData.index = 0;\n        labelData.index2 = 0;\n        labelData.vertexBuffer = labelData.vertexBuffer ?  (new Float32Array(labelData.vertexBuffer.length)) : null;\n        labelData.originBuffer = labelData.originBuffer ?  (new Float32Array(labelData.originBuffer.length)) : null;\n        labelData.singleBuffer = labelData.singleBuffer ?  (new Float32Array(labelData.singleBuffer.length)) : null;\n    }\n\n    var vertexBuffer = labelData.vertexBuffer;\n    var texcoordsBuffer = labelData.texcoordsBuffer;\n    var originBuffer = labelData.originBuffer;\n    var singleBuffer = labelData.singleBuffer;\n    var index = labelData.index;\n    var index2 = labelData.index2;\n    var lastIndex = index;\n    var text = '' + labelData.text;\n    var fonts = labelData.fonts;\n    var planes = {}, i, li;\n    var glyphsRes = labelData.glyphsRes;\n\n    var linesGlyphsRes = [];\n    var linesGlyphsRes2 = [];\n\n    //split text to lines\n    do {\n        var res = glyphsRes[2].indexOf(10); //search /n\n\n        if (res != -1) {\n            linesGlyphsRes.push([glyphsRes[0].slice(0,res), glyphsRes[1].slice(0,res), glyphsRes[2].slice(0,res)]);\n            glyphsRes = [glyphsRes[0].slice(res+1), glyphsRes[1].slice(res+1), glyphsRes[2].slice(res+1)];\n        } else {\n            linesGlyphsRes.push(glyphsRes);\n        }\n\n    } while (res != -1);\n\n    //split lines by width\n    for (var i = 0, li = linesGlyphsRes.length; i < li; i++) {\n\n        var glyphsRes = linesGlyphsRes[i];\n\n        // eslint-disable-next-line\n        do {\n            var splitIndex = getSplitIndex(null, labelData.width, labelData.size, labelData.spacing, fonts, glyphsRes);\n            var codes = glyphsRes[2];\n\n            if (codes.length == splitIndex) {\n                linesGlyphsRes2.push(glyphsRes);\n                break;\n            }\n\n            linesGlyphsRes2.push([glyphsRes[0].slice(0,splitIndex), glyphsRes[1].slice(0,splitIndex), glyphsRes[2].slice(0,splitIndex)]);\n\n            glyphsRes = [glyphsRes[0].slice(splitIndex+1), glyphsRes[1].slice(splitIndex+1), glyphsRes[2].slice(splitIndex+1)];\n\n        } while(true);\n\n    }\n\n    var x = 0, y = 0;\n    var lineHeight = getLineHeight(labelData.size, labelData.lineHeight, fonts);\n    var maxWidth = 0;\n    var lineWidths = [];\n\n    //get max width\n    for (i = 0, li = linesGlyphsRes2.length; i < li; i++) {\n        lineWidths[i] = getTextLength(null, labelData.size, labelData.spacing, fonts, linesGlyphsRes2[i]);\n        maxWidth = Math.max(lineWidths[i], maxWidth);\n    }\n\n    //generate text\n    for (i = 0, li = linesGlyphsRes2.length; i < li; i++) {\n        var textWidth = lineWidths[i];\n\n        switch(labelData.align) {\n        case 'left': x = 0; break;\n        case 'right': x = maxWidth - textWidth; break;\n        case 'center': x = (maxWidth - textWidth)*0.5; break;\n        }\n\n        index = addText([x,y,0], [1,0,0], null, labelData.size, labelData.spacing, fonts, vertexBuffer, texcoordsBuffer, true, index, planes, linesGlyphsRes2[i], singleBuffer);\n        y -= lineHeight;\n    }\n\n    //get offset\n    var originOffset = getOriginOffset(labelData.origin, maxWidth, -y);\n    var offsetX = originOffset[0] + labelData.offset[0];\n    var offsetY = originOffset[1] + labelData.offset[1];\n    \n    var p1 = point[0];\n    var p2 = point[1];\n    var p3 = point[2];\n\n    //set origin buffer and apply offset\n    if (!singleBuffer) {\n        for (i = lastIndex; i < index; i+=4) {\n            vertexBuffer[i] += offsetX;\n            vertexBuffer[i+1] -= offsetY;\n\n            originBuffer[index2] = p1;\n            originBuffer[index2 + 1] = p2;\n            originBuffer[index2 + 2] = p3;\n            index2 += 3;\n        }\n    } else {\n        for (i = lastIndex; i < index; i+=8) {\n            singleBuffer[i] += offsetX;\n            singleBuffer[i+1] -= offsetY;\n            singleBuffer[i+2] += offsetX;\n            singleBuffer[i+3] -= offsetY;\n        }\n\n        labelData.pos = [p1,p2,p3];\n        singleBuffer = new Float32Array(singleBuffer.buffer, 0, index);\n    }\n    \n    var fonts = labelData.fonts;\n    labelData.files = new Array(fonts.length);\n\n    for (i = 0, li= fonts.length; i < li; i++) {\n        labelData.files[i] = [];\n    }\n\n    for (var key in planes) {\n        var fontIndex = parseInt(key);\n        var planes2 = planes[key];\n\n        var files = [];\n\n        for (var key2 in planes2) {\n            var plane = parseInt(key2) - (fontIndex*4000);\n            var file = Math.round((plane - (plane % 4)) / 4);\n            \n            if (files.indexOf(file) == -1) {\n                files.push(file);\n            }\n        }\n\n        labelData.files[fontIndex] = files;\n    }\n\n    labelData.index = index;\n    labelData.index2 = index2;\n\n    return [offsetX * 0.5, offsetY * 0.5, (offsetX + maxWidth) * 0.5 + 1, (offsetY + Math.abs(y)) *0.5];\n};\n\nvar processPointArrayGeometry = function(pointArray) {\n    var i, li;\n\n    checkDPoints(pointArray);\n\n    if (pointArray['lines']) {  //use lines as points\n        pointsGroups = pointArray['lines'];\n    } else {\n        pointsGroups = [pointArray['points']];\n    }\n    \n    if (!pointsGroups || pointsGroups.length == 0) {\n        return;\n    }\n\n    var totalPoints = 0;\n    var indicesBuffer = new Uint32Array(pointsGroups.length);\n\n    for (i = 0; i < pointsGroups.length; i++) {\n        indicesBuffer[i] = totalPoints;\n\n        if (Array.isArray(pointsGroups[i])) {\n            totalPoints += pointsGroups[i].length;\n        }\n    }\n\n    var geometryBuffer = new Float64Array(totalPoints * 3);\n\n    /*var forceOrigin = globals.forceOrigin;\n    var tileX = globals.tileX;\n    var tileY = globals.tileY;*/\n    var forceScale = globals.forceScale;\n    var index = 0, p1, p2, pp, p;\n\n    for (var i = 0; i < pointsGroups.length; i++) {\n        if (!Array.isArray(pointsGroups[i]) || !pointsGroups[i].length) {\n            continue;\n        }\n        \n        var points = pointsGroups[i];\n   \n        p = points[0];\n        p1 = [p[0], p[1], p[2]];\n    \n        //add lines\n        for (var j = 0, lj = points.length; j < lj; j++) {\n\n            /*if (forceOrigin) {\n                pp = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n            }*/\n    \n            if (forceScale != null) {\n                pp = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n            }\n\n            geometryBuffer[index] = pp[0];\n            geometryBuffer[index+1] = pp[1];\n            geometryBuffer[index+2] = pp[2];\n            index += 3;\n\n            if (j == (lj - 1)) {\n                break;\n            }\n    \n            p1 = points[j+1];\n        }\n    }\n\n    globals.signatureCounter++;\n    postGroupMessageFast(5, 5, {\n        'id':pointArray['id'] }, [geometryBuffer, indicesBuffer], (\"\"+globals.signatureCounter));\n};\n\n\n\n\n\n\n/***/ }),\n/* 5 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__worker_style_js__ = __webpack_require__(2);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__worker_text_js__ = __webpack_require__(3);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__worker_message_js__ = __webpack_require__(1);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__ = __webpack_require__(4);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return processLineStringPass; });\n/* unused harmony export processLineLabel */\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"b\", function() { return processLineStringGeometry; });\n\n\n\n\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */], vec3Normalize = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"g\" /* vec3Normalize */],\n    vec3Cross = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"i\" /* vec3Cross */];\nvar getLayerPropertyValue = __WEBPACK_IMPORTED_MODULE_1__worker_style_js__[\"c\" /* getLayerPropertyValue */],\n    getLayerExpresionValue = __WEBPACK_IMPORTED_MODULE_1__worker_style_js__[\"g\" /* getLayerExpresionValue */], hasLayerProperty = __WEBPACK_IMPORTED_MODULE_1__worker_style_js__[\"h\" /* hasLayerProperty */];\nvar addStreetTextOnPath = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"n\" /* addStreetTextOnPath */], areTextCharactersAvailable = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"e\" /* areTextCharactersAvailable */],\n    getCharVerticesCount = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"l\" /* getCharVerticesCount */], getFonts = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"j\" /* getFonts */], getFontsStorage = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"k\" /* getFontsStorage */];\nvar postGroupMessageFast = __WEBPACK_IMPORTED_MODULE_3__worker_message_js__[\"c\" /* postGroupMessageFast */], getTextGlyphs = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"h\" /* getTextGlyphs */];\nvar checkDPoints = __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__[\"d\" /* checkDPoints */];\n\n\nvar getLineInfo = function(lineString, lod, style, featureIndex, zIndex, eventInfo) {\n\n};\n\nvar processLineStringPass = function(lineString, lod, style, featureIndex, zIndex, eventInfo) {\n\n    checkDPoints(lineString);\n\n    var lines = lineString['lines'];\n\n    if (!lines || lines.length == 0) {\n        return;\n    }\n\n    var line = getLayerPropertyValue(style, 'line', lineString, lod);\n    var lineLabel = getLayerPropertyValue(style, 'line-label', lineString, lod);\n\n    if (!line && !lineLabel) {\n        return;\n    }\n\n    var hoverEvent = getLayerPropertyValue(style, 'hover-event', lineString, lod);\n    var clickEvent = getLayerPropertyValue(style, 'click-event', lineString, lod);\n    var drawEvent = getLayerPropertyValue(style, 'draw-event', lineString, lod);\n    var enterEvent = getLayerPropertyValue(style, 'enter-event', lineString, lod);\n    var leaveEvent = getLayerPropertyValue(style, 'leave-event', lineString, lod);\n    var advancedHit = getLayerPropertyValue(style, 'advanced-hit', lineString, lod);\n\n    var zbufferOffset = getLayerPropertyValue(style, 'zbuffer-offset', lineString, lod);\n\n    if (hasLayerProperty(style,'line-type')) {\n\n    } else {\n        var lineFlat = getLayerPropertyValue(style, 'line-flat', lineString, lod);\n    }\n\n    var lineColor = getLayerPropertyValue(style, 'line-color', lineString, lod);\n    var lineWidth = 0.5 * getLayerPropertyValue(style, 'line-width', lineString, lod);\n    var lineWidthUnits = getLayerPropertyValue(style, 'line-width-units', lineString, lod);\n\n    var lineStyle = getLayerPropertyValue(style, 'line-style', lineString, lod);\n    var lineStyleTexture = getLayerPropertyValue(style, 'line-style-texture', lineString, lod);\n    var lineStyleBackground = getLayerPropertyValue(style, 'line-style-background', lineString, lod);\n\n    var lineLabelSize = getLayerPropertyValue(style, 'line-label-size', lineString, lod);\n\n    var texturedLine = (lineStyle != 'solid');\n    var widthByRatio = (lineWidthUnits == 'ratio');\n\n    if (lineWidthUnits == 'points') {\n        lineWidth *= globals.pixelFactor / ((1 / 72) * (96));\n    }\n\n    var index = 0, index2 = 0, index3 = 0;\n    var skipJoins = false;\n\n    if (widthByRatio) {\n        skipJoins = (!lineFlat && ((lineWidth/* *globals.invPixelFactor*/)*1080) < 2.1);\n    } else {\n        skipJoins = (!lineFlat && (lineWidth/* *globals.invPixelFactor*/) < 2.1);        \n    }\n\n    var ii, i, li, p2, v, vv, l, n, nn, p1, p, elementIndex, elemetBase = 1;\n\n    if (!skipJoins) {\n        var circleBuffer = [];\n        var circleBuffer2 = [];\n        var circleSides = 8;//Math.max(8, (14 - lod) * 8);\n    \n        var angle = 0, step = (2.0*Math.PI) / circleSides;\n    \n        for (i = 0; i < circleSides; i++) {\n            circleBuffer[i] = [-Math.sin(angle), Math.cos(angle)];\n            circleBuffer2[i] = angle;\n            angle += step;\n        }\n    \n        circleBuffer[circleSides] = [0, 1.0];\n        circleBuffer2[circleSides] = 0;\n    }\n\n    var totalPoints = 0;\n\n    for (ii = 0; ii < lines.length; ii++) {\n        if (Array.isArray(lines[ii])) {\n            totalPoints += lines[ii].length;\n        }\n    }\n\n    if (totalPoints <= 1) {\n        return;\n    }\n\n    if (lineFlat) {\n        circleSides = 2;\n    }\n\n    //allocate buffers\n    var lineVertices = ((texturedLine || (widthByRatio)) || !lineFlat ? 4 : 3) * 3 * 2;\n    var joinVertices = skipJoins ? 0 : (circleSides * ((texturedLine || (widthByRatio)) || !lineFlat? 4 : 3) * 3);\n    var vertexBuffer = new Float32Array((totalPoints-1) * lineVertices + totalPoints * joinVertices);\n\n    if (advancedHit) {\n       var elementBuffer = new Float32Array((totalPoints-1) * (3 * 2) + totalPoints * (skipJoins ? 0 : circleSides) * 3);\n    }\n\n    if (!(lineFlat && !texturedLine && !widthByRatio)) {\n        var lineNormals = 3 * 4 * 2;\n        var joinNormals = skipJoins ? 0 : (circleSides * 3 * 4);\n        var normalBuffer = new Float32Array((totalPoints-1) * lineNormals + totalPoints * joinNormals);\n    }\n\n    var center = [0,0,0];\n    var lineLabelStack = [];\n    var forceOrigin = globals.forceOrigin;\n    var bboxMin = globals.bboxMin;\n    var geocent = globals.geocent;\n    var tileX = globals.tileX;\n    var tileY = globals.tileY;\n    var forceScale = globals.forceScale;\n    var vstart = [1,0,0], vend = [-1,0,0];\n\n    for (ii = 0; ii < lines.length; ii++) {\n        if (!Array.isArray(lines[ii]) || !lines[ii].length) {\n            continue;\n        }\n        \n        var points = lines[ii];\n\n        if (lineLabel) {\n            var lineLabelPoints = new Array(points.length);\n            var lineLabelPoints2 = new Array(points.length);\n            \n            lineLabelStack.push({points: lineLabelPoints, points2 :lineLabelPoints2});\n        }\n    \n        p = points[0];\n        p1 = [p[0], p[1], p[2]];\n    \n        if (forceOrigin) {\n            p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n        }\n    \n        if (forceScale != null) {\n            p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n        }\n    \n        var distance = 0.001;\n        var distance2 = 0.001;\n        /*var ln = null;*/\n        var vertexBase = index;\n        var normalBase = index2;\n\n        //add lines\n        for (i = 0, li = points.length - 1; i < li; i++) {\n    \n            p1 = points[i];\n            p2 = points[i+1];\n\n            if (forceOrigin) {\n                p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n                p2 = [p2[0] - tileX, p2[1] - tileY, p2[2]];\n            }\n\n            if (forceScale != null) {\n                p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n                p2 = [p2[0] * forceScale[0], p2[1] * forceScale[1], p2[2] * forceScale[2]];\n            }\n    \n            if (advancedHit) {\n                elementIndex = elemetBase + i;\n\n                elementBuffer[index3] = elementIndex;\n                elementBuffer[index3+1] = elementIndex;\n                elementBuffer[index3+2] = elementIndex;\n    \n                //add polygon\n                elementBuffer[index3+3] = elementIndex;\n                elementBuffer[index3+4] = elementIndex;\n                elementBuffer[index3+5] = elementIndex;\n\n                index3 += 6;\n            }\n\n            if (lineFlat && !texturedLine && !widthByRatio) {\n\n                //normalize vector to line width and rotate 90 degrees\n                if (geocent) {\n                    //direction vector\n                    v = [p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]];\n        \n                    //get line length\n                    l = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);\n                    distance2 += l;\n        \n                    l = (l != 0) ? (1 / l) : 0;\n\n                    vv = [v[0]*l, v[1]*l, v[2]*l];\n                    n = [0,0,0];\n                    nn = [0,0,0];\n                    \n                    vec3Normalize(bboxMin, nn);\n                    vec3Cross(nn, vv, n);\n\n                    if (i == 0) {\n                        vstart = vv;\n                    }\n\n                    if (i == (li - 1)) {\n                        vend = vv;\n                    }\n                    \n                    n = [n[0] * lineWidth, n[1] * lineWidth, n[2] * lineWidth];\n                } else {\n                    //direction vector\n                    v = [p2[0] - p1[0], p2[1] - p1[1], 0];\n        \n                    //get line length\n                    l = Math.sqrt(v[0]*v[0] + v[1]*v[1]);\n                    distance2 += l;\n        \n                    l = (l != 0) ? (lineWidth / l) : 0;\n\n                    n = [-v[1]*l, v[0]*l, 0];\n\n                    if (i == 0) {\n                        vstart = [v[0]*l, v[1]*l, 0];\n                    }\n\n                    if (i == (li - 1)) {\n                        vend = [v[0]*l, v[1]*l, 0];\n                    }\n                }\n                        \n                //add polygon\n                vertexBuffer[index] = p1[0] + n[0];\n                vertexBuffer[index+1] = p1[1] + n[1];\n                vertexBuffer[index+2] = p1[2] + n[2];\n    \n                vertexBuffer[index+3] = p1[0] - n[0];\n                vertexBuffer[index+4] = p1[1] - n[1];\n                vertexBuffer[index+5] = p1[2] - n[2];\n    \n                vertexBuffer[index+6] = p2[0] + n[0];\n                vertexBuffer[index+7] = p2[1] + n[1];\n                vertexBuffer[index+8] = p2[2] + n[2];\n    \n                //add polygon\n                vertexBuffer[index+9] = p1[0] - n[0];\n                vertexBuffer[index+10] = p1[1] - n[1];\n                vertexBuffer[index+11] = p1[2] - n[2];\n    \n                vertexBuffer[index+12] = p2[0] - n[0];\n                vertexBuffer[index+13] = p2[1] - n[1];\n                vertexBuffer[index+14] = p2[2] - n[2];\n    \n                vertexBuffer[index+15] = p2[0] + n[0];\n                vertexBuffer[index+16] = p2[1] + n[1];\n                vertexBuffer[index+17] = p2[2] + n[2];\n    \n                index += 18;\n\n            } else {\n    \n   \n                //console.log(\"distance(\"+i+\"): \" + distance + \" \" + distance2);\n    \n                if (lineFlat) {\n                    \n                    /*\n                    //normalize vector to line width and rotate 90 degrees\n                    l = (l != 0) ? (lineWidth / l) : 0;\n                    n = [-v[1]*l, v[0]*l,0];\n    \n                    if (joinParams != null) {\n                        joinParams[i] = (l != 0) ? Math.atan2(v[0], v[1]) + Math.PI *0.5 : 0;\n                    }*/\n    \n                    //normalize vector to line width and rotate 90 degrees\n                    if (geocent) {\n                        //direction vector\n                        v = [p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]];\n            \n                        //get line length\n                        l = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);\n                        distance2 += l;\n            \n                        l = (l != 0) ? (1 / l) : 0;\n\n                        vv = [v[0]*l, v[1]*l, v[2]*l];\n                        n = [0,0,0];\n                        nn = [0,0,0];\n\n                        if (i == 0) {\n                            vstart = vv;\n                        }\n\n                        if (i == (li - 1)) {\n                            vend = vv;\n                        }\n                        \n                        vec3Normalize(bboxMin, nn);\n                        vec3Cross(nn, vv, n);\n                        \n                        //n = [n[0] * lineWidth, n[1] * lineWidth, n[2] * lineWidth];\n                        n = [n[0], n[1], n[2]];\n                    } else {\n                        //direction vector\n                        v = [p2[0] - p1[0], p2[1] - p1[1], 0];\n            \n                        //get line length\n                        l = Math.sqrt(v[0]*v[0] + v[1]*v[1]);\n                        distance2 += l;\n            \n                        l = (l != 0) ? (lineWidth / l) : 0;\n\n                        n = [-v[1], v[0], 0];\n\n                        if (i == 0) {\n                            vstart = [v[0]*l, v[1]*l, 0];\n                        }\n\n                        if (i == (li - 1)) {\n                            vend = [v[0]*l, v[1]*l, 0];\n                        }\n                    }\n\n                    //add polygon\n                    vertexBuffer[index] = p1[0];\n                    vertexBuffer[index+1] = p1[1];\n                    vertexBuffer[index+2] = p1[2];\n                    vertexBuffer[index+3] = distance;\n                    normalBuffer[index2] = n[0];\n                    normalBuffer[index2+1] = n[1];\n                    normalBuffer[index2+2] = n[2];\n                    normalBuffer[index2+3] = lineWidth;\n    \n                    vertexBuffer[index+4] = p1[0];\n                    vertexBuffer[index+5] = p1[1];\n                    vertexBuffer[index+6] = p1[2];\n                    vertexBuffer[index+7] = -distance;\n                    normalBuffer[index2+4] = -n[0];\n                    normalBuffer[index2+5] = -n[1];\n                    normalBuffer[index2+6] = -n[2];\n                    normalBuffer[index2+7] = lineWidth;\n    \n                    vertexBuffer[index+8] = p2[0];\n                    vertexBuffer[index+9] = p2[1];\n                    vertexBuffer[index+10] = p2[2];\n                    vertexBuffer[index+11] = distance2;\n                    normalBuffer[index2+8] = n[0];\n                    normalBuffer[index2+9] = n[1];\n                    normalBuffer[index2+10] = n[2];\n                    normalBuffer[index2+11] = lineWidth;\n    \n                    //add polygon\n                    vertexBuffer[index+12] = p1[0];\n                    vertexBuffer[index+13] = p1[1];\n                    vertexBuffer[index+14] = p1[2];\n                    vertexBuffer[index+15] = -distance;\n                    normalBuffer[index2+12] = -n[0];\n                    normalBuffer[index2+13] = -n[1];\n                    normalBuffer[index2+14] = -n[2];\n                    normalBuffer[index2+15] = lineWidth;\n    \n                    vertexBuffer[index+16] = p2[0];\n                    vertexBuffer[index+17] = p2[1];\n                    vertexBuffer[index+18] = p2[2];\n                    vertexBuffer[index+19] = -distance2;\n                    normalBuffer[index2+16] = -n[0];\n                    normalBuffer[index2+17] = -n[1];\n                    normalBuffer[index2+18] = -n[2];\n                    normalBuffer[index2+19] = lineWidth;\n    \n                    vertexBuffer[index+20] = p2[0];\n                    vertexBuffer[index+21] = p2[1];\n                    vertexBuffer[index+22] = p2[2];\n                    vertexBuffer[index+23] = distance2;\n                    normalBuffer[index2+20] = n[0];\n                    normalBuffer[index2+21] = n[1];\n                    normalBuffer[index2+22] = n[2];\n                    normalBuffer[index2+23] = lineWidth;\n    \n                    index += 24;\n                    index2 += 24;\n                    \n                } else {\n\n                    //direction vector\n                    v = [p2[0] - p1[0], p2[1] - p1[1], 0];\n        \n                    //get line length\n                    l = Math.sqrt(v[0]*v[0] + v[1]*v[1]);\n                    distance2 += l;\n    \n                    //add polygon\n                    vertexBuffer[index] = p1[0];\n                    vertexBuffer[index+1] = p1[1];\n                    vertexBuffer[index+2] = p1[2];\n                    vertexBuffer[index+3] = distance;\n                    normalBuffer[index2] = p2[0];\n                    normalBuffer[index2+1] = p2[1];\n                    normalBuffer[index2+2] = p2[2];\n                    normalBuffer[index2+3] = lineWidth;\n    \n                    vertexBuffer[index+4] = p1[0];\n                    vertexBuffer[index+5] = p1[1];\n                    vertexBuffer[index+6] = p1[2];\n                    vertexBuffer[index+7] = -distance;\n                    normalBuffer[index2+4] = p2[0];\n                    normalBuffer[index2+5] = p2[1];\n                    normalBuffer[index2+6] = p2[2];\n                    normalBuffer[index2+7] = -lineWidth;\n    \n                    vertexBuffer[index+8] = p2[0];\n                    vertexBuffer[index+9] = p2[1];\n                    vertexBuffer[index+10] = p2[2];\n                    vertexBuffer[index+11] = -distance2;\n                    normalBuffer[index2+8] = p1[0];\n                    normalBuffer[index2+9] = p1[1];\n                    normalBuffer[index2+10] = p1[2];\n                    normalBuffer[index2+11] = lineWidth;\n    \n                    //add polygon\n                    vertexBuffer[index+12] = p1[0];\n                    vertexBuffer[index+13] = p1[1];\n                    vertexBuffer[index+14] = p1[2];\n                    vertexBuffer[index+15] = distance;\n                    normalBuffer[index2+12] = p2[0];\n                    normalBuffer[index2+13] = p2[1];\n                    normalBuffer[index2+14] = p2[2];\n                    normalBuffer[index2+15] = lineWidth;\n    \n                    vertexBuffer[index+16] = p2[0];\n                    vertexBuffer[index+17] = p2[1];\n                    vertexBuffer[index+18] = p2[2];\n                    vertexBuffer[index+19] = -distance2;\n                    normalBuffer[index2+16] = p1[0];\n                    normalBuffer[index2+17] = p1[1];\n                    normalBuffer[index2+18] = p1[2];\n                    normalBuffer[index2+19] = lineWidth;\n    \n                    vertexBuffer[index+20] = p2[0];\n                    vertexBuffer[index+21] = p2[1];\n                    vertexBuffer[index+22] = p2[2];\n                    vertexBuffer[index+23] = distance2;\n                    normalBuffer[index2+20] = p1[0];\n                    normalBuffer[index2+21] = p1[1];\n                    normalBuffer[index2+22] = p1[2];\n                    normalBuffer[index2+23] = -lineWidth;\n    \n                    index += 24;\n                    index2 += 24;\n                }\n            }\n    \n            distance = distance2;\n            p1 = p2; //only for dlines\n        }\n    \n        p1 = [p[0], p[1], p[2]];\n    \n        //add joins\n        for (i = 0, li = points.length; i < li; i++) {\n    \n            if (forceOrigin) {\n                p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n            }\n    \n            if (forceScale != null) {\n                p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n            }\n    \n            center[0] += p1[0];\n            center[1] += p1[1];\n            center[2] += p1[2];\n            \n            if (!skipJoins) {\n                var angleShift = 0;//(joinParams != null) ? joinParams[i] : 0;\n                /*var dx, dy;*/\n\n                if (lineFlat) {\n\n                    if (advancedHit) {\n                        elementIndex = elemetBase + ((i != (li-1)) ? i : (i -1));\n\n                        elementBuffer[index3] = elementIndex;\n                        elementBuffer[index3+1] = elementIndex;\n                        elementBuffer[index3+2] = elementIndex;\n            \n                        //add polygon\n                        elementBuffer[index3+3] = elementIndex;\n                        elementBuffer[index3+4] = elementIndex;\n                        elementBuffer[index3+5] = elementIndex;\n\n                        index3 += 6;\n                    }\n\n                    var lineIndex, lineIndex2;\n\n                    if (!(texturedLine || widthByRatio)) {\n\n                        if (i != (li-1)) {\n                            lineIndex = vertexBase + i * lineVertices;\n                        } else {\n                            lineIndex = vertexBase + (i - 1) * lineVertices;\n                        }\n\n                        if (i > 0) {\n                            lineIndex2 = vertexBase + (i - 1) * lineVertices;\n                        } else {\n                            lineIndex2 = vertexBase + lineIndex;\n                        }\n\n                        if (i == 0) { //start cap\n                            //add polygon\n                            vertexBuffer[index] = p1[0];\n                            vertexBuffer[index+1] = p1[1];\n                            vertexBuffer[index+2] = p1[2];\n\n                            vertexBuffer[index+3] = vertexBuffer[lineIndex];\n                            vertexBuffer[index+4] = vertexBuffer[lineIndex+1];\n                            vertexBuffer[index+5] = vertexBuffer[lineIndex+2];\n\n                            vertexBuffer[index+6] = p1[0] - vstart[0] * lineWidth;\n                            vertexBuffer[index+7] = p1[1] - vstart[1] * lineWidth;\n                            vertexBuffer[index+8] = p1[2] - vstart[2] * lineWidth;\n\n                            //add polygon\n                            vertexBuffer[index+9] = p1[0];\n                            vertexBuffer[index+9+1] = p1[1];\n                            vertexBuffer[index+9+2] = p1[2];\n\n                            vertexBuffer[index+9+3] = vertexBuffer[lineIndex+3];\n                            vertexBuffer[index+9+4] = vertexBuffer[lineIndex+4];\n                            vertexBuffer[index+9+5] = vertexBuffer[lineIndex+5];\n\n                            vertexBuffer[index+9+6] = p1[0] - vstart[0] * lineWidth;\n                            vertexBuffer[index+9+7] = p1[1] - vstart[1] * lineWidth;\n                            vertexBuffer[index+9+8] = p1[2] - vstart[2] * lineWidth;\n                        } else if (i == (li - 1)) {  //end cap\n                            //add polygon\n                            vertexBuffer[index] = p1[0];\n                            vertexBuffer[index+1] = p1[1];\n                            vertexBuffer[index+2] = p1[2];\n\n                            vertexBuffer[index+3] = vertexBuffer[lineIndex+15];\n                            vertexBuffer[index+4] = vertexBuffer[lineIndex+16];\n                            vertexBuffer[index+5] = vertexBuffer[lineIndex+17];\n\n                            vertexBuffer[index+6] = p1[0] + vend[0] * lineWidth;\n                            vertexBuffer[index+7] = p1[1] + vend[1] * lineWidth;\n                            vertexBuffer[index+8] = p1[2] + vend[2] * lineWidth;\n\n                            //add polygon\n                            vertexBuffer[index+9] = p1[0];\n                            vertexBuffer[index+9+1] = p1[1];\n                            vertexBuffer[index+9+2] = p1[2];\n\n                            vertexBuffer[index+9+3] = vertexBuffer[lineIndex+12];\n                            vertexBuffer[index+9+4] = vertexBuffer[lineIndex+13];\n                            vertexBuffer[index+9+5] = vertexBuffer[lineIndex+14];\n\n                            vertexBuffer[index+9+6] = p1[0] + vend[0] * lineWidth;\n                            vertexBuffer[index+9+7] = p1[1] + vend[1] * lineWidth;\n                            vertexBuffer[index+9+8] = p1[2] + vend[2] * lineWidth;\n                        } else {\n                            //add polygon\n                            vertexBuffer[index] = p1[0];\n                            vertexBuffer[index+1] = p1[1];\n                            vertexBuffer[index+2] = p1[2];\n\n                            vertexBuffer[index+3] = vertexBuffer[lineIndex];\n                            vertexBuffer[index+4] = vertexBuffer[lineIndex+1];\n                            vertexBuffer[index+5] = vertexBuffer[lineIndex+2];\n\n                            vertexBuffer[index+6] = vertexBuffer[lineIndex2 + 15];\n                            vertexBuffer[index+7] = vertexBuffer[lineIndex2 + 16];\n                            vertexBuffer[index+8] = vertexBuffer[lineIndex2 + 17];\n\n                            //add polygon\n                            vertexBuffer[index+9] = p1[0];\n                            vertexBuffer[index+9+1] = p1[1];\n                            vertexBuffer[index+9+2] = p1[2];\n\n                            vertexBuffer[index+9+3] = vertexBuffer[lineIndex+3];\n                            vertexBuffer[index+9+4] = vertexBuffer[lineIndex+4];\n                            vertexBuffer[index+9+5] = vertexBuffer[lineIndex+5];\n\n                            vertexBuffer[index+9+6] = vertexBuffer[lineIndex2 + 12];\n                            vertexBuffer[index+9+7] = vertexBuffer[lineIndex2 + 13];\n                            vertexBuffer[index+9+8] = vertexBuffer[lineIndex2 + 14];\n                        }\n\n                        index += 18;\n\n                    } else {\n\n                        if (i != (li-1)) {\n                            distance = vertexBuffer[i * lineVertices + 3];\n                        } else {\n                            distance = vertexBuffer[(i - 1) * lineVertices + 11];\n                        }\n\n                        if (i != (li-1)) {\n                            lineIndex = normalBase + i * lineVertices;\n                        } else {\n                            lineIndex = normalBase + (i - 1) * lineVertices + 8;\n                        }\n\n                        if (i > 0) {\n                            lineIndex2 = normalBase + (i - 1) * lineVertices + 8;\n                        } else {\n                            lineIndex2 = normalBase + lineIndex;\n                        }\n\n                        //add polygon\n                        vertexBuffer[index] = p1[0];\n                        vertexBuffer[index+1] = p1[1];\n                        vertexBuffer[index+2] = p1[2];\n                        vertexBuffer[index+3] = distance;\n\n                        vertexBuffer[index+4] = p1[0];\n                        vertexBuffer[index+5] = p1[1];\n                        vertexBuffer[index+6] = p1[2];\n                        vertexBuffer[index+7] = distance;\n\n                        vertexBuffer[index+8] = p1[0];\n                        vertexBuffer[index+9] = p1[1];\n                        vertexBuffer[index+10] = p1[2];\n                        vertexBuffer[index+11] = distance;\n\n                        //add polygon\n                        vertexBuffer[index+12] = p1[0];\n                        vertexBuffer[index+1+12] = p1[1];\n                        vertexBuffer[index+2+12] = p1[2];\n                        vertexBuffer[index+3+12] = distance;\n\n                        vertexBuffer[index+4+12] = p1[0];\n                        vertexBuffer[index+5+12] = p1[1];\n                        vertexBuffer[index+6+12] = p1[2];\n                        vertexBuffer[index+7+12] = -distance;\n\n                        vertexBuffer[index+8+12] = p1[0];\n                        vertexBuffer[index+9+12] = p1[1];\n                        vertexBuffer[index+10+12] = p1[2];\n                        vertexBuffer[index+11+12] = -distance;\n\n                        if (i == 0) { //start cap\n                            //first polygon\n                            normalBuffer[index2] = 0;\n                            normalBuffer[index2+1] = 0;\n                            normalBuffer[index2+2] = 0;\n                            normalBuffer[index2+3] = -lineWidth;\n            \n                            normalBuffer[index2+4] = normalBuffer[lineIndex];\n                            normalBuffer[index2+5] = normalBuffer[lineIndex+1];\n                            normalBuffer[index2+6] = normalBuffer[lineIndex+2];\n                            normalBuffer[index2+7] = lineWidth;\n            \n                            normalBuffer[index2+8] = -vstart[0];\n                            normalBuffer[index2+9] = -vstart[1];\n                            normalBuffer[index2+10] = -vstart[2];\n                            normalBuffer[index2+11] = -lineWidth;\n\n                            //second polygon\n                            normalBuffer[index2+12] = 0;\n                            normalBuffer[index2+1+12] = 0;\n                            normalBuffer[index2+2+12] = 0;\n                            normalBuffer[index2+3+12] = -lineWidth;\n\n                            normalBuffer[index2+4+12] = -normalBuffer[lineIndex];\n                            normalBuffer[index2+5+12] = -normalBuffer[lineIndex+1];\n                            normalBuffer[index2+6+12] = -normalBuffer[lineIndex+2];\n                            normalBuffer[index2+7+12] = lineWidth;\n            \n                            normalBuffer[index2+8+12] = -vstart[0];\n                            normalBuffer[index2+9+12] = -vstart[1];\n                            normalBuffer[index2+10+12] = -vstart[2];\n                            normalBuffer[index2+11+12] = -lineWidth;\n                        } else if (i == (li - 1)) {  //end cap\n                            //first polygon\n                            normalBuffer[index2] = 0;\n                            normalBuffer[index2+1] = 0;\n                            normalBuffer[index2+2] = 0;\n                            normalBuffer[index2+3] = -lineWidth;\n            \n                            normalBuffer[index2+4] = normalBuffer[lineIndex2];\n                            normalBuffer[index2+5] = normalBuffer[lineIndex2+1];\n                            normalBuffer[index2+6] = normalBuffer[lineIndex2+2];\n                            normalBuffer[index2+7] = lineWidth;\n            \n                            normalBuffer[index2+8] = vend[0];\n                            normalBuffer[index2+9] = vend[1];\n                            normalBuffer[index2+10] = vend[2];\n                            normalBuffer[index2+11] = -lineWidth;\n\n                            //second polygon\n                            normalBuffer[index2+12] = 0;\n                            normalBuffer[index2+1+12] = 0;\n                            normalBuffer[index2+2+12] = 0;\n                            normalBuffer[index2+3+12] = -lineWidth;\n\n                            normalBuffer[index2+4+12] = -normalBuffer[lineIndex2];\n                            normalBuffer[index2+5+12] = -normalBuffer[lineIndex2+1];\n                            normalBuffer[index2+6+12] = -normalBuffer[lineIndex2+2];\n                            normalBuffer[index2+7+12] = lineWidth;\n            \n                            normalBuffer[index2+8+12] = vend[0];\n                            normalBuffer[index2+9+12] = vend[1];\n                            normalBuffer[index2+10+12] = vend[2];\n                            normalBuffer[index2+11+12] = -lineWidth;\n                        } else {\n                            normalBuffer[index2] = 0;\n                            normalBuffer[index2+1] = 0;\n                            normalBuffer[index2+2] = 0;\n                            normalBuffer[index2+3] = -lineWidth;\n            \n                            normalBuffer[index2+4] = normalBuffer[lineIndex];\n                            normalBuffer[index2+5] = normalBuffer[lineIndex+1];\n                            normalBuffer[index2+6] = normalBuffer[lineIndex+2];\n                            normalBuffer[index2+7] = lineWidth;\n            \n                            normalBuffer[index2+8] = normalBuffer[lineIndex2];\n                            normalBuffer[index2+9] = normalBuffer[lineIndex2+1];\n                            normalBuffer[index2+10] = normalBuffer[lineIndex2+2];\n                            normalBuffer[index2+11] = lineWidth;\n\n                            //add polygon\n                            normalBuffer[index2+12] = 0;\n                            normalBuffer[index2+1+12] = 0;\n                            normalBuffer[index2+2+12] = 0;\n                            normalBuffer[index2+3+12] = -lineWidth;\n\n                            normalBuffer[index2+4+12] = -normalBuffer[lineIndex];\n                            normalBuffer[index2+5+12] = -normalBuffer[lineIndex+1];\n                            normalBuffer[index2+6+12] = -normalBuffer[lineIndex+2];\n                            normalBuffer[index2+7+12] = lineWidth;\n            \n                            normalBuffer[index2+8+12] = -normalBuffer[lineIndex2];\n                            normalBuffer[index2+9+12] = -normalBuffer[lineIndex2+1];\n                            normalBuffer[index2+10+12] = -normalBuffer[lineIndex2+2];\n                            normalBuffer[index2+11+12] = lineWidth;\n                        }\n\n                        index += 24;\n                        index2 += 24;\n\n                    }\n\n                } else {\n\n                    var segmentIndex = (i != (li-1)) ? i : (i - 1);\n\n                    for (var j = 0; j < circleSides; j++) {\n           \n                        if (advancedHit) {\n                            elementIndex = elemetBase + segmentIndex;\n                            elementBuffer[index3] = elementIndex;\n                            elementBuffer[index3+1] = elementIndex;\n                            elementBuffer[index3+2] = elementIndex;\n                            index3 += 3;\n                        }\n\n                        distance = vertexBuffer[segmentIndex * lineVertices + 3];\n        \n                        //add polygon\n                        vertexBuffer[index] = p1[0];\n                        vertexBuffer[index+1] = p1[1];\n                        vertexBuffer[index+2] = p1[2];\n                        vertexBuffer[index+3] = distance;\n                        normalBuffer[index2] = 0;\n                        normalBuffer[index2+1] = 0;\n                        normalBuffer[index2+2] = 0;\n                        normalBuffer[index2+3] = 0;\n        \n                        vertexBuffer[index+4] = p1[0];\n                        vertexBuffer[index+5] = p1[1];\n                        vertexBuffer[index+6] = p1[2];\n                        vertexBuffer[index+7] = distance;\n                        normalBuffer[index2+4] = circleBuffer[j][0] * lineWidth;\n                        normalBuffer[index2+5] = circleBuffer[j][1] * lineWidth;\n                        normalBuffer[index2+6] = circleBuffer2[j] + angleShift;\n                        normalBuffer[index2+7] = 0;\n        \n                        vertexBuffer[index+8] = p1[0];\n                        vertexBuffer[index+9] = p1[1];\n                        vertexBuffer[index+10] = p1[2];\n                        vertexBuffer[index+11] = distance;\n                        normalBuffer[index2+8] = circleBuffer[j+1][0] * lineWidth;\n                        normalBuffer[index2+9] = circleBuffer[j+1][1] * lineWidth;\n                        normalBuffer[index2+10] = circleBuffer2[j+1] + angleShift;\n                        normalBuffer[index2+11] = 0;\n        \n                        index += 12;\n                        index2 += 12;\n                    }\n                }\n            }\n    \n            if (lineLabel) {\n                p = [p1[0], p1[1], p1[2] + lineLabelSize*0.1];\n                lineLabelPoints[i] = p;\n                lineLabelPoints2[li - i - 1] = p;\n            }\n    \n            if ((i + 1) < li) {\n                p1 = points[i+1];\n            }\n        }\n\n        elemetBase += points.length;\n    }\n\n    if (totalPoints > 0) {\n        center[0] /= totalPoints;\n        center[1] /= totalPoints;\n        center[2] /= totalPoints;\n    }\n\n    center[0] += globals.groupOrigin[0];\n    center[1] += globals.groupOrigin[1];\n    center[2] += globals.groupOrigin[2];\n\n    var hitable = hoverEvent || clickEvent || enterEvent || leaveEvent, type;\n\n    if (line) {\n        //console.log('totalPoints:' + totalPoints + ' vbuff-l:' + (vertexBuffer ? vertexBuffer.length : '??'));\n\n        var messageData = {\n            'color':lineColor, 'z-index':zIndex, 'center': center, 'advancedHit': advancedHit, 'totalPoints': totalPoints,\n            'hover-event':hoverEvent, 'click-event':clickEvent, 'draw-event':drawEvent, 'width-units': lineWidthUnits,\n            'hitable':hitable, 'state':globals.hitState, 'eventInfo': (globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {},\n            'enter-event':enterEvent, 'leave-event':leaveEvent, 'zbuffer-offset':zbufferOffset, \n            'line-width':lineWidth*2, 'lod':(globals.autoLod ? null : globals.tileLod) };\n    \n        if (lineFlat) {\n            type = texturedLine ? 8 : (widthByRatio ? 7 : 6);\n        } else {\n            type = texturedLine ? 10 : 9;\n        }\n    \n        if (texturedLine) {\n            if (lineStyleTexture != null) {\n                messageData['texture'] = [globals.stylesheetBitmaps[lineStyleTexture[0]], lineStyleTexture[1], lineStyleTexture[2]];\n                messageData['background'] = lineStyleBackground;\n            }\n        }\n\n        var signature = JSON.stringify({\n            type: 'T'+type,\n            color : lineColor,\n            zIndex : zIndex,\n            zOffset : zbufferOffset,\n            state : globals.hitState\n        });\n\n        var buffers = (normalBuffer) ? [vertexBuffer, normalBuffer] : [vertexBuffer];\n\n        if (advancedHit) {\n            buffers.push(elementBuffer);\n        }\n        \n        postGroupMessageFast(5, type, messageData, buffers, signature);\n    }\n\n    if (lineLabel) {\n        for (i = 0, li = lineLabelStack.length; i < li; i++) {\n            processLineLabel(lineLabelStack[i].points, lineLabelStack[i].points2, lineString, center, lod, style, featureIndex, zIndex, eventInfo);\n        }\n    }\n\n};\n\nvar processLineLabel = function(lineLabelPoints, lineLabelPoints2, lineString, center, lod, style, featureIndex, zIndex, eventInfo) {\n    var labelColor = getLayerPropertyValue(style, 'line-label-color', lineString, lod);\n    var labelColor2 = getLayerPropertyValue(style, 'line-label-color2', lineString, lod);\n    var labelOutline = getLayerPropertyValue(style, 'line-label-outline', lineString, lod);\n    var labelSource = getLayerPropertyValue(style, 'line-label-source', lineString, lod);\n    var labelSize = getLayerPropertyValue(style, 'line-label-size', lineString, lod);\n    var labelSpacing = getLayerPropertyValue(style, 'line-label-spacing', lineString, lod);\n    var labelLineHeight = getLayerPropertyValue(style, 'line-label-line-height', lineString, lod);\n    var labelOffset = getLayerPropertyValue(style, 'line-label-offset', lineString, lod);\n\n    if (Math.abs(labelSize) < 0.0001) {\n        return;\n    }\n\n    var labelText = getLayerExpresionValue(style, labelSource, lineString, lod, labelSource);\n    labelText = labelText ? labelText.replace('\\r\\n', '\\n').replace('\\r', '\\n') : '';\n    var fontNames = getLayerPropertyValue(style, 'line-label-font', lineString, lod);\n    var fonts = getFonts(fontNames);\n    var fontsStorage = getFontsStorage(fontNames);\n    var glyphsRes = getTextGlyphs(labelText, fonts);\n\n    if (labelSource == '$name') {\n        if (!areTextCharactersAvailable(labelText, fonts, glyphsRes)) {\n            var labelText2 = getLayerExpresionValue(style, '$name:en', lineString, lod, labelSource);\n            labelText2 = labelText2 ? labelText2.replace('\\r\\n', '\\n').replace('\\r', '\\n') : '';\n            var glyphsRes2 = getTextGlyphs(labelText, fonts);\n            \n            if (areTextCharactersAvailable(labelText2, fonts, glyphsRes2)) {\n                labelText = labelText2;                     \n                glyphsRes = glyphsRes2;\n            }\n        }\n    }\n\n    if (!labelText || labelText == '') {\n        return;\n    }\n\n    var hoverEvent = getLayerPropertyValue(style, 'hover-event', lineString, lod);\n    var clickEvent = getLayerPropertyValue(style, 'click-event', lineString, lod);\n    var drawEvent = getLayerPropertyValue(style, 'draw-event', lineString, lod);\n    var enterEvent = getLayerPropertyValue(style, 'enter-event', lineString, lod);\n    var leaveEvent = getLayerPropertyValue(style, 'leave-event', lineString, lod);\n    var advancedHit = getLayerPropertyValue(style, 'advanced-hit', lineString, lod);\n\n    var zbufferOffset = getLayerPropertyValue(style, 'zbuffer-offset', lineString, lod);\n\n    var bufferSize = getCharVerticesCount() * labelText.length * 2;\n    var vertexBuffer = new Float32Array(bufferSize);\n    var texcoordsBuffer = new Float32Array(bufferSize);\n    var planes = {};\n\n    var hitable = hoverEvent || clickEvent || enterEvent || leaveEvent;\n\n    var index = addStreetTextOnPath(lineLabelPoints, labelText, labelSize, labelSpacing, fonts, labelOffset, vertexBuffer, texcoordsBuffer, 0, planes, glyphsRes);\n    index = addStreetTextOnPath(lineLabelPoints2, labelText, labelSize, labelSpacing, fonts, labelOffset, vertexBuffer, texcoordsBuffer, index, null, glyphsRes);\n\n    if (!index) {\n        return;\n    }\n\n    //var fonts = labelData.fonts;\n    var labelFiles = new Array(fonts.length);\n\n    for (var i = 0, li= fonts.length; i < li; i++) {\n        labelFiles[i] = [];\n    }\n\n    for (var key in planes) {\n        var fontIndex = parseInt(key);\n        var planes2 = planes[key];\n\n        var files = [];\n\n        for (var key2 in planes2) {\n            var plane = parseInt(key2) - (fontIndex*4000);\n            var file = Math.round((plane - (plane % 4)) / 4);\n\n            if (files.indexOf(file) == -1) {\n                files.push(file);\n            }\n        }\n\n        labelFiles[fontIndex] = files;\n    }\n\n    var signature = JSON.stringify({\n        type: 'line-label',\n        color : labelColor,\n        color2 : labelColor2,\n        outline : labelOutline,\n        fonts : fontNames,\n        zIndex : zIndex,\n        zOffset : zbufferOffset\n    });\n\n    postGroupMessageFast(5, 11, {\n        'color':labelColor, 'color2':labelColor2, 'outline':labelOutline, \n        'z-index':zIndex, 'center': center, 'hover-event':hoverEvent, 'click-event':clickEvent, 'draw-event':drawEvent,\n        'files': labelFiles, 'enter-event':enterEvent, 'leave-event':leaveEvent, 'zbuffer-offset':zbufferOffset, 'advancedHit': advancedHit,\n        'fonts': fontsStorage, 'hitable':hitable, 'state':globals.hitState, 'eventInfo': (globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {}, \n        'lod':(globals.autoLod ? null : globals.tileLod) }, [vertexBuffer, texcoordsBuffer], signature);\n};\n\nvar processLineStringGeometry = function(lineString) {\n\n    checkDPoints(lineString);\n\n    var lines = lineString['lines'];\n\n    if (lines || lines.length == 0) {\n        return;\n    }\n\n    //debugger\n    var totalPoints = 0;\n    var indicesBuffer = new Uint32Array(lines.length);\n\n    for (i = 0; i < lines.length; i++) {\n        indicesBuffer[i] = totalPoints;\n\n        if (Array.isArray(lines[i])) {\n            totalPoints += lines[i].length;\n        }\n    }\n\n    var geometryBuffer = new Float64Array(totalPoints * 3);\n\n    /*var forceOrigin = globals.forceOrigin;\n    var tileX = globals.tileX;\n    var tileY = globals.tileY;*/\n    var forceScale = globals.forceScale;\n    var index = 0, p1, p2, pp, p;\n\n    for (var i = 0; i < lines.length; i++) {\n        if (!Array.isArray(lines[i]) || !lines[i].length) {\n            continue;\n        }\n        \n        var points = lines[i];\n   \n        p = points[0];\n        p1 = [p[0], p[1], p[2]];\n    \n        //add lines\n        for (var j = 0, lj = points.length; j < lj; j++) {\n\n            /*if (forceOrigin) {\n                pp = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n            }*/\n    \n            if (forceScale != null) {\n                pp = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n            }\n\n            geometryBuffer[index] = pp[0];\n            geometryBuffer[index+1] = pp[1];\n            geometryBuffer[index+2] = pp[2];\n            index += 3;\n\n            if (j == (lj - 1)) {\n                break;\n            }\n    \n            p1 = points[j+1];\n        }\n    }\n\n    globals.signatureCounter++;\n\n    postGroupMessageFast(5, 13, {\n        'id':lineString['id'] }, [geometryBuffer, indicesBuffer], (\"\"+globals.signatureCounter));\n};\n\n\n\n\n\n\n/***/ }),\n/* 6 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__worker_style_js__ = __webpack_require__(2);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__worker_message_js__ = __webpack_require__(1);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__worker_linestring_js__ = __webpack_require__(5);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__ = __webpack_require__(4);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return processPolygonPass; });\n\n\n\n\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */], vec3Normalize = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"g\" /* vec3Normalize */];\nvar getLayerPropertyValue = __WEBPACK_IMPORTED_MODULE_1__worker_style_js__[\"c\" /* getLayerPropertyValue */];\nvar postGroupMessageFast = __WEBPACK_IMPORTED_MODULE_2__worker_message_js__[\"c\" /* postGroupMessageFast */];\nvar processLineStringPass = __WEBPACK_IMPORTED_MODULE_3__worker_linestring_js__[\"a\" /* processLineStringPass */];\nvar processPointArrayPass = __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__[\"a\" /* processPointArrayPass */];\n\nvar processPolygonPass = function(polygon, lod, style, featureIndex, zIndex, eventInfo) {\n    var vertices = polygon['vertices'] || [];\n    if (vertices.length == 0) {\n        return;\n    }\n    \n    // borders as points\n    if (getLayerPropertyValue(style, 'point', polygon, lod) ||\n        getLayerPropertyValue(style, 'label', polygon, lod)) {\n        processPolygonLines(polygon, vertices, lod, style, featureIndex, zIndex, eventInfo, false);\n    }\n    \n    // borders as lines\n    if (getLayerPropertyValue(style, 'line', polygon, lod) ||\n        getLayerPropertyValue(style, 'line-label', polygon, lod)) {\n        processPolygonLines(polygon, vertices, lod, style, featureIndex, zIndex, eventInfo, true);\n    }\n    \n    var spolygon = getLayerPropertyValue(style, 'polygon', polygon, lod);\n    \n    if (!spolygon) {\n        return;\n    }\n    \n    var surface = polygon['surface'] || [];\n    if (surface.length == 0) {\n        return;\n    }\n    \n    var hoverEvent = getLayerPropertyValue(style, 'hover-event', polygon, lod);\n    var clickEvent = getLayerPropertyValue(style, 'click-event', polygon, lod);\n    var drawEvent = getLayerPropertyValue(style, 'draw-event', polygon, lod);\n    var enterEvent = getLayerPropertyValue(style, 'enter-event', polygon, lod);\n    var leaveEvent = getLayerPropertyValue(style, 'leave-event', polygon, lod);\n    var advancedHit = getLayerPropertyValue(style, 'advanced-hit', polygon, lod);\n\n    var zbufferOffset = getLayerPropertyValue(style, 'zbuffer-offset', polygon, lod);\n    \n    var polygonColor = getLayerPropertyValue(style, 'polygon-color', polygon, lod);\n    var polygonStyle = getLayerPropertyValue(style, 'polygon-style', polygon, lod);\n    var polygonStencil = getLayerPropertyValue(style, 'polygon-use-stencil', polygon, lod);\n    var polygonCulling = getLayerPropertyValue(style, 'polygon-culling', polygon, lod);\n    var polygonExtrude = getLayerPropertyValue(style, 'polygon-extrude', polygon, lod);\n    \n    polygonStyle = (polygonStyle == 'flatshade') ? 1 : 0;\n    polygonCulling = (polygonCulling == 'back') ? 1 : 0;\n\n    var geocent = globals.geocent;\n    var center = [0,0,0], n = [0,0,0];\n    var bboxMin = globals.bboxMin;\n  \n\n    // allocate vertex buffer\n    var trisCount = surface.length / 3;\n    var vertexCount = trisCount * 3;\n    var vertexBuffer = new Float32Array(vertexCount * 3);\n    \n    var surfaceI = 0;\n    var index = 0;\n    var p1 = [0,0,0], p2 = [0,0,0], p3 = [0,0,0], p4 = [0,0,0];\n    var offs, li, j, lj;\n\n    var tileX = globals.tileX;\n    var tileY = globals.tileY;\n    var forceOrigin = globals.forceOrigin;\n    var forceScale = globals.forceScale;    \n\n    //debugger\n    \n    //console.log(\"vertexCount = \" + vertexCount);\n    //add tris\n    for (var i = 0; i < vertexCount; i++) {\n        offs = 3 * surface[surfaceI++];\n        p1 = [vertices[offs], vertices[offs+1], vertices[offs+2]];\n\n        if (forceOrigin) {\n            p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n        }\n\n        if (forceScale != null) {\n            p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n        }\n \n        if (polygonExtrude) {\n            if (geocent) {\n                vec3Normalize([p1[0] + bboxMin[0], p1[1] + bboxMin[1], p1[2] + bboxMin[2]], n);\n                p1[0] += n[0] * polygonExtrude;\n                p1[1] += n[1] * polygonExtrude;\n                p1[2] += n[2] * polygonExtrude;\n            } else {\n                p1[2] += polygonExtrude;\n            }\n        }\n\n        center[0] += p1[0];\n        center[1] += p1[1];\n        center[2] += p1[2];\n\n        //add vertex\n        vertexBuffer[index++] = p1[0];\n        vertexBuffer[index++] = p1[1];\n        vertexBuffer[index++] = p1[2];\n    }\n    \n    //console.log( \"vertexBuffer: \" + vertexBuffer );\n    \n    if (vertexCount > 0) {\n        var k = 1.0 / vertexCount;\n        center[0] *= k;\n        center[1] *= k;\n        center[2] *= k;\n    }\n\n    center[0] += globals.groupOrigin[0];\n    center[1] += globals.groupOrigin[1];\n    center[2] += globals.groupOrigin[2];\n\n    var borders = polygon['borders'] || [];\n    if (borders.length > 0) {\n\n        var totalFaces = 0;\n\n        for (i = 0, li = borders.length; i < li; i++) {\n            var border = borders[i];\n            totalFaces += (border.length + 1) * 2;\n        }\n\n        var vertexBuffer2 = vertexBuffer;\n        vertexBuffer = new Float32Array(vertexBuffer.length + (totalFaces * 3 * 3));\n        vertexBuffer.set(vertexBuffer2);\n\n        for (i = 0, li = borders.length; i < li; i++) {\n            var border = borders[i], offset;\n\n            for (j = 0, lj = border.length; j < lj; j++) {\n\n                if (border[j] >= 0) {\n                    offset = 3 * border[j];\n                } else {\n                    offset = 3 * (-border[j]);\n                }\n\n                p1[0] = vertices[offset];\n                p1[1] = vertices[offset+1];\n                p1[2] = vertices[offset+2];\n\n                p3[0] = vertices[offset];\n                p3[1] = vertices[offset+1];\n                p3[2] = vertices[offset+2];\n\n                if (j < lj - 1) {\n                    if (border[j+1] >= 0) {\n                        offset = 3 * border[j+1];\n                    } else {\n                        offset = 3 * (-border[j+1]);\n                    }\n                } else {\n                    if (border[0] >= 0) {\n                        offset = 3 * border[0];\n                    } else {\n                        offset = 3 * (-border[0]);\n                    }\n                }\n\n                p2[0] = vertices[offset];\n                p2[1] = vertices[offset+1];\n                p2[2] = vertices[offset+2];\n\n                p4[0] = vertices[offset];\n                p4[1] = vertices[offset+1];\n                p4[2] = vertices[offset+2];\n\n                if (forceOrigin) {\n                    p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n                    p2 = [p2[0] - tileX, p2[1] - tileY, p2[2]];\n                    p3 = [p3[0] - tileX, p3[1] - tileY, p3[2]];\n                    p4 = [p4[0] - tileX, p4[1] - tileY, p4[2]];\n                }\n\n                if (forceScale != null) {\n                    p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n                    p2 = [p2[0] * forceScale[0], p2[1] * forceScale[1], p2[2] * forceScale[2]];\n                    p3 = [p3[0] * forceScale[0], p3[1] * forceScale[1], p3[2] * forceScale[2]];\n                    p4 = [p4[0] * forceScale[0], p4[1] * forceScale[1], p4[2] * forceScale[2]];\n                }\n\n                if (polygonExtrude) {\n                    if (geocent) {\n                        vec3Normalize([p1[0] + bboxMin[0], p1[1] + bboxMin[1], p1[2] + bboxMin[2]], n);\n                        p1 = [p1[0] + n[0] * polygonExtrude, p1[1] + n[1] * polygonExtrude, p1[2] + n[2] * polygonExtrude];\n\n                        vec3Normalize([p2[0] + bboxMin[0], p2[1] + bboxMin[1], p2[2] + bboxMin[2]], n);\n                        p2 = [p2[0] + n[0] * polygonExtrude, p2[1] + n[1] * polygonExtrude, p2[2] + n[2] * polygonExtrude];\n                    } else {\n                        p1[2] += polygonExtrude;\n                        p2[2] += polygonExtrude;\n                    }\n                }\n\n                vertexBuffer[index] = p4[0];\n                vertexBuffer[index+1] = p4[1];\n                vertexBuffer[index+2] = p4[2];\n\n                vertexBuffer[index+3] = p2[0];\n                vertexBuffer[index+4] = p2[1];\n                vertexBuffer[index+5] = p2[2];\n\n                vertexBuffer[index+6] = p1[0];\n                vertexBuffer[index+7] = p1[1];\n                vertexBuffer[index+8] = p1[2];\n\n                vertexBuffer[index+9] = p1[0];\n                vertexBuffer[index+10] = p1[1];\n                vertexBuffer[index+11] = p1[2];\n\n                vertexBuffer[index+12] = p3[0];\n                vertexBuffer[index+13] = p3[1];\n                vertexBuffer[index+14] = p3[2];\n\n                vertexBuffer[index+15] = p4[0];\n                vertexBuffer[index+16] = p4[1];\n                vertexBuffer[index+17] = p4[2];\n\n                index += 18;\n            }\n        }\n    }    \n\n    var hitable = hoverEvent || clickEvent || enterEvent || leaveEvent;\n    \n    var signature = JSON.stringify({\n        style: polygonStyle,\n        culling: polygonCulling, \n        stencil: polygonStencil, \n        color : polygonColor,\n        zIndex : zIndex,\n        zOffset : zbufferOffset,\n        state : globals.hitState\n    });\n\n    //debugger\n\n    postGroupMessageFast(5, 12, {\n        'color':polygonColor, 'z-index':zIndex, 'center': center, 'advancedHit': advancedHit, 'culling': polygonCulling, \n        'hover-event':hoverEvent, 'click-event':clickEvent, 'draw-event':drawEvent, 'style' : polygonStyle, 'stencil': polygonStencil, \n        'hitable':hitable, 'state':globals.hitState, 'eventInfo': (globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {},\n        'enter-event':enterEvent, 'leave-event':leaveEvent, 'zbuffer-offset':zbufferOffset,\n        'lod':(globals.autoLod ? null : globals.tileLod) }, [vertexBuffer], signature);\n};\n\nvar createEmptyFeatureFromPolygon = function(polygon) {\n    var feature = {};\n    for(var key in polygon) {\n        if(key != 'surface' && key != 'vertices' && key != 'borders') {\n            feature[key] = polygon[key];\n        }\n    }\n    return feature;\n};\n\nvar processPolygonLines = function(polygon, vertices, lod, style, featureIndex, zIndex, eventInfo, processLines) {\n    var borders = polygon['borders'] || [];\n    if (borders.length == 0) {\n        return;\n    }\n    var polygonExtrude = getLayerPropertyValue(style, 'polygon-extrude', polygon, lod);\n    var feature = createEmptyFeatureFromPolygon(polygon);\n    var bordersCount = borders.length;\n    var allPoints = [], allPoints2 = [];\n    var p, p2, n = [0,0,0];\n\n    var tileX = globals.tileX;\n    var tileY = globals.tileY;\n    var forceOrigin = globals.forceOrigin;\n    var forceScale = globals.forceScale;    \n    var forceScale2 = [1.0/forceScale[0], 1.0/forceScale[1], 1.0/forceScale[2]];    \n    var geocent = globals.geocent;\n    var bboxMin = globals.bboxMin;\n\n    for (var j = 0; j < bordersCount; j++) {\n        var border = borders[j], offset;\n        var pointsCount = border.length;\n        var pointsCount2 = 0;\n        if (pointsCount > 0) {\n            var points, points3, points4, i;\n            if (processLines) {\n                points = new Array(pointsCount + 1);\n                points3 = new Array(pointsCount + 1);\n            } else {\n                points = new Array(pointsCount);\n                points3 = new Array(pointsCount);\n            }\n            for (i = 0; i < pointsCount; i++) {\n                if (border[i] >= 0) {\n                    offset = 3 * border[i];\n                    pointsCount2++; // count vertices with positive index\n                } else {\n                    offset = 3 * (-border[i]);\n                }\n\n                if (polygonExtrude) {\n                    p = [vertices[offset], vertices[offset+1], vertices[offset+2]];\n                    p2 = p.slice();\n\n                    if (forceOrigin) {\n                        p2 = [p2[0] - tileX, p2[1] - tileY, p2[2]];\n                    }\n\n                    if (forceScale != null) {\n                        p2 = [p2[0] * forceScale[0], p2[1] * forceScale[1], p2[2] * forceScale[2]];\n                    }\n\n                    if (geocent) {\n                        vec3Normalize([p2[0] + bboxMin[0], p2[1] + bboxMin[1], p2[2] + bboxMin[2]], n);\n                        p2 = [p[0] + (n[0] * polygonExtrude) * forceScale2[0], p[1] + (n[1] * polygonExtrude) * forceScale2[1], p[2] + (n[2] * polygonExtrude) * forceScale2[2]];\n                    } else {\n                        p2[2] += polygonExtrude;\n                    }\n\n                    points[i] = p;\n                    points3[i] = p2;\n\n                    if (border[i] >= 0) {\n                        allPoints.push([p,p2]);\n                    }\n\n                } else {\n                    points[i] = [vertices[offset], vertices[offset+1], vertices[offset+2]];\n                }\n\n                if (processLines && i == 0) {\n                    points[pointsCount] = points[0];\n                    points3[pointsCount] = points3[0];\n                }\n            }\n\n            var points2 = new Array(pointsCount2);\n            var points4 = new Array(pointsCount2);\n            var i2 = 0;\n            //debugger\n\n            //create array of points only for vertices with positive value\n            for (i = 0; i < pointsCount; i++) {\n                if (border[i] >= 0) {\n                    points2[i2] = points[i].slice();\n\n                    if (polygonExtrude) {\n                        points4[i2] = points3[i].slice();\n                    }\n\n                    i2++;\n                }\n            }\n\n            allPoints.push(points);\n            allPoints2 = allPoints2.concat(points2);\n\n            if (polygonExtrude) {\n                allPoints.push(points3);\n                allPoints2 = allPoints2.concat(points4);\n            }\n\n        }\n    }\n\n    if(processLines && allPoints.length > 0) {\n        feature['lines'] = allPoints;\n        processLineStringPass(feature, lod, style, featureIndex, zIndex, eventInfo);\n    } else if(allPoints2.length > 0) {\n        feature['points'] = allPoints2;\n        processPointArrayPass(feature, lod, style, featureIndex, zIndex, eventInfo);\n    }\n\n};\n \n\n\n\n/***/ }),\n/* 7 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return bidi; });\n/* Copyright 2012 Mozilla Foundation\n *\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n *\n *     http://www.apache.org/licenses/LICENSE-2.0\n *\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\n// Character types for symbols from 0000 to 00FF.\n// Source: ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt\nvar baseTypes = [\n  'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'S', 'B', 'S',\n  'WS', 'B', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN',\n  'BN', 'BN', 'BN', 'BN', 'B', 'B', 'B', 'S', 'WS', 'ON', 'ON', 'ET',\n  'ET', 'ET', 'ON', 'ON', 'ON', 'ON', 'ON', 'ES', 'CS', 'ES', 'CS', 'CS',\n  'EN', 'EN', 'EN', 'EN', 'EN', 'EN', 'EN', 'EN', 'EN', 'EN', 'CS', 'ON',\n  'ON', 'ON', 'ON', 'ON', 'ON', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',\n  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',\n  'L', 'L', 'L', 'L', 'ON', 'ON', 'ON', 'ON', 'ON', 'ON', 'L', 'L', 'L',\n  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',\n  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'ON', 'ON', 'ON', 'ON',\n  'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'B', 'BN', 'BN', 'BN', 'BN', 'BN',\n  'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN',\n  'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'CS', 'ON', 'ET',\n  'ET', 'ET', 'ET', 'ON', 'ON', 'ON', 'ON', 'L', 'ON', 'ON', 'BN', 'ON',\n  'ON', 'ET', 'ET', 'EN', 'EN', 'ON', 'L', 'ON', 'ON', 'ON', 'EN', 'L',\n  'ON', 'ON', 'ON', 'ON', 'ON', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',\n  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',\n  'L', 'ON', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',\n  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',\n  'L', 'L', 'L', 'L', 'L', 'ON', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L'\n];\n\n// Character types for symbols from 0600 to 06FF.\n// Source: ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt\n// Note that 061D does not exist in the Unicode standard (see\n// http://unicode.org/charts/PDF/U0600.pdf), so we replace it with an\n// empty string and issue a warning if we encounter this character. The\n// empty string is required to properly index the items after it.\nvar arabicTypes = [\n  'AN', 'AN', 'AN', 'AN', 'AN', 'AN', 'ON', 'ON', 'AL', 'ET', 'ET', 'AL',\n  'CS', 'AL', 'ON', 'ON', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM',\n  'NSM', 'NSM', 'NSM', 'NSM', 'AL', 'AL', '', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM',\n  'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM',\n  'NSM', 'NSM', 'NSM', 'NSM', 'AN', 'AN', 'AN', 'AN', 'AN', 'AN', 'AN',\n  'AN', 'AN', 'AN', 'ET', 'AN', 'AN', 'AL', 'AL', 'AL', 'NSM', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'AN',\n  'ON', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'AL', 'AL', 'NSM', 'NSM',\n  'ON', 'NSM', 'NSM', 'NSM', 'NSM', 'AL', 'AL', 'EN', 'EN', 'EN', 'EN',\n  'EN', 'EN', 'EN', 'EN', 'EN', 'EN', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL'\n];\n\nfunction isOdd(i) {\n  return (i & 1) !== 0;\n}\n\nfunction isEven(i) {\n  return (i & 1) === 0;\n}\n\nfunction findUnequal(arr, start, value) {\n  for (var j = start, jj = arr.length; j < jj; ++j) {\n    if (arr[j] !== value) {\n      return j;\n    }\n  }\n  return j;\n}\n\nfunction setValues(arr, start, end, value) {\n  for (var j = start; j < end; ++j) {\n    arr[j] = value;\n  }\n}\n\nfunction reverseValues(arr, arr2, start, end) {\n  for (var i = start, j = end - 1; i < j; ++i, --j) {\n    var temp = arr[i];\n    arr[i] = arr[j];\n    arr[j] = temp;\n    temp = arr2[i];\n    arr2[i] = arr2[j];\n    arr2[j] = temp;\n  }\n}\n\nfunction createBidiText(str, isLTR, vertical) {\n  return {\n    str: str,\n    indices: indices,\n    types : types,\n    dir: (vertical ? 'ttb' : (isLTR ? 'ltr' : 'rtl')),\n  };\n}\n\n// These are used in bidi(), which is called frequently. We re-use them on\n// each call to avoid unnecessary allocations.\nvar chars = [];\nvar types = [];\nvar indices = [];\n\nfunction bidi(str, startLevel, vertical) {\n  var isLTR = true;\n  var strLength = str.length;\n  if (strLength === 0 || vertical) {\n    return createBidiText(str, isLTR, vertical);\n  }\n\n  // Get types and fill arrays\n  chars.length = strLength;\n  types.length = strLength;\n  var numBidi = 0;\n\n  var i, ii;\n  for (i = 0; i < strLength; ++i) {\n    chars[i] = str.charAt(i);\n    indices[i] = i;\n\n    var charCode = str.charCodeAt(i);\n    var charType = 'L';\n    if (charCode <= 0x00ff) {\n      charType = baseTypes[charCode];\n    } else if (0x0590 <= charCode && charCode <= 0x05f4) {\n      charType = 'R';\n    } else if (0x0600 <= charCode && charCode <= 0x06ff) {\n      charType = arabicTypes[charCode & 0xff];\n      if (!charType) {\n        //console.log('Bidi: invalid Unicode character ' + charCode.toString(16));\n      }\n    } else if (0x0700 <= charCode && charCode <= 0x08AC) {\n      charType = 'AL';\n    }\n    if (charType === 'R' || charType === 'AL' || charType === 'AN') {\n      numBidi++;\n    }\n    types[i] = charType;\n  }\n\n  // Detect the bidi method\n  // - If there are no rtl characters then no bidi needed\n  // - If less than 30% chars are rtl then string is primarily ltr\n  // - If more than 30% chars are rtl then string is primarily rtl\n  if (numBidi === 0) {\n    isLTR = true;\n    return createBidiText(str, isLTR);\n  }\n\n  if (startLevel === -1) {\n    if ((numBidi / strLength) < 0.3) {\n      isLTR = true;\n      startLevel = 0;\n    } else {\n      isLTR = false;\n      startLevel = 1;\n    }\n  }\n\n  var levels = [];\n  for (i = 0; i < strLength; ++i) {\n    levels[i] = startLevel;\n  }\n\n  /*\n   X1-X10: skip most of this, since we are NOT doing the embeddings.\n   */\n  var e = (isOdd(startLevel) ? 'R' : 'L');\n  var sor = e;\n  var eor = sor;\n\n  /*\n   W1. Examine each non-spacing mark (NSM) in the level run, and change the\n   type of the NSM to the type of the previous character. If the NSM is at the\n   start of the level run, it will get the type of sor.\n   */\n  var lastType = sor;\n  for (i = 0; i < strLength; ++i) {\n    if (types[i] === 'NSM') {\n      types[i] = lastType;\n    } else {\n      lastType = types[i];\n    }\n  }\n\n  /*\n   W2. Search backwards from each instance of a European number until the\n   first strong type (R, L, AL, or sor) is found.  If an AL is found, change\n   the type of the European number to Arabic number.\n   */\n  lastType = sor;\n  var t;\n  for (i = 0; i < strLength; ++i) {\n    t = types[i];\n    if (t === 'EN') {\n      types[i] = (lastType === 'AL') ? 'AN' : 'EN';\n    } else if (t === 'R' || t === 'L' || t === 'AL') {\n      lastType = t;\n    }\n  }\n\n  /*\n   W3. Change all ALs to R.\n   */\n  for (i = 0; i < strLength; ++i) {\n    t = types[i];\n    if (t === 'AL') {\n      types[i] = 'R';\n    }\n  }\n\n  /*\n   W4. A single European separator between two European numbers changes to a\n   European number. A single common separator between two numbers of the same\n   type changes to that type:\n   */\n  for (i = 1; i < strLength - 1; ++i) {\n    if (types[i] === 'ES' && types[i - 1] === 'EN' && types[i + 1] === 'EN') {\n      types[i] = 'EN';\n    }\n    if (types[i] === 'CS' &&\n        (types[i - 1] === 'EN' || types[i - 1] === 'AN') &&\n        types[i + 1] === types[i - 1]) {\n      types[i] = types[i - 1];\n    }\n  }\n\n  /*\n   W5. A sequence of European terminators adjacent to European numbers changes\n   to all European numbers:\n   */\n  for (i = 0; i < strLength; ++i) {\n    if (types[i] === 'EN') {\n      // do before\n      var j;\n      for (j = i - 1; j >= 0; --j) {\n        if (types[j] !== 'ET') {\n          break;\n        }\n        types[j] = 'EN';\n      }\n      // do after\n      for (j = i + 1; j < strLength; ++j) {\n        if (types[j] !== 'ET') {\n          break;\n        }\n        types[j] = 'EN';\n      }\n    }\n  }\n\n  /*\n   W6. Otherwise, separators and terminators change to Other Neutral:\n   */\n  for (i = 0; i < strLength; ++i) {\n    t = types[i];\n    if (t === 'WS' || t === 'ES' || t === 'ET' || t === 'CS') {\n      types[i] = 'ON';\n    }\n  }\n\n  /*\n   W7. Search backwards from each instance of a European number until the\n   first strong type (R, L, or sor) is found. If an L is found,  then change\n   the type of the European number to L.\n   */\n  lastType = sor;\n  for (i = 0; i < strLength; ++i) {\n    t = types[i];\n    if (t === 'EN') {\n      types[i] = ((lastType === 'L') ? 'L' : 'EN');\n    } else if (t === 'R' || t === 'L') {\n      lastType = t;\n    }\n  }\n\n  /*\n   N1. A sequence of neutrals takes the direction of the surrounding strong\n   text if the text on both sides has the same direction. European and Arabic\n   numbers are treated as though they were R. Start-of-level-run (sor) and\n   end-of-level-run (eor) are used at level run boundaries.\n   */\n  for (i = 0; i < strLength; ++i) {\n    if (types[i] === 'ON') {\n      var end = findUnequal(types, i + 1, 'ON');\n      var before = sor;\n      if (i > 0) {\n        before = types[i - 1];\n      }\n\n      var after = eor;\n      if (end + 1 < strLength) {\n        after = types[end + 1];\n      }\n      if (before !== 'L') {\n        before = 'R';\n      }\n      if (after !== 'L') {\n        after = 'R';\n      }\n      if (before === after) {\n        setValues(types, i, end, before);\n      }\n      i = end - 1; // reset to end (-1 so next iteration is ok)\n    }\n  }\n\n  /*\n   N2. Any remaining neutrals take the embedding direction.\n   */\n  for (i = 0; i < strLength; ++i) {\n    if (types[i] === 'ON') {\n      types[i] = e;\n    }\n  }\n\n  /*\n   I1. For all characters with an even (left-to-right) embedding direction,\n   those of type R go up one level and those of type AN or EN go up two\n   levels.\n   I2. For all characters with an odd (right-to-left) embedding direction,\n   those of type L, EN or AN go up one level.\n   */\n  for (i = 0; i < strLength; ++i) {\n    t = types[i];\n    if (isEven(levels[i])) {\n      if (t === 'R') {\n        levels[i] += 1;\n      } else if (t === 'AN' || t === 'EN') {\n        levels[i] += 2;\n      }\n    } else { // isOdd\n      if (t === 'L' || t === 'AN' || t === 'EN') {\n        levels[i] += 1;\n      }\n    }\n  }\n\n  /*\n   L1. On each line, reset the embedding level of the following characters to\n   the paragraph embedding level:\n\n   segment separators,\n   paragraph separators,\n   any sequence of whitespace characters preceding a segment separator or\n   paragraph separator, and any sequence of white space characters at the end\n   of the line.\n   */\n\n  // don't bother as text is only single line\n\n  /*\n   L2. From the highest level found in the text to the lowest odd level on\n   each line, reverse any contiguous sequence of characters that are at that\n   level or higher.\n   */\n\n  // find highest level & lowest odd level\n  var highestLevel = -1;\n  var lowestOddLevel = 99;\n  var level;\n  for (i = 0, ii = levels.length; i < ii; ++i) {\n    level = levels[i];\n    if (highestLevel < level) {\n      highestLevel = level;\n    }\n    if (lowestOddLevel > level && isOdd(level)) {\n      lowestOddLevel = level;\n    }\n  }\n\n  // now reverse between those limits\n  for (level = highestLevel; level >= lowestOddLevel; --level) {\n    // find segments to reverse\n    var start = -1;\n    for (i = 0, ii = levels.length; i < ii; ++i) {\n      if (levels[i] < level) {\n        if (start >= 0) {\n          reverseValues(chars, indices, start, i);\n          start = -1;\n        }\n      } else if (start < 0) {\n        start = i;\n      }\n    }\n    if (start >= 0) {\n      reverseValues(chars, indices, start, levels.length);\n    }\n  }\n\n  /*\n   L3. Combining marks applied to a right-to-left base character will at this\n   point precede their base character. If the rendering engine expects them to\n   follow the base characters in the final display process, then the ordering\n   of the marks and the base character must be reversed.\n   */\n\n  // don't bother for now\n\n  /*\n   L4. A character that possesses the mirrored property as specified by\n   Section 4.7, Mirrored, must be depicted by a mirrored glyph if the resolved\n   directionality of that character is R.\n   */\n\n  // don't mirror as characters are already mirrored in the pdf\n\n  // Finally, return string\n  for (i = 0, ii = chars.length; i < ii; ++i) {\n    var ch = chars[i];\n    if (ch === '<' || ch === '>') {\n      chars[i] = '';\n    }\n  }\n  return createBidiText(chars.join(''), isLTR);\n}\n\n\n\n\n\n/***/ }),\n/* 8 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_bidi_js__ = __webpack_require__(7);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return Typr; });\n\n\n\n\n//get rid of compiler mess\nvar bidi = __WEBPACK_IMPORTED_MODULE_0__worker_bidi_js__[\"a\" /* bidi */];\n\n\nvar Typr = {};\n\nTypr.parse = function(buff) {\n    var bin = Typr._bin;\n    var data = new Uint8Array(buff);\n    var offset = 0;\n    \n    var sfnt_version = bin.readFixed(data, offset);\n    offset += 4;\n    var numTables = bin.readUshort(data, offset);\n    offset += 2;\n    var searchRange = bin.readUshort(data, offset);\n    offset += 2;\n    var entrySelector = bin.readUshort(data, offset);\n    offset += 2;\n    var rangeShift = bin.readUshort(data, offset);\n    offset += 2;\n    \n    var tags = [\n        \"cmap\",\n        \"head\",\n        \"hhea\",\n        \"maxp\",\n        \"hmtx\",\n        //\"name\",\n        //\"OS/2\",\n        //\"post\",\n        \n        //\"cvt\",\n        //\"fpgm\",\n        //\"loca\",\n        //\"glyf\",\n        \"kern\",\n        \n        //\"prep\"\n        //\"gasp\"\n        \n        \"GPOS\",\n        \"GSUB\"\n        //\"VORG\",\n        ];\n    \n    var obj = {_data:data};\n    //console.log(sfnt_version, numTables, searchRange, entrySelector, rangeShift);\n    \n    var tabs = {};\n    var tablesOffset = 0;\n    \n    for(var i=0; i<numTables; i++) {\n        var tag = bin.readASCII(data, offset, 4);   offset += 4;\n        var checkSum = bin.readUint(data, offset);  offset += 4;\n        var toffset = bin.readUint(data, offset);   offset += 4;\n        var length = bin.readUint(data, offset);    offset += 4;\n        tabs[tag] = {offset:toffset, length:length};\n        tablesOffset = toffset + length;\n        //if(tags.indexOf(tag)==-1) console.log(\"unknown tag\", tag);\n    }\n    \n    for(var i=0; i< tags.length; i++) {\n        var t = tags[i];\n        //console.log(t);\n        //if(tabs[t]) console.log(t, tabs[t].offset, tabs[t].length);\n        if(tabs[t]) obj[t.trim()] = Typr[t.trim()].parse(data, tabs[t].offset, tabs[t].length, obj);\n    }\n\n    obj._tabs = tabs;\n\n    Typr._processGlyphs(data, tablesOffset, tabs, obj);\n\n    //get tables\n    var gsub = obj['GSUB'];\n    if (gsub) {\n        var llist = gsub.lookupList, flist = gsub.featureList;\n\n        obj.gsubIsolTable = [];\n        obj.gsubInitTable = [];\n        obj.gsubFinaTable = [];\n        obj.gsubMediTable = [];\n\n        obj.gsubRligLigaTable = [];\n\n        for(var fi = 0; fi < flist.length; fi++) {\n            var tag = flist[fi].tag;\n\n            switch (tag) {\n                case 'isol':\n                case 'init':\n                case 'fina':\n                case 'medi':\n\n                    for(var ti = 0; ti < flist[fi].tab.length; ti++) {\n                        var tab = llist[flist[fi].tab[ti]];\n                        \n                        if(tab.ltype == 1) {\n                            switch (tag) {\n                                case 'isol': obj.gsubIsolTable.push(tab.tabs); break;\n                                case 'init': obj.gsubInitTable.push(tab.tabs); break;\n                                case 'fina': obj.gsubFinaTable.push(tab.tabs); break;\n                                case 'medi': obj.gsubMediTable.push(tab.tabs); break;\n                            }\n                        }\n                    }\n\n                    break;\n\n                case 'rlig':\n                case 'liga':\n\n                    for(var ti = 0; ti < flist[fi].tab.length; ti++) {\n                        var tab = llist[flist[fi].tab[ti]];\n                        \n                        if(tab.ltype == 4) {\n                            obj.gsubRligLigaTable.push(tab.tabs);\n                        }\n                    }\n\n                    break;\n            }\n\n        }\n    }\n   \n    return obj;\n}\n\nTypr._processGlyphs = function(data, index, tabs, obj) {\n    var version = data[index]; index += 1;\n    var textureLX = (data[index] << 8) | (data[index+1]); index += 2;\n    var textureLY = (data[index] << 8) | (data[index+1]); index += 2;\n    var size = data[index]; index += 1;\n    var flags = data[index]; index += 1;\n\n    obj.version = version;\n    obj.textureLX = textureLX;\n    obj.textureLY = textureLY;\n    obj.size = size;\n    obj.cly = size * 1.5;\n    obj.flags = flags;\n\n    var glyphs = new Array(obj.maxp.numGlyphs);\n    var fx = 1.0 / textureLX, fy = 1.0 / textureLY;\n    var step = (textureLX > 256) ? 7 : 6;\n\n    var filesIndicesIndex = index + obj.maxp.numGlyphs * step;\n    var filesIndicesCount = (data[filesIndicesIndex] << 8) | data[filesIndicesIndex+1];\n    var files = new Array(filesIndicesCount);\n\n    filesIndicesIndex += 2;\n\n    for (var i = 0, li = filesIndicesCount; i < li; i++) {\n        files[i] = (data[filesIndicesIndex+i*2] << 8) | data[filesIndicesIndex+i*2+1];\n    }\n\n    var fileIndex = 0;\n\n    for (i = 0, li = obj.maxp.numGlyphs; i < li; i++) {\n        if (i == files[fileIndex]) {\n            fileIndex++;\n        }\n\n        glyphs[i] = Typr._processGlyph(data, index, fx, fy, textureLX, obj, i, fileIndex);\n        index += step;\n    }\n\n    obj.glyphs = glyphs;\n}\n\nTypr._processGlyph = function(data, index, fx, fy, textureLX, font, glyphIndex, fileIndex) {\n    var value = (data[index] << 24) | (data[index+1] << 16) | (data[index+2] << 8) | (data[index+3]);\n\n    // w 6bit | h 6bit | sx sign 1bit | abs sx 6bit | sy sign 1bit | abs sy 6bit | plane 2bit \n    var w = (value >> 22) & 63;\n    var h = (value >> 16) & 63;\n    var sx = ((value >> 9) & 63) * (((value >> 15) & 1) ? -1 : 1);\n    var sy = -((value >> 2) & 63) * (((value >> 8) & 1) ? -1 : 1);\n    var plane = (value & 3) + (fileIndex * 4);\n\n    if (textureLX > 256) {\n        value = (data[index+4] << 16) | (data[index+5] << 8) | (data[index+6]);\n    } else {\n        value = (data[index+4] << 8) | (data[index+5]);\n    }    \n\n    var scale = ((font.size/0.75) / font.head.unitsPerEm) * 0.75;\n    var x, y, step = font.hmtx.aWidth[glyphIndex] * scale;\n\n    //store glyph position\n    switch (textureLX) {\n        case 2048: // x 11bit | y 11bit\n            x = ((value >> 11) & 2047), y = (value & 2047); break;\n                   \n        case 1024: // x 10bit | y 10bit\n            x = ((value >> 10) & 1023), y = (value & 1023); break;\n\n        case 512:  // x 9bit | y 9bit\n            x = ((value >> 9) & 511), y = (value & 511); break;\n\n        default:   // x 8bit | y 8bit\n            x = ((value >> 8) & 255), y = (value & 255); break;\n    }\n\n    return {\n        u1 : (x) * fx,\n        v1 : (y * fy) + plane,\n        u2 : (x + w) * fx,\n        v2 : ((y + h) * fy) + plane,\n        lx : w,\n        ly : h,\n        sx : sx, \n        sy : sy, \n        step : (step), \n        plane: plane\n    };\n}\n\nTypr._tabOffset = function(data, tab) {\n    var bin = Typr._bin;\n    var numTables = bin.readUshort(data, 4);\n    var offset = 12;\n    for(var i=0; i<numTables; i++) {\n        var tag = bin.readASCII(data, offset, 4);   offset += 4;\n        var checkSum = bin.readUint(data, offset);  offset += 4;\n        var toffset = bin.readUint(data, offset);   offset += 4;\n        var length = bin.readUint(data, offset);    offset += 4;\n        if(tag==tab) return toffset;\n    }\n    return 0;\n}\n\n\n\n\nTypr._bin = {\n    readFixed : function(data, o) {\n        return ((data[o]<<8) | data[o+1]) +  (((data[o+2]<<8)|data[o+3])/(256*256+4));\n    },\n\n    readF2dot14 : function(data, o) {\n        var num = Typr._bin.readShort(data, o);\n        return num / 16384;\n        \n        var intg = (num >> 14), frac = ((num & 0x3fff)/(0x3fff+1));\n        return (intg>0) ? (intg+frac) : (intg-frac);\n    },\n\n    readInt : function(buff, p) {\n        //if(p>=buff.length) throw \"error\";\n        var a = Typr._bin.t.uint8;\n        a[0] = buff[p+3];\n        a[1] = buff[p+2];\n        a[2] = buff[p+1];\n        a[3] = buff[p];\n        return Typr._bin.t.int32[0];\n    },\n    \n    readInt8 : function(buff, p) {\n        //if(p>=buff.length) throw \"error\";\n        var a = Typr._bin.t.uint8;\n        a[0] = buff[p];\n        return Typr._bin.t.int8[0];\n    },\n\n    readShort : function(buff, p) {\n        //if(p>=buff.length) throw \"error\";\n        var a = Typr._bin.t.uint8;\n        a[1] = buff[p]; a[0] = buff[p+1];\n        return Typr._bin.t.int16[0];\n    },\n\n    readUshort : function(buff, p) {\n        //if(p>=buff.length) throw \"error\";\n        return (buff[p]<<8) | buff[p+1];\n    },\n\n    readUshorts : function(buff, p, len) {\n        var arr = [];\n        for(var i=0; i<len; i++) arr.push(Typr._bin.readUshort(buff, p+i*2));\n        return arr;\n    },\n\n    readUint : function(buff, p) {\n        //if(p>=buff.length) throw \"error\";\n        var a = Typr._bin.t.uint8;\n        a[3] = buff[p];  a[2] = buff[p+1];  a[1] = buff[p+2];  a[0] = buff[p+3];\n        return Typr._bin.t.uint32[0];\n    },\n\n    readUint64 : function(buff, p) {\n        //if(p>=buff.length) throw \"error\";\n        return (Typr._bin.readUint(buff, p)*(0xffffffff+1)) + Typr._bin.readUint(buff, p+4);\n    },\n\n    readASCII : function(buff, p, l) {   // l : length in Characters (not Bytes)\n        //if(p>=buff.length) throw \"error\";\n        var s = \"\";\n        for(var i = 0; i < l; i++) s += String.fromCharCode(buff[p+i]);\n        return s;\n    },\n\n    readUnicode : function(buff, p, l) {\n        //if(p>=buff.length) throw \"error\";\n        var s = \"\";\n        for(var i = 0; i < l; i++)  \n        {\n            var c = (buff[p++]<<8) | buff[p++];\n            s += String.fromCharCode(c);\n        }\n        return s;\n    },\n\n    readBytes : function(buff, p, l) {\n        //if(p>=buff.length) throw \"error\";\n        var arr = [];\n        for(var i=0; i<l; i++) arr.push(buff[p+i]);\n        return arr;\n    },\n\n    readASCIIArray : function(buff, p, l) {  // l : length in Characters (not Bytes)\n        //if(p>=buff.length) throw \"error\";\n        var s = [];\n        for(var i = 0; i < l; i++)  \n            s.push(String.fromCharCode(buff[p+i]));\n        return s;\n    }\n};\n\nTypr._bin.t = {\n    buff: new ArrayBuffer(8),\n};\nTypr._bin.t.int8   = new Int8Array  (Typr._bin.t.buff);\nTypr._bin.t.uint8  = new Uint8Array (Typr._bin.t.buff);\nTypr._bin.t.int16  = new Int16Array (Typr._bin.t.buff);\nTypr._bin.t.uint16 = new Uint16Array(Typr._bin.t.buff);\nTypr._bin.t.int32  = new Int32Array (Typr._bin.t.buff);\nTypr._bin.t.uint32 = new Uint32Array(Typr._bin.t.buff);\n\n\n\n\n\n// OpenType Layout Common Table Formats\n\nTypr._lctf = {};\n\nTypr._lctf.parse = function(data, offset, length, font, subt) {\n    var bin = Typr._bin;\n    var obj = {};\n    var offset0 = offset;\n    var tableVersion = bin.readFixed(data, offset);  offset += 4;\n    \n    var offScriptList  = bin.readUshort(data, offset);  offset += 2;\n    var offFeatureList = bin.readUshort(data, offset);  offset += 2;\n    var offLookupList  = bin.readUshort(data, offset);  offset += 2;\n    \n    \n    obj.scriptList  = Typr._lctf.readScriptList (data, offset0 + offScriptList);\n    obj.featureList = Typr._lctf.readFeatureList(data, offset0 + offFeatureList);\n    obj.lookupList  = Typr._lctf.readLookupList (data, offset0 + offLookupList, subt);\n    \n    return obj;\n}\n\nTypr._lctf.readLookupList = function(data, offset, subt) {\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = [];\n    var count = bin.readUshort(data, offset);  offset+=2;\n\n    for(var i=0; i<count; i++) \n    {\n        var noff = bin.readUshort(data, offset);  offset+=2;\n        var lut = Typr._lctf.readLookupTable(data, offset0 + noff, subt);\n        obj.push(lut);\n    }\n    return obj;\n}\n\nTypr._lctf.readLookupTable = function(data, offset, subt) {\n    //console.log(\"Parsing lookup table\", offset);\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = {tabs:[]};\n    \n    obj.ltype = bin.readUshort(data, offset);  offset+=2;\n    obj.flag  = bin.readUshort(data, offset);  offset+=2;\n    var cnt   = bin.readUshort(data, offset);  offset+=2;\n    \n    for(var i=0; i<cnt; i++) {\n        var noff = bin.readUshort(data, offset);  offset+=2;\n        var tab = subt(data, obj.ltype, offset0 + noff);\n        //console.log(obj.type, tab);\n        obj.tabs.push(tab);\n    }\n    return obj;\n}\n\nTypr._lctf.numOfOnes = function(n) {\n    var num = 0;\n    for(var i=0; i<32; i++) if(((n>>>i)&1) != 0) num++;\n    return num;\n}\n\nTypr._lctf.readClassDef = function(data, offset) {\n    var bin = Typr._bin;\n    var obj = { start:[], end:[], class:[] };\n    var format = bin.readUshort(data, offset);  offset+=2;\n\n    if(format==1) {\n        var startGlyph  = bin.readUshort(data, offset);  offset+=2;\n        var glyphCount  = bin.readUshort(data, offset);  offset+=2;\n        for(var i=0; i<glyphCount; i++) {\n            obj.start.push(startGlyph+i);\n            obj.end  .push(startGlyph+i);\n            obj.class.push(bin.readUshort(data, offset));  offset+=2;\n        }\n    }\n\n    if(format==2) {\n        var count = bin.readUshort(data, offset);  offset+=2;\n        for(var i=0; i<count; i++) {\n            obj.start.push(bin.readUshort(data, offset));  offset+=2;\n            obj.end  .push(bin.readUshort(data, offset));  offset+=2;\n            obj.class.push(bin.readUshort(data, offset));  offset+=2;\n        }\n    }\n    return obj;\n}\n\nTypr._lctf.readValueRecord = function(data, offset, valFmt) {\n    var bin = Typr._bin;\n    var arr = [];\n    arr.push( (valFmt&1) ? bin.readShort(data, offset) : 0 );  offset += (valFmt&1) ? 2 : 0;\n    arr.push( (valFmt&2) ? bin.readShort(data, offset) : 0 );  offset += (valFmt&2) ? 2 : 0;\n    arr.push( (valFmt&4) ? bin.readShort(data, offset) : 0 );  offset += (valFmt&4) ? 2 : 0;\n    arr.push( (valFmt&8) ? bin.readShort(data, offset) : 0 );  offset += (valFmt&8) ? 2 : 0;\n    return arr;\n}\n\nTypr._lctf.readCoverage = function(data, offset) {\n    var bin = Typr._bin;\n    var cvg = {};\n    cvg.fmt   = bin.readUshort(data, offset);  offset+=2;\n    var count = bin.readUshort(data, offset);  offset+=2;\n    //console.log(\"parsing coverage\", offset-4, format, count);\n    if(cvg.fmt==1) cvg.tab = bin.readUshorts(data, offset, count); \n    if(cvg.fmt==2) cvg.tab = bin.readUshorts(data, offset, count*3);\n\n    //get min,max\n\n    var min = Number.POSITIVE_INFINITY, max = 0;\n    var tab = cvg.tab;\n\n    if(cvg.fmt==1) {\n\n        for(var i=0; i<tab.length; i++) {\n            var v = tab[i];\n            if (v > max) max = v;\n            if (v < min) min = v;\n        }\n    }\n\n    if(cvg.fmt==2) {\n        for(var i=0; i<tab.length; i+=3) {\n            var start = tab[i], end = tab[i+1];\n            if (start > max) max = start;\n            if (start < min) min = start;\n            if (end > max) max = end;\n            if (end < min) min = end;\n        }\n    }\n\n    cvg.min = min;\n    cvg.max = max;\n\n    return cvg;\n}\n\nTypr._lctf.coverageIndex = function(cvg, val) {\n    if (val < cvg.min || val > cvg.max) {\n        return -1;\n    }\n\n    var tab = cvg.tab;\n    if(cvg.fmt==1) return tab.indexOf(val);\n    \n    for(var i=0; i<tab.length; i+=3) {\n        var start = tab[i], end = tab[i+1], index = tab[i+2];\n        if(start<=val && val<=end) return index + (val-start);\n    }\n    return -1;\n}\n\nTypr._lctf.readFeatureList = function(data, offset) {\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = [];\n    \n    var count = bin.readUshort(data, offset);  offset+=2;\n    \n    for(var i=0; i<count; i++) {\n        var tag = bin.readASCII(data, offset, 4);  offset+=4;\n        var noff = bin.readUshort(data, offset);  offset+=2;\n        obj.push({tag: tag.trim(), tab:Typr._lctf.readFeatureTable(data, offset0 + noff)});\n    }\n    return obj;\n}\n\nTypr._lctf.readFeatureTable = function(data, offset) {\n    var bin = Typr._bin;\n    \n    var featureParams = bin.readUshort(data, offset);  offset+=2;   // = 0\n    var lookupCount = bin.readUshort(data, offset);  offset+=2;\n    \n    var indices = [];\n    for(var i=0; i<lookupCount; i++) indices.push(bin.readUshort(data, offset+2*i));\n    return indices;\n}\n\n\nTypr._lctf.readScriptList = function(data, offset) {\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = {};\n    \n    var count = bin.readUshort(data, offset);  offset+=2;\n    \n    for(var i=0; i<count; i++) {\n        var tag = bin.readASCII(data, offset, 4);  offset+=4;\n        var noff = bin.readUshort(data, offset);  offset+=2;\n        obj[tag.trim()] = Typr._lctf.readScriptTable(data, offset0 + noff);\n    }\n    return obj;\n}\n\nTypr._lctf.readScriptTable = function(data, offset) {\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = {};\n    \n    var defLangSysOff = bin.readUshort(data, offset);  offset+=2;\n    obj.default = Typr._lctf.readLangSysTable(data, offset0 + defLangSysOff);\n    \n    var langSysCount = bin.readUshort(data, offset);  offset+=2;\n    \n    for(var i=0; i<langSysCount; i++) {\n        var tag = bin.readASCII(data, offset, 4);  offset+=4;\n        var langSysOff = bin.readUshort(data, offset);  offset+=2;\n        obj[tag.trim()] = Typr._lctf.readLangSysTable(data, offset0 + langSysOff);\n    }\n    return obj;\n}\n\nTypr._lctf.readLangSysTable = function(data, offset) {\n    var bin = Typr._bin;\n    var obj = {};\n    \n    var lookupOrder = bin.readUshort(data, offset);  offset+=2;\n    //if(lookupOrder!=0)  throw \"lookupOrder not 0\";\n    obj.reqFeature = bin.readUshort(data, offset);  offset+=2;\n    //if(obj.reqFeature != 0xffff) throw \"reqFeatureIndex != 0xffff\";\n    \n    //console.log(lookupOrder, obj.reqFeature);\n    \n    var featureCount = bin.readUshort(data, offset);  offset+=2;\n    obj.features = bin.readUshorts(data, offset, featureCount);\n    return obj;\n}\n\n\nTypr.cmap = {};\nTypr.cmap.parse = function(data, offset, length) {\n    data = new Uint8Array(data.buffer, offset, length);\n    offset = 0;\n\n    var offset0 = offset;\n    var bin = Typr._bin;\n    var obj = {};\n    var version   = bin.readUshort(data, offset);  offset += 2;\n    var numTables = bin.readUshort(data, offset);  offset += 2;\n    \n    //console.log(version, numTables);\n    \n    var offs = [];\n    obj.tables = [];\n    \n    \n    for(var i=0; i<numTables; i++) {\n        var platformID = bin.readUshort(data, offset);  offset += 2;\n        var encodingID = bin.readUshort(data, offset);  offset += 2;\n        var noffset = bin.readUint(data, offset);       offset += 4;\n        \n        var id = \"p\"+platformID+\"e\"+encodingID;\n        \n        //console.log(\"cmap subtable\", platformID, encodingID, noffset);\n                \n        var tind = offs.indexOf(noffset);\n        \n        if(tind==-1) {\n            tind = obj.tables.length;\n            var subt;\n            offs.push(noffset);\n            var format = bin.readUshort(data, noffset);\n            if     (format== 0) subt = Typr.cmap.parse0(data, noffset);\n            else if(format== 4) subt = Typr.cmap.parse4(data, noffset);\n            else if(format== 6) subt = Typr.cmap.parse6(data, noffset);\n            else if(format==12) subt = Typr.cmap.parse12(data,noffset);\n            else console.log(\"unknown format: \"+format, platformID, encodingID, noffset);\n            obj.tables.push(subt);\n        }\n        \n        if(obj[id]!=null) throw \"multiple tables for one platform+encoding\";\n        obj[id] = tind;\n    }\n    return obj;\n}\n\nTypr.cmap.parse0 = function(data, offset) {\n    var bin = Typr._bin;\n    var obj = {};\n    obj.format = bin.readUshort(data, offset);  offset += 2;\n    var len    = bin.readUshort(data, offset);  offset += 2;\n    var lang   = bin.readUshort(data, offset);  offset += 2;\n    obj.map = [];\n    for(var i=0; i<len-6; i++) obj.map.push(data[offset+i]);\n    return obj;\n}\n\nTypr.cmap.parse4 = function(data, offset) {\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = {};\n    \n    obj.format = bin.readUshort(data, offset);  offset+=2;\n    var length = bin.readUshort(data, offset);  offset+=2;\n    var language = bin.readUshort(data, offset);  offset+=2;\n    var segCountX2 = bin.readUshort(data, offset);  offset+=2;\n    var segCount = segCountX2/2;\n    obj.searchRange = bin.readUshort(data, offset);  offset+=2;\n    obj.entrySelector = bin.readUshort(data, offset);  offset+=2;\n    obj.rangeShift = bin.readUshort(data, offset);  offset+=2;\n    obj.endCount   = bin.readUshorts(data, offset, segCount);  offset += segCount*2;\n    offset+=2;\n    obj.startCount = bin.readUshorts(data, offset, segCount);  offset += segCount*2;\n    obj.idDelta = [];\n    for(var i=0; i<segCount; i++) {obj.idDelta.push(bin.readShort(data, offset));  offset+=2;}\n    obj.idRangeOffset = bin.readUshorts(data, offset, segCount);  offset += segCount*2;\n    obj.glyphIdArray = [];\n    while(offset< offset0+length) {obj.glyphIdArray.push(bin.readUshort(data, offset));  offset+=2;}\n    return obj;\n}\n\nTypr.cmap.parse6 = function(data, offset) {\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = {};\n    \n    obj.format = bin.readUshort(data, offset);  offset+=2;\n    var length = bin.readUshort(data, offset);  offset+=2;\n    var language = bin.readUshort(data, offset);  offset+=2;\n    obj.firstCode = bin.readUshort(data, offset);  offset+=2;\n    var entryCount = bin.readUshort(data, offset);  offset+=2;\n    obj.glyphIdArray = [];\n    for(var i=0; i<entryCount; i++) {obj.glyphIdArray.push(bin.readUshort(data, offset));  offset+=2;}\n    \n    return obj;\n}\n\nTypr.cmap.parse12 = function(data, offset) {\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = {};\n    \n    obj.format = bin.readUshort(data, offset);  offset+=2;\n    offset += 2;\n    var length = bin.readUint(data, offset);  offset+=4;\n    var lang   = bin.readUint(data, offset);  offset+=4;\n    var nGroups= bin.readUint(data, offset);  offset+=4;\n    obj.groups = [];\n    \n    for(var i=0; i<nGroups; i++) {\n        var off = offset + i * 12;\n        var startCharCode = bin.readUint(data, off+0);\n        var endCharCode   = bin.readUint(data, off+4);\n        var startGlyphID  = bin.readUint(data, off+8);\n        obj.groups.push([  startCharCode, endCharCode, startGlyphID  ]);\n    }\n    return obj;\n}\n\n\n\nTypr.GPOS = {};\nTypr.GPOS.parse = function(data, offset, length, font) {  return Typr._lctf.parse(data, offset, length, font, Typr.GPOS.subt);  }\n\n\n\nTypr.GPOS.subt = function(data, ltype, offset) { // lookup type\n    if(ltype!=2) return null;\n    \n    var bin = Typr._bin, offset0 = offset, tab = {};\n    \n    tab.format  = bin.readUshort(data, offset);  offset+=2;\n    var covOff  = bin.readUshort(data, offset);  offset+=2;\n    tab.coverage = Typr._lctf.readCoverage(data, covOff+offset0);\n    tab.valFmt1 = bin.readUshort(data, offset);  offset+=2;\n    tab.valFmt2 = bin.readUshort(data, offset);  offset+=2;\n    var ones1 = Typr._lctf.numOfOnes(tab.valFmt1);\n    var ones2 = Typr._lctf.numOfOnes(tab.valFmt2);\n\n    if(tab.format==1) {\n        tab.pairsets = [];\n        var count = bin.readUshort(data, offset);  offset+=2;\n        \n        for(var i=0; i<count; i++) {\n            var psoff = bin.readUshort(data, offset);  offset+=2;\n            psoff += offset0;\n            var pvcount = bin.readUshort(data, psoff);  psoff+=2;\n            var arr = [];\n\n            for(var j=0; j<pvcount; j++) {\n                var gid2 = bin.readUshort(data, psoff);  psoff+=2;\n                var value1, value2;\n                if(tab.valFmt1!=0) {  value1 = Typr._lctf.readValueRecord(data, psoff, tab.valFmt1);  psoff+=ones1*2;  }\n                if(tab.valFmt2!=0) {  value2 = Typr._lctf.readValueRecord(data, psoff, tab.valFmt2);  psoff+=ones2*2;  }\n                arr.push({gid2:gid2, val1:value1, val2:value2});\n            }\n            tab.pairsets.push(arr);\n        }\n    }\n\n    if(tab.format==2) {\n        var classDef1 = bin.readUshort(data, offset);  offset+=2;\n        var classDef2 = bin.readUshort(data, offset);  offset+=2;\n        var class1Count = bin.readUshort(data, offset);  offset+=2;\n        var class2Count = bin.readUshort(data, offset);  offset+=2;\n        \n        tab.classDef1 = Typr._lctf.readClassDef(data, offset0 + classDef1);\n        tab.classDef2 = Typr._lctf.readClassDef(data, offset0 + classDef2);\n        \n        tab.matrix = [];\n        for(var i=0; i<class1Count; i++) {\n            var row = [];\n            for(var j=0; j<class2Count; j++) {\n                var value1 = null, value2 = null;\n                if(tab.valFmt1!=0) { value1 = Typr._lctf.readValueRecord(data, offset, tab.valFmt1);  offset+=ones1*2; }\n                if(tab.valFmt2!=0) { value2 = Typr._lctf.readValueRecord(data, offset, tab.valFmt2);  offset+=ones2*2; }\n                row.push({val1:value1, val2:value2});\n            }\n            tab.matrix.push(row);\n        }\n    }\n    return tab;\n}\n\nTypr.GSUB = {};\nTypr.GSUB.parse = function(data, offset, length, font) {  return Typr._lctf.parse(data, offset, length, font, Typr.GSUB.subt);  }\n\n\nTypr.GSUB.subt = function(data, ltype, offset) { // lookup type\n    var bin = Typr._bin, offset0 = offset, tab = {};\n    \n    if(ltype!=1 && ltype!=4) return null;\n    \n    tab.fmt  = bin.readUshort(data, offset);  offset+=2;\n    var covOff  = bin.readUshort(data, offset);  offset+=2;\n    tab.coverage = Typr._lctf.readCoverage(data, covOff+offset0);   // not always is coverage here\n    \n    if(false) {}\n    else if(ltype==1) {\n        if(tab.fmt==1) {\n            tab.delta = bin.readShort(data, offset);  offset+=2;\n        }\n        else if(tab.fmt==2) {\n            var cnt = bin.readUshort(data, offset);  offset+=2;\n            tab.newg = bin.readUshorts(data, offset, cnt);  offset+=tab.newg.length*2;\n        }\n    }\n    else if(ltype==4) {\n        tab.vals = [];\n        var cnt = bin.readUshort(data, offset);  offset+=2;\n        for(var i=0; i<cnt; i++) {\n            var loff = bin.readUshort(data, offset);  offset+=2;\n            tab.vals.push(Typr.GSUB.readLigatureSet(data, offset0+loff));\n        }\n        //console.log(tab.coverage);\n        //console.log(tab.vals);\n    } \n    \n    return tab;\n}\n\nTypr.GSUB.readChainSubClassSet = function(data, offset) {\n    var bin = Typr._bin, offset0 = offset, lset = [];\n    var cnt = bin.readUshort(data, offset);  offset+=2;\n    for(var i=0; i<cnt; i++) {\n        var loff = bin.readUshort(data, offset);  offset+=2;\n        lset.push(Typr.GSUB.readChainSubClassRule(data, offset0+loff));\n    }\n    return lset;\n}\n\nTypr.GSUB.readChainSubClassRule= function(data, offset) {\n    var bin = Typr._bin, offset0 = offset, rule = {};\n    var pps = [\"backtrack\", \"input\", \"lookahead\"];\n    for(var pi=0; pi<pps.length; pi++) {\n        var cnt = bin.readUshort(data, offset);  offset+=2;  if(pi==1) cnt--;\n        rule[pps[pi]]=bin.readUshorts(data, offset, cnt);  offset+= rule[pps[pi]].length*2;\n    }\n    var cnt = bin.readUshort(data, offset);  offset+=2;\n    rule.subst = bin.readUshorts(data, offset, cnt*2);  offset += rule.subst.length*2;\n    return rule;\n}\n\nTypr.GSUB.readLigatureSet = function(data, offset) {\n    var bin = Typr._bin, offset0 = offset, lset = [];\n    var lcnt = bin.readUshort(data, offset);  offset+=2;\n    for(var j=0; j<lcnt; j++) {\n        var loff = bin.readUshort(data, offset);  offset+=2;\n        lset.push(Typr.GSUB.readLigature(data, offset0+loff));\n    }\n    return lset;\n}\n\nTypr.GSUB.readLigature = function(data, offset) {\n    var bin = Typr._bin, lig = {chain:[]};\n    lig.nglyph = bin.readUshort(data, offset);  offset+=2;\n    var ccnt = bin.readUshort(data, offset);  offset+=2;\n    for(var k=0; k<ccnt-1; k++) {  lig.chain.push(bin.readUshort(data, offset));  offset+=2;  }\n    return lig;\n}\n\n\n\nTypr.head = {};\nTypr.head.parse = function(data, offset, length) {\n    var bin = Typr._bin;\n    var obj = {};\n    var tableVersion = bin.readFixed(data, offset);  offset += 4;\n    obj.fontRevision = bin.readFixed(data, offset);  offset += 4;\n    var checkSumAdjustment = bin.readUint(data, offset);  offset += 4;\n    var magicNumber = bin.readUint(data, offset);  offset += 4;\n    obj.flags = bin.readUshort(data, offset);  offset += 2;\n    obj.unitsPerEm = bin.readUshort(data, offset);  offset += 2;\n    obj.created  = bin.readUint64(data, offset);  offset += 8;\n    obj.modified = bin.readUint64(data, offset);  offset += 8;\n    obj.xMin = bin.readShort(data, offset);  offset += 2;\n    obj.yMin = bin.readShort(data, offset);  offset += 2;\n    obj.xMax = bin.readShort(data, offset);  offset += 2;\n    obj.yMax = bin.readShort(data, offset);  offset += 2;\n    obj.macStyle = bin.readUshort(data, offset);  offset += 2;\n    obj.lowestRecPPEM = bin.readUshort(data, offset);  offset += 2;\n    obj.fontDirectionHint = bin.readShort(data, offset);  offset += 2;\n    obj.indexToLocFormat  = bin.readShort(data, offset);  offset += 2;\n    obj.glyphDataFormat   = bin.readShort(data, offset);  offset += 2;\n    return obj;\n}\n\n\nTypr.hhea = {};\nTypr.hhea.parse = function(data, offset, length) {\n    var bin = Typr._bin;\n    var obj = {};\n    var tableVersion = bin.readFixed(data, offset);  offset += 4;\n    obj.ascender  = bin.readShort(data, offset);  offset += 2;\n    obj.descender = bin.readShort(data, offset);  offset += 2;\n    obj.lineGap = bin.readShort(data, offset);  offset += 2;\n    \n    obj.advanceWidthMax = bin.readUshort(data, offset);  offset += 2;\n    obj.minLeftSideBearing  = bin.readShort(data, offset);  offset += 2;\n    obj.minRightSideBearing = bin.readShort(data, offset);  offset += 2;\n    obj.xMaxExtent = bin.readShort(data, offset);  offset += 2;\n    \n    obj.caretSlopeRise = bin.readShort(data, offset);  offset += 2;\n    obj.caretSlopeRun  = bin.readShort(data, offset);  offset += 2;\n    obj.caretOffset    = bin.readShort(data, offset);  offset += 2;\n    \n    offset += 4*2;\n    \n    obj.metricDataFormat = bin.readShort (data, offset);  offset += 2;\n    obj.numberOfHMetrics = bin.readUshort(data, offset);  offset += 2;\n    return obj;\n}\n\n\nTypr.hmtx = {};\nTypr.hmtx.parse = function(data, offset, length, font) {\n    var bin = Typr._bin;\n    var obj = {};\n    \n    obj.aWidth = [];\n    obj.lsBearing = [];\n        \n    var aw = 0, lsb = 0;\n    \n    for(var i=0; i<font.maxp.numGlyphs; i++) {\n        if(i<font.hhea.numberOfHMetrics) {  aw=bin.readUshort(data, offset);  offset += 2;  lsb=bin.readShort(data, offset);  offset+=2;  }\n        obj.aWidth.push(aw);\n        obj.lsBearing.push(lsb);\n    }\n    \n    return obj;\n}\n\n\nTypr.kern = {};\nTypr.kern.parse = function(data, offset, length, font) {\n    var bin = Typr._bin;\n    \n    var version = bin.readUshort(data, offset);  offset+=2;\n    if(version==1) return Typr.kern.parseV1(data, offset-2, length, font);\n    var nTables = bin.readUshort(data, offset);  offset+=2;\n    \n    var map = {glyph1: [], rval:[]};\n    for(var i=0; i<nTables; i++) {\n        offset+=2;  // skip version\n        var length  = bin.readUshort(data, offset);  offset+=2;\n        var coverage = bin.readUshort(data, offset);  offset+=2;\n        var format = coverage>>>8;\n        /* I have seen format 128 once, that's why I do */ format &= 0xf;\n        if(format==0) offset = Typr.kern.readFormat0(data, offset, map);\n        else throw \"unknown kern table format: \"+format;\n    }\n    return map;\n}\n\nTypr.kern.parseV1 = function(data, offset, length, font) {\n    var bin = Typr._bin;\n    \n    var version = bin.readFixed(data, offset);  offset+=4;\n    var nTables = bin.readUint(data, offset);  offset+=4;\n    \n    var map = {glyph1: [], rval:[]};\n    for(var i=0; i<nTables; i++) {\n        var length = bin.readUint(data, offset);   offset+=4;\n        var coverage = bin.readUshort(data, offset);  offset+=2;\n        var tupleIndex = bin.readUshort(data, offset);  offset+=2;\n        var format = coverage>>>8;\n        /* I have seen format 128 once, that's why I do */ format &= 0xf;\n        if(format==0) offset = Typr.kern.readFormat0(data, offset, map);\n        else throw \"unknown kern table format: \"+format;\n    }\n    return map;\n}\n\nTypr.kern.readFormat0 = function(data, offset, map) {\n    var bin = Typr._bin;\n    var pleft = -1;\n    var nPairs        = bin.readUshort(data, offset);  offset+=2;\n    var searchRange   = bin.readUshort(data, offset);  offset+=2;\n    var entrySelector = bin.readUshort(data, offset);  offset+=2;\n    var rangeShift    = bin.readUshort(data, offset);  offset+=2;\n    for(var j=0; j<nPairs; j++) {\n        var left  = bin.readUshort(data, offset);  offset+=2;\n        var right = bin.readUshort(data, offset);  offset+=2;\n        var value = bin.readShort (data, offset);  offset+=2;\n        if(left!=pleft) { map.glyph1.push(left);  map.rval.push({ glyph2:[], vals:[] }) }\n        var rval = map.rval[map.rval.length-1];\n        rval.glyph2.push(right);   rval.vals.push(value);\n        pleft = left;\n    }\n    return offset;\n}\n\n\n\nTypr.maxp = {};\nTypr.maxp.parse = function(data, offset, length) {\n    //console.log(data.length, offset, length);\n    \n    var bin = Typr._bin;\n    var obj = {};\n    \n    // both versions 0.5 and 1.0\n    var ver = bin.readUint(data, offset); offset += 4;\n    obj.numGlyphs = bin.readUshort(data, offset);  offset += 2;\n    \n    // only 1.0\n    if(ver == 0x00010000) {\n        obj.maxPoints             = bin.readUshort(data, offset);  offset += 2;\n        obj.maxContours           = bin.readUshort(data, offset);  offset += 2;\n        obj.maxCompositePoints    = bin.readUshort(data, offset);  offset += 2;\n        obj.maxCompositeContours  = bin.readUshort(data, offset);  offset += 2;\n        obj.maxZones              = bin.readUshort(data, offset);  offset += 2;\n        obj.maxTwilightPoints     = bin.readUshort(data, offset);  offset += 2;\n        obj.maxStorage            = bin.readUshort(data, offset);  offset += 2;\n        obj.maxFunctionDefs       = bin.readUshort(data, offset);  offset += 2;\n        obj.maxInstructionDefs    = bin.readUshort(data, offset);  offset += 2;\n        obj.maxStackElements      = bin.readUshort(data, offset);  offset += 2;\n        obj.maxSizeOfInstructions = bin.readUshort(data, offset);  offset += 2;\n        obj.maxComponentElements  = bin.readUshort(data, offset);  offset += 2;\n        obj.maxComponentDepth     = bin.readUshort(data, offset);  offset += 2;\n    }\n    \n    return obj;\n}\n\n\nTypr.U = {};\n\nTypr.U.codeToGlyph = function(font, code) {\n    var cmap = font.cmap;\n    \n    \n    var tind = -1;\n    if(cmap.p0e4!=null) tind = cmap.p0e4;\n    else if(cmap.p3e1!=null) tind = cmap.p3e1;\n    else if(cmap.p1e0!=null) tind = cmap.p1e0;\n    \n    if(tind==-1) throw \"no familiar platform and encoding!\";\n    \n    var tab = cmap.tables[tind];\n    \n    if (tab.format==0) {\n        if(code>=tab.map.length) return 0;\n        return tab.map[code];\n    } else if(tab.format==4) {\n        var sind = -1;\n        for(var i=0; i<tab.endCount.length; i++)   if(code<=tab.endCount[i]){  sind=i;  break;  } \n        if(sind==-1) return 0;\n        if(tab.startCount[sind]>code) return 0;\n        \n        var gli = 0;\n        if(tab.idRangeOffset[sind]!=0) gli = tab.glyphIdArray[(code-tab.startCount[sind]) + (tab.idRangeOffset[sind]>>1) - (tab.idRangeOffset.length-sind)];\n        else                           gli = code + tab.idDelta[sind];\n        return gli & 0xFFFF;\n    } else if(tab.format==12) {\n        if(code>tab.groups[tab.groups.length-1][1]) return 0;\n        for(var i=0; i<tab.groups.length; i++) {\n            var grp = tab.groups[i];\n            if(grp[0]<=code && code<=grp[1]) return grp[2] + (code-grp[0]);\n        }\n        return 0;\n    }\n    else throw \"unknown cmap table format \"+tab.format;\n}\n\n\nTypr.U._getGlyphClass = function(g, cd) {\n    for(var i=0; i<cd.start.length; i++) \n        if(cd.start[i]<=g && cd.end[i]>=g) return cd.class[i];\n    return 0;\n}\n\nTypr.U.getPairAdjustment = function(font, g1, g2) {\n    if(font.GPOS) {\n        var ltab = null;\n        for(var i = 0; i < font.GPOS.featureList.length; i++) {\n            var fl = font.GPOS.featureList[i];\n            if (fl.tag==\"kern\")\n                for(var j=0; j<fl.tab.length; j++) \n                    if(font.GPOS.lookupList[fl.tab[j]].ltype==2) ltab=font.GPOS.lookupList[fl.tab[j]];\n        }\n        if(ltab) {\n            for(var i = 0; i < ltab.tabs.length; i++) {\n                var tab = ltab.tabs[i];\n                var ind = Typr._lctf.coverageIndex(tab.coverage, g1);\n                if (ind==-1) continue;\n                var adj = 0;\n                if (tab.format==1) {\n                    var right = tab.pairsets[ind];\n                    for (var j=0; j<right.length; j++) if (right[j].gid2==g2) adj = right[j];\n                    if (adj==null) continue;\n                } else if (tab.format==2) {\n                    var c1 = Typr.U._getGlyphClass(g1, tab.classDef1);\n                    var c2 = Typr.U._getGlyphClass(g2, tab.classDef2);\n                    adj = tab.matrix[c1][c2];\n                }\n                return adj.val1[2];\n            }\n        }\n    }\n    if(font.kern) {\n        var ind1 = font.kern.glyph1.indexOf(g1);\n        if(ind1!=-1) {\n            var ind2 = font.kern.rval[ind1].glyph2.indexOf(g2);\n            if(ind2!=-1) return font.kern.rval[ind1].vals[ind2];\n        }\n    }\n    \n    return 0;\n}\n\n/*\nTypr.U.isRTL = function(str) {           \n    var weakChars       = '\\u0000-\\u0040\\u005B-\\u0060\\u007B-\\u00BF\\u00D7\\u00F7\\u02B9-\\u02FF\\u2000-\\u2BFF\\u2010-\\u2029\\u202C\\u202F-\\u2BFF',\n        rtlChars        = '\\u0591-\\u07FF\\u200F\\u202B\\u202E\\uFB1D-\\uFDFD\\uFE70-\\uFEFC',\n        rtlDirCheck     = new RegExp('^['+weakChars+']*['+rtlChars+']');\n\n    return rtlDirCheck.test(str);\n};*/\n\n// var wsep = \"\\n\\t\\\" ,.:;!?()  ،\";\n//Typr.U.WSepTable = [9, 10, 32, 33, 34, 40, 41, 44, 46, 58, 59, 63, 1548]\n\n//var L = \"ꡲ્૗\";\n//Typr.U.LTable = [ 2765, 2775, 43122 ]\n\n//var R = \"آأؤإاةدذرزوٱٲٳٵٶٷڈډڊڋڌڍڎڏڐڑڒړڔڕږڗژڙۀۃۄۅۆۇۈۉۊۋۍۏےۓەۮۯܐܕܖܗܘܙܞܨܪܬܯݍݙݚݛݫݬݱݳݴݸݹࡀࡆࡇࡉࡔࡧࡩࡪࢪࢫࢬࢮࢱࢲࢹૅેૉ૊૎૏ૐ૑૒૝ૡ૤૯஁ஃ஄அஉ஌எஏ஑னப஫஬\";\nTypr.U.RTable = [\n    1570, 1571, 1572, 1573, 1575, 1577, 1583, 1584, 1585, 1586,\n    1608, 1649, 1650, 1651, 1653, 1654, 1655, 1672, 1673, 1674,\n    1675, 1676, 1677, 1678, 1679, 1680, 1681, 1682, 1683, 1684,\n    1685, 1686, 1687, 1688, 1689, 1728, 1731, 1732, 1733, 1734,\n    1735, 1736, 1737, 1738, 1739, 1741, 1743, 1746, 1747, 1749,\n    1774, 1775, 1808, 1813, 1814, 1815, 1816, 1817, 1822, 1832,\n    1834, 1836, 1839, 1869, 1881, 1882, 1883, 1899, 1900, 1905,\n    1907, 1908, 1912, 1913, 2112, 2118, 2119, 2121, 2132, 2151,\n    2153, 2154, 2218, 2219, 2220, 2222, 2225, 2226, 2233, 2757,\n    2759, 2761, 2762, 2766, 2767, 2768, 2769, 2770, 2781, 2785,\n    2788, 2799, 2945, 2947, 2948, 2949, 2953, 2956, 2958, 2959,\n    2961, 2985, 2986, 2987, 2988 ];\n\n\nTypr.U.stringToGlyphs = function(fonts, str) {\n    var gls = [], g, i, li, j, lj, k, ti, c, c2, gsub, font, llist, flist, t, gsubTable;\n    var gl, gfonts = [], codes = [], scodes = [], scodesType = [], str2 = '';\n\n    var bidiResult = bidi(str, -1, false);\n\n    var rtable = Typr.U.RTable;\n\n   for (i = 0, li = str.length; i < li; i++) {\n        c = str.charCodeAt(i);\n        scodes.push(c);\n        scodesType.push(0);\n\n        //types wsep = 1, L = 2, R = 3\n\n        if (c == 2765 || c == 2775 || c == 43122) { // L\n            scodesType[i] = 2;\n        } else if (c == 1548) { // wsep\n            scodesType[i] = 1;\n        } else if (c <= 63) { // wsep\n            if (c == 9 || c == 10 || c == 32 || c == 33 || c == 34 || c == 40 || c == 41 || c == 44 || c == 46 || c == 58 || c == 59 || c == 63) {\n                scodesType[i] = 1;\n            }\n        } else if (c >= 1570 && c <= 2988) { // R\n            if (rtable.indexOf(c) != -1) {\n                scodesType[i] = 3;\n            }\n        }\n    }\n\n    //basic shaping\n    for (i = 0, li = str.length; i < li; i++) {\n        c = scodes[i];\n\n        if (scodesType[i] != 1) { //not wsep\n            if (i < li - 2) {\n                c2 = scodes[i+1];\n\n                //myanmar \n                if (c2 == 0x103c) { //medial ra - prebase substitution\n                    scodes[i] = c2;\n                    scodes[i+1] = c;\n                    i++;\n                    continue;\n                }\n            }\n        }\n    }\n\n    //get glyphs and fonts for codes\n    for (i = 0, li = str.length; i < li; i++) {\n        c = scodes[i];\n\n        for (j = 0, lj = fonts.length; j < lj; j++) {\n            font = fonts[j];\n            g = Typr.U.codeToGlyph(font, c);\n            if (g) {\n                break;\n            }\n        }\n\n        gls.push(g);\n        gfonts.push(g ? j : 0);\n    }\n\n    codes = scodes;\n    font = null;\n    \n    \n    for(var ci = 0; ci < gls.length; ci++) {\n        gl = gls[ci];\n\n        if (font != gfonts[ci]) {\n            font = fonts[gfonts[ci]];\n            gsub = font['GSUB'];\n        }\n\n        if(!gsub) {\n            continue;\n        }\n\n        var t1 = scodesType[ci-1], t2 = scodesType[ci], t3 = scodesType[ci+1];\n\n        var slft = (ci==0) || (t1 == 1);\n        var srgt = (ci==gls.length-1) || (t3 == 1);\n        \n        if(!slft && (t1 == 3)) slft=true;\n        if(!srgt && (t2 == 3)) srgt=true;\n        \n        if(!srgt && (t3 == 2)) srgt=true;\n        if(!slft && (t2 == 2)) slft=true;\n        \n        gsubTable = null;\n        if (slft) {\n            gsubTable = srgt ? font.gsubIsolTable : font.gsubInitTable;        \n        } else {\n            gsubTable = srgt ? font.gsubFinaTable : font.gsubMediTable;            \n        }\n        \n        if (gsubTable) {\n            for(ti = 0; ti < gsubTable.length; ti++) {\n                var tab = gsubTable[ti];\n\n                for(j = 0; j < tab.length; j++) {\n                    var ttab = tab[j];\n                    var ind = Typr._lctf.coverageIndex(ttab.coverage,gl);\n                    if(ind == -1) continue;  \n\n                    if(ttab.fmt == 0) {\n                        gls[ci] = ind+ttab.delta;\n                    } else {\n                        if (!ttab.newg) {\n                            gls[ci] = gl;\n                            console.log(ci, gl, 'subst-error', ' original:', str);\n                        } else {\n                            gls[ci] = ttab.newg[ind];\n                        }\n                    }\n                }\n            }\n        }\n    }\n\n    font = null;\n    \n    for(var ci=0; ci<gls.length; ci++) {\n        gl = gls[ci];\n\n        if (font != gfonts[ci]) {\n            font = fonts[gfonts[ci]];\n            gsub = font['GSUB'];\n        }\n\n        if(!gsub) {\n            continue;\n        }\n\n        gsubTable = font.gsubRligLigaTable;\n\n        if (gsubTable) {\n            var rlim = Math.min(3, gls.length-ci-1);\n\n            for(ti = 0; ti < gsubTable.length; ti++) {\n                var tab = gsubTable[ti];\n\n                for(j = 0; j < tab.length; j++) {\n                    var ttab = tab[j];\n                    var ind = Typr._lctf.coverageIndex(ttab.coverage, gl);\n                    if(ind==-1) continue;  \n\n                    var vals = ttab.vals[ind];\n                    \n                    for(k=0; k<vals.length; k++) {\n                        var lig = vals[k], rl = lig.chain.length;  if(rl>rlim) continue;\n                        var good = true;\n                        for(var l=0; l<rl; l++) if(lig.chain[l]!=gls[ci+(1+l)]) good=false;\n                        if(!good) continue;\n                        gls[ci]=lig.nglyph;\n                        for(var l=0; l<rl; l++) gls[ci+l+1]=-1;\n                        //console.log(\"lig\", fl.tag,  gl, lig.chain, lig.nglyph);\n                    }\n                }\n            }\n        }\n    }\n\n    var indices = bidiResult.indices;\n    var gls2 = gls.slice();\n    var codes2 = codes.slice();\n    var gfonts2 = gfonts.slice();\n\n    for (i = 0, li = gls.length; i < li; i++) {\n        c = indices[i];\n        gls2[i] = gls[c];\n        codes2[i] = codes[c];\n        gfonts2[i] = gfonts[c];\n    }\n\n    return [gls2, gfonts2, codes2];\n}\n\n\n\n\n\n\n\n\n/***/ }),\n/* 9 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\nObject.defineProperty(__webpack_exports__, \"__esModule\", { value: true });\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__worker_text_js__ = __webpack_require__(3);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__worker_style_js__ = __webpack_require__(2);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__worker_linestring_js__ = __webpack_require__(5);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__ = __webpack_require__(4);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__worker_polygon_js__ = __webpack_require__(6);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__worker_message_js__ = __webpack_require__(1);\n\n\n\n\n\n\n\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */];\nvar setFont = __WEBPACK_IMPORTED_MODULE_1__worker_text_js__[\"a\" /* setFont */];\nvar unint8ArrayToString = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"b\" /* unint8ArrayToString */], Utf8ArrayToStr = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"c\" /* Utf8ArrayToStr */];\nvar setFontMap = __WEBPACK_IMPORTED_MODULE_1__worker_text_js__[\"b\" /* setFontMap */], makeFasterFilter = __WEBPACK_IMPORTED_MODULE_2__worker_style_js__[\"a\" /* makeFasterFilter */];\nvar getLayer = __WEBPACK_IMPORTED_MODULE_2__worker_style_js__[\"b\" /* getLayer */], getLayerPropertyValue = __WEBPACK_IMPORTED_MODULE_2__worker_style_js__[\"c\" /* getLayerPropertyValue */],\n    processStylesheet = __WEBPACK_IMPORTED_MODULE_2__worker_style_js__[\"d\" /* processStylesheet */], getFilterResult = __WEBPACK_IMPORTED_MODULE_2__worker_style_js__[\"e\" /* getFilterResult */];\nvar processLineStringPass = __WEBPACK_IMPORTED_MODULE_3__worker_linestring_js__[\"a\" /* processLineStringPass */];\nvar processPointArrayPass = __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__[\"a\" /* processPointArrayPass */];\nvar processPointArrayVSwitchPass = __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__[\"b\" /* processPointArrayVSwitchPass */];\nvar processPolygonPass = __WEBPACK_IMPORTED_MODULE_5__worker_polygon_js__[\"a\" /* processPolygonPass */];\nvar processLineStringGeometry = __WEBPACK_IMPORTED_MODULE_3__worker_linestring_js__[\"b\" /* processLineStringGeometry */];\nvar processPointArrayGeometry = __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__[\"c\" /* processPointArrayGeometry */],\n    postGroupMessageLite = __WEBPACK_IMPORTED_MODULE_6__worker_message_js__[\"a\" /* postGroupMessageLite */], optimizeGroupMessages = __WEBPACK_IMPORTED_MODULE_6__worker_message_js__[\"b\" /* optimizeGroupMessages */];\nvar postGroupMessageFast = __WEBPACK_IMPORTED_MODULE_6__worker_message_js__[\"c\" /* postGroupMessageFast */], postPackedMessage = __WEBPACK_IMPORTED_MODULE_6__worker_message_js__[\"d\" /* postPackedMessage */], postPackedMessages = __WEBPACK_IMPORTED_MODULE_6__worker_message_js__[\"e\" /* postPackedMessages */];\nvar getLayerPropertyValueInner = __WEBPACK_IMPORTED_MODULE_2__worker_style_js__[\"f\" /* getLayerPropertyValueInner */];\n\nvar exportedGeometries = [];\nvar featureCache = new Array(1024), featureCacheIndex = 0, finalFeatureCache = new Array(1024), finalFeatureCacheIndex = 0, finalFeatureCacheIndex2 = 0;\n\nfunction processLayerFeaturePass(type, feature, lod, layer, featureIndex, zIndex, eventInfo) {\n\n    globals.stylesheetLocals = {};\n\n    switch(type) {\n    case 'line-string':\n        if (getLayerPropertyValue(layer, 'point', feature, lod) ||\n            getLayerPropertyValue(layer, 'label', feature, lod)) {\n            processPointArrayPass(feature, lod, layer, featureIndex, zIndex, eventInfo);\n        }\n\n        processLineStringPass(feature, lod, layer, featureIndex, zIndex, eventInfo);\n        break;\n\n    case 'point-array':\n        processPointArrayPass(feature, lod, layer, featureIndex, zIndex, eventInfo);\n        break;\n            \n    case 'polygon':\n        processPolygonPass(feature, lod, layer, featureIndex, zIndex, eventInfo);\n        break;     \n    }\n\n}\n\nfunction processFeatures(type, features, lod, featureType, group) {\n    var reduceParams = globals.reduceParams;\n\n    //loop layers\n    for (var key in globals.stylesheetLayers) {\n        var layer = globals.stylesheetLayers[key];\n\n        if (type == 'point-array') {\n            var importance = layer['importance-source'];\n\n            if (!importance && features[0] && features[0]['importance']) {\n                importance = '$importance';\n            }\n\n            if (importance) {\n                //importance = '$importance';\n                switch (globals.reduceMode) {\n                    case 'scr-count1': \n                    case 'scr-count2': \n                        layer['reduce'] = ['top',100,importance];\n                        layer['dynamic-reduce'] = ['scr-count2', reduceParams[0], reduceParams[1]];\n                        break;\n                    case 'scr-count4': \n                        layer['dynamic-reduce'] = ['scr-count4',importance];\n                        break;\n                    case 'scr-count5': \n                        layer['dynamic-reduce'] = ['scr-count5',importance];\n                        break;\n                    case 'scr-count6': \n                    case 'scr-count7': \n                    case 'scr-count8': \n                        layer['dynamic-reduce'] = [globals.reduceMode,importance, (typeof layer['importance-weight'] !== 'undefined') ? layer['importance-weight'] : 1 ];\n                        layer['label-no-overlap-margin'] = [reduceParams[0]*reduceParams[5], reduceParams[0]*reduceParams[5]];\n                        layer['icon-no-overlap-margin'] = [reduceParams[0]*reduceParams[5], reduceParams[0]*reduceParams[5]];\n                        layer['label-no-overlap-factor'] = [\"div-by-dist\",importance];\n                        break;\n                }\n            }\n        }\n\n        var filter =  layer['filter'];\n        var reduce =  layer['reduce'], i, li, j, lj;\n\n        if (filter) {\n            filter = layer['#filter'];\n            if (!filter) {\n                layer['#filter'] = makeFasterFilter(layer['filter']);\n                filter = layer['#filter'];\n            }\n        }\n\n        featureCacheIndex = 0, finalFeatureCacheIndex = 0, finalFeatureCacheIndex2 = 0;\n\n        for (i = 0, li = features.length; i < li; i++) {\n            var feature = features[i];\n            feature.properties = feature['properties'] || {};\n\n            if (feature['id']) {\n                feature.properties['#id'] = feature['id']; \n            }\n            \n            if (!filter || getFilterResult(filter, feature, featureType, group, layer, 'filter', lod, 0, true)) {\n                if (reduce) {\n                    featureCache[featureCacheIndex] = feature;\n                    featureCacheIndex++;\n                } else {\n                    processLayerFeature(type, feature, lod, layer, i);\n                }\n            }\n        }\n\n        if (reduce) {\n\n            var count = reduce[1];\n            var property = reduce[2];\n\n            switch (reduce[0]) {\n                case 'top':\n                case 'bottom':\n\n                    if (typeof property === 'string' && property.charAt(0) == '@') {\n                        property = globals.stylesheetConstants[property];\n\n                        if (typeof property === 'undefined') {\n                            break;\n                        }\n                    }\n\n                    if ((typeof property === 'string' && property.charAt(0) == '$') || (typeof property === 'object')) {\n                        var complexProperty = (typeof property === 'object');\n\n                        if (!complexProperty) {\n                            property = property.substr(1);\n                        }\n\n                        if (count > featureCacheIndex) {\n                            count = featureCacheIndex;\n                        }\n\n                        var top = (reduce[0] == 'top'), value;\n                        var currentIndex = 0;\n                        var currentValue2 = top ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;\n\n                        do {\n                            var currentValue = top ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;\n                            finalFeatureCacheIndex2 = finalFeatureCacheIndex;\n\n                            for (i = 0, li = featureCacheIndex; i < li; i++) {\n                                feature = featureCache[i];\n\n                                if (!currentIndex) {\n                                    if (!complexProperty) {\n                                        value = parseFloat(feature.properties[property]);\n                                    } else {\n                                        value = getLayerPropertyValueInner(layer, null, feature, lod, property, 0);\n                                    }\n                                    feature.tmp = value;\n                                } else {\n                                    value = feature.tmp;\n                                }\n\n                                if (!isNaN(value) && ((top && value >= currentValue && value < currentValue2) || (value <= currentValue && value > currentValue2)) ) {\n                                    if (currentValue != value) {\n                                        finalFeatureCacheIndex = finalFeatureCacheIndex2;\n                                    }\n\n                                    finalFeatureCache[finalFeatureCacheIndex] = feature;\n                                    finalFeatureCacheIndex++;\n                                    currentValue = value;\n                                }\n                            }\n\n                            currentValue2 = currentValue;\n                            currentIndex++;\n\n                        } while(currentIndex < count);\n                    }\n\n                    break;\n\n                case 'odd':\n                case 'even':\n\n                    for (i = (reduce[0] == 'odd') ? 1 : 0, li = featureCacheIndex; i < li; i+=2) {\n                        feature = featureCache[i];\n                        finalFeatureCache[finalFeatureCacheIndex] = feature;\n                        finalFeatureCacheIndex++;\n                    }\n\n                case 'every':\n\n                    if (count > featureCacheIndex) {\n                        count = featureCacheIndex;\n                    }\n\n                    for (i = 0, li = featureCacheIndex; i < li; i += count) {\n                        feature = featureCache[i];\n                        finalFeatureCache[finalFeatureCacheIndex] = feature;\n                        finalFeatureCacheIndex++;\n                    }\n\n                    break;\n            }\n\n            //process reduced features\n            for (i = 0, li = finalFeatureCacheIndex; i < li; i++) {\n                feature = finalFeatureCache[i];\n                processLayerFeature(type, finalFeatureCache[i], lod, layer, i);\n            }\n\n        }\n\n    }\n}\n\n\nfunction processLayerFeatureMultipass(type, feature, lod, layer, featureIndex, eventInfo) {\n    var multiPass = getLayerPropertyValue(layer, 'next-pass', feature, lod);\n\n    var mylayer;\n\n    if (multiPass != null) {\n        for (var i = 0, li = multiPass.length; i < li; i++) {\n            var zIndex = multiPass[i][0];\n            mylayer = getLayer(multiPass[i][1], type, featureIndex);\n            \n            if (!getLayerPropertyValue(mylayer, 'visible', feature, lod)) {\n                continue;\n            }\n\n            var selectedLayerId = getLayerPropertyValue(mylayer, 'selected-layer', feature, lod);\n            var selectedLayer = (selectedLayerId != '') ? getLayer(selectedLayerId, type, featureIndex) : null;\n\n            var selectedHoverLayerId = getLayerPropertyValue(mylayer, 'selected-hover-layer', feature, lod);\n            var selectedHoverLayer = (selectedHoverLayerId != '') ? getLayer(selectedHoverLayerId, type, featureIndex) : null;\n\n            var hoverLayerId = getLayerPropertyValue(mylayer, 'hover-layer', feature, lod);\n            var hoverLayer = (hoverLayerId != '') ? getLayer(hoverLayerId, type, featureIndex) : null;\n\n            var flags =  ((hoverLayer != null) ? (1<<8) : 0) | ((selectedLayer != null) ? (1<<9) : 0) | ((selectedHoverLayer != null) ? (1<<10) : 0);\n\n            var lastHitState = globals.hitState;\n\n            if (selectedLayer != null) {\n                globals.hitState = flags | 2;\n                processLayerFeaturePass(type, feature, lod, selectedLayer, featureIndex, zIndex, eventInfo);\n            }\n\n            if (selectedHoverLayer != null) {\n                globals.hitState = flags | 3;\n                processLayerFeaturePass(type, feature, lod, selectedHoverLayer, featureIndex, zIndex, eventInfo);\n            }\n\n            if (hoverLayer != null) {\n                globals.hitState = flags | 1;\n                processLayerFeaturePass(type, feature, lod, hoverLayer, featureIndex, zIndex, eventInfo);\n            }\n                \n            //globals.hitState = flags | 0;\n            processLayerFeaturePass(type, feature, lod, mylayer, featureIndex, zIndex, eventInfo);\n\n            globals.hitState = lastHitState;\n        }\n    }\n}\n\n\nfunction processLayerFeature(type, feature, lod, layer, featureIndex, skipPack) {\n    if (!getLayerPropertyValue(layer, 'visible', feature, lod)) {\n        return;\n    }\n\n    if (type == 'point-array') {\n        if (layer['visibility-switch']) {\n            postGroupMessageLite(5, 16);\n            //postGroupMessage({'command':'addRenderJob', 'type':'vswitch-begin'});\n            var zIndex = getLayerPropertyValue(layer, 'z-index', feature, lod);\n            var eventInfo = feature.properties;\n            processPointArrayVSwitchPass(feature, lod, layer, featureIndex, zIndex, eventInfo);\n\n            var vswitch = layer['visibility-switch'];\n            for (var i = 0, li = vswitch.length; i <li; i++) {\n                if (vswitch[i][1]) {\n                    var slayer = getLayer(vswitch[i][1], type, featureIndex);\n                    processLayerFeature(type, feature, lod, slayer, featureIndex);\n                }\n                postGroupMessageLite(5, 17, vswitch[i][0]);\n            }\n\n            postGroupMessageLite(5, 18);\n            return;\n        }\n    }\n\n    if (!skipPack && layer['pack'] == true) {\n        globals.directPoints = [];\n\n        postGroupMessageLite(5, 14);\n        processLayerFeature(type, feature, lod, layer, featureIndex, true);\n        postGroupMessageLite(5, 15);\n\n        if (globals.directPoints)\n\n        return;\n    }\n\n    var zIndex = getLayerPropertyValue(layer, 'z-index', feature, lod);\n\n    if (getLayerPropertyValue(layer, 'export-geometry', feature, lod) && (typeof feature['id'] !== 'undefined')) {\n        if (!exportedGeometries[feature]) {\n\n            switch(type) {\n            case 'line-string':\n                processLineStringGeometry(feature);\n                break;\n\n            case 'point-array':\n                processPointArrayGeometry(feature);\n                break;\n                    \n            case 'polygon':\n                break;     \n            }\n\n            exportedGeometries[feature] = true;\n        }\n    }\n\n    var eventInfo = feature.properties;\n\n    var selectedLayerId = getLayerPropertyValue(layer, 'selected-layer', feature, lod);\n    var selectedLayer = (selectedLayerId != '') ? getLayer(selectedLayerId, type, featureIndex) : null;\n\n    var selectedHoverLayerId = getLayerPropertyValue(layer, 'selected-hover-layer', feature, lod);\n    var selectedHoverLayer = (selectedHoverLayerId != '') ? getLayer(selectedHoverLayerId, type, featureIndex) : null;\n\n    var hoverLayerId = getLayerPropertyValue(layer, 'hover-layer', feature, lod);\n    var hoverLayer = (hoverLayerId != '') ? getLayer(hoverLayerId, type, featureIndex) : null;\n\n    var flags =  ((hoverLayer != null) ? (1<<8) : 0) | ((selectedLayer != null) ? (1<<9) : 0) | ((selectedHoverLayer != null) ? (1<<10) : 0);\n\n    if (selectedLayer != null) {\n        globals.hitState = flags | 2;\n        processLayerFeaturePass(type, feature, lod, selectedLayer, featureIndex, zIndex, eventInfo);\n        processLayerFeatureMultipass(type, feature, lod, selectedLayer, featureIndex, eventInfo);\n    }\n\n    if (selectedHoverLayer != null) {\n        globals.hitState = flags | 3;\n        processLayerFeaturePass(type, feature, lod, selectedHoverLayer, featureIndex, zIndex, eventInfo);\n        processLayerFeatureMultipass(type, feature, lod, selectedHoverLayer, featureIndex, eventInfo);\n    }\n\n    if (hoverLayer != null) {\n        globals.hitState = flags | 1;\n        processLayerFeaturePass(type, feature, lod, hoverLayer, featureIndex, zIndex, eventInfo);\n        processLayerFeatureMultipass(type, feature, lod, hoverLayer, featureIndex, eventInfo);\n    }\n\n    globals.hitState = flags | 0;\n    processLayerFeaturePass(type, feature, lod, layer, featureIndex, zIndex, eventInfo);\n    processLayerFeatureMultipass(type, feature, lod, layer, featureIndex, eventInfo);\n}\n\nfunction processGroup(group, lod) {\n    var i, li;\n    var groupId = group['id'] || '';\n    globals.groupId = groupId;\n\n    var bbox = group['bbox'];    \n    if (!bbox) {\n        return;\n    }\n          \n    var bboxMin = bbox[0];\n    var bboxMax = bbox[1];\n    globals.bboxMin = bboxMin;\n    globals.bboxMax = bboxMax;\n\n    var bboxDelta = [bbox[1][0] - bbox[0][0],\n        bbox[1][1] - bbox[0][1],\n        bbox[1][2] - bbox[0][2]];\n    var bboxResolution = group['resolution'] || 4096;\n    \n    globals.groupOrigin = [0,0,0];\n    globals.forceScale = [bboxDelta[0] / bboxResolution,\n        bboxDelta[1] / bboxResolution,\n        bboxDelta[2] / bboxResolution];\n\n    postGroupMessageFast(9, 0, {'id': group['id'], 'bbox': [bboxMin, bboxMax], 'origin': bboxMin}, [], \"\");\n\n    //process points\n    var points = group['points'] || [];\n    globals.featureType = 'point';\n    processFeatures('point-array', points, lod, 'point', groupId);\n\n    //process lines\n    var lines = group['lines'] || [];\n    globals.featureType = 'line';\n    processFeatures('line-string', lines, lod, 'line', groupId);\n\n    //process polygons\n    var polygons = group['polygons'] || [];\n    globals.featureType = 'polygon';\n    processFeatures('polygon', polygons, lod, 'polygon', groupId);\n\n    postGroupMessageLite(10, 0);\n\n    if (globals.groupOptimize) {\n        optimizeGroupMessages();\n    }\n}\n\n\nfunction processGeodata(data, lod) {\n    //console.log(\"processGeodata\");\n\n    //create object from JSON\n    if ((typeof data) == 'string') {\n        try {\n            var geodata = JSON.parse(data);\n        } catch (e) {\n            geodata = null;\n        }\n    } else {\n        geodata = data;\n    }\n\n    if (geodata) {\n\n        var groups = geodata['groups'] || [];\n\n        //process layers\n        for (var i = 0, li = groups.length; i < li; i++) {\n            processGroup(groups[i], lod);\n        }\n    }\n\n    //console.log(\"processGeodata-ready\");\n}\n\n\nself.onmessage = function (e) {\n    var message = e.data;\n    var command = message['command'];\n    var data = message['data'];\n    var dataRaw = null;\n\n    //console.log(\"workeronmessage: \" + command);\n\n    switch(command) {\n\n    case 'config':\n        globals.config = data;\n        break;\n\n    case 'setStylesheet':\n        if (data) {\n            globals.geocent = data['geocent'];\n            globals.metricUnits = data['metric'];\n            globals.reduceMode = data['reduceMode'];\n            globals.reduceParams = data['reduceParams'];\n            globals.log = data['log'];\n            globals.language = data['language'];\n            processStylesheet(data['data']);\n        }\n        //postMessage({'command' : 'ready'});\n        break;\n\n    case 'setFont':\n        setFont(data);\n        //postMessage({'command' : 'ready'});\n        break;\n\n    case 'setFontMap':\n        setFontMap(data);\n        postMessage({'command' : 'styleDone'});\n        postMessage({'command' : 'ready'});\n        break;\n\n    case 'processGeodataRaw':\n        dataRaw = data;\n        data = Utf8ArrayToStr(data);\n\n    case 'processGeodata':\n        globals.tileLod = message['lod'] || 0;\n        globals.tileSize = message['tileSize'] || 1;\n        globals.pixelSize = message['pixelSize'] || 1;\n        globals.pixelFactor = message['dpr'] || 1;\n        globals.invPixelFactor = 1.0 / globals.pixelFactor;\n        globals.pixelsPerMM = (globals.pixelFactor / 96) / 2.54;\n        globals.invPixelsPerMM = 1.0 / globals.pixelsPerMM;\n\n        data = JSON.parse(data);            \n        exportedGeometries = [];\n        processGeodata(data, globals.tileLod);\n\n        postGroupMessageLite(7, 0);\n            \n        if (globals.groupOptimize) {  //we need send all processed message\n            optimizeGroupMessages();\n        }\n            \n        //postMessage({'command' : 'allProcessed'});\n\n        if (dataRaw) {\n            postPackedMessage({'command' : 'ready', 'geodata': dataRaw}, [dataRaw]);\n        } else {\n            postPackedMessage({'command' : 'ready'});\n        }\n\n        if (globals.config.mapPackLoaderEvents) {\n            postPackedMessages();\n        }\n\n        break;\n\n    //case 'tick':\n      //  postPackedMessages();\n        //break;\n\n    }\n};\n\n\n\n/***/ })\n/******/ ]);\n//# sourceMappingURL=5b66088baf1591f433eb.worker.js.map", null);
-};
-
-/***/ }),
-/* 116 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = function() {
-	return __webpack_require__(45)("/*!\n * Copyright (c) 2017 Melown Technologies SE\n * \n * Redistribution and use in source and binary forms, with or without\n * modification, are permitted provided that the following conditions are met:\n * \n * *  Redistributions of source code must retain the above copyright notice,\n *    this list of conditions and the following disclaimer.\n * \n * *  Redistributions in binary form must reproduce the above copyright\n *    notice, this list of conditions and the following disclaimer in the\n *    documentation and/or other materials provided with the distribution.\n * \n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n * POSSIBILITY OF SUCH DAMAGE.\n * \n */\n/******/ (function(modules) { // webpackBootstrap\n/******/ \t// The module cache\n/******/ \tvar installedModules = {};\n/******/\n/******/ \t// The require function\n/******/ \tfunction __webpack_require__(moduleId) {\n/******/\n/******/ \t\t// Check if module is in cache\n/******/ \t\tif(installedModules[moduleId]) {\n/******/ \t\t\treturn installedModules[moduleId].exports;\n/******/ \t\t}\n/******/ \t\t// Create a new module (and put it into the cache)\n/******/ \t\tvar module = installedModules[moduleId] = {\n/******/ \t\t\ti: moduleId,\n/******/ \t\t\tl: false,\n/******/ \t\t\texports: {}\n/******/ \t\t};\n/******/\n/******/ \t\t// Execute the module function\n/******/ \t\tmodules[moduleId].call(module.exports, module, module.exports, __webpack_require__);\n/******/\n/******/ \t\t// Flag the module as loaded\n/******/ \t\tmodule.l = true;\n/******/\n/******/ \t\t// Return the exports of the module\n/******/ \t\treturn module.exports;\n/******/ \t}\n/******/\n/******/\n/******/ \t// expose the modules object (__webpack_modules__)\n/******/ \t__webpack_require__.m = modules;\n/******/\n/******/ \t// expose the module cache\n/******/ \t__webpack_require__.c = installedModules;\n/******/\n/******/ \t// identity function for calling harmony imports with the correct context\n/******/ \t__webpack_require__.i = function(value) { return value; };\n/******/\n/******/ \t// define getter function for harmony exports\n/******/ \t__webpack_require__.d = function(exports, name, getter) {\n/******/ \t\tif(!__webpack_require__.o(exports, name)) {\n/******/ \t\t\tObject.defineProperty(exports, name, {\n/******/ \t\t\t\tconfigurable: false,\n/******/ \t\t\t\tenumerable: true,\n/******/ \t\t\t\tget: getter\n/******/ \t\t\t});\n/******/ \t\t}\n/******/ \t};\n/******/\n/******/ \t// getDefaultExport function for compatibility with non-harmony modules\n/******/ \t__webpack_require__.n = function(module) {\n/******/ \t\tvar getter = module && module.__esModule ?\n/******/ \t\t\tfunction getDefault() { return module['default']; } :\n/******/ \t\t\tfunction getModuleExports() { return module; };\n/******/ \t\t__webpack_require__.d(getter, 'a', getter);\n/******/ \t\treturn getter;\n/******/ \t};\n/******/\n/******/ \t// Object.prototype.hasOwnProperty.call\n/******/ \t__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };\n/******/\n/******/ \t// __webpack_public_path__\n/******/ \t__webpack_require__.p = \"\";\n/******/\n/******/ \t// Load entry module and return exports\n/******/ \treturn __webpack_require__(__webpack_require__.s = 2);\n/******/ })\n/************************************************************************/\n/******/ ([\n/* 0 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return globals; });\n\nvar globals = {};\n\n\n\n\n/***/ }),\n/* 1 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return parseMesh; });\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */];\n\nvar flagsInternalTexcoords =  1;\nvar flagsExternalTexcoords =  2;\nvar flagsPerVertexUndulation =  4;\nvar flagsTextureMode =  8;\n\n\nfunction parseMesh(stream) {\n    /*\n    struct MapMesh {\n        struct MapMeshHeader {\n            char magic[2];                // letters \"ME\"\n            ushort version;               // currently 1\n            double meanUndulation;        // read more about undulation below\n            ushort numSubmeshes;          // number of submeshes\n        } header;\n        struct Submesh submeshes [];      // array of submeshes, size of array is defined by numSubmeshes property\n    };\n    */\n\n    var mesh = {}, i, li, submesh;\n\n    //parase header\n    var streamData = stream.data;\n    var magic = '';\n\n    if (streamData.length < 2) {\n        return false;\n    }\n\n    magic += String.fromCharCode(streamData.getUint8(stream.index, true)); stream.index += 1;\n    magic += String.fromCharCode(streamData.getUint8(stream.index, true)); stream.index += 1;\n\n    if (magic != 'ME') {\n        return false;\n    }\n\n    mesh.version = streamData.getUint16(stream.index, true); stream.index += 2;\n\n    if (mesh.version > 3) {\n        return false;\n    }\n    \n    stream.uint8Data = new Uint8Array(stream.data.buffer);\n\n    mesh.meanUndulation = streamData.getFloat64(stream.index, true); stream.index += 8;\n    mesh.numSubmeshes = streamData.getUint16(stream.index, true); stream.index += 2;\n\n    mesh.submeshes = [];\n    mesh.gpuSize = 0; \n    mesh.faces = 0;\n    mesh.size = 0;\n\n    var use16bit = globals.config.map16bitMeshes;\n\n    for (i = 0, li = mesh.numSubmeshes; i < li; i++) {\n        var submesh = parseSubmesh(mesh, stream);\n        if (submesh.valid) {\n            mesh.submeshes.push(submesh); \n            mesh.size += submesh.size;\n            mesh.faces += submesh.faces;\n\n            //aproximate size\n            mesh.gpuSize += submesh.size;\n        }\n    }\n    \n    mesh.numSubmeshes = mesh.submeshes.length;\n\n    //prevent minification\n\n    var submeshes = [];\n    var transferables = [];\n\n    for (i = 0, li = mesh.numSubmeshes; i < li; i++) {\n        submesh = mesh.submeshes[i];\n        submeshes.push({\n\n            'bboxMax': submesh.bboxMax,\n            'bboxMin': submesh.bboxMin,\n            'externalUVs': (submesh.externalUVs) ? submesh.externalUVs.buffer : null,\n            'faces': submesh.faces,\n            'flags': submesh.flags,\n            'gpuSize': submesh.gpuSize,\n            'indices': (submesh.indices) ? submesh.indices.buffer : null,\n            'internalUVs': (submesh.internalUVs) ? submesh.internalUVs.buffer : null,\n            'size': submesh.size,\n            'surfaceReference': submesh.surfaceReference,\n            'textureLayer': submesh.textureLayer,\n            'textureLayer2': submesh.textureLayer2,\n            //'valid': submesh.valid\n            'vertices': submesh.vertices.buffer\n\n        });\n\n        if (submesh.externalUVs) transferables.push(submesh.externalUVs.buffer);\n        if (submesh.internalUVs) transferables.push(submesh.internalUVs.buffer);\n        if (submesh.vertices) transferables.push(submesh.vertices.buffer);\n        if (submesh.indices) transferables.push(submesh.indices.buffer);\n    }\n\n    return { mesh:{\n               'faces': mesh.faces,\n               'gpuSize': mesh.gpuSize,\n               'meanUndulation': mesh.meanUndulation,\n               'numSubmeshes': mesh.numSubmeshes,\n               'size': mesh.size,\n               'submeshes': mesh.submeshes,\n               'version': mesh.version\n             },\n             transferables:transferables\n           };\n};\n\n\nfunction parseSubmesh(mesh, stream) {\n    /*\n    struct MapSubmesh {\n        struct MapSubmeshHeader header;\n        struct VerticesBlock vertices;\n        struct TexcoordsBlock internalTexcoords;   // if header.flags & ( 1 << 0 )\n        struct FacesBlock faces;\n    };\n    */\n\n    var submesh = { valid:true };\n\n    parseHeader(mesh, submesh, stream);\n    if (mesh.version >= 3) {\n        parseVerticesAndFaces2(mesh, submesh, stream);\n    } else {\n        parseVerticesAndFaces(mesh, submesh, stream);\n    }\n\n    return submesh;\n};\n\n\nfunction parseHeader(mesh, submesh, stream) {\n    /*\n    struct MapSubmeshHeader {\n        char flags;                    // bit 0 - contains internal texture coords\n                                       // bit 1 - contains external texture coords\n                                       // bit 2 - contains per vertex undulation\n                                       // bit 3 - texture mode (0 - internal, 1 - external)\n        \n        uchar surfaceReference;        // reference to the surface of origin, see bellow\n        ushort textureLayer;           // applicable if texture mode is external: texture layer numeric id\n        double boundingBox[2][3];      // read more about bounding box bellow\n    };\n    */\n\n    //debugger\n    var streamData = stream.data;\n\n    submesh.flags = streamData.getUint8(stream.index, true); stream.index += 1;\n\n    if (mesh.version > 1) {\n        submesh.surfaceReference = streamData.getUint8(stream.index, true); stream.index += 1;\n    } else {\n        submesh.surfaceReference = 0;\n    }\n\n    submesh.textureLayer = streamData.getUint16(stream.index, true); stream.index += 2;\n    submesh.textureLayer2 = submesh.textureLayer; //hack for presentation\n\n    var bboxMin = [];\n    var bboxMax = [];\n\n    bboxMin[0] = streamData.getFloat64(stream.index, true); stream.index += 8;\n    bboxMin[1] = streamData.getFloat64(stream.index, true); stream.index += 8;\n    bboxMin[2] = streamData.getFloat64(stream.index, true); stream.index += 8;\n\n    bboxMax[0] = streamData.getFloat64(stream.index, true); stream.index += 8;\n    bboxMax[1] = streamData.getFloat64(stream.index, true); stream.index += 8;\n    bboxMax[2] = streamData.getFloat64(stream.index, true); stream.index += 8;\n    \n    submesh.bboxMin = bboxMin;\n    submesh.bboxMax = bboxMax;\n};\n\n\nfunction parseVerticesAndFaces(mesh, submesh, stream) {\n    /*\n    struct VerticesBlock {\n        ushort numVertices;              // number of vertices\n\n        struct Vertex {                  // array of vertices, size of array is defined by numVertices property\n            // vertex coordinates\n            ushort x;\n            ushort y;\n            ushort z;\n\n            // if header.flags & ( 1 << 1 ): external texture coordinates\n            // values in 2^16^ range represents the 0..1 normalized texture space\n            ushort eu;\n            ushort ev;\n\n            // if header.flags & ( 1 << 2 ): undulation delta\n            float16 undulationDelta;\n        } vertices[];\n    };\n    */\n\n    var data = stream.data;\n    var index = stream.index;\n    var uint8Data = stream.uint8Data;\n\n    var use16bit = globals.config.map16bitMeshes;\n\n    var numVertices = data.getUint16(index, true); index += 2;\n\n    if (!numVertices) {\n        submesh.valid = false;\n    }\n\n    var internalUVs = null;\n    var externalUVs = null;\n    var onlyOneUVs = globals.config.mapOnlyOneUVs && (submesh.flags & flagsInternalTexcoords);\n    var tmpVertices, tmpExternalUVs, tmpInternalUVs;\n\n    var vertices = use16bit ? (new Uint16Array(numVertices * 3)) : (new Float32Array(numVertices * 3));\n\n    if (submesh.flags & flagsExternalTexcoords) {\n        if (onlyOneUVs) {\n            externalUVs = true;\n        } else {\n            externalUVs = use16bit ? (new Uint16Array(numVertices * 2)) : (new Float32Array(numVertices * 2));\n        }\n    }\n\n    var uvfactor = use16bit ? 1.0 : (1.0 / 65535);\n    var vindex = 0;\n    var uvindex = 0;\n    var i, li;\n\n    for (i = 0; i < numVertices; i++) {\n        vertices[vindex] = (uint8Data[index] + (uint8Data[index + 1]<<8)) * uvfactor;\n        vertices[vindex+1] = (uint8Data[index+2] + (uint8Data[index + 3]<<8)) * uvfactor;\n        vertices[vindex+2] = (uint8Data[index+4] + (uint8Data[index + 5]<<8)) * uvfactor;\n        vindex += 3;\n\n        if (externalUVs) {\n            if (!onlyOneUVs) {\n                externalUVs[uvindex] = (uint8Data[index+6] + (uint8Data[index + 7]<<8)) * uvfactor;\n                externalUVs[uvindex+1] = (65535 - (uint8Data[index+8] + (uint8Data[index + 9]<<8))) * uvfactor;\n                uvindex += 2;\n            }\n            index += 10;\n        } else {\n            index += 6;\n        }\n    }\n\n\n    tmpVertices = vertices;\n    tmpExternalUVs = externalUVs;\n   \n    /*\n    struct TexcoorsBlock {\n        ushort numTexcoords;              // number of texture coordinates\n\n        struct TextureCoords {            // array of texture coordinates, size of array is defined by numTexcoords property\n\n            // internal texture coordinates\n            // values in 2^16^ range represents the 0..1 normalized texture space\n            ushort u;\n            ushort v;\n        } texcoords[];\n    };\n    */\n\n    if (submesh.flags & flagsInternalTexcoords) {\n        var numUVs = data.getUint16(index, true); index += 2;\n    \n        internalUVs = use16bit ? (new Uint16Array(numUVs * 2)) : (new Float32Array(numUVs * 2));\n        //var uvfactor = 1.0 / 65535;\n    \n        for (i = 0, li = numUVs * 2; i < li; i+=2) {\n            internalUVs[i] = (uint8Data[index] + (uint8Data[index + 1]<<8)) * uvfactor;\n            internalUVs[i+1] = (65535 - (uint8Data[index+2] + (uint8Data[index + 3]<<8))) * uvfactor;\n            index += 4;\n        }\n    \n        tmpInternalUVs = internalUVs;\n    }\n\n    /*\n    struct FacesBlock {\n        ushort numFaces;              // number of faces\n\n        struct Face {                 // array of faces, size of array is defined by numFaces property\n\n            ushort v[3]; // array of indices to stored vertices\n            ushort t[3]; // if header.flags & ( 1 << 0 ): array of indices to stored internal texture coords\n\n        } faces[];\n    };\n    */\n\n    var numFaces = data.getUint16(index, true); index += 2;\n    var indices = null;\n\n    internalUVs = null;\n    externalUVs = null;\n\n    var onlyExternalIndices = (globals.config.mapIndexBuffers && globals.config.mapOnlyOneUVs && !(submesh.flags & flagsInternalTexcoords));\n    var onlyInternalIndices = (globals.config.mapIndexBuffers && globals.config.mapOnlyOneUVs && (submesh.flags & flagsInternalTexcoords));\n    var onlyIndices = onlyExternalIndices || onlyInternalIndices;\n\n    if (onlyIndices) {\n        indices = new Uint16Array(numFaces * 3);\n    } else {\n        vertices = use16bit ? (new Uint16Array(numFaces * 3 * 3)) : (new Float32Array(numFaces * 3 * 3));\n\n        if (submesh.flags & flagsInternalTexcoords) {\n            internalUVs = use16bit ? (new Uint16Array(numFaces * 3 * 2)) : (new Float32Array(numFaces * 3 * 2));\n        }\n\n        if (!onlyOneUVs && (submesh.flags & flagsExternalTexcoords)) {\n            externalUVs = use16bit ? (new Uint16Array(numFaces * 3 * 2)) : (new Float32Array(numFaces * 3 * 2));\n        }\n    }\n\n    var vtmp = tmpVertices;\n    var eUVs = tmpExternalUVs;\n    var iUVs = tmpInternalUVs;\n    var v1, v2, v3, vv1, vv2, vv3, sindex;\n\n    if (onlyExternalIndices) {\n        vertices = tmpVertices;\n        externalUVs = tmpExternalUVs;\n    }\n\n    if (onlyInternalIndices) {\n        vertices = use16bit ? (new Uint16Array((iUVs.length / 2) * 3)) : (new Float32Array((iUVs.length / 2) * 3));\n        internalUVs = tmpInternalUVs;\n    }\n\n    for (i = 0; i < numFaces; i++) {\n        v1 = (uint8Data[index] + (uint8Data[index + 1]<<8));\n        v2 = (uint8Data[index+2] + (uint8Data[index + 3]<<8));\n        v3 = (uint8Data[index+4] + (uint8Data[index + 5]<<8));\n\n        if (onlyIndices) {\n            vindex = i * 3;\n\n            if (internalUVs != null) {\n                vv1 = (uint8Data[index+6] + (uint8Data[index + 7]<<8));\n                vv2 = (uint8Data[index+8] + (uint8Data[index + 9]<<8));\n                vv3 = (uint8Data[index+10] + (uint8Data[index + 11]<<8));\n\n                vertices[vv1*3] = vtmp[v1*3];\n                vertices[vv1*3+1] = vtmp[v1*3+1];\n                vertices[vv1*3+2] = vtmp[v1*3+2];\n\n                vertices[vv2*3] = vtmp[v2*3];\n                vertices[vv2*3+1] = vtmp[v2*3+1];\n                vertices[vv2*3+2] = vtmp[v2*3+2];\n\n                vertices[vv3*3] = vtmp[v3*3];\n                vertices[vv3*3+1] = vtmp[v3*3+1];\n                vertices[vv3*3+2] = vtmp[v3*3+2];\n\n                indices[vindex] = vv1;\n                indices[vindex+1] = vv2;\n                indices[vindex+2] = vv3;\n\n                index += 12;\n            } else {\n                indices[vindex] = v1;\n                indices[vindex+1] = v2;\n                indices[vindex+2] = v3;\n\n                index += 6;\n            }\n\n        } else {\n            vindex = i * (3 * 3);\n\n            sindex = v1 * 3;\n            vertices[vindex] = vtmp[sindex];\n            vertices[vindex+1] = vtmp[sindex+1];\n            vertices[vindex+2] = vtmp[sindex+2];\n\n            sindex = v2 * 3;\n            vertices[vindex+3] = vtmp[sindex];\n            vertices[vindex+4] = vtmp[sindex+1];\n            vertices[vindex+5] = vtmp[sindex+2];\n\n            sindex = v3 * 3;\n            vertices[vindex+6] = vtmp[sindex];\n            vertices[vindex+7] = vtmp[sindex+1];\n            vertices[vindex+8] = vtmp[sindex+2];\n\n            if (externalUVs != null) {\n                vindex = i * (3 * 2);\n                externalUVs[vindex] = eUVs[v1*2];\n                externalUVs[vindex+1] = eUVs[v1*2+1];\n                externalUVs[vindex+2] = eUVs[v2*2];\n                externalUVs[vindex+3] = eUVs[v2*2+1];\n                externalUVs[vindex+4] = eUVs[v3*2];\n                externalUVs[vindex+5] = eUVs[v3*2+1];\n            }\n\n            if (internalUVs != null) {\n                v1 = (uint8Data[index+6] + (uint8Data[index + 7]<<8));\n                v2 = (uint8Data[index+8] + (uint8Data[index + 9]<<8));\n                v3 = (uint8Data[index+10] + (uint8Data[index + 11]<<8));\n                index += 12;\n\n                vindex = i * (3 * 2);\n                internalUVs[vindex] = iUVs[v1*2];\n                internalUVs[vindex+1] = iUVs[v1*2+1];\n                internalUVs[vindex+2] = iUVs[v2*2];\n                internalUVs[vindex+3] = iUVs[v2*2+1];\n                internalUVs[vindex+4] = iUVs[v3*2];\n                internalUVs[vindex+5] = iUVs[v3*2+1];\n            } else {\n                index += 6;\n            }\n        }\n    }\n\n    submesh.vertices = vertices;\n    submesh.internalUVs = internalUVs;\n    submesh.externalUVs = externalUVs;\n    submesh.indices = indices;\n\n    tmpVertices = null;\n    tmpInternalUVs = null;\n    tmpExternalUVs = null;\n\n    stream.index = index;\n\n    submesh.size = submesh.vertices.byteLength;\n    if (submesh.internalUVs) submesh.size += submesh.internalUVs.byteLength;\n    if (submesh.externalUVs) submesh.size += submesh.externalUVs.byteLength;\n    if (submesh.indices) submesh.size += submesh.indices.byteLength;\n    submesh.faces = numFaces;\n};\n\n\nfunction parseWord(data, res) {\n    var value = data[res[1]];\n    \n    if (value & 0x80) {\n        res[0] = (value & 0x7f) | (data[res[1]+1] << 7);\n        res[1] += 2;\n    } else {\n        res[0] = value;\n        res[1] ++;\n    }\n};\n\n\nfunction parseDelta(data, res) {\n    var value = data[res[1]];\n    \n    if (value & 0x80) {\n        value = (value & 0x7f) | (data[res[1]+1] << 7);\n\n        if (value & 1) {\n            res[0] = -((value >> 1)+1); \n            res[1] += 2;\n        } else {\n            res[0] = (value >> 1); \n            res[1] += 2;\n        }\n    } else {\n        if (value & 1) {\n            res[0] = -((value >> 1)+1); \n            res[1] ++;\n        } else {\n            res[0] = (value >> 1); \n            res[1] ++;\n        }\n    }\n};\n\n\nfunction parseVerticesAndFaces2(mesh, submesh, stream) {\n    /*\n    struct VerticesBlock {\n        ushort numVertices;              // number of vertices\n        ushort geomQuantCoef;            // geometry quantization coefficient\n\n        struct Vertex {                  // array of vertices, size of array is defined by numVertices property\n            // vertex coordinates\n            delta x;\n            delta y;\n            delta z;\n        } vertices[];\n    };\n    */\n\n    var data = stream.data;\n    var index = stream.index;\n    var uint8Data = stream.uint8Data;\n\n    var use16bit = globals.config.map16bitMeshes;\n    var onlyOneUVs = globals.config.mapOnlyOneUVs && (submesh.flags & flagsInternalTexcoords);\n    var tmpVertices, tmpExternalUVs, tmpInternalUVs;\n\n    var numVertices = data.getUint16(index, true); index += 2;\n    var quant = data.getUint16(index, true); index += 2;\n\n    if (!numVertices) {\n        submesh.valid = false;\n    }\n\n    var bmin = submesh.bboxMin;\n    var bmax = submesh.bboxMax;\n\n    var center = [(bmin[0] + bmax[0])*0.5, (bmin[1] + bmax[1])*0.5, (bmin[2] + bmax[2])*0.5];\n    var scale = Math.abs(Math.max(bmax[0] - bmin[0], bmax[1] - bmin[1], bmax[2] - bmin[2]));\n\n    var multiplier = 1.0 / quant;\n    var externalUVs = null;\n\n    var vertices = use16bit ? (new Uint16Array(numVertices * 3)) : (new Float32Array(numVertices * 3));\n    var vindex;\n    \n    var x = 0, y = 0,z = 0;\n    var cx = center[0], cy = center[1], cz = center[2];\n    var mx = bmin[0];\n    var my = bmin[1];\n    var mz = bmin[2];\n    var sx = 1.0 / (bmax[0] - bmin[0]);\n    var sy = 1.0 / (bmax[1] - bmin[1]);\n    var sz = 1.0 / (bmax[2] - bmin[2]);\n    \n    var res = [0, index];\n    var i, li, t;\n\n    if (use16bit) {\n        for (i = 0; i < numVertices; i++) {\n            parseDelta(uint8Data, res);\n            x += res[0];\n            parseDelta(uint8Data, res);\n            y += res[0];\n            parseDelta(uint8Data, res);\n            z += res[0];\n            \n            vindex = i * 3;\n            t = ((x * multiplier * scale + cx) - mx) * sx;\n            if (t < 0) t = 0; if (t > 1.0) t = 1.0;\n            vertices[vindex] = t * 65535;\n            t = ((y * multiplier * scale + cy) - my) * sy;\n            if (t < 0) t = 0; if (t > 1.0) t = 1.0;\n            vertices[vindex+1] = t * 65535;\n            t = ((z * multiplier * scale + cz) - mz) * sz;\n            if (t < 0) t = 0; if (t > 1.0) t = 1.0;\n            vertices[vindex+2] = t * 65535;\n        }\n    } else {\n        for (i = 0; i < numVertices; i++) {\n            parseDelta(uint8Data, res);\n            x += res[0];\n            parseDelta(uint8Data, res);\n            y += res[0];\n            parseDelta(uint8Data, res);\n            z += res[0];\n            \n            vindex = i * 3;\n            vertices[vindex] = ((x * multiplier * scale + cx) - mx) * sx;\n            vertices[vindex+1] = ((y * multiplier * scale + cy) - my) * sy;\n            vertices[vindex+2] = ((z * multiplier * scale + cz) - mz) * sz;\n        }\n    }\n    \n    index = res[1];\n\n    if (submesh.flags & flagsExternalTexcoords) {\n        quant = data.getUint16(index, true); index += 2;\n        res[1] = index;\n\n        if (onlyOneUVs) {\n\n            for (i = 0; i < numVertices; i++) {\n                parseDelta(uint8Data, res);\n                parseDelta(uint8Data, res);\n            }\n\n        } else {\n            multiplier = (use16bit) ? (65535 / quant) : (1.0 / quant);\n            externalUVs = use16bit ? (new Uint16Array(numVertices * 2)) : (new Float32Array(numVertices * 2));\n            x = 0, y = 0;\n\n            if (use16bit) {\n                for (i = 0; i < numVertices; i++) {\n                    parseDelta(uint8Data, res);\n                    x += res[0];\n                    parseDelta(uint8Data, res);\n                    y += res[0];\n\n                    var uvindex = i * 2;\n                    t = x * multiplier;\n                    if (t < 0) t = 0; if (t > 65535) t = 65535;\n                    externalUVs[uvindex] = t;\n                    t = y * multiplier;\n                    if (t < 0) t = 0; if (t > 65535) t = 65535;\n                    externalUVs[uvindex+1] = 65535 - t;\n                }\n            } else {\n                for (i = 0; i < numVertices; i++) {\n                    parseDelta(uint8Data, res);\n                    x += res[0];\n                    parseDelta(uint8Data, res);\n                    y += res[0];\n\n                    var uvindex = i * 2;\n                    externalUVs[uvindex] = x * multiplier;\n                    externalUVs[uvindex+1] = 1 - (y * multiplier);\n                }\n            }\n        }\n    }\n\n    index = res[1];\n\n    tmpVertices = vertices;\n    tmpExternalUVs = externalUVs;\n    \n    /*\n    struct TexcoorsBlock {\n        ushort numTexcoords;              // number of texture coordinates\n\n        struct TextureCoords {            // array of texture coordinates, size of array is defined by numTexcoords property\n\n            // internal texture coordinates\n            // values in 2^16^ range represents the 0..1 normalized texture space\n            ushort u;\n            ushort v;\n        } texcoords[];\n    };\n    */\n\n    if (submesh.flags & flagsInternalTexcoords) {\n        var numUVs = data.getUint16(index, true); index += 2;\n        var quantU = data.getUint16(index, true); index += 2;\n        var quantV = data.getUint16(index, true); index += 2;\n        var multiplierU = (use16bit) ? (65536.0 / quantU) : (1.0 / quantU);\n        var multiplierV = (use16bit) ? (65536.0 / quantV) : (1.0 / quantV);\n        x = 0, y = 0;\n    \n        var internalUVs = use16bit ? (new Uint16Array(numUVs * 2)) : (new Float32Array(numUVs * 2));\n        res[1] = index;7\n\n        if (use16bit) {\n            for (i = 0, li = numUVs * 2; i < li; i+=2) {\n                parseDelta(uint8Data, res);\n                x += res[0];\n                parseDelta(uint8Data, res);\n                y += res[0];\n\n                t = x * multiplierU;\n                if (t < 0) t = 0; if (t > 65535) t = 65535;\n                internalUVs[i] = t;\n                t = y * multiplierV;\n                if (t < 0) t = 0; if (t > 65535) t = 65535;\n                internalUVs[i+1] = 65535 - t;\n            }\n        } else {\n            for (i = 0, li = numUVs * 2; i < li; i+=2) {\n                parseDelta(uint8Data, res);\n                x += res[0];\n                parseDelta(uint8Data, res);\n                y += res[0];\n\n                internalUVs[i] = x * multiplierU;\n                internalUVs[i+1] = 1 - (y * multiplierV);\n            }\n        }\n\n        index = res[1];\n    \n        tmpInternalUVs = internalUVs;\n    }\n\n    /*\n    struct FacesBlock {\n        ushort numFaces;              // number of faces\n\n        struct Face {                 // array of faces, size of array is defined by numFaces property\n\n            ushort v[3]; // array of indices to stored vertices\n            ushort t[3]; // if header.flags & ( 1 << 0 ): array of indices to stored internal texture coords\n\n        } faces[];\n    };\n    */\n\n    var numFaces = data.getUint16(index, true); index += 2;\n    var indices = null;\n\n    internalUVs = null;\n    externalUVs = null;\n\n    var onlyExternalIndices = (globals.config.mapIndexBuffers && globals.config.mapOnlyOneUVs && !(submesh.flags & flagsInternalTexcoords));\n    var onlyInternalIndices = (globals.config.mapIndexBuffers && globals.config.mapOnlyOneUVs && (submesh.flags & flagsInternalTexcoords));\n    var onlyIndices = onlyExternalIndices || onlyInternalIndices;\n\n    if (onlyIndices) {\n        indices = new Uint16Array(numFaces * 3);\n    } else {\n        vertices = use16bit ? (new Uint16Array(numFaces * 3 * 3)) : (new Float32Array(numFaces * 3 * 3));\n\n        if (submesh.flags & flagsInternalTexcoords) {\n            internalUVs = use16bit ? (new Uint16Array(numFaces * 3 * 2)) : (new Float32Array(numFaces * 3 * 2));\n        }\n\n        if (!onlyOneUVs && (submesh.flags & flagsExternalTexcoords)) {\n            externalUVs = use16bit ? (new Uint16Array(numFaces * 3 * 2)) : (new Float32Array(numFaces * 3 * 2));\n        }\n    }\n\n    var vtmp = tmpVertices;\n    var eUVs = tmpExternalUVs;\n    var iUVs = tmpInternalUVs;\n    var high = 0;\n    var v1, v2, v3, vv1, vv2, vv3;\n    res[1] = index;\n\n    for (i = 0; i < numFaces; i++) {\n        parseWord(uint8Data, res);\n        v1 = high - res[0];\n        if (!res[0]) { high++; }\n\n        parseWord(uint8Data, res);\n        v2 = high - res[0];\n        if (!res[0]) { high++; }\n\n        parseWord(uint8Data, res);\n        v3 = high - res[0];\n        if (!res[0]) { high++; }\n\n        if (onlyIndices) {\n            vindex = i * 3;\n            indices[vindex] = v1;\n            indices[vindex+1] = v2;\n            indices[vindex+2] = v3;\n        } else {\n            vindex = i * (3 * 3);\n            var sindex = v1 * 3;\n            vertices[vindex] = vtmp[sindex];\n            vertices[vindex+1] = vtmp[sindex+1];\n            vertices[vindex+2] = vtmp[sindex+2];\n\n            sindex = v2 * 3;\n            vertices[vindex+3] = vtmp[sindex];\n            vertices[vindex+4] = vtmp[sindex+1];\n            vertices[vindex+5] = vtmp[sindex+2];\n\n            sindex = v3 * 3;\n            vertices[vindex+6] = vtmp[sindex];\n            vertices[vindex+7] = vtmp[sindex+1];\n            vertices[vindex+8] = vtmp[sindex+2];\n\n            if (externalUVs != null) {\n                vindex = i * (3 * 2);\n                externalUVs[vindex] = eUVs[v1*2];\n                externalUVs[vindex+1] = eUVs[v1*2+1];\n                externalUVs[vindex+2] = eUVs[v2*2];\n                externalUVs[vindex+3] = eUVs[v2*2+1];\n                externalUVs[vindex+4] = eUVs[v3*2];\n                externalUVs[vindex+5] = eUVs[v3*2+1];\n            }\n        }\n    }\n\n    if (onlyExternalIndices) {\n        vertices = tmpVertices;\n        externalUVs = tmpExternalUVs;\n    }\n\n    if (onlyInternalIndices) {\n        vertices = use16bit ? (new Uint16Array((iUVs.length / 2) * 3)) : (new Float32Array((iUVs.length / 2) * 3));\n        internalUVs = tmpInternalUVs;\n    }\n\n    high = 0;\n\n    if (internalUVs != null) {\n        for (i = 0; i < numFaces; i++) {\n            parseWord(uint8Data, res);\n            v1 = high - res[0];\n            if (!res[0]) { high++; }\n    \n            parseWord(uint8Data, res);\n            v2 = high - res[0];\n            if (!res[0]) { high++; }\n    \n            parseWord(uint8Data, res);\n            v3 = high - res[0];\n            if (!res[0]) { high++; }\n\n            if (onlyInternalIndices) {\n                vindex = i * 3;\n\n                vv1 = indices[vindex] * 3;\n                vv2 = indices[vindex+1] * 3;\n                vv3 = indices[vindex+2] * 3;\n\n                vertices[v1*3] = vtmp[vv1];\n                vertices[v1*3+1] = vtmp[vv1+1];\n                vertices[v1*3+2] = vtmp[vv1+2];\n\n                vertices[v2*3] = vtmp[vv2];\n                vertices[v2*3+1] = vtmp[vv2+1];\n                vertices[v2*3+2] = vtmp[vv2+2];\n\n                vertices[v3*3] = vtmp[vv3];\n                vertices[v3*3+1] = vtmp[vv3+1];\n                vertices[v3*3+2] = vtmp[vv3+2];\n\n                indices[vindex] = v1;\n                indices[vindex+1] = v2;\n                indices[vindex+2] = v3;\n            } else {\n                vindex = i * (3 * 2);\n                internalUVs[vindex] = iUVs[v1*2];\n                internalUVs[vindex+1] = iUVs[v1*2+1];\n                internalUVs[vindex+2] = iUVs[v2*2];\n                internalUVs[vindex+3] = iUVs[v2*2+1];\n                internalUVs[vindex+4] = iUVs[v3*2];\n                internalUVs[vindex+5] = iUVs[v3*2+1];\n            }\n        }\n    }\n\n    index = res[1];\n\n    submesh.vertices = vertices;\n    submesh.internalUVs = internalUVs;\n    submesh.externalUVs = externalUVs;\n    submesh.indices = indices;\n\n    //tmpVertices = null;\n    //tmpInternalUVs = null;\n    //tmpExternalUVs = null;\n\n    stream.index = index;\n\n    submesh.size = submesh.vertices.byteLength;\n    if (submesh.internalUVs) submesh.size += submesh.internalUVs.byteLength;\n    if (submesh.externalUVs) submesh.size += submesh.externalUVs.byteLength;\n    if (submesh.indices) submesh.size += submesh.indices.byteLength;\n    submesh.faces = numFaces;\n};\n\n\n\n\n\n/***/ }),\n/* 2 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\nObject.defineProperty(__webpack_exports__, \"__esModule\", { value: true });\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__worker_mesh_js__ = __webpack_require__(1);\n\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */];\nvar parseMesh = __WEBPACK_IMPORTED_MODULE_1__worker_mesh_js__[\"a\" /* parseMesh */];\n\nvar packedEvents = [];\nvar packedTransferables = [];\n\nfunction postPackedMessage(message, transferables) {\n\n    if (globals.config.mapPackLoaderEvents) {\n\n        packedEvents.push(message);\n\n        if (transferables) {\n            packedTransferables = packedTransferables.concat(transferables);\n        }\n\n    } else {\n\n        if (transferables) {\n            postMessage(message, transferables);\n        } else {\n            postMessage(message);\n        }\n\n    }\n}\n\nfunction loadBinary(path, onLoaded, onError, withCredentials, xhrParams, responseType, kind) {\n    var xhr = new XMLHttpRequest();\n\n    xhr.onreadystatechange = (function (){\n\n        switch (xhr.readyState) {\n        case 0 : // UNINITIALIZED\n        case 1 : // LOADING\n        case 2 : // LOADED\n        case 3 : // INTERACTIVE\n            break;\n        case 4 : // COMPLETED\n    \n            if (xhr.status >= 400 || xhr.status == 0) {\n                if (onError) {\n                    postPackedMessage({'command' : 'on-error', 'path': path, 'status':xhr.status});\n                }\n                break;\n            }\n    \n            var abuffer = xhr.response;\n                    \n            if (!abuffer) {\n                if (onError) {\n                    postPackedMessage({'command' : 'on-error', 'path': path});\n                }\n                break;\n            }\n    \n            if (onLoaded) {\n                if (kind == 'direct-texture') {\n                    createImageBitmap(abuffer).then((function(bitmap){\n                        postPackedMessage({'command' : 'on-loaded', 'path': path, 'data': bitmap, 'filesize': abuffer.size}, [bitmap]);                        \n                    }).bind(this));\n                } else if (kind == 'direct-mesh') {\n                    //debugger\n                    var data = parseMesh({data:new DataView(abuffer), index:0});\n                    postPackedMessage({'command' : 'on-loaded', 'path': path, 'data': data.mesh}, data.transferables);\n                } else {\n\n                    postPackedMessage({'command' : 'on-loaded', 'path': path, 'data': abuffer}, [abuffer]);\n                }\n            }\n    \n            break;\n    \n        default:\n    \n            if (onError) {\n                postPackedMessage({'command' : 'on-error', 'path': path});\n            }\n    \n            break;\n        }\n\n    }).bind(this);\n    \n    /*\n    xhr.onerror  = (function() {\n        if (onError) {\n            onError();\n        }\n    }).bind(this);*/\n\n    xhr.open('GET', path, true);\n    xhr.responseType = responseType ? responseType : 'arraybuffer';\n    xhr.withCredentials = withCredentials;\n\n    if (xhrParams && xhrParams['token'] /*&& xhrParams[\"tokenHeader\"]*/) {\n        //xhr.setRequestHeader(xhrParams[\"tokenHeader\"], xhrParams[\"token\"]); //old way\n        xhr.setRequestHeader('Accept', 'token/' + xhrParams['token'] + ', */*');\n    }\n\n    xhr.send('');\n};\n\n\nself.onmessage = function (e) {\n    var message = e.data;\n    var command = message['command'];\n    //var data = message['data'];\n\n    //console.log(\"workeronmessage: \" + command);\n\n    switch(command) {\n\n        case 'config':\n            globals.config = message['data'];\n            break;\n\n        case 'tick':\n\n            if (packedEvents.length > 0) {\n                if (packedTransferables.length > 0) {\n                    postMessage({'command': 'packed-events', 'messages':packedEvents}, packedTransferables);\n                } else {\n                    postMessage({'command': 'packed-events', 'messages':packedEvents});\n                }\n            }\n\n            packedEvents = [];\n            packedTransferables = [];\n\n            break;\n\n        case 'load-binary':\n            loadBinary(message['path'], true, true, message['withCredentials'], message['xhrParams'], message['responseType'], message['kind']);\n            break;\n\n    }\n};\n\n\n\n/***/ })\n/******/ ]);\n//# sourceMappingURL=67d9ba12f3d972ffe101.worker.js.map", null);
-};
-
-/***/ }),
 /* 117 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = function() {
+	return __webpack_require__(47)("/*!\n * Copyright (c) 2017 Melown Technologies SE\n * \n * Redistribution and use in source and binary forms, with or without\n * modification, are permitted provided that the following conditions are met:\n * \n * *  Redistributions of source code must retain the above copyright notice,\n *    this list of conditions and the following disclaimer.\n * \n * *  Redistributions in binary form must reproduce the above copyright\n *    notice, this list of conditions and the following disclaimer in the\n *    documentation and/or other materials provided with the distribution.\n * \n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n * POSSIBILITY OF SUCH DAMAGE.\n * \n */\n/******/ (function(modules) { // webpackBootstrap\n/******/ \t// The module cache\n/******/ \tvar installedModules = {};\n/******/\n/******/ \t// The require function\n/******/ \tfunction __webpack_require__(moduleId) {\n/******/\n/******/ \t\t// Check if module is in cache\n/******/ \t\tif(installedModules[moduleId]) {\n/******/ \t\t\treturn installedModules[moduleId].exports;\n/******/ \t\t}\n/******/ \t\t// Create a new module (and put it into the cache)\n/******/ \t\tvar module = installedModules[moduleId] = {\n/******/ \t\t\ti: moduleId,\n/******/ \t\t\tl: false,\n/******/ \t\t\texports: {}\n/******/ \t\t};\n/******/\n/******/ \t\t// Execute the module function\n/******/ \t\tmodules[moduleId].call(module.exports, module, module.exports, __webpack_require__);\n/******/\n/******/ \t\t// Flag the module as loaded\n/******/ \t\tmodule.l = true;\n/******/\n/******/ \t\t// Return the exports of the module\n/******/ \t\treturn module.exports;\n/******/ \t}\n/******/\n/******/\n/******/ \t// expose the modules object (__webpack_modules__)\n/******/ \t__webpack_require__.m = modules;\n/******/\n/******/ \t// expose the module cache\n/******/ \t__webpack_require__.c = installedModules;\n/******/\n/******/ \t// identity function for calling harmony imports with the correct context\n/******/ \t__webpack_require__.i = function(value) { return value; };\n/******/\n/******/ \t// define getter function for harmony exports\n/******/ \t__webpack_require__.d = function(exports, name, getter) {\n/******/ \t\tif(!__webpack_require__.o(exports, name)) {\n/******/ \t\t\tObject.defineProperty(exports, name, {\n/******/ \t\t\t\tconfigurable: false,\n/******/ \t\t\t\tenumerable: true,\n/******/ \t\t\t\tget: getter\n/******/ \t\t\t});\n/******/ \t\t}\n/******/ \t};\n/******/\n/******/ \t// getDefaultExport function for compatibility with non-harmony modules\n/******/ \t__webpack_require__.n = function(module) {\n/******/ \t\tvar getter = module && module.__esModule ?\n/******/ \t\t\tfunction getDefault() { return module['default']; } :\n/******/ \t\t\tfunction getModuleExports() { return module; };\n/******/ \t\t__webpack_require__.d(getter, 'a', getter);\n/******/ \t\treturn getter;\n/******/ \t};\n/******/\n/******/ \t// Object.prototype.hasOwnProperty.call\n/******/ \t__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };\n/******/\n/******/ \t// __webpack_public_path__\n/******/ \t__webpack_require__.p = \"\";\n/******/\n/******/ \t// Load entry module and return exports\n/******/ \treturn __webpack_require__(__webpack_require__.s = 9);\n/******/ })\n/************************************************************************/\n/******/ ([\n/* 0 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return globals; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"d\", function() { return clamp; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"g\", function() { return vec3Normalize; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"h\", function() { return vec3Length; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"i\", function() { return vec3Cross; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"e\", function() { return simpleFmtCall; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"f\", function() { return getHash; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"j\", function() { return stringToUint8Array; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"b\", function() { return unint8ArrayToString; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"c\", function() { return Utf8ArrayToStr; });\n\nvar globals = {\n    stylesheetData : {},\n    stylesheetLayers : {},\n    stylesheetBitmaps : {},\n    stylesheetFonts : {},\n    stylesheetConstants : {},\n    stylesheetVariables : {},\n    insidePack : false,\n    directPoints : [],\n    directPoint : null,\n    fonts : {},\n    fontsMap : {},\n    fontsStorage : {},\n    forceOrigin : false,\n    forceScale : [1,1,1],\n    bboxMin : [0,0,0],\n    bboxMax : [1,1,1],\n    geocent : false,\n    tileX : 0,\n    tileY : 0,\n    tileLod : 0,\n    tileSize : 1,\n    hitState : 0,\n    pixelFactor : 1,\n    alwaysEventInfo : false,\n    metricUnits : true,\n    language : 'en',\n    groupOptimize : true,\n    groupOrigin : [0,0,0],\n    messageBuffer : new Array(65536),\n    messageBufferIndex : 0,\n    messageBufferSize : 65536,\n    messagePackSize : 0,\n    signatureCounter : 0,\n    autoLod : false,\n    featureType : null,\n    groupId : null,\n    disableLog : false,\n    reduceMode : 'scr-count4',\n    reduceParams : null,\n};\n\n\nfunction clamp(value, min, max) {\n    if (value < min) {\n        value = min;\n    }\n\n    if (value > max) {\n        value = max;\n    }\n\n    return value;\n}\n\n\nfunction vec3Normalize(a, b) {\n    b || (b = a);\n    var c = a[0],\n        d = a[1],\n        e = a[2],\n        g = Math.sqrt(c * c + d * d + e * e);\n    if (g) {\n        if (g == 1) {\n            b[0] = c;\n            b[1] = d;\n            b[2] = e;\n            return b;\n        }\n    } else {\n        b[0] = 0;\n        b[1] = 0;\n        b[2] = 0;\n        return b;\n    }\n    g = 1 / g;\n    b[0] = c * g;\n    b[1] = d * g;\n    b[2] = e * g;\n    return b;\n}\n\n\nfunction vec3Length(a) {\n    var b = a[0],\n        c = a[1];\n    a = a[2];\n    return Math.sqrt(b * b + c * c + a * a);\n}\n\n\nfunction vec3Cross(a, b, c) {\n    c || (c = a);\n    var d = a[0],\n        e = a[1];\n    a = a[2];\n    var g = b[0],\n        f = b[1];\n    b = b[2];\n    c[0] = e * b - a * f;\n    c[1] = a * g - d * b;\n    c[2] = d * f - e * g;\n    return c;\n}\n\n\nfunction getHash(str) {\n    if (!str || str.length === 0) {\n        return 0;    \n    }\n\n    var hash = 0, c;\n    for (var i = 0, li = str.length; i < li; i++) {\n        c   = str.charCodeAt(i);\n        hash  = ((hash << 5) - hash) + c;\n        hash |= 0; // Convert to 32bit integer\n    }\n\n    return hash;\n}\n\n\nvar simpleFmtCall = (function obj(str, call) {\n    if (!str || str == '') {\n        return '';\n    }\n\n    var i = str.indexOf('{'), li, str2;\n\n    if (i == -1) {\n        return str;\n    } else {\n        str2 = i > 0 ? str.substring(0, i) : '';\n    }\n\n    var counter = 0;\n    var begin = -1;\n\n    for (li = str.length; i < li; i++) {\n        var c = str.charAt(i);\n\n        if (c == '{') {\n            if (counter == 0) {\n                begin = i;\n            }\n\n            counter++;\n        } else if (c == '}') {\n            counter--;\n\n            if (counter == 0) {\n                str2 += call(str.substring(begin+1, i));\n            }\n            \n        } else if (counter == 0) {\n            str2 += c;\n        }\n    }\n\n    return str2;\n});\n\n/*\nfunction copyArrayToBuffer(view, index, array) {\n    for (var i = 0, li = array.length; i < li; i++) {\n        view.setFloat32(index, array[i]); index += 4;\n    }\n\n    return index;\n}\n\nfunction copyDynamicArrayToBuffer(view, index, array) {\n    if (array) {\n        view.setUint8(index, array.length); index += 1;\n\n        for (var i = 0, li = array.length; i < li; i++) {\n            view.setFloat32(index, array[i]); index += 4;\n        }\n    } else {\n        view.setUint8(index, 0); index += 1;\n    }\n\n    return index;\n}\n\nfunction copyDynamicArrayOfArraysToBuffer(view, index, array) {\n    if (array) {\n        view.setUint16(index, array.length); index += 2;\n\n        for (var i = 0, li = array.length; i < li; i++) {\n            var subarray = array[i];\n\n            for (var j = 0, lj = array.length; j < lj; j++) {\n                view.setUint16(index, subarray[j]); index += 2;\n            }\n        }\n    } else {\n        view.setUint16(index, 0); index += 2;\n    }\n\n    return index;\n}\n\nfunction getSizeOfArrayOfArrays(array) {\n    var size = 0;\n\n    for (var i = 0, li = array.length; i < li; i++) {\n        size += array[i].length;\n    }\n\n    return size;\n}\n*/\n\n//var textEncoderUtf8 = null; //(typeof TextEncoder !== 'undefined') ? (new TextEncoder('utf-8')) : null;\nvar textEncoderUtf8 = (typeof TextEncoder !== 'undefined') ? (new TextEncoder('utf-8')) : null;\n\nfunction stringToUint8Array(str) {\n    if (textEncoderUtf8) {\n        return textEncoderUtf8.encode(str);\n    } else {\n\n        /*\n        console.log('' + (str.length * 2));\n\n        var buffer = new ArrayBuffer(str.length * 2);\n        var view = new Uint16Array(buffer);\n        for (var i = 0, li = str.length; i < li; i++) {\n            view[i] = str.charCodeAt(i);\n        }\n        return new Uint8Array(buffer);\n        */\n\n\n        // 1. Let S be the DOMString value.\n        var s = String(str);\n\n        // 2. Let n be the length of S.\n        var n = s.length;\n\n        // 3. Initialize i to 0.\n        var i = 0;\n\n        // 4. Initialize U to be an empty sequence of Unicode characters.\n        var u = [];\n\n        // 5. While i < n:\n        while (i < n) {\n\n          // 1. Let c be the code unit in S at index i.\n          var c = s.charCodeAt(i);\n\n          // 2. Depending on the value of c:\n\n          // c < 0xD800 or c > 0xDFFF\n          if (c < 0xD800 || c > 0xDFFF) {\n            // Append to U the Unicode character with code point c.\n            u.push(c);\n          }\n\n          // 0xDC00 ≤ c ≤ 0xDFFF\n          else if (0xDC00 <= c && c <= 0xDFFF) {\n            // Append to U a U+FFFD REPLACEMENT CHARACTER.\n            u.push(0xFFFD);\n          }\n\n          // 0xD800 ≤ c ≤ 0xDBFF\n          else if (0xD800 <= c && c <= 0xDBFF) {\n            // 1. If i = n−1, then append to U a U+FFFD REPLACEMENT\n            // CHARACTER.\n            if (i === n - 1) {\n              u.push(0xFFFD);\n            }\n            // 2. Otherwise, i < n−1:\n            else {\n              // 1. Let d be the code unit in S at index i+1.\n              var d = s.charCodeAt(i + 1);\n\n              // 2. If 0xDC00 ≤ d ≤ 0xDFFF, then:\n              if (0xDC00 <= d && d <= 0xDFFF) {\n                // 1. Let a be c & 0x3FF.\n                var a = c & 0x3FF;\n\n                // 2. Let b be d & 0x3FF.\n                var b = d & 0x3FF;\n\n                // 3. Append to U the Unicode character with code point\n                // 2^16+2^10*a+b.\n                u.push(0x10000 + (a << 10) + b);\n\n                // 4. Set i to i+1.\n                i += 1;\n              }\n\n              // 3. Otherwise, d < 0xDC00 or d > 0xDFFF. Append to U a\n              // U+FFFD REPLACEMENT CHARACTER.\n              else  {\n                u.push(0xFFFD);\n              }\n            }\n          }\n\n          // 3. Set i to i+1.\n          i += 1;\n        }\n\n        // 6. Return U.\n        return new Uint8Array((new Uint32Array(u)).buffer);        \n    }\n}\n\n/*\nvar textDecoderUtf8 = TextEncoder ? (new TextDecoder('utf-8')) : null;\n\nfunction unint8ArrayToString(array) {\n    if (textDecoderUtf8) {\n        return textDecoderUtf8.decode(array);\n    } else {\n        return String.fromCharCode.apply(null, new Uint8Array(array.buffer));\n    }\n}\n*/\n\n\nvar textDecoderUtf8 = (typeof TextDecoder !== 'undefined') ? (new TextDecoder('utf-8')) : null;\n\nfunction unint8ArrayToString(array, skip) {\n    if (textDecoderUtf8 && !skip) {\n        return textDecoderUtf8.decode(array);\n    } else {\n        // return String.fromCharCode.apply(null, new Uint8Array(array.buffer)); //works only for small strings\n\n        var s = '';\n        //var code_points2 = new Uint8Array(array.buffer, array.byteOffset, array.byteLength);\n        var code_points2 = new Uint8Array(array.byteLength);\n        code_points2.set(array);\n        var code_points = new Uint32Array(code_points2.buffer);\n\n        for (var i = 0, li = code_points.length; i < li; ++i) {\n          var cp = code_points[i];\n          if (cp <= 0xFFFF) {\n            s += String.fromCharCode(cp);\n          } else {\n            cp -= 0x10000;\n            s += String.fromCharCode((cp >> 10) + 0xD800,\n                                     (cp & 0x3FF) + 0xDC00);\n          }\n        }\n        return s;\n\n    }\n}\n\n\nfunction Utf8ArrayToStr(array, skip) {  //more universal\n    if (textDecoderUtf8 && !skip) {\n        return textDecoderUtf8.decode(array);\n    } else {\n\n        var out, i, len, c;\n        var char2, char3;\n\n        array = new Uint8Array(array);\n\n        out = \"\";\n        len = array.length;\n        i = 0;\n\n        while(i < len) {\n            c = array[i++];\n\n            switch(c >> 4) { \n              case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:\n                // 0xxxxxxx\n                out += String.fromCharCode(c);\n                break;\n              case 12: case 13:\n                // 110x xxxx   10xx xxxx\n                char2 = array[i++];\n                out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F));\n                break;\n              case 14:\n                // 1110 xxxx  10xx xxxx  10xx xxxx\n                char2 = array[i++];\n                char3 = array[i++];\n                out += String.fromCharCode(((c & 0x0F) << 12) |\n                               ((char2 & 0x3F) << 6) |\n                               ((char3 & 0x3F) << 0));\n                break;\n            }\n        }\n\n        return out;\n    }\n}\n\n\n\n\n/***/ }),\n/* 1 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"b\", function() { return optimizeGroupMessages; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"c\", function() { return postGroupMessageFast; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return postGroupMessageLite; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"d\", function() { return postPackedMessage; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"e\", function() { return postPackedMessages; });\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */], stringToUint8Array = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"j\" /* stringToUint8Array */];\nvar tmpVertexBuffer = new Uint8Array(65536*4*4*4*4);\nvar tmpVertexBuffer2 = new Uint8Array(65536*4*4*4*4);\nvar packedEvents = [];\nvar packedTransferables = [];\n\n\nfunction postPackedMessage(message, transferables) {\n\n    if (globals.config.mapPackLoaderEvents) {\n\n        packedEvents.push(message);\n\n        if (transferables) {\n            packedTransferables = packedTransferables.concat(transferables);\n        }\n\n    } else {\n\n        if (transferables) {\n            postMessage(message, transferables);\n        } else {\n            postMessage(message);\n        }\n    }\n}\n\n\nfunction postGroupMessageFast(command, type, message, buffers, signature) {\n\n    var message2 = stringToUint8Array(JSON.stringify(message));\n    var messageSize = 1+1+4+message2.byteLength, i, li;\n\n    for (i = 0, li = buffers.length; i < li; i++) {\n        messageSize += 4+buffers[i].byteLength;\n    }\n\n    var buff = new Uint8Array(messageSize);\n    var view = new DataView(buff.buffer), index = 0, index2 = 0;\n\n    view.setUint8(index, command); index += 1;\n    view.setUint8(index, type); index += 1;\n    view.setUint32(index, message2.byteLength); index += 4;\n    buff.set(message2, index); index += message2.byteLength;\n    index2 = index;\n\n    for (i = 0, li = buffers.length; i < li; i++) {\n        view.setUint32(index, buffers[i].length); index += 4;\n        buff.set( new Uint8Array(buffers[i].buffer), index); index += buffers[i].byteLength;\n    }\n\n    postGroupMessageDirect(command, type, buff.buffer, index2, signature, message['hitable'], message['totalPoints'], (type == 11) ? message : null);\n}\n\n\nfunction postGroupMessageLite(command, type, number) {\n    var messageSize = 1+1+4, index = 0;\n\n    var buff = new ArrayBuffer(messageSize);\n    var view = new DataView(buff), index = 0;\n\n    view.setUint8(index, command); index += 1;\n    view.setUint8(index, type); index += 1;\n    view.setUint32(index, (number ? number : 0)); index += 4;\n\n    postGroupMessageDirect(command, type, buff, index, \"\");\n}\n\n\nfunction postGroupMessageDirect(command, type, message, buffersIndex, signature, hitable, totalPoints, job2) {\n\n    if (globals.messageBufferIndex >= globals.messageBufferSize) { \n        var oldBuffer = globals.messageBuffer; \n        globals.messageBufferSize += 65536;\n        globals.messageBuffer = new Array(globals.messageBufferSize);\n        \n        for (var i = 0, li = globals.messageBufferIndex; i < li; i++) {\n            globals.messageBuffer[i] = oldBuffer[i];\n        }\n    }\n    \n    globals.messageBuffer[globals.messageBufferIndex] = { command: command, type: type, job : message, buffersIndex: buffersIndex, signature: signature, hitable: hitable, totalPoints: totalPoints, job2: job2 };\n    globals.messageBufferIndex++;\n    globals.messagePackSize += message.byteLength;\n}\n\n\nfunction setToTmpBuffer(index, buffer2, offset) {\n    var buffer = (index == 1) ? tmpVertexBuffer2 : tmpVertexBuffer;\n\n    if (buffer.byteLength <= buffer2.byteLength + offset) {\n        var buffer3 = new Uint8Array(buffer.byteLength * 2);\n        buffer3.set(buffer, 0);\n        buffer = buffer3;\n\n        if (index == 1) {\n            tmpVertexBuffer2 = buffer;\n        } else {\n            tmpVertexBuffer = buffer;\n        }\n    }\n\n    buffer.set(buffer2, offset);\n}\n\n\nfunction optimizeGroupMessages() {\n\n    //loop messages\n    var messages = globals.messageBuffer;\n    var j, lk, k, message2, job2, bufferSize, buffer, view, index, length, buff, buff2, index, count, totalVertices;\n\n\n    for (var i = 0, li = globals.messageBufferIndex; i < li; i++) {\n        var message = messages[i];\n        var job = message.job;\n        var type = message.type;\n        var signature = message.signature;\n\n        //console.log('command: ' + message.command + ' type:' + message.type);\n        \n        if (!message.hitable && !message.reduced && \n            (type >= 6 && type <= 12)) {\n            \n            switch(type) {\n            case 12:\n            case 6:\n                count = 0;\n\n                //get message vertices length and copy vertices to buffer\n                length = (new DataView(message.job)).getUint32(message.buffersIndex) * 4;\n\n                //tmpVertexBuffer.set(new Uint8Array(message.job, message.buffersIndex+4, length), 0);\n                setToTmpBuffer(0, new Uint8Array(message.job, message.buffersIndex+4, length), 0);\n                bufferSize = length;\n\n                for (j = i + 1; j < li; j++) {\n                    message2 = messages[j];\n\n                    if (message2.signature == signature) {\n                        message2.reduced = true;\n                        count++;\n\n                        //get message2 vertices length\n                        length = (new DataView(message2.job)).getUint32(message2.buffersIndex) * 4;\n\n                        // copy vertices to buffer\n                        //tmpVertexBuffer.set(new Uint8Array(message2.job, message2.buffersIndex+4, length), bufferSize);\n                        setToTmpBuffer(0, new Uint8Array(message2.job, message2.buffersIndex+4, length), bufferSize);\n                        bufferSize += length;\n                    }\n                }\n\n                if (count > 0) {\n\n                    //create new message with merged vertices\n                    buffer = new Uint8Array(message.buffersIndex+2*(4+bufferSize));\n                    view = new DataView(buffer.buffer);\n                    buffer.set(new Uint8Array(message.job, 0, message.buffersIndex), 0);\n\n                    view.setUint32(message.buffersIndex, bufferSize / 4);\n                    buffer.set(new Uint8Array(tmpVertexBuffer.buffer, 0, bufferSize), message.buffersIndex + 4);\n\n                    globals.messagePackSize -= message.job.byteLength;\n                    globals.messagePackSize += buffer.byteLength;\n                    message.job = buffer.buffer;\n                }\n\n                break;\n                    \n            case 9:\n            case 11:\n            case 7:\n\n                count = 0;\n                totalVertices = 0;\n\n                //get message vertices length and copy vertices to buffer\n                length = (new DataView(message.job)).getUint32(message.buffersIndex);\n                //console.log('count: ' + count + ' totalPoints:' + message.totalPoints + ' length: ' + length);\n                length *= 4;\n                totalVertices += length;\n\n\n                //tmpVertexBuffer.set(new Uint8Array(message.job, message.buffersIndex+4, length), 0);\n                //tmpVertexBuffer2.set(new Uint8Array(message.job, message.buffersIndex+4+length+4, length), 0);\n                setToTmpBuffer(0, new Uint8Array(message.job, message.buffersIndex+4, length), 0);\n                setToTmpBuffer(1, new Uint8Array(message.job, message.buffersIndex+4+length+4, length), 0);\n                bufferSize = length;\n\n                for (j = i + 1; j < li; j++) {\n                    message2 = messages[j];\n\n                    if (message2.signature == signature) {\n                        message2.reduced = true;\n                        globals.messagePackSize -= message2.job.byteLength;\n                        count++;\n\n                        //get message2 vertices length\n                        length = (new DataView(message2.job)).getUint32(message2.buffersIndex);\n                        //console.log('count:' + count + ' totalPoints:' + message2.totalPoints + ' length:' + length + ' jobl:' + message2.job.byteLength + ' remaning:' + (message2.job.byteLength - (message2.buffersIndex+4)) + ' bufferSize:' + bufferSize + ' totalVertices:' + totalVertices);\n                        length *= 4;\n                        totalVertices += length;\n\n\n                        // copy vertices to buffer\n                        //tmpVertexBuffer.set(new Uint8Array(message2.job, message2.buffersIndex+4, length), bufferSize);\n                        setToTmpBuffer(0, new Uint8Array(message2.job, message2.buffersIndex+4, length), bufferSize);\n\n                        // copy normals to buffer\n                        //tmpVertexBuffer2.set(new Uint8Array(message2.job, message2.buffersIndex+4+length+4, length), bufferSize);\n                        setToTmpBuffer(1, new Uint8Array(message2.job, message2.buffersIndex+4+length+4, length), bufferSize);\n                        bufferSize += length;\n\n                        if (type == 11) {\n                            var files = message.job2['files'];\n                            var files2 = message2.job2['files'];\n\n                            for (k = 0, lk = files2.length; k < lk; k++) {\n                                if (!files[k]) {\n                                    files[k] = [];\n                                }\n\n                                for (var m = 0, lm = files2[k].length; m < lm; m++) {\n                                    if (files[k].indexOf(files2[k][m]) == -1) {\n                                        files[k].push(files2[k][m]);\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n\n                if (count > 0) {\n\n                    //create new message with merged vertices\n\n                    if (type == 11) { //we have to rebuild header\n                        var buffjob = stringToUint8Array(JSON.stringify(message.job2));\n\n                        buffer = new Uint8Array(1+1+4+buffjob.byteLength+2*(4+bufferSize));\n                        view = new DataView(buffer.buffer), index = 0;\n\n                        view.setUint8(index, message.command); index += 1;\n                        view.setUint8(index, type); index += 1;\n                        view.setUint32(index, buffjob.byteLength); index += 4;\n                        buffer.set(buffjob, index); index += buffjob.byteLength;\n\n                        message.buffersIndex = index;\n                    } else {\n                        buffer = new Uint8Array(message.buffersIndex+2*(4+bufferSize));\n                        view = new DataView(buffer.buffer);\n                        buffer.set(new Uint8Array(message.job, 0, message.buffersIndex), 0);\n                    }\n\n                    view.setUint32(message.buffersIndex, bufferSize / 4);\n                    buffer.set(new Uint8Array(tmpVertexBuffer.buffer, 0, bufferSize), message.buffersIndex + 4);\n\n                    view.setUint32(message.buffersIndex + 4 + bufferSize, bufferSize / 4);\n                    buffer.set(new Uint8Array(tmpVertexBuffer2.buffer, 0, bufferSize), message.buffersIndex + 4 + bufferSize + 4 );\n\n                    globals.messagePackSize -= message.job.byteLength;\n                    globals.messagePackSize += buffer.byteLength;\n                    message.job = buffer.buffer;\n\n                }\n\n                break;\n            }\n        \n        }\n    }\n\n    var buffer = new Uint8Array(globals.messagePackSize), index = 0;\n\n    for (var i = 0, li = globals.messageBufferIndex; i < li; i++) {\n        var message = globals.messageBuffer[i];\n\n        if (!message.reduced) {\n            buffer.set(new Uint8Array(message.job), index);\n            index += globals.messageBuffer[i].job.byteLength;\n        }\n    }\n\n    //console.log('send:' + buffer.length);\n\n    postPackedMessage({'command' : 'addPackedCommands', 'buffer': buffer}, [buffer.buffer]);\n\n    globals.messageBufferIndex = 0;\n    globals.messagePackSize = 0;\n} \n\n\nfunction postPackedMessages() {\n    if (packedEvents.length > 0) {\n        if (packedTransferables.length > 0) {\n            postMessage({'command': 'packed-events', 'messages':packedEvents}, packedTransferables);\n        } else {\n            postMessage({'command': 'packed-events', 'messages':packedEvents});\n        }\n\n        packedEvents = [];\n        packedTransferables = [];\n    }\n}\n\n\n\n\n\n\n/***/ }),\n/* 2 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__worker_text_js__ = __webpack_require__(3);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"e\", function() { return getFilterResult; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"d\", function() { return processStylesheet; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"b\", function() { return getLayer; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"c\", function() { return getLayerPropertyValue; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"g\", function() { return getLayerExpresionValue; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"f\", function() { return getLayerPropertyValueInner; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return makeFasterFilter; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"h\", function() { return hasLayerProperty; });\n\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */];\nvar clamp = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"d\" /* clamp */];\nvar simpleFmtCall = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"e\" /* simpleFmtCall */];\nvar getHash = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"f\" /* getHash */];\nvar hasLatin = __WEBPACK_IMPORTED_MODULE_1__worker_text_js__[\"c\" /* hasLatin */], isCJK = __WEBPACK_IMPORTED_MODULE_1__worker_text_js__[\"d\" /* isCJK */];\nvar areTextCharactersAvailable = __WEBPACK_IMPORTED_MODULE_1__worker_text_js__[\"e\" /* areTextCharactersAvailable */];\n\n\nvar getLayer = function(layerId, featureType, index) {\n    var layer = globals.stylesheetData.layers[layerId];\n    if (layer == null) {\n        logError('wrong-Layer', layerId, null, null, index, featureType);\n        return {};\n    } else {\n        return layer;\n    }\n};\n\n\nvar getLayerExpresionValue = function(layer, value, feature, lod, key, depth) {\n    var finalValue;\n    if (!depth) {\n        depth = 0;\n    }\n    if (depth > 100) {\n        return void(0);\n    }\n\n\n    switch(typeof value) {\n    case 'string':\n\n        if (value.length > 0) {\n\n            switch (value.charAt(0)) {\n                case '#': \n                case '$':\n                case '@':\n                case '&':\n                case '%':\n\n                    finalValue = getLayerPropertyValueInnerString(layer, key, feature, lod, value, depth + 1);\n\n                    if (typeof finalValue == 'undefined') {\n                        logError('wrong-expresion', layer['$$layer-id'], value, value, null, 'feature-property');\n                    }\n\n                    return finalValue;\n            }\n\n\n            return simpleFmtCall(value, (function(str){  \n\n                if (str.length > 0) {\n\n                    switch (str.charAt(0)) {\n                        case '#': \n                        case '$':\n                        case '@':\n                        case '&':\n                        case '%':\n\n                            finalValue = getLayerPropertyValueInnerString(layer, key, feature, lod, str, depth + 1);\n\n                            if (typeof finalValue == 'undefined') {\n                                logError('wrong-expresion', layer['$$layer-id'], value, value, null, 'feature-property');\n                            }\n        \n                            return finalValue;\n                    }\n\n                    if (str.indexOf('{') != -1) {\n\n                        try {\n                            str = str.replace(/'/g, '\"');\n                            finalValue = JSON.parse(str);\n                        } catch(e) {\n                            logError('wrong-expresion', layer['$$layer-id'], value, value, null, 'feature-property');\n                            return \"\";\n                        }\n\n                        if (typeof finalValue == 'undefined') {\n                            logError('wrong-expresion', layer['$$layer-id'], value, value, null, 'feature-property');\n                            return \"\";\n                        } else {\n                            return getLayerPropertyValueInner(layer, key, feature, lod, finalValue, depth + 1);\n                        }\n\n                    } else {\n                        return str;\n                    }\n\n                }\n\n            }));\n        }\n\n        break;\n    }\n    \n    return value;\n};\n\n\nvar hasLayerProperty = function(layer, key) {\n    return (typeof layer[key] !== 'undefined');\n};\n\n\nvar getLayerPropertyValue = function(layer, key, feature, lod) {\n    var value = getLayerPropertyValueInner(layer, key, feature, lod);\n    return validateLayerPropertyValue(layer['$$layer-id'], key, value);\n};\n\n\nvar getLayerPropertyValueInnerString = function(layer, key, feature, lod, value, depth) {\n    var finalValue = value;\n\n    //is it feature property, variable or constant?\n    switch(value.charAt(0)) {\n        case '$': finalValue = feature.properties[value.substr(1)]; break;\n        case '@': finalValue = globals.stylesheetConstants[value]; break;\n        case '%': finalValue = globals.stylesheetVariables[value.substr(1)]; break;\n        case '&': finalValue = globals.stylesheetLocals[value]; break;\n        case '#': \n            //debugger;\n            switch(value) {\n                case '#id':        return feature.id;\n                case '#type':      return globals.featureType;\n                case '#group':     return globals.groupId;\n                case '#lod':       return globals.tileLod;\n                case '#tileSize':  return globals.tileSize;\n                case '#pixelSize': return globals.pixelSize;\n                case '#metric':    return globals.metricUnits;\n                case '#dpr':       return globals.pixelFactor;\n                case '#language':  return globals.language;\n            }\n            break;\n    }\n\n    if (value.charAt(0) == '&') {\n        if (typeof finalValue === 'undefined') {\n            finalValue = layer[value];\n            if (typeof finalValue !== 'undefined') {\n\n                if (typeof finalValue === 'string') {\n                    finalValue = getLayerExpresionValue(layer, finalValue, feature, lod, key, depth+1);\n                } else {\n                    if (typeof finalValue !== 'undefined') {\n                        finalValue = getLayerPropertyValueInner(layer, key, feature, lod, finalValue, depth+1);\n                    }\n                }\n\n                globals.stylesheetLocals[value] = finalValue;\n            }\n        }\n    } else { // @,$,%\n\n        if (typeof finalValue === 'string') {\n            finalValue = getLayerExpresionValue(layer, finalValue, feature, lod, key, depth+1);\n        } else {\n            if (typeof finalValue !== 'undefined' && value.charAt(0) == '@') {\n                finalValue = getLayerPropertyValueInner(layer, key, feature, lod, finalValue, depth+1);\n            }\n        }\n\n    }\n\n    return finalValue;\n};\n\nvar getLayerPropertyValueInner = function(layer, key, feature, lod, value, depth) {\n    var index = 0, i, li, finalValue, root, v1, v2, v3, v4;\n    var tmpValue;\n\n    \n    if ((typeof value) === 'undefined') {\n        /*\n        if (layer[key]) {\n            value = JSON.parse(JSON.stringify(layer[key])); //make copy\n        } else {\n            value = layer[key];\n        }*/\n\n        value = layer[key];\n\n        root = true;\n        depth = 0;\n    } else {\n        if (depth > 100) {\n            return void(0);\n        }\n    }\n\n    switch(typeof value) {\n    case 'string':\n\n        if (value.length > 0) {\n            finalValue = getLayerPropertyValueInnerString(layer, key, feature, lod, value, depth);\n\n            if (typeof finalValue !== 'undefined') {\n                return finalValue;\n            } else {\n                logError('wrong-object', layer['$$layer-id'], key, value, null, 'feature-property');\n                \n                if (root) {\n                    return getDefaultLayerPropertyValue(key);\n                } else {\n                    return void(0);\n                }\n            }\n        }\n\n        return value;\n\n    case 'object':\n\n            //is it null?\n        if (value == null) {\n            if (root) {\n                return getDefaultLayerPropertyValue(key);\n            } else {\n                return void(0);\n            }\n        }\n\n        //is it array (rgb, rgba, vec2)?\n        if (Array.isArray(value)) {\n\n            if (key == 'icon-source') {\n                //index++;\n                if (globals.stylesheetBitmaps[value[0]] == null) {\n                    logError('wrong-object', layer['$$layer-id'], key, value, null, 'bitmap');\n\n                    if (root) {\n                        return getDefaultLayerPropertyValue(key);\n                    } else {\n                        return void(0);\n                    }\n                }\n            }\n\n            if (key != 'filter') {\n                tmpValue = new Array(value.length);\n\n                for (i = index, li = value.length; i < li; i++) {\n                    tmpValue[i] = getLayerPropertyValueInner(layer, key, feature, lod, value[i], depth + 1);\n                }\n\n                return tmpValue;\n            }\n\n            return value;\n        }\n\n        var functionName, functionValue, functionError, finalValue;\n\n        for (functionName in value) {\n            break;\n        }\n\n        if (!functionName) {\n            if (root) {\n                return getDefaultLayerPropertyValue(key);\n            } else {\n                return void(0);\n            }\n        }\n\n        functionValue = value[functionName];\n\n        switch (functionName) {\n            case 'if':\n\n                if (!Array.isArray(functionValue) || functionValue.length != 3) {\n                    functionError = true;\n                } else {\n                    if (getFilterResult(functionValue[0], feature, globals.featureType, globals.groupId, layer, key, lod, 0)) {\n                        finalValue = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[1], depth + 1);\n                    } else {\n                        finalValue = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[2], depth + 1);\n                    }\n\n                    if (typeof finalValue === 'undefined') {\n                        functionError = true;\n                    } else {\n                        return finalValue;\n                    }\n                }\n\n                break;\n\n            case 'add':\n            case 'sub':\n            case 'mul':\n            case 'div':\n            case 'pow':\n            case 'tofixed':\n            case 'atan2':\n            case 'random':\n\n                if (!Array.isArray(functionValue) || functionValue.length != 2) {\n                    functionError = true;\n                } else {\n\n                    v1 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[0], depth + 1);\n                    v2 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[1], depth + 1);\n\n                    if (typeof v1 !== 'number' || typeof v2 !== 'number') {\n                        functionError = true;\n                    } else {\n                        switch (functionName) {\n                            case 'add':    return v1 + v2;\n                            case 'sub':    return v1 - v2;\n                            case 'mul':    return v1 * v2;\n                            case 'div':    return v1 / v2;\n                            case 'pow':    return Math.pow(v1, v2);\n                            case 'atan2':  return Math.atan2(v1, v2);\n                            case 'tofixed': return v1.tofixed(v2);\n                            case 'random': return v1 + Math.random() * (v2-v1);\n                        }\n                    }\n                }\n\n                break;\n\n            case 'clamp':\n\n                if (!Array.isArray(functionValue) || functionValue.length != 3) {\n                    functionError = true;\n                } else {\n\n                    v1 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[0], depth + 1);\n                    v2 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[1], depth + 1);\n                    v3 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[2], depth + 1);\n\n                    if (typeof v1 !== 'number' || typeof v2 !== 'number' || typeof v3 !== 'number') {\n                        functionError = true;\n                    } else {\n                        return clamp(v1, v2, v3);\n                    }\n                }\n\n                break;\n\n            case 'logScale':\n            case 'log-scale':\n\n                if (!Array.isArray(functionValue) || functionValue.length < 2) {\n                    functionError = true;\n                } else {\n\n                    v1 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[0], depth + 1);\n                    v2 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[1], depth + 1);\n                    v3 = 0, v4 = 100;\n\n                    if (functionValue.length > 2) {\n                        v3 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[2], depth + 1);                        \n\n                        if (typeof v3 !== 'number') {\n                            functionError = true;\n                        }\n                    }\n\n                    if (functionValue.length > 3) {\n                        v4 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[3], depth + 1);                        \n\n                        if (typeof v4 !== 'number') {\n                            functionError = true;\n                        }\n                    }\n\n                    if (functionError || typeof v1 !== 'number' || typeof v2 !== 'number') {\n                        functionError = true;\n                    } else {\n                        var imax = v4, imin = v3, smax = v2, s = v1, p, i;\n\n                        if (s > smax) s = smax; \n\n                        p = (imax - imin) / Math.log(smax + 1);\n                        i = p * Math.log(s + 1) + imin;\n\n                        return i;\n                    }\n                }\n\n                break;\n\n\n            case 'sgn':\n            case 'sin':\n            case 'cos':\n            case 'tan':\n            case 'asin':\n            case 'acos':\n            case 'atan':\n            case 'sqrt':\n            case 'abs':\n            case 'log':\n            case 'round':\n            case 'floor':\n            case 'ceil':\n            case 'deg2rad':\n            case 'rad2deg':\n\n                functionValue = getLayerPropertyValueInner(layer, key, feature, lod, functionValue, depth + 1);\n\n                if (typeof functionValue !== 'number') {\n                    functionError = true;\n                } else {\n                    switch (functionName) {\n                        case 'sgn':  return functionValue < 0 ? -1 : 1;\n                        case 'sin':  return Math.sin(functionValue);\n                        case 'cos':  return Math.cos(functionValue);\n                        case 'tan':  return Math.tan(functionValue);\n                        case 'asin': return Math.asin(functionValue);\n                        case 'acos': return Math.acos(functionValue);\n                        case 'atan': return Math.atan(functionValue);\n                        case 'sqrt': return Math.sqrt(functionValue);\n                        case 'abs':  return Math.abs(functionValue);\n                        case 'log':  return Math.log(functionValue);\n                        case 'round': return Math.round(functionValue);\n                        case 'floor': return Math.floor(functionValue);\n                        case 'ceil':  return Math.ceil(functionValue);\n                        case 'deg2rad':  return (functionValue / 180) * Math.PI;\n                        case 'rad2deg':  return (functionValue / Math.PI) * 180;\n                    }\n                }\n\n                break;\n\n            case 'strlen':\n            case 'trim':\n            case 'str2num':\n            case 'lowercase':\n            case 'uppercase':\n            case 'capitalize':\n            case 'has-fonts':\n            case 'has-latin':\n            case 'is-cjk':\n                functionValue = getLayerPropertyValueInner(layer, key, feature, lod, functionValue, depth + 1);\n\n                if (typeof functionValue !== 'string') {\n                    if (typeof functionValue === 'number') {\n                        return functionValue;\n                    } else {\n                        functionError = true;\n                    }\n                } else {\n                    switch (functionName) {\n                        case 'strlen':     return functionValue.length;\n                        case 'trim':       return functionValue.trim();\n                        case 'str2num':    return parseFloat(functionValue);\n                        case 'lowercase':  return functionValue.toLowerCase();\n                        case 'uppercase':  return functionValue.toUpperCase();\n                        case 'capitalize': return functionValue.replace(/(?:^|\\s)\\S/g, function(a) { return a.toUpperCase(); });\n                        case 'has-fonts':  return areTextCharactersAvailable(functionValue);\n                        case 'has-latin':  return hasLatin(functionValue);\n                        case 'is-cjk':     return isCJK(functionValue); \n                    }\n                }\n\n                break;\n\n            case 'find':\n            case 'replace':\n            case 'substr':\n\n                if (Array.isArray(functionValue) && functionValue.length >= 2) {\n\n                    v1 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[0], depth + 1);\n                    v2 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[1], depth + 1);\n\n                    if (functionName == 'find' && typeof v1 === 'string' && typeof v2 === 'string') {\n                        return v1.indexOf(v2);\n                    }\n\n                    if (functionName == 'replace' && functionValue.length == 3) {\n\n                        v3 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[2], depth + 1);\n\n                        if (typeof v1 === 'string' && typeof v2 === 'string' && typeof v3 === 'string') {\n                            return v1.replace(v2,v3);\n                        }\n                    }\n\n                    if (functionName == 'substr') {\n\n                        if (functionValue.length == 2) {\n                            if (typeof v1 === 'string' && typeof v2 === 'number') {\n                                return v1.substr(v2);\n                            }\n                        } else {\n                            v3 = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[2], depth + 1);\n\n                            if (typeof v1 === 'string' && typeof v2 === 'number' && typeof v3 === 'number') {\n                                return v1.substr(v2,v3);\n                            }\n                        }\n                    }\n\n                }\n\n                functionError = true;\n                break;\n\n            case 'min':\n            case 'max':\n\n                if (!Array.isArray(functionValue)) {\n                    functionError = true;\n                } else {\n\n                    finalValue = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[0], depth + 1);\n\n                    for (i = index, li = functionValue.length; i < li; i++) {\n                        tmpValue = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[i], depth + 1);\n\n                        if (typeof tmpValue !== 'number') {\n                            functionError = true;\n                            break;\n                        }\n\n                        if (functionName == 'max') {\n                            finalValue = Math.max(finalValue, tmpValue);\n                        } else {\n                            finalValue = Math.min(finalValue, tmpValue);\n                        }\n                    }\n\n                    return finalValue;\n                }\n\n                break;\n\n            case 'map':\n\n                if (!Array.isArray(functionValue)) {\n                    functionError = true;\n                } else {\n\n                    finalValue = getLayerPropertyValueInner(layer, key, feature, lod, functionValue[0], depth + 1);\n\n                    var mapItems = functionValue[1];\n\n                    if (!Array.isArray(mapItems)) {\n                        functionError = true;\n                    } else {\n\n                        for (i = index, li = mapItems.length; i < li; i++) {\n                            var item = mapItems[i];\n\n                            if (!Array.isArray(item)) {\n                                functionError = true;\n                                break;\n                            } else {\n\n                                var itemValue = getLayerPropertyValueInner(layer, key, feature, lod, item[0], depth + 1);\n\n                                if (finalValue == itemValue) {\n                                    return getLayerPropertyValueInner(layer, key, feature, lod, item[1], depth + 1);\n                                }\n                            }\n                        }\n                    }\n\n                    return getLayerPropertyValueInner(layer, key, feature, lod, functionValue[2], depth + 1);\n                }\n\n                break;\n\n            case 'linear':\n            case 'linear2':\n            case 'discrete':\n            case 'discrete2':\n            case 'lod-scaled':\n\n                //LOD based functions\n                var stops = null;\n                var lodScaledArray = null;\n                var functionValue = lod;\n\n                if (value['lod-scaled'] != null) {\n                    var array = value['lod-scaled'];\n\n                    if ((typeof array[1]) == 'number') {\n                        return array[1] * Math.pow(2*array[2], array[0] - lod);\n                    }\n\n                    stops = array[1];\n                    lodScaledArray = array;\n\n                } if (value['discrete2'] != null || value['linear2'] != null) {\n                    var array = value['discrete2'] || value['linear2'];\n                    stops = array[1];\n                    functionValue = getLayerPropertyValueInner(layer, key, feature, lod, array[0], depth + 1);\n                } else {\n                    stops = value['discrete'] || value['linear'];\n                }\n\n                var lastLod = stops[0][0];\n                var lastValue = stops[0][1];\n                var valueType = (typeof lastValue);\n                var newValue = lastValue;\n\n                var currentLod, currentValue;\n\n                for (var i = 0, li = stops.length; i <= li; i++) {\n\n                    if (i == li) {\n                        newValue = lastValue;\n                        break;\n                    }\n\n                    if (stops[i][0] > functionValue) {\n\n                        if (value['discrete'] != null || value['discrete2'] != null || lodScaledArray != null) { //no interpolation\n                            newValue = lastValue;\n                            break;\n                        } else { //interpolate\n\n                            currentLod = stops[i][0];\n                            currentValue = stops[i][1];\n\n                            if (currentLod == lastLod) { //end of array no interpolation needed\n                                break;\n                            }\n\n                            switch(valueType) {\n\n                            case 'boolean':\n                                lastValue = lastValue ? 1 : 0;\n                                currentValue = lastValue ? 1 : 0;\n                                newValue = lastValue + (currentValue - lastValue) * ((functionValue - lastLod) / (currentLod - lastLod));\n\n                                newValue = newValue > 0.5 ? true : false;\n                                break;\n\n                            case 'number':\n                                newValue = lastValue + (currentValue - lastValue) * ((functionValue - lastLod) / (currentLod - lastLod));\n                                break;\n\n                            case 'object':\n                                newValue = [];\n\n                                for (var j = 0, lj= lastValue.length; j < lj; j++) {\n                                    newValue[j] = lastValue[j] + (currentValue[j] - lastValue[j]) * ((functionValue - lastLod) / (currentLod - lastLod));\n                                }\n\n                                break;\n                            }\n\n                            break;\n                        }\n                    }\n\n                    lastLod = stops[i][0];\n                    lastValue = stops[i][1];\n                }\n\n                if (lodScaledArray != null) {\n                    newValue *= Math.pow(2*lodScaledArray[2], lodScaledArray[0] - functionValue);\n                }\n\n                return newValue;\n\n            default: \n                functionError = true;\n                break;\n        }\n\n        if (functionError) {\n            if (root) {\n                return getDefaultLayerPropertyValue(key);\n            } else {\n                return void(0);\n            }\n        }\n\n\n    case 'number':\n    case 'boolean':\n        return value;\n    }\n\n    if (root) {\n        return getDefaultLayerPropertyValue(key);\n    } else {\n        return void(0);\n    }\n};\n\n\nvar inheritLayer = function(layerId, layer, layerData, stylesheetLayersData, depth) {\n    if (depth > 100) {\n        logError('custom', 'infinite inherit loop in Layer: ' + layerId);\n        return;\n    }\n\n    //do we need inherite Layer?\n    if (layerData['inherit'] != null) {\n        //get inherited Layer\n        var LayerToInherit = stylesheetLayersData['layers'][layerData['inherit']];\n\n        if (LayerToInherit != null) {\n\n            if (LayerToInherit['inherit'] != null) {\n                inheritLayer(layerData['inherit'], layer, LayerToInherit, stylesheetLayersData, depth++);\n            }\n\n            //copy inherited Layer properties\n            for (var key in LayerToInherit) {\n                layer[key] = LayerToInherit[key];\n            }\n        } else {\n            logError('wrong-object', layerId, 'inherit', LayerToInherit, 'Layer');\n            return getDefaultLayerPropertyValue(key);\n        }\n    }\n};\n\n\nvar copyLayer = function(layerId, layer, layerData, stylesheetLayersData) {\n    //do we need inherite Layer?\n    if (layerData['inherit'] != null) {\n        inheritLayer(layerId, layer, layerData, stylesheetLayersData, 0);\n    }\n\n    //copy Layer properties\n    //if inherited properties are present then they will be overwriten\n    for (var key in layerData) {\n        layer[key] = layerData[key];\n    }\n\n    //store layer id\n    layer['$$layer-id'] = layerId;\n};\n\n\nvar logError = function(errorType, layerId, key, value, index, subkey) {\n    if (globals.disableLog) {\n        return;\n    }\n\n    if ((typeof value) == 'object') {\n        value = JSON.stringify(value);\n    }\n    \n    var str = null;\n\n    switch(errorType) {\n    case 'wrong-property-value':\n        str = 'Error: wrong layer property ' + (subkey ? ('\\'' + subkey + '\\'') : '') + ': ' + layerId + '.' + key + ' = ' + value;\n        break;\n\n    case 'wrong-property-value[]':\n        str = 'Error: wrong layer property ' + (subkey ? ('\\'' + subkey + '\\'') : '') + '['+index+']: ' + layerId + '.' + key + ' = ' + value;\n        break;\n\n    case 'wrong-object':\n        str = 'Error: reffered '+ subkey + ' does not exist: ' + layerId + '.' + key + ' = ' + value;\n        break;\n\n    case 'wrong-object[]':\n        str = 'Error: reffered '+ subkey + ' does not exist: ' + layerId + '.' + key + '['+index+'] = ' + value;\n        break;\n\n    case 'wrong-Layer':\n        str = 'Error: reffered '+ subkey + ' Layer does not exist: ' + subkey + '['+index+'].Layer = ' + layerId;\n        break;\n\n    case 'wrong-bitmap':\n        str = 'Error: wrong definition of bitmap: ' + layerId;\n        break;\n\n    case 'custom':\n        str = 'Error: ' + layerId;\n        break;\n    }\n    \n    if (str && globals.log) {\n         // eslint-disable-next-line \n        console.log(str);\n        //throw str;\n    }\n};\n\n\nvar getUnitsNormalizedValue = function(value, screen, fallbackUnits) {\n    if (typeof value === 'string') {\n        if (value == '0' || value.length == 0) return 0;\n\n        value = value.trim();\n\n        if (value.length >= 2) {\n\n            var factor = 1, pf = globals.pixelsPerMM, ipf = globals.invPixelsPerMM;\n\n            switch(value.substr(-2, 2)) {\n                case 'km': factor = screen ? pf * 1000 * 1000 : 1000; break;\n                case 'cm': factor = screen ? pf * 10 : 1/100; break;\n                case 'mm': factor = screen ? pf : 1/1000; break;\n                case 'px': factor = screen ? 1 : ipf * 1/1000; break;\n                case 'pc': factor = screen ? pf * 2.54 * 1/6 : ipf * 1/1000 * 2.54 * 1/6; break;\n                case 'pt': factor = screen ? pf * 2.54 * 1/72 : ipf * 1/1000 * 2.54 * 1/72; break;\n                case 'in': factor = screen ? pf * 2.54 : ipf * 1/1000 * 2.54; break;\n\n                default:\n\n                    if (value.charAt(value.length - 1) == 'm') {\n                        return (screen ? pf * 1000 : 1) * parseFloat(value.substr(0, value.length - 1));\n                    } else {\n                        return parseFloat(value);\n                    }\n\n            }\n\n            return factor * parseFloat(value.substr(0, value.length - 2));\n\n        } else {\n\n            //fallbackUnits\n\n            return parseFloat(value);\n        }\n\n    } else if (typeof value === 'number') {\n        return value;\n    }\n}\n\n\nvar validateValue = function(layerId, key, value, type, arrayLength, min, max) {\n    var i, li;\n\n    //check for object\n    if (value != null && (typeof value) == 'object' && !Array.isArray(value)) {\n        logError('wrong-property-value', layerId, key, value);\n        return getDefaultLayerPropertyValue(key);\n    }\n\n    //check value type\n    if ((typeof value) != type) {\n        //check for exceptions\n        if (!(value === null && (key == 'icon-source' || key == 'visibility' || key == 'label-no-overlap-factor'))) {\n            logError('wrong-property-value', layerId, key, value);\n            return getDefaultLayerPropertyValue(key);\n        }\n    }\n\n    //check value\n    switch(typeof value) {\n\n    case 'object':\n\n        //accepted cases for null value\n        if (value === null && (key == 'line-style-texture' || key == 'icon-source' || 'dynamic-reduce' || 'reduce' ||\n            key == 'hysteresis' || key == 'visibility' || key == 'visibility-abs' || key == 'visibility-rel' || key == 'next-pass')) {\n            return value;\n        }\n\n        //check reduce\n        if (key == 'reduce' || key == 'dynamic-reduce' || key == 'label-no-overlap-factor' || key == 'line-points') {\n            if (Array.isArray(value) && value.length > 0 && (typeof value[0] === 'string')) {\n\n                if (key == 'line-points') {\n\n                    if (!(value[0] == 'vertices' || value[0] == 'by-length' || value[0] == 'by-ratio' || value[0] == 'endpoints' ||\n                          value[0] == 'start' || value[0] == 'end' || value[0] == 'middle' || value[0] == 'midpoint')) {\n                        logError('wrong-property-value', layerId, key, value);\n                        return getDefaultLayerPropertyValue(key);\n                    } \n\n                } else if (key == 'dynamic-reduce') {\n                    if (value[0] == 'by-extenal-param') {\n                        value[0] = globals.reduceMode;\n                    }\n\n                    if (!((value[0] == 'tilt' || value[0] == 'tilt-cos' || value[0] == 'tilt-cos2' || value[0] == 'scr-count' || value[0] == 'scr-count2' ||\n                           value[0] == 'scr-count3' || value[0] == 'scr-count4' || value[0] == 'scr-count5' || value[0] == 'scr-count6' || value[0] == 'scr-count7' || value[0] == 'scr-count8') &&\n                        (typeof value[1] === 'number') && ((typeof value[2] === 'number') || value[0] == 'scr-count4' || value[0] == 'scr-count5' || value[0] == 'scr-count6' || value[0] == 'scr-count7' || value[0] == 'scr-count8'))) {\n                        logError('wrong-property-value', layerId, key, value);\n                        return getDefaultLayerPropertyValue(key);\n                    }\n                } else if (key == 'reduce') {\n                    if (value[0] != 'odd' && value != 'even') {\n                        if ((typeof value[1] !== 'number') || ((value[0] != 'top' || value != 'bottom') && (typeof value[2] !== 'string'))) {\n                            logError('wrong-property-value', layerId, key, value);\n                            return getDefaultLayerPropertyValue(key);\n                        }\n                    }\n                } else if (key == 'label-no-overlap-factor') {\n                    if (!(value[0] == 'direct' || value[0] == 'div-by-dist')) {\n                        logError('wrong-property-value', layerId, key, value);\n                        return getDefaultLayerPropertyValue(key);\n                    }\n                }\n\n            } else {\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        //check multipasss\n        if (key == 'next-pass' || key == 'visibility-switch') {\n            var vswitch = (key == 'visibility-switch');\n            if (Array.isArray(value) && value.length > 0) {\n\n                for (i = 0; i < li; i++) {\n                    var valueItem = value[i];\n\n                    if (!(typeof valueItem == 'object' &&\n                            Array.isArray(valueItem) &&\n                            valueItem.length == 2 &&\n                            typeof valueItem[0] == 'number' &&\n                            (typeof valueItem[1] == 'string' || (vswitch && valueItem[1] === null)))) {\n\n                        logError('wrong-property-value[]', layerId, key, value, i);\n                        return getDefaultLayerPropertyValue(key);\n                    } else {\n                        //fast constant \n                        if (typeof valueItem[1] == 'string' && valueItem[1].charAt(0) == '@') {\n                            if (typeof globals.stylesheetConstants[valueItem[1]] == 'undefined') {\n                                logError('wrong-property-value[]', layerId, key, value, i);\n                                return getDefaultLayerPropertyValue(key);\n                            } else {\n                                valueItem[1] = globals.stylesheetConstants[valueItem[1]];\n                            }\n                        }\n                    }\n                }\n\n            } else {\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        if (key == 'label-font' || key == 'line-label-font') {\n\n            if (!Array.isArray(value) || value.length < 1) {\n                logError('wrong-property-value[]', layerId, key, value, 0);\n                return getDefaultLayerPropertyValue(key);\n            } else {\n                for (i = 0, li = value.length; i < li; i++) {\n                    if (typeof value[i] != 'string' || !globals.fonts[value[i]]) {\n                        logError('wrong-property-value[]', layerId, key, value, 0);\n                        return getDefaultLayerPropertyValue(key);\n                    }\n                }\n            }\n\n            return value;\n        }\n\n        //check array\n        if (arrayLength != null) {\n            if (Array.isArray(value) && (value.length == arrayLength || ((key == 'icon-stick' || 'label-stick') && value.length >= 7) )) {\n\n                //validate array values\n                i = 0;\n\n                if (key == 'icon-source' || key == 'line-style-texture') {\n                    if (typeof value[0] != 'string') {\n                        logError('wrong-property-value[]', layerId, key, value, 0);\n                        return getDefaultLayerPropertyValue(key);\n                    }\n\n                    if (globals.stylesheetBitmaps[value[0]] == null) {\n                        logError('wrong-object', layerId, key, value, null, 'bitmap');\n                        return getDefaultLayerPropertyValue(key);\n                    }\n\n                    i = 1;\n                }\n\n                for (li = value.length; i < li; i++) {\n                    if (typeof value[i] != 'number') {\n                        logError('wrong-property-value[]', layerId, key, value, i);\n                        return getDefaultLayerPropertyValue(key);\n                    }\n                }\n\n                if ((key == 'icon-stick' || 'label-stick') && value.length == 7) {\n                    value[7] = 0;\n                }\n\n                return value;\n            } else {\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        return value;\n\n    case 'string':\n\n        if (key == 'line-type' || key == 'point-type') {\n            switch(value) {\n            case 'screen':\n            case 'flat':\n            case 'screen-flat': return value;\n            default:\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        //validate line Layer enum\n        if (key == 'line-style') {\n            switch(value) {\n            case 'solid':\n            case 'texture': return value;\n            default:\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        if (key == 'label-size-units') {\n            switch(value) {\n            case 'pixels':\n            case 'points': return value;\n            default:\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        if (key == 'line-width-units') {\n            switch(value) {\n            case 'pixels':\n            case 'points':\n            case 'meters':\n            case 'ratio': return value;\n            default:\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        //validate origin enum\n        if (key == 'label-origin' || key == 'icon-origin') {\n            switch(value) {\n            case 'top-left':\n            case 'top-right':\n            case 'top-center':\n            case 'center-left':\n            case 'center-right':\n            case 'center-center':\n            case 'bottom-left':\n            case 'bottom-right':\n            case 'bottom-center':   return value;\n            default:\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        //validate align enum\n        if (key == 'label-align') {\n            switch(value) {\n            case 'left':\n            case 'right':\n            case 'center':  return value;\n            default:\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n        return value;\n\n    case 'number':\n\n        if (value > max || value < min) {\n            logError('wrong-property-value', layerId, key, value);\n            return getDefaultLayerPropertyValue(key);\n        }\n\n        return value;\n\n    case 'boolean':\n        return value;\n    }\n};\n\n\nvar validateLayerPropertyValue = function(layerId, key, value) {\n\n    switch(key) {\n\n    case 'inherit' :        return validateValue(layerId, key, value, 'string');\n    case 'reduce':          return validateValue(layerId, key, value, 'object');\n    case 'dynamic-reduce':  return validateValue(layerId, key, value, 'object');\n    case 'line-points':     return validateValue(layerId, key, value, 'object');\n\n    case 'line':              return validateValue(layerId, key, value, 'boolean');\n    case 'line-type':         return validateValue(layerId, key, value, 'string');\n    case 'line-flat':         return validateValue(layerId, key, value, 'boolean');\n    case 'line-width':        return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'line-width-units':  return validateValue(layerId, key, value, 'string');\n    case 'line-color':        return validateValue(layerId, key, value, 'object', 4, 0, 255);\n    case 'line-style':        return validateValue(layerId, key, value, 'string');\n    case 'line-style-texture':    return validateValue(layerId, key, value, 'object', 3, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'line-style-background': return validateValue(layerId, key, value, 'object', 4, 0, 255);\n\n    case 'line-label':         return validateValue(layerId, key, value, 'boolean');\n    case 'line-label-source':  return validateValue(layerId, key, value, 'string');\n    case 'line-label-color':   return validateValue(layerId, key, value, 'object', 4, 0, 255);\n    case 'line-label-color2':  return validateValue(layerId, key, value, 'object', 4, 0, 255);\n    case 'line-label-size':    return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'line-label-offset':  return validateValue(layerId, key, value, 'number', null, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'line-label-spacing': return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'line-label-line-height': return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n\n    case 'point':        return validateValue(layerId, key, value, 'boolean');\n    case 'point-type':   return validateValue(layerId, key, value, 'string');\n    case 'point-flat':   return validateValue(layerId, key, value, 'boolean');\n    case 'point-radius': return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'point-Layer':  return validateValue(layerId, key, value, 'string');\n\n    case 'point-color':  return validateValue(layerId, key, value, 'object', 4, 0, 255);\n\n    case 'icon':             return validateValue(layerId, key, value, 'boolean');\n    case 'icon-source':      return validateValue(layerId, key, value, 'object', 5, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'icon-scale':       return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'icon-offset':      return validateValue(layerId, key, value, 'object', 2, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'icon-origin':      return validateValue(layerId, key, value, 'string');\n    case 'icon-stick':       return validateValue(layerId, key, value, 'object', 8, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'icon-color':       return validateValue(layerId, key, value, 'object', 4, 0, 255);\n    case 'icon-no-overlap':  return validateValue(layerId, key, value, 'boolean');\n    case 'icon-no-overlap-factor': return validateValue(layerId, key, value, 'object');\n    case 'icon-no-overlap-margin': return validateValue(layerId, key, value, 'object', 2, -Number.MAX_VALUE, Number.MAX_VALUE);\n\n    case 'label':             return validateValue(layerId, key, value, 'boolean');\n    case 'label-color':       return validateValue(layerId, key, value, 'object', 4, 0, 255);\n    case 'label-color2':      return validateValue(layerId, key, value, 'object', 4, 0, 255);\n    case 'label-source':      return validateValue(layerId, key, value, 'string');\n    case 'label-size':        return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'label-size-units':  return validateValue(layerId, key, value, 'string');\n    case 'label-spacing':     return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'label-line-height': return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'label-offset':      return validateValue(layerId, key, value, 'object', 2, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'label-origin':      return validateValue(layerId, key, value, 'string');\n    case 'label-align':       return validateValue(layerId, key, value, 'string');\n    case 'label-stick':       return validateValue(layerId, key, value, 'object', 8, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'label-width':       return validateValue(layerId, key, value, 'number', null, 0.0001, Number.MAX_VALUE);\n    case 'label-no-overlap':  return validateValue(layerId, key, value, 'boolean');\n    case 'label-no-overlap-factor': return validateValue(layerId, key, value, 'object');\n    case 'label-no-overlap-margin': return validateValue(layerId, key, value, 'object', 2, -Number.MAX_VALUE, Number.MAX_VALUE);\n\n    case 'polygon':             return validateValue(layerId, key, value, 'boolean');\n    case 'polygon-style':       return validateValue(layerId, key, value, 'string');\n    case 'polygon-use-stencil': return validateValue(layerId, key, value, 'boolean');\n    case 'polygon-culling':     return validateValue(layerId, key, value, 'string');\n    case 'polygon-color':       return validateValue(layerId, key, value, 'object', 4, 0, 255);\n    case 'polygon-extrude':     return validateValue(layerId, key, value, 'number', 0, -Number.MAX_VALUE, Number.MAX_VALUE);\n\n    case 'z-index':        return validateValue(layerId, key, value, 'number', null, -Number.MAX_VALUE, Number.MAX_VALUE);\n    case 'zbuffer-offset': return validateValue(layerId, key, value, 'object', 3, 0, Number.MAX_VALUE);\n\n    case 'selected-hover-layer':  return validateValue(layerId, key, value, 'string');\n    case 'selected-layer':  return validateValue(layerId, key, value, 'string');\n    case 'hover-event':     return validateValue(layerId, key, value, 'boolean');\n    case 'hover-layer':     return validateValue(layerId, key, value, 'string');\n    case 'enter-event':     return validateValue(layerId, key, value, 'boolean');\n    case 'leave-event':     return validateValue(layerId, key, value, 'boolean');\n    case 'click-event':     return validateValue(layerId, key, value, 'boolean');\n    case 'draw-event':      return validateValue(layerId, key, value, 'boolean');\n    case 'advanced-hit':    return validateValue(layerId, key, value, 'boolean');\n    case 'export-geometry': return validateValue(layerId, key, value, 'boolean');\n    case 'pack':            return validateValue(layerId, key, value, 'boolean');\n\n    case 'visible':           return validateValue(layerId, key, value, 'boolean');\n    case 'visibility':        return validateValue(layerId, key, value, 'number', null, 0.00001, Number.MAX_VALUE);\n    case 'visibility-abs':    return validateValue(layerId, key, value, 'object', 2, 0.00001, Number.MAX_VALUE);\n    case 'visibility-rel':    return validateValue(layerId, key, value, 'object', 4, 0.00001, Number.MAX_VALUE);\n    case 'visibility-switch': return validateValue(layerId, key, value, 'object');\n\n    case 'hysteresis':  return validateValue(layerId, key, value, 'object');\n    case 'culling':     return validateValue(layerId, key, value, 'number', 180, 0.0001, 180);\n    case 'next-pass':   return validateValue(layerId, key, value, 'object');\n\n    case 'importance-source':  return validateValue(layerId, key, value, 'string');\n    case 'importance-weight':  return validateValue(layerId, key, value, 'number', null, 0, Number.MAX_VALUE);\n\n    }\n\n    return value; //custom property\n};\n\n\nvar getDefaultLayerPropertyValue = function(key) {\n    switch(key) {\n    case 'inherit':          return '';\n    case 'filter':           return null;\n    case 'reduce':           return null;\n    case 'dynamic-reduce':   return null;\n    case 'line-points':      return ['vertices',0,0];\n\n    case 'line':             return false;\n    case 'line-type':        return 'screen';\n    case 'line-flat':        return false;\n    case 'line-width':       return 1;\n    case 'line-width-units': return 'meters';\n    case 'line-color':       return [255,255,255,255];\n    case 'line-style':       return 'solid';\n    case 'line-style-texture':    return null;\n    case 'line-style-background': return [0,0,0,0];\n\n    case 'line-label':         return false;\n    case 'line-label-font':    return ['#default'];\n    case 'line-label-color':   return [255,255,255,255];\n    case 'line-label-color2':  return [0,0,0,255];\n    case 'line-label-outline': return [0.27,0.75,2.2,2.2];\n    case 'line-label-source':  return '$name';\n    case 'line-label-size':    return 1;\n    case 'line-label-offset':  return 0;\n    case 'line-label-spacing': return 1;\n    case 'line-label-line-height': return 1;\n\n    case 'point':        return false;\n    case 'point-type':   return 'screen';\n    case 'point-flat':   return false;\n    case 'point-radius': return 1;\n    case 'point-Layer':  return 'solid';\n    case 'point-color':  return [255,255,255,255];\n\n    case 'icon':         return false;\n    case 'icon-source':  return null;\n    case 'icon-scale':   return 1;\n    case 'icon-offset':  return [0,0];\n    case 'icon-origin':  return 'bottom-center';\n    case 'icon-stick':   return [0,0,0,255,255,255,255,0];\n    case 'icon-color':   return [255,255,255,255];\n    case 'icon-no-overlap':  return false;\n    case 'icon-no-overlap-factor': return null;\n    case 'icon-no-overlap-margin': return [5,5];\n\n    case 'label':             return false;\n    case 'label-font':        return ['#default'];\n    case 'label-color':       return [255,255,255,255];\n    case 'label-color2':      return [0,0,0,255];\n    case 'label-outline':     return [0.27,0.75,2.2,2.2];\n    case 'label-source':      return '$name';\n    case 'label-size':        return 10;\n    case 'label-size-units':  return 'pixels';\n    case 'label-spacing':     return 1;\n    case 'label-line-height': return 1;\n    case 'label-offset':      return [0,0];\n    case 'label-origin':      return 'bottom-center';\n    case 'label-align':       return 'center';\n    case 'label-stick':       return [0,0,0,255,255,255,255,0];\n    case 'label-width':       return 200;\n    case 'label-no-overlap':  return true;\n    case 'label-no-overlap-factor': return null;\n    case 'label-no-overlap-margin': return [5,5];\n       \n    case 'polygon':             return false;\n    case 'polygon-style':       return 'solid';\n    case 'polygon-use-stencil': return true;\n    case 'polygon-culling':     return 'none';\n    case 'polygon-color':  return [255,255,255,255];\n\n    case 'z-index':        return 0;\n    case 'zbuffer-offset': return [0,0,0];\n\n    case 'selected-hover-layer':  return '';\n    case 'selected-layer':  return '';\n    case 'hover-event':     return false;\n    case 'hover-layer':     return '';\n    case 'enter-event':     return false;\n    case 'leave-event':     return false;\n    case 'click-event':     return false;\n    case 'draw-event':      return false;\n    case 'advanced-hit':    return false;\n    case 'export-geometry': return false;\n    case 'pack':            return false;\n\n    case 'visible':           return true;\n    case 'visibility':        return null;\n    case 'visibility-abs':    return null;\n    case 'visibility-rel':    return null;\n    case 'visibility-switch': return null;\n\n    case 'hysteresis':      return null;\n    case 'culling':         return 180;\n    case 'next-pass':       return null;\n\n    case 'importance-source':  return null; //''\n    case 'importance-weight':  return 1;\n    }\n};\n\n\nfunction getFilterResult(filter, feature, featureType, group, layer, key, lod, depth, fast) {\n    var result, i, li;\n\n    if (!filter || !Array.isArray(filter)) {\n        return false;\n    }\n\n    if (depth > 100) {\n        return false;\n    }\n\n    switch(filter[0]) {\n        case 'all': \n            for (i = 1, li = filter.length; i < li; i++) {\n                result = getFilterResult(filter[i], feature, featureType, group, layer, key, lod, depth + 1, fast);\n\n                if (!result) {\n                    return false;\n                }\n            }\n               \n            return true;                         \n\n        case 'any':\n            for (i = 1, li = filter.length; i < li; i++) {\n                result = getFilterResult(filter[i], feature, featureType, group, key, lod, depth + 1, fast);\n\n                if (result) {\n                    return true;\n                }\n            }\n               \n            return false;                         \n\n        case 'none':\n            for (i = 1, li = filter.length; i < li; i++) {\n                result = getFilterResult(filter[i], feature, featureType, group, key, lod, depth + 1, fast);\n\n                if (result) {\n                    return false;\n                }\n            }\n               \n            return true;\n                              \n        case 'skip': return false; \n    }\n\n    var value, value2;\n\n    if (fast && filter[2]) {\n        value = filter[1];\n    } else {\n        globals.disableLog = (filter[0] == 'has' || filter[0] == '!has');\n        value = getLayerPropertyValueInner(layer, key, feature, lod, filter[1], 0);\n        globals.disableLog = false;\n    }\n\n    switch(filter[0]) {\n    case '==':\n    case '!=':\n    case '>=':\n    case '<=':\n    case '>':\n    case '<':\n        value2 = filter[fast ? 3 : 2];\n\n        if (typeof value2 == 'undefined') {\n            return false;\n        }\n\n        if (!(fast && filter[4])) {\n            value2 = getLayerPropertyValueInner(layer, key, feature, lod, value2, 0);\n        }\n\n        break;\n    }\n\n    switch(filter[0]) {\n    case '==': return (value == value2);\n    case '!=': return (value != value2);\n    case '>=': return (value >= value2);\n    case '<=': return (value <= value2);\n    case '>': return (value > value2);\n    case '<': return (value < value2);\n        \n    case 'has': return (typeof value != 'undefined');\n    case '!has': return (typeof value == 'undefined');\n        \n    case 'in':\n        for (i = fast ? 3 : 2, li = filter.length; i < li; i++) {\n            if (filter[i] == value) {\n                return true;\n            }\n        } \n        return false;\n        \n    case '!in':\n        for (i = fast ? 3 : 2, li = filter.length; i < li; i++) {\n            if (filter[i] == value) {\n                return false;\n            }\n        } \n        return true;\n    }            \n\n    return false;    \n}\n\n\nfunction isSimpleValue(value) {\n    switch(typeof value) {\n        case 'number':  return true;\n        case 'string': \n            \n            if (value.length > 0) {\n                switch(value.charAt(0)) {\n                    case '#': \n                    case '$':\n                    case '@':\n                    case '&':\n                        break;\n                    \n                    default: \n\n                        if (value.indexOf('{') == -1) {\n                            return true;\n                        }\n\n                        break;\n                }\n            } else {\n                return true;\n            }\n\n            break;\n    }\n\n    return false;\n}\n\n\nfunction makeFasterFilter(filter) {\n    if (!filter || !Array.isArray(filter)) {\n        return filter;\n    }\n\n    var i, li, value, simple, result = [filter[0]];\n\n    switch(filter[0]) {\n    case 'all': \n    case 'any':\n    case 'none':\n    case 'skip':\n        for (i = 1, li = filter.length; i < li; i++) {\n            result[i] = makeFasterFilter(filter[i]);\n        }\n\n        return result;\n    }\n\n    result[1] = filter[1];\n    result[2] = isSimpleValue(filter[1]);\n\n    switch(filter[0]) {\n    case '==':\n    case '!=':\n    case '>=':\n    case '<=':\n    case '>':\n    case '<':\n        result[3] = filter[2];\n        result[4] = isSimpleValue(filter[2]);\n        break;\n\n    case 'in':\n    case '!in':\n\n        for (i = 2, li = filter.length; i < li; i++) {\n            result[i+1] = filter[i];\n        } \n\n    }\n\n    return result;\n}\n\nvar processLayer = function(layerId, layerData, stylesheetLayersData) {\n    var layer = {}, key, value;\n\n    //copy Layer and inherit Layer if needed\n    copyLayer(layerId, layer, layerData, stylesheetLayersData);\n\n    //replace constants and validate properties\n    for (key in layer) {\n\n        value = layer[key];\n\n        //replace constant with value\n        if ((typeof value) == 'string') {\n            if (value.length > 0) {\n                //is it constant?\n                switch(value.charAt(0)) {\n                    case '@':\n                        if (globals.stylesheetConstants[value] != null) {\n                            //replace constant with value\n                            layer[key] = globals.stylesheetConstants[value];\n                        } else {\n                            logError('wrong-object', layerId, key, value, null, 'constant');\n\n                            //replace constant with deafault value\n                            layer[key] = getDefaultLayerPropertyValue(key);\n                        }\n                        break;\n\n                    case '%':  // reserved for variators\n\n                        if (globals.stylesheetLocals[value] != null) {\n                            if (!layer['$$layer-variables']) {\n                                layer['$$layer-variables'] = {};\n                            }\n\n                            layer['$$layer-variables'][key] = value;\n\n                            //replace variable with value\n                            layer[key] = globals.stylesheetLocals[value];\n\n                        } else {\n                            logError('wrong-object', layerId, key, value, null, 'variable');\n\n                            //replace constant with deafault value\n                            layer[key] = getDefaultLayerPropertyValue(key);\n                        }\n                        break;\n                }\n            }\n        }\n\n        //copy constats to vswitch\n        if (key == 'visibility-switch') {\n            if (Array.isArray(value) && value.length > 0) {\n                for (var i = 0, li = value.length; i < li; i++) {\n                    var valueItem = value[i];\n                    var wrong = false;\n\n                    if (!(typeof valueItem == 'object' && Array.isArray(valueItem) && valueItem.length == 2)) {\n                        wrong = true;\n                    } else {\n                        if (typeof valueItem[0] == 'string' && valueItem[0].charAt(0) == '@') {\n                            if (typeof globals.stylesheetConstants[valueItem[0]] == 'undefined') {\n                                wrong = true;\n                            } else {\n                                valueItem[0] = globals.stylesheetConstants[valueItem[0]];\n                            }\n                        }\n\n                        if (!(typeof valueItem[0] == 'number' && (typeof valueItem[1] == 'string' || valueItem[1] === null))) {\n                            wrong = true;\n                        }\n                    }\n\n                    if (wrong) {\n                        logError('wrong-property-value[]', layerId, key, value, i);\n                    }\n                }\n\n            } else {\n                logError('wrong-property-value', layerId, key, value);\n                return getDefaultLayerPropertyValue(key);\n            }\n        }\n\n    }\n\n    return layer;\n};\n\n\nvar processStylesheet = function(stylesheetLayersData) {\n    var key;\n    globals.stylesheetBitmaps = {};\n    globals.stylesheetFonts = {};\n    globals.stylesheetConstants = stylesheetLayersData['constants'] || {};\n    globals.stylesheetVariables = stylesheetLayersData['variables'] || {};\n    globals.stylesheetLocals = {};\n\n    //get bitmaps\n    var bitmaps = stylesheetLayersData['bitmaps'] || {};\n\n    //build map\n    for (key in bitmaps) {\n        var bitmap = bitmaps[key];\n        //var skip = false;\n\n        if ((typeof bitmap) == 'string') {\n            bitmap = {'url':bitmap, 'hash': getHash(bitmap) };\n        } else if((typeof bitmap) == 'object'){\n            if (bitmap['url'] == null) {\n                bitmap['hash'] = 'null';\n                logError('wrong-bitmap', key);\n            } else {\n                bitmap['hash'] = getHash(bitmap['url']);\n            }\n        } else {\n            logError('wrong-bitmap', key);\n        }\n\n        globals.stylesheetBitmaps[key] = bitmap;\n    }\n\n    //load bitmaps\n    postMessage({'command':'loadBitmaps', 'bitmaps': globals.stylesheetBitmaps});\n\n    //remove urls\n    bitmaps = globals.stylesheetBitmaps;\n\n    for (key in bitmaps) {\n        bitmap = bitmaps[key];\n        bitmap['url'] = null;\n    }\n\n    //get fonts\n    var fonts = stylesheetLayersData['fonts'] || {};\n\n    //build map\n    for (key in fonts) {\n        var font = fonts[key];\n\n        if ((typeof font) == 'string') {\n            font = {'url':font};\n        } else if((typeof font) == 'object'){\n            if (font['url'] == null) {\n                logError('wrong-font', key);\n            }\n        } else {\n            logError('wrong-font', key);\n        }\n\n        globals.stylesheetFonts[key] = font;\n    }\n\n    //load fonts\n    postMessage({'command':'loadFonts', 'fonts': globals.stylesheetFonts});\n\n\n    //get layers\n    globals.stylesheetData = {\n        layers : {}\n    };\n\n    var layers = stylesheetLayersData['layers'] || {};\n\n    globals.stylesheetLayers = globals.stylesheetData.layers;\n\n    //process layers\n    for (key in layers) {\n        globals.stylesheetData.layers[key] = processLayer(key, layers[key], stylesheetLayersData);\n    }\n};\n\n\n\n\n\n/***/ }),\n/* 3 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__worker_font_js__ = __webpack_require__(8);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"n\", function() { return addStreetTextOnPath; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"i\", function() { return getTextLength; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"m\", function() { return getLineHeight; });\n/* unused harmony export getFontFactor */\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"g\", function() { return getSplitIndex; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"e\", function() { return areTextCharactersAvailable; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"f\", function() { return addText; });\n/* unused harmony export addTextOnPath */\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return setFont; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"b\", function() { return setFontMap; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"l\", function() { return getCharVerticesCount; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"j\", function() { return getFonts; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"k\", function() { return getFontsStorage; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"c\", function() { return hasLatin; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"d\", function() { return isCJK; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"h\", function() { return getTextGlyphs; });\n\n\n\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */],\n    vec3Normalize = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"g\" /* vec3Normalize */], vec3Length = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"h\" /* vec3Length */],\n    vec3Cross = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"i\" /* vec3Cross */],\n    Typr = __WEBPACK_IMPORTED_MODULE_1__worker_font_js__[\"a\" /* Typr */];\n\n\nvar setFont = function(fontData) {\n    //console.log('setFont ' + fontData['url']);\n    //debugger;\n\n    var font = Typr.parse(fontData['data']);\n\n    globals.fontsStorage[fontData['url']] = font;\n};\n\n\nvar setFontMap = function(fontMap) {\n    var fonts = fontMap['map'];\n    for (var key in fonts) {\n        globals.fonts[key] = globals.fontsStorage[fonts[key]];\n    }\n\n    globals.fontsMap = fonts;\n};\n\n\nvar addChar = function(pos, dir, verticalShift, char, factor, spacing, index, index2, textVector, fonts, vertexBuffer, texcoordsBuffer, flat, planes, fontIndex, singleBuffer) {\n    var n, font = fonts[fontIndex];\n    var up = [0,0,0];\n\n    if (globals.geocent && !flat) {\n        n = [0,0,0];\n        vec3Normalize(globals.bboxMin, up);\n        vec3Cross(up, dir, n);\n    } else {\n        n = [-dir[1],dir[0],0];\n    }\n\n    vec3Cross(dir, n, up);\n\n    var p1 = [pos[0], pos[1], pos[2]];\n    var p2 = [p1[0], p1[1], p1[2]];\n\n    //var chars = font.chars;\n    \n    var fc = font.glyphs[char];\n    char = 0; // hack\n\n    if (!fc) {\n        return [pos, index, index2, 0];\n    }\n\n    var l = 0;\n    var nx = textVector[0];\n    var ny = textVector[1];\n    var nz = textVector[2];\n\n    if (char == 9 || char == 32) {  //tab or space\n        fc = chars[32]; //space\n\n        if (fc) {\n            pos[0] += dir[0] * (fc.step) * factor * spacing;\n            pos[1] += dir[1] * (fc.step) * factor * spacing;\n            l = fc.lx * factor;\n        }\n    } else {\n        if (fc.lx == 0) {\n            pos[0] = pos[0] + dir[0] * fc.step * factor * spacing;\n            pos[1] = pos[1] + dir[1] * fc.step * factor * spacing;\n            l = fc.lx * factor;\n        } else {\n            var planeShift = fontIndex * 4000;\n            var plane = fc.plane + planeShift;\n\n            if (planes) {\n                if (!planes[fontIndex]) {\n                    planes[fontIndex] = {};\n                }\n                \n                planes[fontIndex][plane] = true;\n            }\n\n            var factorX = fc.lx * factor;\n            var factorY = fc.ly * factor;\n\n            if (singleBuffer) {\n\n                if (globals.procesLineLabel) {\n\n                    p1[0] = p1[0] + dir[0] * fc.sx * factor;\n                    p1[1] = p1[1] + dir[1] * fc.sx * factor;\n                    p1[2] = p1[2] + dir[2] * fc.sx * factor;\n                    p1[0] = p1[0] + n[0] * (fc.sy - font.size) * factor;\n                    p1[1] = p1[1] + n[1] * (fc.sy - font.size) * factor;\n                    p1[2] = p1[2] + n[2] * (fc.sy - font.size) * factor;\n\n                    singleBuffer[index] = p1[0];\n                    singleBuffer[index+1] = p1[1];\n                    singleBuffer[index+2] = p1[2];\n\n                    var m = [ [dir[0], dir[1], dir[2]], \n                              [n[0], n[1], n[2]], \n                              [up[0], up[1], up[2]] ];\n\n                    //more robust code can be found there\n                    //http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/\n\n                    singleBuffer[index+3] = Math.sqrt(1.0 + m[0][0] + m[1][1] + m[2][2]) / 2.0; // w\n                    var  w4 = (4.0 * w);\n                    singleBuffer[index+4] = (m[2][1] - m[1][2]) / w4 ;  //x\n                    singleBuffer[index+5] = (m[0][2] - m[2][0]) / w4 ;  //y\n                    singleBuffer[index+6] = (m[1][0] - m[0][1]) / w4 ;  //z\n                   \n                    singleBuffer[index+7] = factorX;\n                    singleBuffer[index+8] = factorY;\n                    singleBuffer[index+9] = fc.u1;\n                    singleBuffer[index+10] = fc.v1 + planeShift;\n                    singleBuffer[index+11] = fc.u2;\n                    singleBuffer[index+12] = fc.v2 + planeShift;\n\n                } else {\n                    singleBuffer[index] = p1[0] + fc.sx * factor;\n                    singleBuffer[index+1] = p1[1] + (fc.sy - font.size) * factor;\n                    singleBuffer[index+2] = singleBuffer[index] + factorX;\n                    singleBuffer[index+3] = singleBuffer[index+1] - factorY;\n                    singleBuffer[index+4] = fc.u1;\n                    singleBuffer[index+5] = fc.v1 + planeShift;\n                    singleBuffer[index+6] = fc.u2;\n                    singleBuffer[index+7] = fc.v2 + planeShift;\n\n                    index += 8;\n                }\n\n            } else {\n\n                var n2 = [n[0] * verticalShift, n[1] * verticalShift, n[2] * verticalShift];\n                var n3 = [n2[0] + n[0] * factorY, n2[1] + n[1] * factorY, n2[2] + n[2] * factorY];\n                \n                p1[0] = p1[0] + dir[0] * fc.sx * factor;\n                p1[1] = p1[1] + dir[1] * fc.sx * factor;\n                p1[2] = p1[2] + dir[2] * fc.sx * factor;\n                p1[0] = p1[0] + n[0] * (fc.sy - font.size) * factor;\n                p1[1] = p1[1] + n[1] * (fc.sy - font.size) * factor;\n                p1[2] = p1[2] + n[2] * (fc.sy - font.size) * factor;\n\n                p2[0] = p1[0] + dir[0] * factorX;\n                p2[1] = p1[1] + dir[1] * factorX;\n                p2[2] = p1[2] + dir[2] * factorX;\n\n                //first polygon\n                vertexBuffer[index] = p1[0] - n2[0];\n                vertexBuffer[index+1] = p1[1] - n2[1];\n                vertexBuffer[index+2] = p1[2] - n2[2];\n                vertexBuffer[index+3] = nz;\n\n                texcoordsBuffer[index2] = fc.u1;\n                texcoordsBuffer[index2+1] = fc.v1 +  planeShift;\n                texcoordsBuffer[index2+2] = nx;\n                texcoordsBuffer[index2+3] = ny;\n\n                vertexBuffer[index+4] = p1[0] - n3[0];\n                vertexBuffer[index+5] = p1[1] - n3[1];\n                vertexBuffer[index+6] = p1[2] - n3[2];\n                vertexBuffer[index+7] = nz;\n\n                texcoordsBuffer[index2+4] = fc.u1;\n                texcoordsBuffer[index2+5] = fc.v2 +  planeShift;\n                texcoordsBuffer[index2+6] = nx;\n                texcoordsBuffer[index2+7] = ny;\n\n                vertexBuffer[index+8] = p2[0] - n2[0];\n                vertexBuffer[index+9] = p2[1] - n2[1];\n                vertexBuffer[index+10] = p2[2] - n2[2];\n                vertexBuffer[index+11] = nz;\n\n                texcoordsBuffer[index2+8] = fc.u2;\n                texcoordsBuffer[index2+9] = fc.v1 +  planeShift;\n                texcoordsBuffer[index2+10] = nx;\n                texcoordsBuffer[index2+11] = ny;\n\n\n                //next polygon\n                vertexBuffer[index+12] = p1[0] - n3[0];\n                vertexBuffer[index+13] = p1[1] - n3[1];\n                vertexBuffer[index+14] = p1[2] - n3[2];\n                vertexBuffer[index+15] = nz;\n\n                texcoordsBuffer[index2+12] = fc.u1;\n                texcoordsBuffer[index2+13] = fc.v2 +  planeShift;\n                texcoordsBuffer[index2+14] = nx;\n                texcoordsBuffer[index2+15] = ny;\n\n                vertexBuffer[index+16] = p2[0] - n3[0];\n                vertexBuffer[index+17] = p2[1] - n3[1];\n                vertexBuffer[index+18] = p2[2] - n3[2];\n                vertexBuffer[index+19] = nz;\n\n                texcoordsBuffer[index2+16] = fc.u2;\n                texcoordsBuffer[index2+17] = fc.v2 +  planeShift;\n                texcoordsBuffer[index2+18] = nx;\n                texcoordsBuffer[index2+19] = ny;\n\n                vertexBuffer[index+20] = p2[0] - n2[0];\n                vertexBuffer[index+21] = p2[1] - n2[1];\n                vertexBuffer[index+22] = p2[2] - n2[2];\n                vertexBuffer[index+23] = nz;\n\n                texcoordsBuffer[index2+20] = fc.u2;\n                texcoordsBuffer[index2+21] = fc.v1 +  planeShift;\n                texcoordsBuffer[index2+22] = nx;\n                texcoordsBuffer[index2+23] = ny;\n\n                index += 24;\n                index2 += 24;\n            }\n\n            pos[0] = pos[0] + dir[0] * fc.step * factor * spacing;\n            pos[1] = pos[1] + dir[1] * fc.step * factor * spacing;\n            l = fc.lx * factor;\n        }\n    }\n\n    return [pos, index, index2, l * spacing];\n};\n\n\nvar getCharVerticesCount = function(origin) {\n    return (origin ? 3 : 4) * 3 * 2;\n};\n\n\nvar addText = function(pos, dir, text, size, spacing, fonts, vertexBuffer, texcoordsBuffer, flat, index, planes, glyphsRes, singleBuffer) {\n    var textVector = [0,1,0];\n    var p1 = [pos[0], pos[1], pos[2]];\n\n    var res = glyphsRes ? glyphsRes : Typr.U.stringToGlyphs(fonts, text);\n    var glyphs = res[0];\n    var gfonts = res[1];\n\n    for (var i = 0, li = glyphs.length; i < li; i++) {\n        var glyph = glyphs[i];\n        var font = fonts[gfonts[i]];\n\n        if (font) {\n            var factor = getFontFactor(size, font);\n\n            var shift = addChar(p1, dir, 0, glyph, factor, spacing, index, index, textVector, fonts, vertexBuffer, texcoordsBuffer, flat, planes, gfonts[i], singleBuffer);\n\n            //var gid2 = (i<gls.length-1 && gls[i+1]!=-1)  ? gls[i+1] : 0;\n            //x += Typr.U.getPairAdjustment(font, gid, gid2);\n\n            p1 = shift[0];\n            index = shift[1];\n        }\n    }\n\n    return index;\n};\n\n\nvar addTextOnPath = function(points, distance, text, size, spacing, textVector, fonts, verticalOffset, vertexBuffer, texcoordsBuffer, index, planes, glyphsRes) {\n    if (textVector == null) {\n        textVector = [0,1,0];\n    }\n\n    var p1 = points[0];\n    //var newLineSpace = getLineHeight(size, fonts);\n    //var s = [p1[0], p1[1], p1[2]];\n\n    p1 = [p1[0], p1[1], p1[2]];\n    var l = distance;\n\n    var res = glyphsRes ? glyphsRes : Typr.U.stringToGlyphs(fonts, text);\n    var glyphs = res[0];\n    var gfonts = res[1];\n\n    for (var i = 0, li = glyphs.length; i < li; i++) {\n        /*  \n        var char = text.charCodeAt(i);\n\n        if (char == 10) { //new line\n            s[0] += -dir[1] * newLineSpace;\n            s[1] += dir[0] * newLineSpace;\n            p1 = [s[0], s[1], s[2]];\n            continue;\n        }\n\n        if (char == 9) { //tab\n            char = 32;\n        }\n        */\n\n        var glyph = glyphs[i];\n        var font = fonts[gfonts[i]];\n\n        if (font) {\n            var factor = getFontFactor(size, font);\n\n            var ll = 0.01;\n            var fc = font.glyphs[glyph];\n            if (fc) {\n                ll = fc.step * factor * spacing;\n            }\n\n            var posAndDir = getPathPositionAndDirection(points, l);\n            var posAndDir2 = getPathPositionAndDirection(points, l+ll);\n\n            //average dir\n            var dir = [(posAndDir2[1][0] + posAndDir[1][0])*0.5,\n                (posAndDir2[1][1] + posAndDir[1][1])*0.5,\n                (posAndDir2[1][2] + posAndDir[1][2])*0.5];\n\n            vec3Normalize(dir);\n\n            var shift = addChar(posAndDir[0], dir, -factor*font.size*0.7+verticalOffset, glyph, factor, spacing, index, index, textVector, fonts, vertexBuffer, texcoordsBuffer, null, planes, gfonts[i]);\n\n            p1 = shift[0];\n            index = shift[1];\n            //index2 = shift[2];\n            l += ll;\n        }\n    }\n\n    return index;\n};\n\n\nvar addStreetTextOnPath = function(points, text, size, spacing, fonts, verticalOffset, vertexBuffer, texcoordsBuffer, index, planes, glyphsRes) {\n    var textLength = getTextLength(text, size, spacing, fonts, glyphsRes);\n    var pathLength = getPathLength(points);\n    var shift = (pathLength -  textLength)*0.5;\n    if (shift < 0) {\n        shift = 0;\n    }\n\n    if (textLength > pathLength) {\n        return;\n    }\n\n    var textVector = getPathTextVector(points, shift, text, size, spacing, fonts, glyphsRes);\n\n    return addTextOnPath(points, shift, text, size, spacing, textVector, fonts, verticalOffset, vertexBuffer, texcoordsBuffer, index, planes, glyphsRes);\n};\n\n\nvar getFontFactor = function(size, font) {\n    return font ? ((size / font.size) * 1.52) : 1;\n};\n\n\nvar getLineHeight = function(size, lineHeight, fonts) {\n    var factor = getFontFactor(size, fonts[0]);\n    //return font.space * factor;\n    return fonts[0].cly * factor * lineHeight;\n};\n\n\nvar getTextLength = function(text, size, spacing, fonts, glyphsRes) {\n    var l = 0;\n\n    var res = glyphsRes ? glyphsRes : Typr.U.stringToGlyphs(fonts, text);\n    var glyphs = res[0];\n    var gfonts = res[1];\n\n    for (var i = 0, li = glyphs.length; i < li; i++) {\n        var glyph = glyphs[i];\n        var font = fonts[gfonts[i]];\n\n        if (font) {\n            var factor = getFontFactor(size, font) * spacing;\n            var fc = font.glyphs[glyph];\n\n            if (fc) {\n                if (i == (li-1)) {\n                    l += fc.lx * factor;\n                } else {\n                    l += fc.step * factor;\n                }\n            }\n        }\n    }\n\n    return l;\n};\n\n\nvar getSplitIndex = function(text, width, size, spacing, fonts, glyphsRes) {\n    var l = 0;\n\n    var res = glyphsRes ? glyphsRes : Typr.U.stringToGlyphs(fonts, text);\n    var glyphs = res[0];\n    var gfonts = res[1];\n    var codes = res[2];\n\n    for (var i = 0, li = glyphs.length; i < li; i++) {\n        var glyph = glyphs[i];\n        var char = codes[i];//text.charCodeAt(i);\n\n        if (l > width && (char == 10 || char == 9 || char == 32)) {\n            return i;\n        }\n\n        if (char == 10) { //new line\n            continue;\n        }\n\n        var font = fonts[gfonts[i]];\n\n        if (font) {\n            var factor = getFontFactor(size, font) * spacing;\n            var fc = font.glyphs[glyph];\n\n            if (fc) {\n                if (i == (li-1)) {\n                    l += fc.lx * factor;\n                } else {\n                    l += fc.step * factor;\n                }\n            }\n        }\n    }\n\n    return li;\n};\n\n\nvar getPathLength = function(points) {\n    var l = 0;\n\n    for (var i = 0, li = points.length-1; i < li; i++) {\n        var p1 = points[i];\n        var p2 = points[i+1];\n        var dir = [p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]];\n\n        l += vec3Length(dir);\n    }\n\n    return l;\n};\n\n\nvar getPathPositionAndDirection = function(points, distance) {\n    var l = 0;\n    var p1 = [0,0,0];\n    var dir = [1,0,0];\n\n    for (var i = 0, li = points.length-1; i < li; i++) {\n        p1 = points[i];\n        var p2 = points[i+1];\n        dir = [p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]];\n\n        var ll = vec3Length(dir);\n\n        if ((l + ll) > distance) {\n\n            var factor = (distance - l) / (ll);\n            var p = [p1[0] + dir[0] * factor,\n                p1[1] + dir[1] * factor,\n                p1[2] + dir[2] * factor];\n\n            vec3Normalize(dir);\n\n            return [p, dir];\n        }\n\n        l += ll;\n    }\n\n    return [p1, dir];\n};\n\n\nvar getPathTextVector = function(points, shift, text, size, spacing, fonts, glyphsRes) {\n    var l = 0;\n    var p1 = [0,0,0];\n    var dir = [1,0,0];\n    var textDir = [0,0,0];\n    var textStart = shift;\n    var textEnd = shift + getTextLength(text, size, spacing, fonts, glyphsRes);\n    var bboxMin = globals.bboxMin;\n    var geocent = globals.geocent;\n\n    for (var i = 0, li = points.length-1; i < li; i++) {\n        p1 = points[i];\n        var p2 = points[i+1];\n        dir = [p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]];\n\n        l += vec3Length(dir);\n\n        if (l > textStart) {\n            vec3Normalize(dir);\n            textDir[0] += dir[0];\n            textDir[1] += dir[1];\n            textDir[2] += dir[2];\n        }\n\n        if (l > textEnd) {\n            vec3Normalize(textDir);\n\n            if (geocent) {\n                var nn = [0,0,0];\n                vec3Normalize(bboxMin, nn);\n                vec3Cross(nn, textDir, nn);\n                return nn;\n            } else {\n                return [-textDir[1], textDir[0],0];\n            }\n        }\n    }\n\n    return textDir;\n};\n\n\nvar areTextCharactersAvailable = function(text, fonts, glyphsRes) {\n    if (!text || text == '') {\n        return false;\n    }\n\n    var res = glyphsRes ? glyphsRes : Typr.U.stringToGlyphs(fonts, text);\n    var glyphs = res[0];\n    //var gfonts = res[1];\n\n    if (glyphs.indexOf(0) != -1) {\n        return false;\n    }\n\n    return true;\n};\n\n\nvar hasLatin = function(str) {\n    for (var i = 0, li = str.length; i < li; i++) {\n        var c = str.charCodeAt(i);\n        if ((c >= 0x41 && c <= 0x5a) || (c >= 0x61 && c <= 0x7a) ||\n            ((c >= 0xc0 && c <= 0xff) && c!= 0xd7 && c!= 0xf7) || (c >= 0x100 && c <= 0x17f)) {\n            return true;\n        }\n    }\n\n    return false;\n};\n\n\nvar isCJK = function(str) {\n    for (var i = 0, li = str.length; i < li; i++) {\n        var c = str.charCodeAt(i);\n\n        if (!((c >= 0x4E00 && c <= 0x62FF) || (c >= 0x6300 && c <= 0x77FF) ||\n              (c >= 0x7800 && c <= 0x8CFF) || (c >= 0x8D00 && c <= 0x9FFF) || \n              (c >= 0x3400 && c <= 0x4DBF) || (c >= 0x20000 && c <= 0x215FF) || \n              (c >= 0x21600 && c <= 0x230FF) || (c >= 0x23100 && c <= 0x245FF) || \n              (c >= 0x24600 && c <= 0x260FF) || (c >= 0x26100 && c <= 0x275FF) || \n              (c >= 0x27600 && c <= 0x290FF) || (c >= 0x29100 && c <= 0x2A6DF) || \n              (c >= 0x2A700 && c <= 0x2B73F) || (c >= 0x2B740 && c <= 0x2B81F) || \n              (c >= 0x2B820 && c <= 0x2CEAF) || (c >= 0x2CEB0 && c <= 0x2EBEF) || \n              (c >= 0xF900 && c <= 0xFAFF) || (c >= 0x3300 && c <= 0x33FF) || \n              (c >= 0xFE30 && c <= 0xFE4F) || (c >= 0xF900 && c <= 0xFAFF) || \n              (c >= 0x2F800 && c <= 0x2FA1F) || \n              (c >= 0x0 && c <= 0x40) || (c >= 0xa0 && c <= 0xbf)  )) { //neutral\n            return false;\n        }\n    }\n\n    return true;\n};\n\n\nvar getFonts = function(fonts) {\n    var fontsMap = [];\n    for (var i = 0, li = fonts.length; i < li; i++) {\n        fontsMap.push(globals.fonts[fonts[i]]);\n    }\n\n    return fontsMap;\n};\n\n\nvar getFontsStorage = function(fonts) {\n    var fontsMap = [];\n    for (var i = 0, li = fonts.length; i < li; i++) {\n        fontsMap.push(globals.fontsMap[fonts[i]]);\n    }\n\n    return fontsMap;\n};\n\n\nvar getTextGlyphs = function(text, fonts) {\n    return Typr.U.stringToGlyphs(fonts, text);\n};\n\n\n\n\n\n\n\n/***/ }),\n/* 4 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__worker_style_js__ = __webpack_require__(2);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__worker_text_js__ = __webpack_require__(3);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__worker_message_js__ = __webpack_require__(1);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return processPointArrayPass; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"c\", function() { return processPointArrayGeometry; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"b\", function() { return processPointArrayVSwitchPass; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"d\", function() { return checkDPoints; });\n\n\n\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */], clamp = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"d\" /* clamp */];\nvar getLayerPropertyValue = __WEBPACK_IMPORTED_MODULE_1__worker_style_js__[\"c\" /* getLayerPropertyValue */], getLayerExpresionValue = __WEBPACK_IMPORTED_MODULE_1__worker_style_js__[\"g\" /* getLayerExpresionValue */];\nvar addText = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"f\" /* addText */], getSplitIndex = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"g\" /* getSplitIndex */], getTextGlyphs = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"h\" /* getTextGlyphs */],\n    getTextLength = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"i\" /* getTextLength */], getFonts = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"j\" /* getFonts */], getFontsStorage = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"k\" /* getFontsStorage */],\n    areTextCharactersAvailable = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"e\" /* areTextCharactersAvailable */], getCharVerticesCount = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"l\" /* getCharVerticesCount */], getLineHeight = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"m\" /* getLineHeight */];\nvar postGroupMessageFast = __WEBPACK_IMPORTED_MODULE_3__worker_message_js__[\"c\" /* postGroupMessageFast */];\n\n\nvar checkDPoints = function(pointArray) {\n    var pointsGroups = []; \n    var i, li, g, gl, points, p, pp;\n\n    if (pointArray['d-points'] || pointArray['d-lines']) {  //converty d-lines/points to lines/points\n        pointsGroups = pointArray['d-points'] || pointArray['d-lines'];\n\n        if (Array.isArray(pointsGroups) && points.length > 0) {\n\n            for (g = 0, gl = pointsGroups; g < gl; g++) {\n                points = pointsGroups[g];\n                \n                if (Array.isArray(points) && points.length > 0) {\n                    p = points[0];\n                    \n                    p[0] = (p[0] >> 1) ^ (-(p[0] & 1));\n                    p[1] = (p[1] >> 1) ^ (-(p[1] & 1));\n                    p[2] = (p[2] >> 1) ^ (-(p[2] & 1));\n\n                    for (i = 1, li = points.length; i < li; i++) {\n                        p = points[i-1];\n                        pp = points[i];\n\n                        pp[0] = ((pp[0] >> 1) ^ (-(pp[0] & 1))) + p[0];\n                        pp[1] = ((pp[1] >> 1) ^ (-(pp[1] & 1))) + p[1];\n                        pp[2] = ((pp[2] >> 1) ^ (-(pp[2] & 1))) + p[2];\n                    }\n                }\n            }\n        }\n\n        if (pointArray['d-points']) {\n            pointArray['points'] = pointArray['d-points'];\n            delete pointArray['d-points'];\n        } else {\n            pointArray['lines'] = pointArray['d-lines'];\n            delete pointArray['d-lines'];\n        }\n    }\n};\n\n\nvar processPointArrayPass = function(pointArray, lod, style, featureIndex, zIndex, eventInfo) {\n    var pointsGroups = []; \n    var i, li, g, gl, points, p, pp;\n\n    checkDPoints(pointArray);\n\n    if (pointArray['lines']) {  //use lines as points\n        pointsGroups = pointArray['lines'];\n    } else {\n        pointsGroups = [pointArray['points']];\n    }\n    \n    if (!pointsGroups || pointsGroups.length == 0) {\n        return;\n    }\n\n    var visibility = getLayerPropertyValue(style, 'visibility-rel', pointArray, lod) || \n                     getLayerPropertyValue(style, 'visibility-abs', pointArray, lod) ||\n                     getLayerPropertyValue(style, 'visibility', pointArray, lod);\n    var culling = getLayerPropertyValue(style, 'culling', pointArray, lod);\n    var hoverEvent = getLayerPropertyValue(style, 'hover-event', pointArray, lod);\n    var clickEvent = getLayerPropertyValue(style, 'click-event', pointArray, lod);\n    var drawEvent = getLayerPropertyValue(style, 'draw-event', pointArray, lod);\n    var enterEvent = getLayerPropertyValue(style, 'enter-event', pointArray, lod);\n    var leaveEvent = getLayerPropertyValue(style, 'leave-event', pointArray, lod);\n    var advancedHit = getLayerPropertyValue(style, 'advanced-event', pointArray, lod);\n    var linePoints = getLayerPropertyValue(style, 'line-points', pointArray, lod);\n\n    var zbufferOffset = getLayerPropertyValue(style, 'zbuffer-offset', pointArray, lod);\n\n    var point = getLayerPropertyValue(style, 'point', pointArray, lod);\n    var pointFlat = getLayerPropertyValue(style, 'point-flat', pointArray, lod);\n    var pointColor = getLayerPropertyValue(style, 'point-color', pointArray, lod);\n    var pointRadius = 0.5 * getLayerPropertyValue(style, 'point-radius', pointArray, lod);\n\n    var source, bufferSize, bufferSize2, totalPoints = 0, noOverlap;\n    //zIndex = (zIndex !== null) ? zIndex : getLayerPropertyValue(style, \"z-index\", pointArray, lod);\n\n    for (g = 0, gl = pointsGroups.length; g < gl; g++) {\n        points = pointsGroups[g];\n        if (Array.isArray(points) && points.length > 0) {\n            totalPoints += points.length;\n        }\n    }\n\n    var icon = getLayerPropertyValue(style, 'icon', pointArray, lod);\n    if (icon) {\n        source = getLayerPropertyValue(style, 'icon-source', pointArray, lod);\n        \n        if (source) {\n            bufferSize = getCharVerticesCount() * totalPoints;\n            bufferSize2 = getCharVerticesCount(true) * totalPoints;\n    \n            var iconData = {\n                color : getLayerPropertyValue(style, 'icon-color', pointArray, lod),\n                scale : getLayerPropertyValue(style, 'icon-scale', pointArray, lod),\n                offset : getLayerPropertyValue(style, 'icon-offset', pointArray, lod),\n                stick : getLayerPropertyValue(style, 'icon-stick', pointArray, lod),\n                reduce : getLayerPropertyValue(style, 'dynamic-reduce', pointArray, lod),\n                origin : getLayerPropertyValue(style, 'icon-origin', pointArray, lod),\n                source : getLayerPropertyValue(style, 'icon-source', pointArray, lod),\n                noOverlap : getLayerPropertyValue(style, 'icon-no-overlap', pointArray, lod),\n                noOverlapMargin : getLayerPropertyValue(style, 'icon-no-overlap-margin', pointArray, lod),\n                noOverlapFactor : getLayerPropertyValue(style, 'icon-no-overlap-factor', pointArray, lod),\n                index : 0,\n                index2 : 0\n            };\n\n            if (totalPoints > 1) {\n                iconData.vertexBuffer = new Float32Array(bufferSize);\n                iconData.originBuffer = new Float32Array(bufferSize2);\n                iconData.texcoordsBuffer = new Float32Array(bufferSize);\n            } else {\n                iconData.singleBuffer = new Float32Array(16);\n            }\n\n        } else {\n            icon = false;\n        }\n    }\n\n    var label = getLayerPropertyValue(style, 'label', pointArray, lod);\n    if (label) {\n        source = getLayerPropertyValue(style, 'label-source', pointArray, lod);\n\n        var text = getLayerExpresionValue(style, source, pointArray, lod, source);\n        text = text ? text.replace('\\r\\n', '\\n').replace('\\r', '\\n') : '';\n        var size = getLayerPropertyValue(style, 'label-size', pointArray, lod);\n        var fontNames = getLayerPropertyValue(style, 'label-font', pointArray, lod);\n        var fonts = getFonts(fontNames);\n        var glyphsRes = getTextGlyphs(text, fonts);\n        \n        if (source == '$name') {\n            if (!areTextCharactersAvailable(text, fonts, glyphsRes)) {\n                var text2 = getLayerExpresionValue(style, '$name:en', pointArray, lod, source);\n                text2 = text2 ? text2.replace('\\r\\n', '\\n').replace('\\r', '\\n') : '';\n                var glyphsRes2 = getTextGlyphs(text2, fonts);\n                \n                if (areTextCharactersAvailable(text2, fonts)) {\n                    text = text2;                     \n                    glyphsRes = glyphsRes2;\n                }\n            }\n        }\n        if (text && text != '' && Math.abs(size) > 0.0001) {\n            noOverlap = getLayerPropertyValue(style, 'label-no-overlap', pointArray, lod);\n            bufferSize = getCharVerticesCount() * text.length * (noOverlap ? 1 : totalPoints);\n            bufferSize2 = getCharVerticesCount(true) * text.length * (noOverlap ? 1 : totalPoints);\n\n            var useSingleBuffer = (totalPoints == 1);\n\n            var factor = 1;\n            if (getLayerPropertyValue(style, 'label-size-units', pointArray, lod) == 'points') {\n                factor = globals.pixelFactor / ((1 / 72) * (96));\n            }\n\n            var labelData = {\n                color : getLayerPropertyValue(style, 'label-color', pointArray, lod),\n                color2 : getLayerPropertyValue(style, 'label-color2', pointArray, lod),\n                outline : getLayerPropertyValue(style, 'label-outline', pointArray, lod),\n                reduce : getLayerPropertyValue(style, 'dynamic-reduce', pointArray, lod),\n                size : size * factor,\n                spacing: getLayerPropertyValue(style, 'label-spacing', pointArray, lod),\n                lineHeight: getLayerPropertyValue(style, 'label-line-height', pointArray, lod),\n                offset : getLayerPropertyValue(style, 'label-offset', pointArray, lod),\n                stick : getLayerPropertyValue(style, 'label-stick', pointArray, lod),\n                origin : getLayerPropertyValue(style, 'label-origin', pointArray, lod),\n                align : getLayerPropertyValue(style, 'label-align', pointArray, lod),\n                fonts : fonts,\n                fontsStorage : getFontsStorage(fontNames),\n                text : text,\n                hysteresis : getLayerPropertyValue(style, 'hysteresis', pointArray, lod),\n                width : factor * getLayerPropertyValue(style, 'label-width', pointArray, lod),\n                noOverlap : noOverlap,\n                noOverlapMargin : getLayerPropertyValue(style, 'label-no-overlap-margin', pointArray, lod),\n                noOverlapFactor : getLayerPropertyValue(style, 'label-no-overlap-factor', pointArray, lod),\n                vertexBuffer : (useSingleBuffer) ? null : (new Float32Array(bufferSize)),\n                originBuffer : (useSingleBuffer) ? null : (new Float32Array(bufferSize2)),\n                texcoordsBuffer : (useSingleBuffer) ? null : (new Float32Array(bufferSize)),\n                singleBuffer : (useSingleBuffer) ? (new Float32Array(text.length * 4 * 2)) : null,\n                index : 0,\n                index2 : 0,\n                glyphsRes : glyphsRes\n            };\n\n            if (labelData.stick) {\n                labelData.stick = labelData.stick.slice();\n                labelData.stick[2] *= factor;\n                //labelData.stick[7] *= factor;\n            }\n\n        } else {\n            label = false;\n        }\n    }\n\n    var index = 0;\n    var index2 = 0;\n\n    \n    var center = [0,0,0];\n    var forceOrigin = globals.forceOrigin;\n    var bboxMin = globals.bboxMin;\n    var tileX = globals.tileX;\n    var tileY = globals.tileY;\n    var forceScale = globals.forceScale;\n    var labelBBox, iconBBox, p, p1, p2, pp, pp2;\n\n    var generatePoint = (function(pindex) {\n\n        if (icon && (!iconData.noOverlap)) {\n            iconBBox = processIcon(pp, iconData) ;//, pointArray, lod, style, zIndex);\n        }\n\n        if (label && (!labelData.noOverlap)) {\n            labelBBox = processLabel(pp, labelData); //, pointArray, lod, style, zIndex);\n        }\n\n        if (point) {\n\n            for (var j = 0; j < circleSides; j++) {\n\n                if (pointFlat) {\n\n                    //add polygon\n                    vertexBuffer[index] = pp[0];\n                    vertexBuffer[index+1] = pp[1];\n                    vertexBuffer[index+2] = pp[2];\n\n                    vertexBuffer[index+3] = pp[0] + circleBuffer[j][0] * pointRadius;\n                    vertexBuffer[index+4] = pp[1] + circleBuffer[j][1] * pointRadius;\n                    vertexBuffer[index+5] = pp[2];\n\n                    vertexBuffer[index+6] = pp[0] + circleBuffer[j+1][0] * pointRadius;\n                    vertexBuffer[index+7] = pp[1] + circleBuffer[j+1][1] * pointRadius;\n                    vertexBuffer[index+8] = pp[2];\n\n                    index += 9;\n\n                } else {\n\n                    //add polygon\n                    vertexBuffer[index] = pp[0];\n                    vertexBuffer[index+1] = pp[1];\n                    vertexBuffer[index+2] = pp[2];\n                    vertexBuffer[index+3] = 0;\n                    normalBuffer[index2] = 0;\n                    normalBuffer[index2+1] = 0;\n                    normalBuffer[index2+2] = 0;\n                    normalBuffer[index2+3] = 0;\n\n                    vertexBuffer[index+4] = pp[0];\n                    vertexBuffer[index+5] = pp[1];\n                    vertexBuffer[index+6] = pp[2];\n                    vertexBuffer[index+7] = 0;\n                    normalBuffer[index2+4] = circleBuffer[j][0] * pointRadius;\n                    normalBuffer[index2+5] = circleBuffer[j][1] * pointRadius;\n                    normalBuffer[index2+6] = 0;\n                    normalBuffer[index2+7] = 0;\n\n                    vertexBuffer[index+8] = pp[0];\n                    vertexBuffer[index+9] = pp[1];\n                    vertexBuffer[index+10] = pp[2];\n                    vertexBuffer[index+11] = 0;\n                    normalBuffer[index2+8] = circleBuffer[j+1][0] * pointRadius;\n                    normalBuffer[index2+9] = circleBuffer[j+1][1] * pointRadius;\n                    normalBuffer[index2+10] = 0;\n                    normalBuffer[index2+11] = 0;\n\n                    index += 12;\n                    index2 += 12;\n                }\n            }\n        }\n    });\n\n\n    var getLinePoint = (function(length) {\n\n        var l1 = 0;\n        var l2 = 0;\n\n        p = points[0];\n        p1 = [p[0], p[1], p[2]];\n\n        if (forceOrigin) {\n            p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n        }\n\n        if (forceScale != null) {\n            p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n        }\n\n        if (length == 0) {\n            return p1;\n        }\n\n        for (var k = 0, lk = points.length - 1; k < lk; k++) {\n            p = points[k+1];\n            p2 = [p[0], p[1], p[2]];\n\n            if (forceOrigin) {\n                p2 = [p2[0] - tileX, p2[1] - tileY, p2[2]];\n            }\n\n            if (forceScale != null) {\n                p2 = [p2[0] * forceScale[0], p2[1] * forceScale[1], p2[2] * forceScale[2]];\n            }\n\n            var dx = p2[0] - p1[0], dy = p2[1] - p1[1], dz = p2[2] - p1[2]; \n            var l = Math.sqrt(dx*dx+dy*dy+dz*dz);\n\n            l1 = l2;\n            l2 += l;\n\n            if (length >= l1 && length <= l2) {\n                var d = (length - l1) / l;\n\n                return [p1[0] + dx * d,  p1[1] + dy * d, p1[2] + dz * d];\n            }\n\n            p1 = p2;\n        }\n\n    });\n\n    var pointsBuffer = new Array(2048), pointsBufferLength = 0;\n\n\n    for (g = 0, gl = pointsGroups.length; g < gl; g++) {\n        points = pointsGroups[g];\n        \n        if (Array.isArray(points) && points.length > 0) {\n\n            var totalLength = 0, lengths = null;\n\n            if (linePoints[0] != 'vertices') {\n                lengths = new Array(points.length);\n                lengths[0] = 0;\n            }\n\n            //add ponints\n            for (i = 0, li = points.length; i < li; i++) {\n                p = points[i];\n                p1 = [p[0], p[1], p[2]];\n\n                if (forceOrigin) {\n                    p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n                }\n        \n                if (forceScale != null) {\n                    p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n                }\n                \n                if (i + 1 < li) {\n                    p = points[i+1];\n                    p2 = [p[0], p[1], p[2]];\n\n                    if (forceOrigin) {\n                        p2 = [p2[0] - tileX, p2[1] - tileY, p2[2]];\n                    }\n            \n                    if (forceScale != null) {\n                        p2 = [p2[0] * forceScale[0], p2[1] * forceScale[1], p2[2] * forceScale[2]];\n                    }\n\n                    var dx = p2[0] - p1[0], dy = p2[1] - p1[1], dz = p2[2] - p1[2]; \n                    var l = Math.sqrt(dx*dx+dy*dy+dz*dz);\n\n                    if (lengths) {\n                        lengths[i] = l;\n                    }\n\n                    totalLength += l;\n                }\n        \n                center[0] += p1[0];\n                center[1] += p1[1];\n                center[2] += p1[2];\n\n                if (linePoints[0] == 'vertices') {\n                    pointsBuffer[pointsBufferLength] = p1;\n                    pointsBufferLength++;\n                }\n            }\n\n            if (linePoints[0] == 'by-length' || linePoints[0] == 'by-ratio') {\n                var period = linePoints[1];\n                var offset = linePoints[2] || 0;\n\n                if (linePoints[0] == 'by-ratio') {\n                    period *= totalLength;\n                    offset *= totalLength;\n                }\n\n                if (period <= 0) {\n                    pointsBuffer[pointsBufferLength] = getLinePoint(offset);\n                    if (pointsBuffer[pointsBufferLength]) {\n                        pointsBufferLength++;\n                    }\n                } else {\n                    for (i = offset; i < totalLength; i += period) {\n                        pointsBuffer[pointsBufferLength] = getLinePoint(i);\n                        if (pointsBuffer[pointsBufferLength]) {\n                            pointsBufferLength++;\n                        }\n                    }\n                }\n            }\n\n            if (linePoints[0] == 'start') {\n                pointsBuffer[pointsBufferLength] = getLinePoint(0);\n                pointsBufferLength++;\n            }\n\n            if (linePoints[0] == 'end') {\n                pointsBuffer[pointsBufferLength] = getLinePoint(totalLength);\n                pointsBufferLength++;\n            }\n\n            if (linePoints[0] == 'endpoints') {\n                pointsBuffer[pointsBufferLength] = getLinePoint(0);\n                pointsBufferLength++;\n                pointsBuffer[pointsBufferLength] = getLinePoint(totalLength);\n                pointsBufferLength++;\n            }\n\n            if (linePoints[0] == 'middle' || linePoints[0] == 'midpoint') {\n                pointsBuffer[pointsBufferLength] = getLinePoint(totalLength * 0.5);\n                pointsBufferLength++;\n            }\n        }\n    }\n\n    var pointsVertices, vertexBuffer, pointsNormals, normalBuffer, bufferPoints = pointsBufferLength;\n\n    if (point) {\n        var circleBuffer = [];\n        var circleSides = clamp(pointRadius * 8 * 0.5, 8, 32);\n\n        var angle = 0, step = (2.0*Math.PI) / circleSides;\n\n        for (i = 0; i < circleSides; i++) {\n            circleBuffer[i] = [-Math.sin(angle), Math.cos(angle)];\n            angle += step;\n        }\n\n        circleBuffer[circleSides] = [0, 1.0];\n\n        //allocate buffers\n        if (!pointFlat) {\n            pointsVertices = circleSides * 3 * 4;\n            vertexBuffer = new Float32Array(bufferPoints * pointsVertices);\n            pointsNormals = circleSides * 3 * 4;\n            normalBuffer = new Float32Array(bufferPoints * pointsNormals);\n        } else {\n            pointsVertices = circleSides * 3 * 3;\n            vertexBuffer = new Float32Array(bufferPoints * pointsVertices);\n        }\n    }\n\n    if (!pointsBufferLength) {\n        return;\n    }\n\n    //if (pointsBufferLength > 1) {\n      //  globals.directPoints = pointsBuffer.slice(1,pointsBufferLength);\n    //}\n \n    globals.directPoints = pointsBuffer.slice(0,pointsBufferLength);\n\n    for (i = 0; i < pointsBufferLength; i++) {\n        pp = pointsBuffer[i];\n        generatePoint(i);\n    }\n\n    if (totalPoints > 0) {\n        center[0] /= totalPoints;\n        center[1] /= totalPoints;\n        center[2] /= totalPoints;\n    }\n\n    center[0] += bboxMin[0];//groupOrigin[0];\n    center[1] += bboxMin[1];//groupOrigin[1];\n    center[2] += bboxMin[2];//groupOrigin[2];\n\n    var hitable = hoverEvent || clickEvent || enterEvent || leaveEvent;\n    var message, messageSize;\n\n    globals.signatureCounter++;\n    var signature = (\"\"+globals.signatureCounter);\n\n    if (visibility && !Array.isArray(visibility)) {\n        visibility = [visibility];\n    }\n\n    if (point) {\n        if (pointFlat) {\n            postGroupMessageFast(5, 6, {\n                'color':pointColor, 'z-index':zIndex, 'visibility': visibility, 'center': center,\n                'hover-event':hoverEvent, 'click-event':clickEvent, 'draw-event':drawEvent, 'advancedHit': advancedHit,\n                'enter-event':enterEvent, 'leave-event':leaveEvent, 'zbuffer-offset':zbufferOffset,\n                'hitable':hitable, 'state':globals.hitState, 'eventInfo': (globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {}, \n                'lod':(globals.autoLod ? null : globals.tileLod) }, [vertexBuffer], signature);\n        } else {\n            postGroupMessageFast(5, 9, {\n                'color':pointColor, 'z-index':zIndex, 'visibility': visibility, 'center': center,\n                'hover-event':hoverEvent, 'click-event':clickEvent, 'draw-event':drawEvent,\n                'enter-event':enterEvent, 'leave-event':leaveEvent, 'zbuffer-offset':zbufferOffset,\n                'hitable':hitable, 'state':globals.hitState, 'eventInfo': (globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {}, \n                'lod':(globals.autoLod ? null : globals.tileLod) }, [vertexBuffer, normalBuffer], signature);\n        }\n    }\n\n    var sendIconMessage = (function(){\n\n        if (icon) {\n\n            globals.signatureCounter++;\n            signature = (\"\"+globals.signatureCounter);\n\n            if (iconData.noOverlap) {\n                var margin = iconData.noOverlapMargin;\n                var factorType = null, factorValue = null;\n\n                if (iconData.noOverlapFactor !== null) {\n                    switch(iconData.noOverlapFactor[0]) {\n                        case 'direct':      factorType = 0;      break;\n                        case 'div-by-dist': factorType = 1; break;\n                    }\n\n                    factorValue = iconData.noOverlapFactor[1];\n                }\n\n                var noOverlap = [iconBBox[0]-margin[0], iconBBox[1]-margin[1], iconBBox[2]+margin[0], iconBBox[3]+margin[1], factorType, factorValue];\n            }\n\n            if ((iconData.singleBuffer && iconData.singleBuffer.length > 0) || (iconData.vertexBuffer && iconData.vertexBuffer.length > 0)) {\n\n                postGroupMessageFast(5, (iconData.singleBuffer) ? 3 : 4, {\n                    'icon':globals.stylesheetBitmaps[iconData.source[0]], 'color':iconData.color, 'z-index':zIndex,\n                    'visibility': visibility, 'culling': culling, 'center': pp2, 'stick': iconData.stick,\n                    'hover-event':hoverEvent, 'click-event':clickEvent, 'draw-event':drawEvent, 'advancedHit': advancedHit,\n                    'enter-event':enterEvent, 'leave-event':leaveEvent, 'zbuffer-offset':zbufferOffset, 'noOverlap' : (iconData.noOverlap ? noOverlap: null),\n                    'hitable':hitable, 'state':globals.hitState, 'eventInfo': (globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {},\n                    'index': featureIndex, 'reduce': iconData.reduce, 'lod':(globals.autoLod ? null : globals.tileLod) },\n                    (iconData.singleBuffer) ? [iconData.singleBuffer] : [iconData.vertexBuffer, iconData.originBuffer, iconData.texcoordsBuffer],\n                    signature);\n            }\n        }\n\n    });\n\n    var sendLabelMessage = (function(){\n\n        if (label) {\n            globals.signatureCounter++;\n            signature = (\"\"+globals.signatureCounter);\n\n            if (labelData.noOverlap) {\n                var margin = labelData.noOverlapMargin;\n                var factorType = null, factorValue = null;\n\n                if (labelData.noOverlapFactor !== null) {\n                    switch(labelData.noOverlapFactor[0]) {\n                        case 'direct':      factorType = 0;      break;\n                        case 'div-by-dist': factorType = 1; break;\n                    }\n\n                    factorValue = labelData.noOverlapFactor[1];\n                }\n\n                var noOverlap = [labelBBox[0]-margin[0], labelBBox[1]-margin[1], labelBBox[2]+margin[0], labelBBox[3]+margin[1], factorType, factorValue];\n            }\n\n            if ((labelData.singleBuffer && labelData.singleBuffer.length > 0) || (labelData.vertexBuffer && labelData.vertexBuffer.length > 0)) {\n\n                postGroupMessageFast(5, (labelData.singleBuffer) ? 1 : 2, {\n                    'size':labelData.size, 'origin':labelData.pos, 'color':labelData.color,\n                    'color2':labelData.color2, 'outline':labelData.outline, 'z-index':zIndex, 'visibility': visibility,\n                    'culling': culling, 'center': pp2, 'stick': labelData.stick, 'noOverlap' : (labelData.noOverlap ? noOverlap: null),\n                    'hover-event':hoverEvent, 'click-event':clickEvent, 'draw-event':drawEvent, 'files':labelData.files, 'index': featureIndex,\n                    'enter-event':enterEvent, 'leave-event':leaveEvent, 'zbuffer-offset':zbufferOffset, 'fonts': labelData.fontsStorage,\n                    'hitable':hitable, 'state':globals.hitState, 'advancedHit': advancedHit, 'reduce': labelData.reduce, 'hysteresis': labelData.hysteresis, \n                    'eventInfo': (globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {}, 'lod':(globals.autoLod ? null : globals.tileLod) },\n                    (labelData.singleBuffer) ? [labelData.singleBuffer] : [labelData.vertexBuffer, labelData.originBuffer, labelData.texcoordsBuffer],\n                    signature);\n            }\n        }\n\n    });\n\n    if (icon && (!iconData.noOverlap)) {\n        pp2 = center;\n        sendIconMessage();\n    }\n\n    if (label && (!labelData.noOverlap)) {\n        pp2 = center;\n        sendLabelMessage();\n    }\n\n    for (i = 0, li = globals.insidePack ? 1 : globals.directPoints.length; i < li; i++) {\n        pp = globals.directPoints[i];\n        pp2 = [pp[0] + bboxMin[0], pp[1] + bboxMin[1], pp[2] + bboxMin[2]];\n\n        if (icon && (iconData.noOverlap)) {\n            iconBBox = processIcon(pp, iconData, iconBBox) ;//, pointArray, lod, style, zIndex);\n            sendIconMessage();\n        }\n\n        if (label && (labelData.noOverlap)) {\n            labelBBox = processLabel(pp, labelData, labelBBox); //, pointArray, lod, style, zIndex);\n            sendLabelMessage();\n        }\n    }\n\n};\n\n\nvar processPointArrayVSwitchPass = function(pointArray, lod, style, featureIndex, zIndex, eventInfo) {\n    var pointsGroups = []; \n    var i, li;\n\n    checkDPoints(pointArray);\n\n    if (pointArray['lines']) {  //use lines as points\n        pointsGroups = pointArray['lines'];\n    } else {\n        pointsGroups = [pointArray['points']];\n    }\n    \n    if (!pointsGroups || pointsGroups.length == 0) {\n        return;\n    }\n\n\n    var visibility = getLayerPropertyValue(style, 'visibility-rel', pointArray, lod) || \n                     getLayerPropertyValue(style, 'visibility-abs', pointArray, lod) ||\n                     getLayerPropertyValue(style, 'visibility', pointArray, lod);\n    var culling = getLayerPropertyValue(style, 'culling', pointArray, lod);\n    var hysteresis = getLayerPropertyValue(style, 'hysteresis', pointArray, lod);\n\n    var points, g, gl, totalPoints = 0;\n\n    for (g = 0, gl = pointsGroups.length; g < gl; g++) {\n        points = pointsGroups[g];\n        if (Array.isArray(points) && points.length > 0) {\n            totalPoints += points.length;\n        }\n    }\n\n    var center = [0,0,0];\n    var forceOrigin = globals.forceOrigin;\n    var bboxMin = globals.bboxMin;\n    var tileX = globals.tileX;\n    var tileY = globals.tileY;\n    var forceScale = globals.forceScale;\n    var p, p1;\n\n    for (g = 0, gl = pointsGroups.length; g < gl; g++) {\n        points = pointsGroups[g];\n        \n        if (Array.isArray(points) && points.length > 0) {\n       \n            //add ponints\n            for (i = 0, li = points.length; i < li; i++) {\n                p = points[i];\n                p1 = [p[0], p[1], p[2]];\n        \n                if (forceOrigin) {\n                    p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n                }\n        \n                if (forceScale != null) {\n                    p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n                }\n        \n                center[0] += p1[0];\n                center[1] += p1[1];\n                center[2] += p1[2];\n            }\n        }\n    }\n   \n    if (totalPoints > 0) {\n        center[0] /= totalPoints;\n        center[1] /= totalPoints;\n        center[2] /= totalPoints;\n    }\n\n    center[0] += bboxMin[0];//groupOrigin[0];\n    center[1] += bboxMin[1];//groupOrigin[1];\n    center[2] += bboxMin[2];//groupOrigin[2];\n\n    globals.signatureCounter++;\n    var signature = (\"\"+globals.signatureCounter);\n\n    postGroupMessageFast(5, 19, {\n        'z-index':zIndex, 'hysteresis' : hysteresis,\n        'visibility': visibility, 'culling': culling, 'center': center, 'eventInfo': {} /*(globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {}*/,\n         'index': featureIndex, 'lod':(globals.autoLod ? null : globals.tileLod) }, [], signature);\n};\n\n\nvar getOriginOffset = function(origin, width, height) {\n    switch(origin) {\n    case 'top-left':        return [0, 0];\n    case 'top-right':       return [-width, 0];\n    case 'top-center':      return [-width*0.5, 0];\n    case 'center-left':     return [0, -height*0.5];\n    case 'center-right':    return [-width, -height*0.5];\n    case 'center-center':   return [-width*0.5, -height*0.5];\n    case 'bottom-left':     return [0, -height];\n    case 'bottom-right':    return [-width, -height];\n    case 'bottom-center':   return [-width*0.5, -height];\n    }\n};\n\n\nvar processIcon = function(point, iconData, cloneBuffers) {\n\n    if (cloneBuffers) {\n        iconData.index = 0;\n        iconData.index2 = 0;\n        iconData.vertexBuffer = iconData.vertexBuffer ?  (new Float32Array(iconData.vertexBuffer.length)) : null;\n        iconData.originBuffer = iconData.originBuffer ?  (new Float32Array(iconData.originBuffer.length)) : null;\n        iconData.singleBuffer = iconData.singleBuffer ?  (new Float32Array(iconData.singleBuffer.length)) : null;\n    }\n\n    var icon = iconData.source;\n    var index = iconData.index;\n    var index2 = iconData.index2;\n    var lastIndex = index;\n\n    var width = Math.abs(icon[3] * iconData.scale * 0.5);\n    var height = Math.abs(icon[4] * iconData.scale * 0.5);\n\n    //get offset\n    var originOffset = getOriginOffset(iconData.origin, width, height);\n    var offsetX = originOffset[0] + iconData.offset[0];\n    var offsetY = originOffset[1] + iconData.offset[1];\n\n    if (iconData.singleBuffer) {\n        var b = iconData.singleBuffer;\n\n        b[0] = offsetX; b[1] = offsetY;\n        b[2] = icon[1];\n        b[3] = icon[2];\n\n        b[4] = width + offsetX; b[5] = offsetY;\n        b[6] = icon[1]+icon[3];\n        b[7] = icon[2];\n\n        b[8] = width + offsetX; b[9] = height + offsetY;\n        b[10] = icon[1]+icon[3];\n        b[11] = icon[2]+icon[4];\n\n        b[12] = offsetX; b[13] = height + offsetY;\n        b[14] = icon[1];\n        b[15] = icon[2]+icon[4];\n\n        return [offsetX * 0.5, offsetY * 0.5, (offsetX + width) * 0.5 + 1, (offsetY + height) *0.5];\n    }\n\n    var vertexBuffer = iconData.vertexBuffer;\n    var texcoordsBuffer = iconData.texcoordsBuffer;\n    var originBuffer = iconData.originBuffer;\n\n    //add polygon\n    vertexBuffer[index] = 0;\n    vertexBuffer[index+1] = 0;\n    vertexBuffer[index+2] = 0;\n    vertexBuffer[index+3] = 0;\n\n    vertexBuffer[index+4] = width;\n    vertexBuffer[index+5] = 0;\n    vertexBuffer[index+6] = 0;\n    vertexBuffer[index+7] = 0;\n\n    vertexBuffer[index+8] = width;\n    vertexBuffer[index+9] = -height;\n    vertexBuffer[index+10] = 0;\n    vertexBuffer[index+11] = 0;\n\n    texcoordsBuffer[index] = icon[1];\n    texcoordsBuffer[index+1] = icon[2];\n    texcoordsBuffer[index+2] = 0;\n    texcoordsBuffer[index+3] = 0;\n\n    texcoordsBuffer[index+4] = icon[1]+icon[3];\n    texcoordsBuffer[index+5] = icon[2];\n    texcoordsBuffer[index+6] = 0;\n    texcoordsBuffer[index+7] = 0;\n\n    texcoordsBuffer[index+8] = icon[1]+icon[3];\n    texcoordsBuffer[index+9] = icon[2]+icon[4];\n    texcoordsBuffer[index+10] = 0;\n    texcoordsBuffer[index+11] = 0;\n\n    index += 12;\n\n    //add polygon\n    vertexBuffer[index] = 0;\n    vertexBuffer[index+1] = 0;\n    vertexBuffer[index+2] = 0;\n    vertexBuffer[index+3] = 0;\n\n    vertexBuffer[index+4] = 0;\n    vertexBuffer[index+5] = -height;\n    vertexBuffer[index+6] = 0;\n    vertexBuffer[index+7] = 0;\n\n    vertexBuffer[index+8] = width;\n    vertexBuffer[index+9] = -height;\n    vertexBuffer[index+10] = 0;\n    vertexBuffer[index+11] = 0;\n\n    texcoordsBuffer[index] = icon[1];\n    texcoordsBuffer[index+1] = icon[2];\n    texcoordsBuffer[index+2] = 0;\n    texcoordsBuffer[index+3] = 0;\n\n    texcoordsBuffer[index+4] = icon[1];\n    texcoordsBuffer[index+5] = icon[2]+icon[4];\n    texcoordsBuffer[index+6] = 0;\n    texcoordsBuffer[index+7] = 0;\n\n    texcoordsBuffer[index+8] = icon[1]+icon[3];\n    texcoordsBuffer[index+9] = icon[2]+icon[4];\n    texcoordsBuffer[index+10] = 0;\n    texcoordsBuffer[index+11] = 0;\n    \n    index += 12;\n\n    var p1 = point[0];\n    var p2 = point[1];\n    var p3 = point[2];\n\n    //set origin buffer and apply offset\n    for (var i = lastIndex; i < index; i+=4) {\n        vertexBuffer[i] += offsetX;\n        vertexBuffer[i+1] -= offsetY;\n\n        originBuffer[index2] = p1;\n        originBuffer[index2 + 1] = p2;\n        originBuffer[index2 + 2] = p3;\n        index2 += 3;\n    }\n\n    iconData.index = index;\n    iconData.index2 = index2;\n\n    return [offsetX * 0.5, offsetY * 0.5, (offsetX + width) * 0.5 + 1, (offsetY + height) *0.5];\n};\n\n\nvar processLabel = function(point, labelData, cloneBuffers) {\n\n    if (cloneBuffers) {\n        labelData.index = 0;\n        labelData.index2 = 0;\n        labelData.vertexBuffer = labelData.vertexBuffer ?  (new Float32Array(labelData.vertexBuffer.length)) : null;\n        labelData.originBuffer = labelData.originBuffer ?  (new Float32Array(labelData.originBuffer.length)) : null;\n        labelData.singleBuffer = labelData.singleBuffer ?  (new Float32Array(labelData.singleBuffer.length)) : null;\n    }\n\n    var vertexBuffer = labelData.vertexBuffer;\n    var texcoordsBuffer = labelData.texcoordsBuffer;\n    var originBuffer = labelData.originBuffer;\n    var singleBuffer = labelData.singleBuffer;\n    var index = labelData.index;\n    var index2 = labelData.index2;\n    var lastIndex = index;\n    var text = '' + labelData.text;\n    var fonts = labelData.fonts;\n    var planes = {}, i, li;\n    var glyphsRes = labelData.glyphsRes;\n\n    var linesGlyphsRes = [];\n    var linesGlyphsRes2 = [];\n\n    //split text to lines\n    do {\n        var res = glyphsRes[2].indexOf(10); //search /n\n\n        if (res != -1) {\n            linesGlyphsRes.push([glyphsRes[0].slice(0,res), glyphsRes[1].slice(0,res), glyphsRes[2].slice(0,res)]);\n            glyphsRes = [glyphsRes[0].slice(res+1), glyphsRes[1].slice(res+1), glyphsRes[2].slice(res+1)];\n        } else {\n            linesGlyphsRes.push(glyphsRes);\n        }\n\n    } while (res != -1);\n\n    //split lines by width\n    for (var i = 0, li = linesGlyphsRes.length; i < li; i++) {\n\n        var glyphsRes = linesGlyphsRes[i];\n\n        // eslint-disable-next-line\n        do {\n            var splitIndex = getSplitIndex(null, labelData.width, labelData.size, labelData.spacing, fonts, glyphsRes);\n            var codes = glyphsRes[2];\n\n            if (codes.length == splitIndex) {\n                linesGlyphsRes2.push(glyphsRes);\n                break;\n            }\n\n            linesGlyphsRes2.push([glyphsRes[0].slice(0,splitIndex), glyphsRes[1].slice(0,splitIndex), glyphsRes[2].slice(0,splitIndex)]);\n\n            glyphsRes = [glyphsRes[0].slice(splitIndex+1), glyphsRes[1].slice(splitIndex+1), glyphsRes[2].slice(splitIndex+1)];\n\n        } while(true);\n\n    }\n\n    var x = 0, y = 0;\n    var lineHeight = getLineHeight(labelData.size, labelData.lineHeight, fonts);\n    var maxWidth = 0;\n    var lineWidths = [];\n\n    //get max width\n    for (i = 0, li = linesGlyphsRes2.length; i < li; i++) {\n        lineWidths[i] = getTextLength(null, labelData.size, labelData.spacing, fonts, linesGlyphsRes2[i]);\n        maxWidth = Math.max(lineWidths[i], maxWidth);\n    }\n\n    //generate text\n    for (i = 0, li = linesGlyphsRes2.length; i < li; i++) {\n        var textWidth = lineWidths[i];\n\n        switch(labelData.align) {\n        case 'left': x = 0; break;\n        case 'right': x = maxWidth - textWidth; break;\n        case 'center': x = (maxWidth - textWidth)*0.5; break;\n        }\n\n        index = addText([x,y,0], [1,0,0], null, labelData.size, labelData.spacing, fonts, vertexBuffer, texcoordsBuffer, true, index, planes, linesGlyphsRes2[i], singleBuffer);\n        y -= lineHeight;\n    }\n\n    //get offset\n    var originOffset = getOriginOffset(labelData.origin, maxWidth, -y);\n    var offsetX = originOffset[0] + labelData.offset[0];\n    var offsetY = originOffset[1] + labelData.offset[1];\n    \n    var p1 = point[0];\n    var p2 = point[1];\n    var p3 = point[2];\n\n    //set origin buffer and apply offset\n    if (!singleBuffer) {\n        for (i = lastIndex; i < index; i+=4) {\n            vertexBuffer[i] += offsetX;\n            vertexBuffer[i+1] -= offsetY;\n\n            originBuffer[index2] = p1;\n            originBuffer[index2 + 1] = p2;\n            originBuffer[index2 + 2] = p3;\n            index2 += 3;\n        }\n    } else {\n        for (i = lastIndex; i < index; i+=8) {\n            singleBuffer[i] += offsetX;\n            singleBuffer[i+1] -= offsetY;\n            singleBuffer[i+2] += offsetX;\n            singleBuffer[i+3] -= offsetY;\n        }\n\n        labelData.pos = [p1,p2,p3];\n        singleBuffer = new Float32Array(singleBuffer.buffer, 0, index);\n    }\n    \n    var fonts = labelData.fonts;\n    labelData.files = new Array(fonts.length);\n\n    for (i = 0, li= fonts.length; i < li; i++) {\n        labelData.files[i] = [];\n    }\n\n    for (var key in planes) {\n        var fontIndex = parseInt(key);\n        var planes2 = planes[key];\n\n        var files = [];\n\n        for (var key2 in planes2) {\n            var plane = parseInt(key2) - (fontIndex*4000);\n            var file = Math.round((plane - (plane % 4)) / 4);\n            \n            if (files.indexOf(file) == -1) {\n                files.push(file);\n            }\n        }\n\n        labelData.files[fontIndex] = files;\n    }\n\n    labelData.index = index;\n    labelData.index2 = index2;\n\n    return [offsetX * 0.5, offsetY * 0.5, (offsetX + maxWidth) * 0.5 + 1, (offsetY + Math.abs(y)) *0.5];\n};\n\nvar processPointArrayGeometry = function(pointArray) {\n    var i, li;\n\n    checkDPoints(pointArray);\n\n    if (pointArray['lines']) {  //use lines as points\n        pointsGroups = pointArray['lines'];\n    } else {\n        pointsGroups = [pointArray['points']];\n    }\n    \n    if (!pointsGroups || pointsGroups.length == 0) {\n        return;\n    }\n\n    var totalPoints = 0;\n    var indicesBuffer = new Uint32Array(pointsGroups.length);\n\n    for (i = 0; i < pointsGroups.length; i++) {\n        indicesBuffer[i] = totalPoints;\n\n        if (Array.isArray(pointsGroups[i])) {\n            totalPoints += pointsGroups[i].length;\n        }\n    }\n\n    var geometryBuffer = new Float64Array(totalPoints * 3);\n\n    /*var forceOrigin = globals.forceOrigin;\n    var tileX = globals.tileX;\n    var tileY = globals.tileY;*/\n    var forceScale = globals.forceScale;\n    var index = 0, p1, p2, pp, p;\n\n    for (var i = 0; i < pointsGroups.length; i++) {\n        if (!Array.isArray(pointsGroups[i]) || !pointsGroups[i].length) {\n            continue;\n        }\n        \n        var points = pointsGroups[i];\n   \n        p = points[0];\n        p1 = [p[0], p[1], p[2]];\n    \n        //add lines\n        for (var j = 0, lj = points.length; j < lj; j++) {\n\n            /*if (forceOrigin) {\n                pp = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n            }*/\n    \n            if (forceScale != null) {\n                pp = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n            }\n\n            geometryBuffer[index] = pp[0];\n            geometryBuffer[index+1] = pp[1];\n            geometryBuffer[index+2] = pp[2];\n            index += 3;\n\n            if (j == (lj - 1)) {\n                break;\n            }\n    \n            p1 = points[j+1];\n        }\n    }\n\n    globals.signatureCounter++;\n    postGroupMessageFast(5, 5, {\n        'id':pointArray['id'] }, [geometryBuffer, indicesBuffer], (\"\"+globals.signatureCounter));\n};\n\n\n\n\n\n\n/***/ }),\n/* 5 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__worker_style_js__ = __webpack_require__(2);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__worker_text_js__ = __webpack_require__(3);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__worker_message_js__ = __webpack_require__(1);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__ = __webpack_require__(4);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return processLineStringPass; });\n/* unused harmony export processLineLabel */\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"b\", function() { return processLineStringGeometry; });\n\n\n\n\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */], vec3Normalize = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"g\" /* vec3Normalize */],\n    vec3Cross = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"i\" /* vec3Cross */];\nvar getLayerPropertyValue = __WEBPACK_IMPORTED_MODULE_1__worker_style_js__[\"c\" /* getLayerPropertyValue */],\n    getLayerExpresionValue = __WEBPACK_IMPORTED_MODULE_1__worker_style_js__[\"g\" /* getLayerExpresionValue */], hasLayerProperty = __WEBPACK_IMPORTED_MODULE_1__worker_style_js__[\"h\" /* hasLayerProperty */];\nvar addStreetTextOnPath = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"n\" /* addStreetTextOnPath */], areTextCharactersAvailable = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"e\" /* areTextCharactersAvailable */],\n    getCharVerticesCount = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"l\" /* getCharVerticesCount */], getFonts = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"j\" /* getFonts */], getFontsStorage = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"k\" /* getFontsStorage */];\nvar postGroupMessageFast = __WEBPACK_IMPORTED_MODULE_3__worker_message_js__[\"c\" /* postGroupMessageFast */], getTextGlyphs = __WEBPACK_IMPORTED_MODULE_2__worker_text_js__[\"h\" /* getTextGlyphs */];\nvar checkDPoints = __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__[\"d\" /* checkDPoints */];\n\n\nvar getLineInfo = function(lineString, lod, style, featureIndex, zIndex, eventInfo) {\n\n};\n\nvar processLineStringPass = function(lineString, lod, style, featureIndex, zIndex, eventInfo) {\n\n    checkDPoints(lineString);\n\n    var lines = lineString['lines'];\n\n    if (!lines || lines.length == 0) {\n        return;\n    }\n\n    var line = getLayerPropertyValue(style, 'line', lineString, lod);\n    var lineLabel = getLayerPropertyValue(style, 'line-label', lineString, lod);\n\n    if (!line && !lineLabel) {\n        return;\n    }\n\n    var hoverEvent = getLayerPropertyValue(style, 'hover-event', lineString, lod);\n    var clickEvent = getLayerPropertyValue(style, 'click-event', lineString, lod);\n    var drawEvent = getLayerPropertyValue(style, 'draw-event', lineString, lod);\n    var enterEvent = getLayerPropertyValue(style, 'enter-event', lineString, lod);\n    var leaveEvent = getLayerPropertyValue(style, 'leave-event', lineString, lod);\n    var advancedHit = getLayerPropertyValue(style, 'advanced-hit', lineString, lod);\n\n    var zbufferOffset = getLayerPropertyValue(style, 'zbuffer-offset', lineString, lod);\n\n    if (hasLayerProperty(style,'line-type')) {\n\n    } else {\n        var lineFlat = getLayerPropertyValue(style, 'line-flat', lineString, lod);\n    }\n\n    var lineColor = getLayerPropertyValue(style, 'line-color', lineString, lod);\n    var lineWidth = 0.5 * getLayerPropertyValue(style, 'line-width', lineString, lod);\n    var lineWidthUnits = getLayerPropertyValue(style, 'line-width-units', lineString, lod);\n\n    var lineStyle = getLayerPropertyValue(style, 'line-style', lineString, lod);\n    var lineStyleTexture = getLayerPropertyValue(style, 'line-style-texture', lineString, lod);\n    var lineStyleBackground = getLayerPropertyValue(style, 'line-style-background', lineString, lod);\n\n    var lineLabelSize = getLayerPropertyValue(style, 'line-label-size', lineString, lod);\n\n    var texturedLine = (lineStyle != 'solid');\n    var widthByRatio = (lineWidthUnits == 'ratio');\n\n    if (lineWidthUnits == 'points') {\n        lineWidth *= globals.pixelFactor / ((1 / 72) * (96));\n    }\n\n    var index = 0, index2 = 0, index3 = 0;\n    var skipJoins = false;\n\n    if (widthByRatio) {\n        skipJoins = (!lineFlat && ((lineWidth/* *globals.invPixelFactor*/)*1080) < 2.1);\n    } else {\n        skipJoins = (!lineFlat && (lineWidth/* *globals.invPixelFactor*/) < 2.1);        \n    }\n\n    var ii, i, li, p2, v, vv, l, n, nn, p1, p, elementIndex, elemetBase = 1;\n\n    if (!skipJoins) {\n        var circleBuffer = [];\n        var circleBuffer2 = [];\n        var circleSides = 8;//Math.max(8, (14 - lod) * 8);\n    \n        var angle = 0, step = (2.0*Math.PI) / circleSides;\n    \n        for (i = 0; i < circleSides; i++) {\n            circleBuffer[i] = [-Math.sin(angle), Math.cos(angle)];\n            circleBuffer2[i] = angle;\n            angle += step;\n        }\n    \n        circleBuffer[circleSides] = [0, 1.0];\n        circleBuffer2[circleSides] = 0;\n    }\n\n    var totalPoints = 0;\n\n    for (ii = 0; ii < lines.length; ii++) {\n        if (Array.isArray(lines[ii])) {\n            totalPoints += lines[ii].length;\n        }\n    }\n\n    if (totalPoints <= 1) {\n        return;\n    }\n\n    if (lineFlat) {\n        circleSides = 2;\n    }\n\n    //allocate buffers\n    var lineVertices = ((texturedLine || (widthByRatio)) || !lineFlat ? 4 : 3) * 3 * 2;\n    var joinVertices = skipJoins ? 0 : (circleSides * ((texturedLine || (widthByRatio)) || !lineFlat? 4 : 3) * 3);\n    var vertexBuffer = new Float32Array((totalPoints-1) * lineVertices + totalPoints * joinVertices);\n\n    if (advancedHit) {\n       var elementBuffer = new Float32Array((totalPoints-1) * (3 * 2) + totalPoints * (skipJoins ? 0 : circleSides) * 3);\n    }\n\n    if (!(lineFlat && !texturedLine && !widthByRatio)) {\n        var lineNormals = 3 * 4 * 2;\n        var joinNormals = skipJoins ? 0 : (circleSides * 3 * 4);\n        var normalBuffer = new Float32Array((totalPoints-1) * lineNormals + totalPoints * joinNormals);\n    }\n\n    var center = [0,0,0];\n    var lineLabelStack = [];\n    var forceOrigin = globals.forceOrigin;\n    var bboxMin = globals.bboxMin;\n    var geocent = globals.geocent;\n    var tileX = globals.tileX;\n    var tileY = globals.tileY;\n    var forceScale = globals.forceScale;\n    var vstart = [1,0,0], vend = [-1,0,0];\n\n    for (ii = 0; ii < lines.length; ii++) {\n        if (!Array.isArray(lines[ii]) || !lines[ii].length) {\n            continue;\n        }\n        \n        var points = lines[ii];\n\n        if (lineLabel) {\n            var lineLabelPoints = new Array(points.length);\n            var lineLabelPoints2 = new Array(points.length);\n            \n            lineLabelStack.push({points: lineLabelPoints, points2 :lineLabelPoints2});\n        }\n    \n        p = points[0];\n        p1 = [p[0], p[1], p[2]];\n    \n        if (forceOrigin) {\n            p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n        }\n    \n        if (forceScale != null) {\n            p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n        }\n    \n        var distance = 0.001;\n        var distance2 = 0.001;\n        /*var ln = null;*/\n        var vertexBase = index;\n        var normalBase = index2;\n\n        //add lines\n        for (i = 0, li = points.length - 1; i < li; i++) {\n    \n            p1 = points[i];\n            p2 = points[i+1];\n\n            if (forceOrigin) {\n                p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n                p2 = [p2[0] - tileX, p2[1] - tileY, p2[2]];\n            }\n\n            if (forceScale != null) {\n                p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n                p2 = [p2[0] * forceScale[0], p2[1] * forceScale[1], p2[2] * forceScale[2]];\n            }\n    \n            if (advancedHit) {\n                elementIndex = elemetBase + i;\n\n                elementBuffer[index3] = elementIndex;\n                elementBuffer[index3+1] = elementIndex;\n                elementBuffer[index3+2] = elementIndex;\n    \n                //add polygon\n                elementBuffer[index3+3] = elementIndex;\n                elementBuffer[index3+4] = elementIndex;\n                elementBuffer[index3+5] = elementIndex;\n\n                index3 += 6;\n            }\n\n            if (lineFlat && !texturedLine && !widthByRatio) {\n\n                //normalize vector to line width and rotate 90 degrees\n                if (geocent) {\n                    //direction vector\n                    v = [p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]];\n        \n                    //get line length\n                    l = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);\n                    distance2 += l;\n        \n                    l = (l != 0) ? (1 / l) : 0;\n\n                    vv = [v[0]*l, v[1]*l, v[2]*l];\n                    n = [0,0,0];\n                    nn = [0,0,0];\n                    \n                    vec3Normalize(bboxMin, nn);\n                    vec3Cross(nn, vv, n);\n\n                    if (i == 0) {\n                        vstart = vv;\n                    }\n\n                    if (i == (li - 1)) {\n                        vend = vv;\n                    }\n                    \n                    n = [n[0] * lineWidth, n[1] * lineWidth, n[2] * lineWidth];\n                } else {\n                    //direction vector\n                    v = [p2[0] - p1[0], p2[1] - p1[1], 0];\n        \n                    //get line length\n                    l = Math.sqrt(v[0]*v[0] + v[1]*v[1]);\n                    distance2 += l;\n        \n                    l = (l != 0) ? (lineWidth / l) : 0;\n\n                    n = [-v[1]*l, v[0]*l, 0];\n\n                    if (i == 0) {\n                        vstart = [v[0]*l, v[1]*l, 0];\n                    }\n\n                    if (i == (li - 1)) {\n                        vend = [v[0]*l, v[1]*l, 0];\n                    }\n                }\n                        \n                //add polygon\n                vertexBuffer[index] = p1[0] + n[0];\n                vertexBuffer[index+1] = p1[1] + n[1];\n                vertexBuffer[index+2] = p1[2] + n[2];\n    \n                vertexBuffer[index+3] = p1[0] - n[0];\n                vertexBuffer[index+4] = p1[1] - n[1];\n                vertexBuffer[index+5] = p1[2] - n[2];\n    \n                vertexBuffer[index+6] = p2[0] + n[0];\n                vertexBuffer[index+7] = p2[1] + n[1];\n                vertexBuffer[index+8] = p2[2] + n[2];\n    \n                //add polygon\n                vertexBuffer[index+9] = p1[0] - n[0];\n                vertexBuffer[index+10] = p1[1] - n[1];\n                vertexBuffer[index+11] = p1[2] - n[2];\n    \n                vertexBuffer[index+12] = p2[0] - n[0];\n                vertexBuffer[index+13] = p2[1] - n[1];\n                vertexBuffer[index+14] = p2[2] - n[2];\n    \n                vertexBuffer[index+15] = p2[0] + n[0];\n                vertexBuffer[index+16] = p2[1] + n[1];\n                vertexBuffer[index+17] = p2[2] + n[2];\n    \n                index += 18;\n\n            } else {\n    \n   \n                //console.log(\"distance(\"+i+\"): \" + distance + \" \" + distance2);\n    \n                if (lineFlat) {\n                    \n                    /*\n                    //normalize vector to line width and rotate 90 degrees\n                    l = (l != 0) ? (lineWidth / l) : 0;\n                    n = [-v[1]*l, v[0]*l,0];\n    \n                    if (joinParams != null) {\n                        joinParams[i] = (l != 0) ? Math.atan2(v[0], v[1]) + Math.PI *0.5 : 0;\n                    }*/\n    \n                    //normalize vector to line width and rotate 90 degrees\n                    if (geocent) {\n                        //direction vector\n                        v = [p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2]];\n            \n                        //get line length\n                        l = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);\n                        distance2 += l;\n            \n                        l = (l != 0) ? (1 / l) : 0;\n\n                        vv = [v[0]*l, v[1]*l, v[2]*l];\n                        n = [0,0,0];\n                        nn = [0,0,0];\n\n                        if (i == 0) {\n                            vstart = vv;\n                        }\n\n                        if (i == (li - 1)) {\n                            vend = vv;\n                        }\n                        \n                        vec3Normalize(bboxMin, nn);\n                        vec3Cross(nn, vv, n);\n                        \n                        //n = [n[0] * lineWidth, n[1] * lineWidth, n[2] * lineWidth];\n                        n = [n[0], n[1], n[2]];\n                    } else {\n                        //direction vector\n                        v = [p2[0] - p1[0], p2[1] - p1[1], 0];\n            \n                        //get line length\n                        l = Math.sqrt(v[0]*v[0] + v[1]*v[1]);\n                        distance2 += l;\n            \n                        l = (l != 0) ? (lineWidth / l) : 0;\n\n                        n = [-v[1], v[0], 0];\n\n                        if (i == 0) {\n                            vstart = [v[0]*l, v[1]*l, 0];\n                        }\n\n                        if (i == (li - 1)) {\n                            vend = [v[0]*l, v[1]*l, 0];\n                        }\n                    }\n\n                    //add polygon\n                    vertexBuffer[index] = p1[0];\n                    vertexBuffer[index+1] = p1[1];\n                    vertexBuffer[index+2] = p1[2];\n                    vertexBuffer[index+3] = distance;\n                    normalBuffer[index2] = n[0];\n                    normalBuffer[index2+1] = n[1];\n                    normalBuffer[index2+2] = n[2];\n                    normalBuffer[index2+3] = lineWidth;\n    \n                    vertexBuffer[index+4] = p1[0];\n                    vertexBuffer[index+5] = p1[1];\n                    vertexBuffer[index+6] = p1[2];\n                    vertexBuffer[index+7] = -distance;\n                    normalBuffer[index2+4] = -n[0];\n                    normalBuffer[index2+5] = -n[1];\n                    normalBuffer[index2+6] = -n[2];\n                    normalBuffer[index2+7] = lineWidth;\n    \n                    vertexBuffer[index+8] = p2[0];\n                    vertexBuffer[index+9] = p2[1];\n                    vertexBuffer[index+10] = p2[2];\n                    vertexBuffer[index+11] = distance2;\n                    normalBuffer[index2+8] = n[0];\n                    normalBuffer[index2+9] = n[1];\n                    normalBuffer[index2+10] = n[2];\n                    normalBuffer[index2+11] = lineWidth;\n    \n                    //add polygon\n                    vertexBuffer[index+12] = p1[0];\n                    vertexBuffer[index+13] = p1[1];\n                    vertexBuffer[index+14] = p1[2];\n                    vertexBuffer[index+15] = -distance;\n                    normalBuffer[index2+12] = -n[0];\n                    normalBuffer[index2+13] = -n[1];\n                    normalBuffer[index2+14] = -n[2];\n                    normalBuffer[index2+15] = lineWidth;\n    \n                    vertexBuffer[index+16] = p2[0];\n                    vertexBuffer[index+17] = p2[1];\n                    vertexBuffer[index+18] = p2[2];\n                    vertexBuffer[index+19] = -distance2;\n                    normalBuffer[index2+16] = -n[0];\n                    normalBuffer[index2+17] = -n[1];\n                    normalBuffer[index2+18] = -n[2];\n                    normalBuffer[index2+19] = lineWidth;\n    \n                    vertexBuffer[index+20] = p2[0];\n                    vertexBuffer[index+21] = p2[1];\n                    vertexBuffer[index+22] = p2[2];\n                    vertexBuffer[index+23] = distance2;\n                    normalBuffer[index2+20] = n[0];\n                    normalBuffer[index2+21] = n[1];\n                    normalBuffer[index2+22] = n[2];\n                    normalBuffer[index2+23] = lineWidth;\n    \n                    index += 24;\n                    index2 += 24;\n                    \n                } else {\n\n                    //direction vector\n                    v = [p2[0] - p1[0], p2[1] - p1[1], 0];\n        \n                    //get line length\n                    l = Math.sqrt(v[0]*v[0] + v[1]*v[1]);\n                    distance2 += l;\n    \n                    //add polygon\n                    vertexBuffer[index] = p1[0];\n                    vertexBuffer[index+1] = p1[1];\n                    vertexBuffer[index+2] = p1[2];\n                    vertexBuffer[index+3] = distance;\n                    normalBuffer[index2] = p2[0];\n                    normalBuffer[index2+1] = p2[1];\n                    normalBuffer[index2+2] = p2[2];\n                    normalBuffer[index2+3] = lineWidth;\n    \n                    vertexBuffer[index+4] = p1[0];\n                    vertexBuffer[index+5] = p1[1];\n                    vertexBuffer[index+6] = p1[2];\n                    vertexBuffer[index+7] = -distance;\n                    normalBuffer[index2+4] = p2[0];\n                    normalBuffer[index2+5] = p2[1];\n                    normalBuffer[index2+6] = p2[2];\n                    normalBuffer[index2+7] = -lineWidth;\n    \n                    vertexBuffer[index+8] = p2[0];\n                    vertexBuffer[index+9] = p2[1];\n                    vertexBuffer[index+10] = p2[2];\n                    vertexBuffer[index+11] = -distance2;\n                    normalBuffer[index2+8] = p1[0];\n                    normalBuffer[index2+9] = p1[1];\n                    normalBuffer[index2+10] = p1[2];\n                    normalBuffer[index2+11] = lineWidth;\n    \n                    //add polygon\n                    vertexBuffer[index+12] = p1[0];\n                    vertexBuffer[index+13] = p1[1];\n                    vertexBuffer[index+14] = p1[2];\n                    vertexBuffer[index+15] = distance;\n                    normalBuffer[index2+12] = p2[0];\n                    normalBuffer[index2+13] = p2[1];\n                    normalBuffer[index2+14] = p2[2];\n                    normalBuffer[index2+15] = lineWidth;\n    \n                    vertexBuffer[index+16] = p2[0];\n                    vertexBuffer[index+17] = p2[1];\n                    vertexBuffer[index+18] = p2[2];\n                    vertexBuffer[index+19] = -distance2;\n                    normalBuffer[index2+16] = p1[0];\n                    normalBuffer[index2+17] = p1[1];\n                    normalBuffer[index2+18] = p1[2];\n                    normalBuffer[index2+19] = lineWidth;\n    \n                    vertexBuffer[index+20] = p2[0];\n                    vertexBuffer[index+21] = p2[1];\n                    vertexBuffer[index+22] = p2[2];\n                    vertexBuffer[index+23] = distance2;\n                    normalBuffer[index2+20] = p1[0];\n                    normalBuffer[index2+21] = p1[1];\n                    normalBuffer[index2+22] = p1[2];\n                    normalBuffer[index2+23] = -lineWidth;\n    \n                    index += 24;\n                    index2 += 24;\n                }\n            }\n    \n            distance = distance2;\n            p1 = p2; //only for dlines\n        }\n    \n        p1 = [p[0], p[1], p[2]];\n    \n        //add joins\n        for (i = 0, li = points.length; i < li; i++) {\n    \n            if (forceOrigin) {\n                p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n            }\n    \n            if (forceScale != null) {\n                p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n            }\n    \n            center[0] += p1[0];\n            center[1] += p1[1];\n            center[2] += p1[2];\n            \n            if (!skipJoins) {\n                var angleShift = 0;//(joinParams != null) ? joinParams[i] : 0;\n                /*var dx, dy;*/\n\n                if (lineFlat) {\n\n                    if (advancedHit) {\n                        elementIndex = elemetBase + ((i != (li-1)) ? i : (i -1));\n\n                        elementBuffer[index3] = elementIndex;\n                        elementBuffer[index3+1] = elementIndex;\n                        elementBuffer[index3+2] = elementIndex;\n            \n                        //add polygon\n                        elementBuffer[index3+3] = elementIndex;\n                        elementBuffer[index3+4] = elementIndex;\n                        elementBuffer[index3+5] = elementIndex;\n\n                        index3 += 6;\n                    }\n\n                    var lineIndex, lineIndex2;\n\n                    if (!(texturedLine || widthByRatio)) {\n\n                        if (i != (li-1)) {\n                            lineIndex = vertexBase + i * lineVertices;\n                        } else {\n                            lineIndex = vertexBase + (i - 1) * lineVertices;\n                        }\n\n                        if (i > 0) {\n                            lineIndex2 = vertexBase + (i - 1) * lineVertices;\n                        } else {\n                            lineIndex2 = vertexBase + lineIndex;\n                        }\n\n                        if (i == 0) { //start cap\n                            //add polygon\n                            vertexBuffer[index] = p1[0];\n                            vertexBuffer[index+1] = p1[1];\n                            vertexBuffer[index+2] = p1[2];\n\n                            vertexBuffer[index+3] = vertexBuffer[lineIndex];\n                            vertexBuffer[index+4] = vertexBuffer[lineIndex+1];\n                            vertexBuffer[index+5] = vertexBuffer[lineIndex+2];\n\n                            vertexBuffer[index+6] = p1[0] - vstart[0] * lineWidth;\n                            vertexBuffer[index+7] = p1[1] - vstart[1] * lineWidth;\n                            vertexBuffer[index+8] = p1[2] - vstart[2] * lineWidth;\n\n                            //add polygon\n                            vertexBuffer[index+9] = p1[0];\n                            vertexBuffer[index+9+1] = p1[1];\n                            vertexBuffer[index+9+2] = p1[2];\n\n                            vertexBuffer[index+9+3] = vertexBuffer[lineIndex+3];\n                            vertexBuffer[index+9+4] = vertexBuffer[lineIndex+4];\n                            vertexBuffer[index+9+5] = vertexBuffer[lineIndex+5];\n\n                            vertexBuffer[index+9+6] = p1[0] - vstart[0] * lineWidth;\n                            vertexBuffer[index+9+7] = p1[1] - vstart[1] * lineWidth;\n                            vertexBuffer[index+9+8] = p1[2] - vstart[2] * lineWidth;\n                        } else if (i == (li - 1)) {  //end cap\n                            //add polygon\n                            vertexBuffer[index] = p1[0];\n                            vertexBuffer[index+1] = p1[1];\n                            vertexBuffer[index+2] = p1[2];\n\n                            vertexBuffer[index+3] = vertexBuffer[lineIndex+15];\n                            vertexBuffer[index+4] = vertexBuffer[lineIndex+16];\n                            vertexBuffer[index+5] = vertexBuffer[lineIndex+17];\n\n                            vertexBuffer[index+6] = p1[0] + vend[0] * lineWidth;\n                            vertexBuffer[index+7] = p1[1] + vend[1] * lineWidth;\n                            vertexBuffer[index+8] = p1[2] + vend[2] * lineWidth;\n\n                            //add polygon\n                            vertexBuffer[index+9] = p1[0];\n                            vertexBuffer[index+9+1] = p1[1];\n                            vertexBuffer[index+9+2] = p1[2];\n\n                            vertexBuffer[index+9+3] = vertexBuffer[lineIndex+12];\n                            vertexBuffer[index+9+4] = vertexBuffer[lineIndex+13];\n                            vertexBuffer[index+9+5] = vertexBuffer[lineIndex+14];\n\n                            vertexBuffer[index+9+6] = p1[0] + vend[0] * lineWidth;\n                            vertexBuffer[index+9+7] = p1[1] + vend[1] * lineWidth;\n                            vertexBuffer[index+9+8] = p1[2] + vend[2] * lineWidth;\n                        } else {\n                            //add polygon\n                            vertexBuffer[index] = p1[0];\n                            vertexBuffer[index+1] = p1[1];\n                            vertexBuffer[index+2] = p1[2];\n\n                            vertexBuffer[index+3] = vertexBuffer[lineIndex];\n                            vertexBuffer[index+4] = vertexBuffer[lineIndex+1];\n                            vertexBuffer[index+5] = vertexBuffer[lineIndex+2];\n\n                            vertexBuffer[index+6] = vertexBuffer[lineIndex2 + 15];\n                            vertexBuffer[index+7] = vertexBuffer[lineIndex2 + 16];\n                            vertexBuffer[index+8] = vertexBuffer[lineIndex2 + 17];\n\n                            //add polygon\n                            vertexBuffer[index+9] = p1[0];\n                            vertexBuffer[index+9+1] = p1[1];\n                            vertexBuffer[index+9+2] = p1[2];\n\n                            vertexBuffer[index+9+3] = vertexBuffer[lineIndex+3];\n                            vertexBuffer[index+9+4] = vertexBuffer[lineIndex+4];\n                            vertexBuffer[index+9+5] = vertexBuffer[lineIndex+5];\n\n                            vertexBuffer[index+9+6] = vertexBuffer[lineIndex2 + 12];\n                            vertexBuffer[index+9+7] = vertexBuffer[lineIndex2 + 13];\n                            vertexBuffer[index+9+8] = vertexBuffer[lineIndex2 + 14];\n                        }\n\n                        index += 18;\n\n                    } else {\n\n                        if (i != (li-1)) {\n                            distance = vertexBuffer[i * lineVertices + 3];\n                        } else {\n                            distance = vertexBuffer[(i - 1) * lineVertices + 11];\n                        }\n\n                        if (i != (li-1)) {\n                            lineIndex = normalBase + i * lineVertices;\n                        } else {\n                            lineIndex = normalBase + (i - 1) * lineVertices + 8;\n                        }\n\n                        if (i > 0) {\n                            lineIndex2 = normalBase + (i - 1) * lineVertices + 8;\n                        } else {\n                            lineIndex2 = normalBase + lineIndex;\n                        }\n\n                        //add polygon\n                        vertexBuffer[index] = p1[0];\n                        vertexBuffer[index+1] = p1[1];\n                        vertexBuffer[index+2] = p1[2];\n                        vertexBuffer[index+3] = distance;\n\n                        vertexBuffer[index+4] = p1[0];\n                        vertexBuffer[index+5] = p1[1];\n                        vertexBuffer[index+6] = p1[2];\n                        vertexBuffer[index+7] = distance;\n\n                        vertexBuffer[index+8] = p1[0];\n                        vertexBuffer[index+9] = p1[1];\n                        vertexBuffer[index+10] = p1[2];\n                        vertexBuffer[index+11] = distance;\n\n                        //add polygon\n                        vertexBuffer[index+12] = p1[0];\n                        vertexBuffer[index+1+12] = p1[1];\n                        vertexBuffer[index+2+12] = p1[2];\n                        vertexBuffer[index+3+12] = distance;\n\n                        vertexBuffer[index+4+12] = p1[0];\n                        vertexBuffer[index+5+12] = p1[1];\n                        vertexBuffer[index+6+12] = p1[2];\n                        vertexBuffer[index+7+12] = -distance;\n\n                        vertexBuffer[index+8+12] = p1[0];\n                        vertexBuffer[index+9+12] = p1[1];\n                        vertexBuffer[index+10+12] = p1[2];\n                        vertexBuffer[index+11+12] = -distance;\n\n                        if (i == 0) { //start cap\n                            //first polygon\n                            normalBuffer[index2] = 0;\n                            normalBuffer[index2+1] = 0;\n                            normalBuffer[index2+2] = 0;\n                            normalBuffer[index2+3] = -lineWidth;\n            \n                            normalBuffer[index2+4] = normalBuffer[lineIndex];\n                            normalBuffer[index2+5] = normalBuffer[lineIndex+1];\n                            normalBuffer[index2+6] = normalBuffer[lineIndex+2];\n                            normalBuffer[index2+7] = lineWidth;\n            \n                            normalBuffer[index2+8] = -vstart[0];\n                            normalBuffer[index2+9] = -vstart[1];\n                            normalBuffer[index2+10] = -vstart[2];\n                            normalBuffer[index2+11] = -lineWidth;\n\n                            //second polygon\n                            normalBuffer[index2+12] = 0;\n                            normalBuffer[index2+1+12] = 0;\n                            normalBuffer[index2+2+12] = 0;\n                            normalBuffer[index2+3+12] = -lineWidth;\n\n                            normalBuffer[index2+4+12] = -normalBuffer[lineIndex];\n                            normalBuffer[index2+5+12] = -normalBuffer[lineIndex+1];\n                            normalBuffer[index2+6+12] = -normalBuffer[lineIndex+2];\n                            normalBuffer[index2+7+12] = lineWidth;\n            \n                            normalBuffer[index2+8+12] = -vstart[0];\n                            normalBuffer[index2+9+12] = -vstart[1];\n                            normalBuffer[index2+10+12] = -vstart[2];\n                            normalBuffer[index2+11+12] = -lineWidth;\n                        } else if (i == (li - 1)) {  //end cap\n                            //first polygon\n                            normalBuffer[index2] = 0;\n                            normalBuffer[index2+1] = 0;\n                            normalBuffer[index2+2] = 0;\n                            normalBuffer[index2+3] = -lineWidth;\n            \n                            normalBuffer[index2+4] = normalBuffer[lineIndex2];\n                            normalBuffer[index2+5] = normalBuffer[lineIndex2+1];\n                            normalBuffer[index2+6] = normalBuffer[lineIndex2+2];\n                            normalBuffer[index2+7] = lineWidth;\n            \n                            normalBuffer[index2+8] = vend[0];\n                            normalBuffer[index2+9] = vend[1];\n                            normalBuffer[index2+10] = vend[2];\n                            normalBuffer[index2+11] = -lineWidth;\n\n                            //second polygon\n                            normalBuffer[index2+12] = 0;\n                            normalBuffer[index2+1+12] = 0;\n                            normalBuffer[index2+2+12] = 0;\n                            normalBuffer[index2+3+12] = -lineWidth;\n\n                            normalBuffer[index2+4+12] = -normalBuffer[lineIndex2];\n                            normalBuffer[index2+5+12] = -normalBuffer[lineIndex2+1];\n                            normalBuffer[index2+6+12] = -normalBuffer[lineIndex2+2];\n                            normalBuffer[index2+7+12] = lineWidth;\n            \n                            normalBuffer[index2+8+12] = vend[0];\n                            normalBuffer[index2+9+12] = vend[1];\n                            normalBuffer[index2+10+12] = vend[2];\n                            normalBuffer[index2+11+12] = -lineWidth;\n                        } else {\n                            normalBuffer[index2] = 0;\n                            normalBuffer[index2+1] = 0;\n                            normalBuffer[index2+2] = 0;\n                            normalBuffer[index2+3] = -lineWidth;\n            \n                            normalBuffer[index2+4] = normalBuffer[lineIndex];\n                            normalBuffer[index2+5] = normalBuffer[lineIndex+1];\n                            normalBuffer[index2+6] = normalBuffer[lineIndex+2];\n                            normalBuffer[index2+7] = lineWidth;\n            \n                            normalBuffer[index2+8] = normalBuffer[lineIndex2];\n                            normalBuffer[index2+9] = normalBuffer[lineIndex2+1];\n                            normalBuffer[index2+10] = normalBuffer[lineIndex2+2];\n                            normalBuffer[index2+11] = lineWidth;\n\n                            //add polygon\n                            normalBuffer[index2+12] = 0;\n                            normalBuffer[index2+1+12] = 0;\n                            normalBuffer[index2+2+12] = 0;\n                            normalBuffer[index2+3+12] = -lineWidth;\n\n                            normalBuffer[index2+4+12] = -normalBuffer[lineIndex];\n                            normalBuffer[index2+5+12] = -normalBuffer[lineIndex+1];\n                            normalBuffer[index2+6+12] = -normalBuffer[lineIndex+2];\n                            normalBuffer[index2+7+12] = lineWidth;\n            \n                            normalBuffer[index2+8+12] = -normalBuffer[lineIndex2];\n                            normalBuffer[index2+9+12] = -normalBuffer[lineIndex2+1];\n                            normalBuffer[index2+10+12] = -normalBuffer[lineIndex2+2];\n                            normalBuffer[index2+11+12] = lineWidth;\n                        }\n\n                        index += 24;\n                        index2 += 24;\n\n                    }\n\n                } else {\n\n                    var segmentIndex = (i != (li-1)) ? i : (i - 1);\n\n                    for (var j = 0; j < circleSides; j++) {\n           \n                        if (advancedHit) {\n                            elementIndex = elemetBase + segmentIndex;\n                            elementBuffer[index3] = elementIndex;\n                            elementBuffer[index3+1] = elementIndex;\n                            elementBuffer[index3+2] = elementIndex;\n                            index3 += 3;\n                        }\n\n                        distance = vertexBuffer[segmentIndex * lineVertices + 3];\n        \n                        //add polygon\n                        vertexBuffer[index] = p1[0];\n                        vertexBuffer[index+1] = p1[1];\n                        vertexBuffer[index+2] = p1[2];\n                        vertexBuffer[index+3] = distance;\n                        normalBuffer[index2] = 0;\n                        normalBuffer[index2+1] = 0;\n                        normalBuffer[index2+2] = 0;\n                        normalBuffer[index2+3] = 0;\n        \n                        vertexBuffer[index+4] = p1[0];\n                        vertexBuffer[index+5] = p1[1];\n                        vertexBuffer[index+6] = p1[2];\n                        vertexBuffer[index+7] = distance;\n                        normalBuffer[index2+4] = circleBuffer[j][0] * lineWidth;\n                        normalBuffer[index2+5] = circleBuffer[j][1] * lineWidth;\n                        normalBuffer[index2+6] = circleBuffer2[j] + angleShift;\n                        normalBuffer[index2+7] = 0;\n        \n                        vertexBuffer[index+8] = p1[0];\n                        vertexBuffer[index+9] = p1[1];\n                        vertexBuffer[index+10] = p1[2];\n                        vertexBuffer[index+11] = distance;\n                        normalBuffer[index2+8] = circleBuffer[j+1][0] * lineWidth;\n                        normalBuffer[index2+9] = circleBuffer[j+1][1] * lineWidth;\n                        normalBuffer[index2+10] = circleBuffer2[j+1] + angleShift;\n                        normalBuffer[index2+11] = 0;\n        \n                        index += 12;\n                        index2 += 12;\n                    }\n                }\n            }\n    \n            if (lineLabel) {\n                p = [p1[0], p1[1], p1[2] + lineLabelSize*0.1];\n                lineLabelPoints[i] = p;\n                lineLabelPoints2[li - i - 1] = p;\n            }\n    \n            if ((i + 1) < li) {\n                p1 = points[i+1];\n            }\n        }\n\n        elemetBase += points.length;\n    }\n\n    if (totalPoints > 0) {\n        center[0] /= totalPoints;\n        center[1] /= totalPoints;\n        center[2] /= totalPoints;\n    }\n\n    center[0] += globals.groupOrigin[0];\n    center[1] += globals.groupOrigin[1];\n    center[2] += globals.groupOrigin[2];\n\n    var hitable = hoverEvent || clickEvent || enterEvent || leaveEvent, type;\n\n    if (line) {\n        //console.log('totalPoints:' + totalPoints + ' vbuff-l:' + (vertexBuffer ? vertexBuffer.length : '??'));\n\n        var messageData = {\n            'color':lineColor, 'z-index':zIndex, 'center': center, 'advancedHit': advancedHit, 'totalPoints': totalPoints,\n            'hover-event':hoverEvent, 'click-event':clickEvent, 'draw-event':drawEvent, 'width-units': lineWidthUnits,\n            'hitable':hitable, 'state':globals.hitState, 'eventInfo': (globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {},\n            'enter-event':enterEvent, 'leave-event':leaveEvent, 'zbuffer-offset':zbufferOffset, \n            'line-width':lineWidth*2, 'lod':(globals.autoLod ? null : globals.tileLod) };\n    \n        if (lineFlat) {\n            type = texturedLine ? 8 : (widthByRatio ? 7 : 6);\n        } else {\n            type = texturedLine ? 10 : 9;\n        }\n    \n        if (texturedLine) {\n            if (lineStyleTexture != null) {\n                messageData['texture'] = [globals.stylesheetBitmaps[lineStyleTexture[0]], lineStyleTexture[1], lineStyleTexture[2]];\n                messageData['background'] = lineStyleBackground;\n            }\n        }\n\n        var signature = JSON.stringify({\n            type: 'T'+type,\n            color : lineColor,\n            zIndex : zIndex,\n            zOffset : zbufferOffset,\n            state : globals.hitState\n        });\n\n        var buffers = (normalBuffer) ? [vertexBuffer, normalBuffer] : [vertexBuffer];\n\n        if (advancedHit) {\n            buffers.push(elementBuffer);\n        }\n        \n        postGroupMessageFast(5, type, messageData, buffers, signature);\n    }\n\n    if (lineLabel) {\n        for (i = 0, li = lineLabelStack.length; i < li; i++) {\n            processLineLabel(lineLabelStack[i].points, lineLabelStack[i].points2, lineString, center, lod, style, featureIndex, zIndex, eventInfo);\n        }\n    }\n\n};\n\nvar processLineLabel = function(lineLabelPoints, lineLabelPoints2, lineString, center, lod, style, featureIndex, zIndex, eventInfo) {\n    var labelColor = getLayerPropertyValue(style, 'line-label-color', lineString, lod);\n    var labelColor2 = getLayerPropertyValue(style, 'line-label-color2', lineString, lod);\n    var labelOutline = getLayerPropertyValue(style, 'line-label-outline', lineString, lod);\n    var labelSource = getLayerPropertyValue(style, 'line-label-source', lineString, lod);\n    var labelSize = getLayerPropertyValue(style, 'line-label-size', lineString, lod);\n    var labelSpacing = getLayerPropertyValue(style, 'line-label-spacing', lineString, lod);\n    var labelLineHeight = getLayerPropertyValue(style, 'line-label-line-height', lineString, lod);\n    var labelOffset = getLayerPropertyValue(style, 'line-label-offset', lineString, lod);\n\n    if (Math.abs(labelSize) < 0.0001) {\n        return;\n    }\n\n    var labelText = getLayerExpresionValue(style, labelSource, lineString, lod, labelSource);\n    labelText = labelText ? labelText.replace('\\r\\n', '\\n').replace('\\r', '\\n') : '';\n    var fontNames = getLayerPropertyValue(style, 'line-label-font', lineString, lod);\n    var fonts = getFonts(fontNames);\n    var fontsStorage = getFontsStorage(fontNames);\n    var glyphsRes = getTextGlyphs(labelText, fonts);\n\n    if (labelSource == '$name') {\n        if (!areTextCharactersAvailable(labelText, fonts, glyphsRes)) {\n            var labelText2 = getLayerExpresionValue(style, '$name:en', lineString, lod, labelSource);\n            labelText2 = labelText2 ? labelText2.replace('\\r\\n', '\\n').replace('\\r', '\\n') : '';\n            var glyphsRes2 = getTextGlyphs(labelText, fonts);\n            \n            if (areTextCharactersAvailable(labelText2, fonts, glyphsRes2)) {\n                labelText = labelText2;                     \n                glyphsRes = glyphsRes2;\n            }\n        }\n    }\n\n    if (!labelText || labelText == '') {\n        return;\n    }\n\n    var hoverEvent = getLayerPropertyValue(style, 'hover-event', lineString, lod);\n    var clickEvent = getLayerPropertyValue(style, 'click-event', lineString, lod);\n    var drawEvent = getLayerPropertyValue(style, 'draw-event', lineString, lod);\n    var enterEvent = getLayerPropertyValue(style, 'enter-event', lineString, lod);\n    var leaveEvent = getLayerPropertyValue(style, 'leave-event', lineString, lod);\n    var advancedHit = getLayerPropertyValue(style, 'advanced-hit', lineString, lod);\n\n    var zbufferOffset = getLayerPropertyValue(style, 'zbuffer-offset', lineString, lod);\n\n    var bufferSize = getCharVerticesCount() * labelText.length * 2;\n    var vertexBuffer = new Float32Array(bufferSize);\n    var texcoordsBuffer = new Float32Array(bufferSize);\n    var planes = {};\n\n    var hitable = hoverEvent || clickEvent || enterEvent || leaveEvent;\n\n    var index = addStreetTextOnPath(lineLabelPoints, labelText, labelSize, labelSpacing, fonts, labelOffset, vertexBuffer, texcoordsBuffer, 0, planes, glyphsRes);\n    index = addStreetTextOnPath(lineLabelPoints2, labelText, labelSize, labelSpacing, fonts, labelOffset, vertexBuffer, texcoordsBuffer, index, null, glyphsRes);\n\n    if (!index) {\n        return;\n    }\n\n    //var fonts = labelData.fonts;\n    var labelFiles = new Array(fonts.length);\n\n    for (var i = 0, li= fonts.length; i < li; i++) {\n        labelFiles[i] = [];\n    }\n\n    for (var key in planes) {\n        var fontIndex = parseInt(key);\n        var planes2 = planes[key];\n\n        var files = [];\n\n        for (var key2 in planes2) {\n            var plane = parseInt(key2) - (fontIndex*4000);\n            var file = Math.round((plane - (plane % 4)) / 4);\n\n            if (files.indexOf(file) == -1) {\n                files.push(file);\n            }\n        }\n\n        labelFiles[fontIndex] = files;\n    }\n\n    var signature = JSON.stringify({\n        type: 'line-label',\n        color : labelColor,\n        color2 : labelColor2,\n        outline : labelOutline,\n        fonts : fontNames,\n        zIndex : zIndex,\n        zOffset : zbufferOffset\n    });\n\n    postGroupMessageFast(5, 11, {\n        'color':labelColor, 'color2':labelColor2, 'outline':labelOutline, \n        'z-index':zIndex, 'center': center, 'hover-event':hoverEvent, 'click-event':clickEvent, 'draw-event':drawEvent,\n        'files': labelFiles, 'enter-event':enterEvent, 'leave-event':leaveEvent, 'zbuffer-offset':zbufferOffset, 'advancedHit': advancedHit,\n        'fonts': fontsStorage, 'hitable':hitable, 'state':globals.hitState, 'eventInfo': (globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {}, \n        'lod':(globals.autoLod ? null : globals.tileLod) }, [vertexBuffer, texcoordsBuffer], signature);\n};\n\nvar processLineStringGeometry = function(lineString) {\n\n    checkDPoints(lineString);\n\n    var lines = lineString['lines'];\n\n    if (lines || lines.length == 0) {\n        return;\n    }\n\n    //debugger\n    var totalPoints = 0;\n    var indicesBuffer = new Uint32Array(lines.length);\n\n    for (i = 0; i < lines.length; i++) {\n        indicesBuffer[i] = totalPoints;\n\n        if (Array.isArray(lines[i])) {\n            totalPoints += lines[i].length;\n        }\n    }\n\n    var geometryBuffer = new Float64Array(totalPoints * 3);\n\n    /*var forceOrigin = globals.forceOrigin;\n    var tileX = globals.tileX;\n    var tileY = globals.tileY;*/\n    var forceScale = globals.forceScale;\n    var index = 0, p1, p2, pp, p;\n\n    for (var i = 0; i < lines.length; i++) {\n        if (!Array.isArray(lines[i]) || !lines[i].length) {\n            continue;\n        }\n        \n        var points = lines[i];\n   \n        p = points[0];\n        p1 = [p[0], p[1], p[2]];\n    \n        //add lines\n        for (var j = 0, lj = points.length; j < lj; j++) {\n\n            /*if (forceOrigin) {\n                pp = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n            }*/\n    \n            if (forceScale != null) {\n                pp = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n            }\n\n            geometryBuffer[index] = pp[0];\n            geometryBuffer[index+1] = pp[1];\n            geometryBuffer[index+2] = pp[2];\n            index += 3;\n\n            if (j == (lj - 1)) {\n                break;\n            }\n    \n            p1 = points[j+1];\n        }\n    }\n\n    globals.signatureCounter++;\n\n    postGroupMessageFast(5, 13, {\n        'id':lineString['id'] }, [geometryBuffer, indicesBuffer], (\"\"+globals.signatureCounter));\n};\n\n\n\n\n\n\n/***/ }),\n/* 6 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__worker_style_js__ = __webpack_require__(2);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__worker_message_js__ = __webpack_require__(1);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__worker_linestring_js__ = __webpack_require__(5);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__ = __webpack_require__(4);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return processPolygonPass; });\n\n\n\n\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */], vec3Normalize = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"g\" /* vec3Normalize */];\nvar getLayerPropertyValue = __WEBPACK_IMPORTED_MODULE_1__worker_style_js__[\"c\" /* getLayerPropertyValue */];\nvar postGroupMessageFast = __WEBPACK_IMPORTED_MODULE_2__worker_message_js__[\"c\" /* postGroupMessageFast */];\nvar processLineStringPass = __WEBPACK_IMPORTED_MODULE_3__worker_linestring_js__[\"a\" /* processLineStringPass */];\nvar processPointArrayPass = __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__[\"a\" /* processPointArrayPass */];\n\nvar processPolygonPass = function(polygon, lod, style, featureIndex, zIndex, eventInfo) {\n    var vertices = polygon['vertices'] || [];\n    if (vertices.length == 0) {\n        return;\n    }\n    \n    // borders as points\n    if (getLayerPropertyValue(style, 'point', polygon, lod) ||\n        getLayerPropertyValue(style, 'label', polygon, lod)) {\n        processPolygonLines(polygon, vertices, lod, style, featureIndex, zIndex, eventInfo, false);\n    }\n    \n    // borders as lines\n    if (getLayerPropertyValue(style, 'line', polygon, lod) ||\n        getLayerPropertyValue(style, 'line-label', polygon, lod)) {\n        processPolygonLines(polygon, vertices, lod, style, featureIndex, zIndex, eventInfo, true);\n    }\n    \n    var spolygon = getLayerPropertyValue(style, 'polygon', polygon, lod);\n    \n    if (!spolygon) {\n        return;\n    }\n    \n    var surface = polygon['surface'] || [];\n    if (surface.length == 0) {\n        return;\n    }\n    \n    var hoverEvent = getLayerPropertyValue(style, 'hover-event', polygon, lod);\n    var clickEvent = getLayerPropertyValue(style, 'click-event', polygon, lod);\n    var drawEvent = getLayerPropertyValue(style, 'draw-event', polygon, lod);\n    var enterEvent = getLayerPropertyValue(style, 'enter-event', polygon, lod);\n    var leaveEvent = getLayerPropertyValue(style, 'leave-event', polygon, lod);\n    var advancedHit = getLayerPropertyValue(style, 'advanced-hit', polygon, lod);\n\n    var zbufferOffset = getLayerPropertyValue(style, 'zbuffer-offset', polygon, lod);\n    \n    var polygonColor = getLayerPropertyValue(style, 'polygon-color', polygon, lod);\n    var polygonStyle = getLayerPropertyValue(style, 'polygon-style', polygon, lod);\n    var polygonStencil = getLayerPropertyValue(style, 'polygon-use-stencil', polygon, lod);\n    var polygonCulling = getLayerPropertyValue(style, 'polygon-culling', polygon, lod);\n    var polygonExtrude = getLayerPropertyValue(style, 'polygon-extrude', polygon, lod);\n    \n    polygonStyle = (polygonStyle == 'flatshade') ? 1 : 0;\n    polygonCulling = (polygonCulling == 'back') ? 1 : 0;\n\n    var geocent = globals.geocent;\n    var center = [0,0,0], n = [0,0,0];\n    var bboxMin = globals.bboxMin;\n  \n\n    // allocate vertex buffer\n    var trisCount = surface.length / 3;\n    var vertexCount = trisCount * 3;\n    var vertexBuffer = new Float32Array(vertexCount * 3);\n    \n    var surfaceI = 0;\n    var index = 0;\n    var p1 = [0,0,0], p2 = [0,0,0], p3 = [0,0,0], p4 = [0,0,0];\n    var offs, li, j, lj;\n\n    var tileX = globals.tileX;\n    var tileY = globals.tileY;\n    var forceOrigin = globals.forceOrigin;\n    var forceScale = globals.forceScale;    \n\n    //debugger\n    \n    //console.log(\"vertexCount = \" + vertexCount);\n    //add tris\n    for (var i = 0; i < vertexCount; i++) {\n        offs = 3 * surface[surfaceI++];\n        p1 = [vertices[offs], vertices[offs+1], vertices[offs+2]];\n\n        if (forceOrigin) {\n            p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n        }\n\n        if (forceScale != null) {\n            p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n        }\n \n        if (polygonExtrude) {\n            if (geocent) {\n                vec3Normalize([p1[0] + bboxMin[0], p1[1] + bboxMin[1], p1[2] + bboxMin[2]], n);\n                p1[0] += n[0] * polygonExtrude;\n                p1[1] += n[1] * polygonExtrude;\n                p1[2] += n[2] * polygonExtrude;\n            } else {\n                p1[2] += polygonExtrude;\n            }\n        }\n\n        center[0] += p1[0];\n        center[1] += p1[1];\n        center[2] += p1[2];\n\n        //add vertex\n        vertexBuffer[index++] = p1[0];\n        vertexBuffer[index++] = p1[1];\n        vertexBuffer[index++] = p1[2];\n    }\n    \n    //console.log( \"vertexBuffer: \" + vertexBuffer );\n    \n    if (vertexCount > 0) {\n        var k = 1.0 / vertexCount;\n        center[0] *= k;\n        center[1] *= k;\n        center[2] *= k;\n    }\n\n    center[0] += globals.groupOrigin[0];\n    center[1] += globals.groupOrigin[1];\n    center[2] += globals.groupOrigin[2];\n\n    var borders = polygon['borders'] || [];\n    if (borders.length > 0) {\n\n        var totalFaces = 0;\n\n        for (i = 0, li = borders.length; i < li; i++) {\n            var border = borders[i];\n            totalFaces += (border.length + 1) * 2;\n        }\n\n        var vertexBuffer2 = vertexBuffer;\n        vertexBuffer = new Float32Array(vertexBuffer.length + (totalFaces * 3 * 3));\n        vertexBuffer.set(vertexBuffer2);\n\n        for (i = 0, li = borders.length; i < li; i++) {\n            var border = borders[i], offset;\n\n            for (j = 0, lj = border.length; j < lj; j++) {\n\n                if (border[j] >= 0) {\n                    offset = 3 * border[j];\n                } else {\n                    offset = 3 * (-border[j]);\n                }\n\n                p1[0] = vertices[offset];\n                p1[1] = vertices[offset+1];\n                p1[2] = vertices[offset+2];\n\n                p3[0] = vertices[offset];\n                p3[1] = vertices[offset+1];\n                p3[2] = vertices[offset+2];\n\n                if (j < lj - 1) {\n                    if (border[j+1] >= 0) {\n                        offset = 3 * border[j+1];\n                    } else {\n                        offset = 3 * (-border[j+1]);\n                    }\n                } else {\n                    if (border[0] >= 0) {\n                        offset = 3 * border[0];\n                    } else {\n                        offset = 3 * (-border[0]);\n                    }\n                }\n\n                p2[0] = vertices[offset];\n                p2[1] = vertices[offset+1];\n                p2[2] = vertices[offset+2];\n\n                p4[0] = vertices[offset];\n                p4[1] = vertices[offset+1];\n                p4[2] = vertices[offset+2];\n\n                if (forceOrigin) {\n                    p1 = [p1[0] - tileX, p1[1] - tileY, p1[2]];\n                    p2 = [p2[0] - tileX, p2[1] - tileY, p2[2]];\n                    p3 = [p3[0] - tileX, p3[1] - tileY, p3[2]];\n                    p4 = [p4[0] - tileX, p4[1] - tileY, p4[2]];\n                }\n\n                if (forceScale != null) {\n                    p1 = [p1[0] * forceScale[0], p1[1] * forceScale[1], p1[2] * forceScale[2]];\n                    p2 = [p2[0] * forceScale[0], p2[1] * forceScale[1], p2[2] * forceScale[2]];\n                    p3 = [p3[0] * forceScale[0], p3[1] * forceScale[1], p3[2] * forceScale[2]];\n                    p4 = [p4[0] * forceScale[0], p4[1] * forceScale[1], p4[2] * forceScale[2]];\n                }\n\n                if (polygonExtrude) {\n                    if (geocent) {\n                        vec3Normalize([p1[0] + bboxMin[0], p1[1] + bboxMin[1], p1[2] + bboxMin[2]], n);\n                        p1 = [p1[0] + n[0] * polygonExtrude, p1[1] + n[1] * polygonExtrude, p1[2] + n[2] * polygonExtrude];\n\n                        vec3Normalize([p2[0] + bboxMin[0], p2[1] + bboxMin[1], p2[2] + bboxMin[2]], n);\n                        p2 = [p2[0] + n[0] * polygonExtrude, p2[1] + n[1] * polygonExtrude, p2[2] + n[2] * polygonExtrude];\n                    } else {\n                        p1[2] += polygonExtrude;\n                        p2[2] += polygonExtrude;\n                    }\n                }\n\n                vertexBuffer[index] = p4[0];\n                vertexBuffer[index+1] = p4[1];\n                vertexBuffer[index+2] = p4[2];\n\n                vertexBuffer[index+3] = p2[0];\n                vertexBuffer[index+4] = p2[1];\n                vertexBuffer[index+5] = p2[2];\n\n                vertexBuffer[index+6] = p1[0];\n                vertexBuffer[index+7] = p1[1];\n                vertexBuffer[index+8] = p1[2];\n\n                vertexBuffer[index+9] = p1[0];\n                vertexBuffer[index+10] = p1[1];\n                vertexBuffer[index+11] = p1[2];\n\n                vertexBuffer[index+12] = p3[0];\n                vertexBuffer[index+13] = p3[1];\n                vertexBuffer[index+14] = p3[2];\n\n                vertexBuffer[index+15] = p4[0];\n                vertexBuffer[index+16] = p4[1];\n                vertexBuffer[index+17] = p4[2];\n\n                index += 18;\n            }\n        }\n    }    \n\n    var hitable = hoverEvent || clickEvent || enterEvent || leaveEvent;\n    \n    var signature = JSON.stringify({\n        style: polygonStyle,\n        culling: polygonCulling, \n        stencil: polygonStencil, \n        color : polygonColor,\n        zIndex : zIndex,\n        zOffset : zbufferOffset,\n        state : globals.hitState\n    });\n\n    //debugger\n\n    postGroupMessageFast(5, 12, {\n        'color':polygonColor, 'z-index':zIndex, 'center': center, 'advancedHit': advancedHit, 'culling': polygonCulling, \n        'hover-event':hoverEvent, 'click-event':clickEvent, 'draw-event':drawEvent, 'style' : polygonStyle, 'stencil': polygonStencil, \n        'hitable':hitable, 'state':globals.hitState, 'eventInfo': (globals.alwaysEventInfo || hitable || drawEvent) ? eventInfo : {},\n        'enter-event':enterEvent, 'leave-event':leaveEvent, 'zbuffer-offset':zbufferOffset,\n        'lod':(globals.autoLod ? null : globals.tileLod) }, [vertexBuffer], signature);\n};\n\nvar createEmptyFeatureFromPolygon = function(polygon) {\n    var feature = {};\n    for(var key in polygon) {\n        if(key != 'surface' && key != 'vertices' && key != 'borders') {\n            feature[key] = polygon[key];\n        }\n    }\n    return feature;\n};\n\nvar processPolygonLines = function(polygon, vertices, lod, style, featureIndex, zIndex, eventInfo, processLines) {\n    var borders = polygon['borders'] || [];\n    if (borders.length == 0) {\n        return;\n    }\n    var polygonExtrude = getLayerPropertyValue(style, 'polygon-extrude', polygon, lod);\n    var feature = createEmptyFeatureFromPolygon(polygon);\n    var bordersCount = borders.length;\n    var allPoints = [], allPoints2 = [];\n    var p, p2, n = [0,0,0];\n\n    var tileX = globals.tileX;\n    var tileY = globals.tileY;\n    var forceOrigin = globals.forceOrigin;\n    var forceScale = globals.forceScale;    \n    var forceScale2 = [1.0/forceScale[0], 1.0/forceScale[1], 1.0/forceScale[2]];    \n    var geocent = globals.geocent;\n    var bboxMin = globals.bboxMin;\n\n    for (var j = 0; j < bordersCount; j++) {\n        var border = borders[j], offset;\n        var pointsCount = border.length;\n        var pointsCount2 = 0;\n        if (pointsCount > 0) {\n            var points, points3, points4, i;\n            if (processLines) {\n                points = new Array(pointsCount + 1);\n                points3 = new Array(pointsCount + 1);\n            } else {\n                points = new Array(pointsCount);\n                points3 = new Array(pointsCount);\n            }\n            for (i = 0; i < pointsCount; i++) {\n                if (border[i] >= 0) {\n                    offset = 3 * border[i];\n                    pointsCount2++; // count vertices with positive index\n                } else {\n                    offset = 3 * (-border[i]);\n                }\n\n                if (polygonExtrude) {\n                    p = [vertices[offset], vertices[offset+1], vertices[offset+2]];\n                    p2 = p.slice();\n\n                    if (forceOrigin) {\n                        p2 = [p2[0] - tileX, p2[1] - tileY, p2[2]];\n                    }\n\n                    if (forceScale != null) {\n                        p2 = [p2[0] * forceScale[0], p2[1] * forceScale[1], p2[2] * forceScale[2]];\n                    }\n\n                    if (geocent) {\n                        vec3Normalize([p2[0] + bboxMin[0], p2[1] + bboxMin[1], p2[2] + bboxMin[2]], n);\n                        p2 = [p[0] + (n[0] * polygonExtrude) * forceScale2[0], p[1] + (n[1] * polygonExtrude) * forceScale2[1], p[2] + (n[2] * polygonExtrude) * forceScale2[2]];\n                    } else {\n                        p2[2] += polygonExtrude;\n                    }\n\n                    points[i] = p;\n                    points3[i] = p2;\n\n                    if (border[i] >= 0) {\n                        allPoints.push([p,p2]);\n                    }\n\n                } else {\n                    points[i] = [vertices[offset], vertices[offset+1], vertices[offset+2]];\n                }\n\n                if (processLines && i == 0) {\n                    points[pointsCount] = points[0];\n                    points3[pointsCount] = points3[0];\n                }\n            }\n\n            var points2 = new Array(pointsCount2);\n            var points4 = new Array(pointsCount2);\n            var i2 = 0;\n            //debugger\n\n            //create array of points only for vertices with positive value\n            for (i = 0; i < pointsCount; i++) {\n                if (border[i] >= 0) {\n                    points2[i2] = points[i].slice();\n\n                    if (polygonExtrude) {\n                        points4[i2] = points3[i].slice();\n                    }\n\n                    i2++;\n                }\n            }\n\n            allPoints.push(points);\n            allPoints2 = allPoints2.concat(points2);\n\n            if (polygonExtrude) {\n                allPoints.push(points3);\n                allPoints2 = allPoints2.concat(points4);\n            }\n\n        }\n    }\n\n    if(processLines && allPoints.length > 0) {\n        feature['lines'] = allPoints;\n        processLineStringPass(feature, lod, style, featureIndex, zIndex, eventInfo);\n    } else if(allPoints2.length > 0) {\n        feature['points'] = allPoints2;\n        processPointArrayPass(feature, lod, style, featureIndex, zIndex, eventInfo);\n    }\n\n};\n \n\n\n\n/***/ }),\n/* 7 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return bidi; });\n/* Copyright 2012 Mozilla Foundation\n *\n * Licensed under the Apache License, Version 2.0 (the \"License\");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n *\n *     http://www.apache.org/licenses/LICENSE-2.0\n *\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an \"AS IS\" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\n// Character types for symbols from 0000 to 00FF.\n// Source: ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt\nvar baseTypes = [\n  'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'S', 'B', 'S',\n  'WS', 'B', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN',\n  'BN', 'BN', 'BN', 'BN', 'B', 'B', 'B', 'S', 'WS', 'ON', 'ON', 'ET',\n  'ET', 'ET', 'ON', 'ON', 'ON', 'ON', 'ON', 'ES', 'CS', 'ES', 'CS', 'CS',\n  'EN', 'EN', 'EN', 'EN', 'EN', 'EN', 'EN', 'EN', 'EN', 'EN', 'CS', 'ON',\n  'ON', 'ON', 'ON', 'ON', 'ON', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',\n  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',\n  'L', 'L', 'L', 'L', 'ON', 'ON', 'ON', 'ON', 'ON', 'ON', 'L', 'L', 'L',\n  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',\n  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'ON', 'ON', 'ON', 'ON',\n  'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'B', 'BN', 'BN', 'BN', 'BN', 'BN',\n  'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN',\n  'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'BN', 'CS', 'ON', 'ET',\n  'ET', 'ET', 'ET', 'ON', 'ON', 'ON', 'ON', 'L', 'ON', 'ON', 'BN', 'ON',\n  'ON', 'ET', 'ET', 'EN', 'EN', 'ON', 'L', 'ON', 'ON', 'ON', 'EN', 'L',\n  'ON', 'ON', 'ON', 'ON', 'ON', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',\n  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',\n  'L', 'ON', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',\n  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',\n  'L', 'L', 'L', 'L', 'L', 'ON', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L'\n];\n\n// Character types for symbols from 0600 to 06FF.\n// Source: ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt\n// Note that 061D does not exist in the Unicode standard (see\n// http://unicode.org/charts/PDF/U0600.pdf), so we replace it with an\n// empty string and issue a warning if we encounter this character. The\n// empty string is required to properly index the items after it.\nvar arabicTypes = [\n  'AN', 'AN', 'AN', 'AN', 'AN', 'AN', 'ON', 'ON', 'AL', 'ET', 'ET', 'AL',\n  'CS', 'AL', 'ON', 'ON', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM',\n  'NSM', 'NSM', 'NSM', 'NSM', 'AL', 'AL', '', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM',\n  'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM',\n  'NSM', 'NSM', 'NSM', 'NSM', 'AN', 'AN', 'AN', 'AN', 'AN', 'AN', 'AN',\n  'AN', 'AN', 'AN', 'ET', 'AN', 'AN', 'AL', 'AL', 'AL', 'NSM', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL',\n  'AL', 'AL', 'AL', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'AN',\n  'ON', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'NSM', 'AL', 'AL', 'NSM', 'NSM',\n  'ON', 'NSM', 'NSM', 'NSM', 'NSM', 'AL', 'AL', 'EN', 'EN', 'EN', 'EN',\n  'EN', 'EN', 'EN', 'EN', 'EN', 'EN', 'AL', 'AL', 'AL', 'AL', 'AL', 'AL'\n];\n\nfunction isOdd(i) {\n  return (i & 1) !== 0;\n}\n\nfunction isEven(i) {\n  return (i & 1) === 0;\n}\n\nfunction findUnequal(arr, start, value) {\n  for (var j = start, jj = arr.length; j < jj; ++j) {\n    if (arr[j] !== value) {\n      return j;\n    }\n  }\n  return j;\n}\n\nfunction setValues(arr, start, end, value) {\n  for (var j = start; j < end; ++j) {\n    arr[j] = value;\n  }\n}\n\nfunction reverseValues(arr, arr2, start, end) {\n  for (var i = start, j = end - 1; i < j; ++i, --j) {\n    var temp = arr[i];\n    arr[i] = arr[j];\n    arr[j] = temp;\n    temp = arr2[i];\n    arr2[i] = arr2[j];\n    arr2[j] = temp;\n  }\n}\n\nfunction createBidiText(str, isLTR, vertical) {\n  return {\n    str: str,\n    indices: indices,\n    types : types,\n    dir: (vertical ? 'ttb' : (isLTR ? 'ltr' : 'rtl')),\n  };\n}\n\n// These are used in bidi(), which is called frequently. We re-use them on\n// each call to avoid unnecessary allocations.\nvar chars = [];\nvar types = [];\nvar indices = [];\n\nfunction bidi(str, startLevel, vertical) {\n  var isLTR = true;\n  var strLength = str.length;\n  if (strLength === 0 || vertical) {\n    return createBidiText(str, isLTR, vertical);\n  }\n\n  // Get types and fill arrays\n  chars.length = strLength;\n  types.length = strLength;\n  var numBidi = 0;\n\n  var i, ii;\n  for (i = 0; i < strLength; ++i) {\n    chars[i] = str.charAt(i);\n    indices[i] = i;\n\n    var charCode = str.charCodeAt(i);\n    var charType = 'L';\n    if (charCode <= 0x00ff) {\n      charType = baseTypes[charCode];\n    } else if (0x0590 <= charCode && charCode <= 0x05f4) {\n      charType = 'R';\n    } else if (0x0600 <= charCode && charCode <= 0x06ff) {\n      charType = arabicTypes[charCode & 0xff];\n      if (!charType) {\n        //console.log('Bidi: invalid Unicode character ' + charCode.toString(16));\n      }\n    } else if (0x0700 <= charCode && charCode <= 0x08AC) {\n      charType = 'AL';\n    }\n    if (charType === 'R' || charType === 'AL' || charType === 'AN') {\n      numBidi++;\n    }\n    types[i] = charType;\n  }\n\n  // Detect the bidi method\n  // - If there are no rtl characters then no bidi needed\n  // - If less than 30% chars are rtl then string is primarily ltr\n  // - If more than 30% chars are rtl then string is primarily rtl\n  if (numBidi === 0) {\n    isLTR = true;\n    return createBidiText(str, isLTR);\n  }\n\n  if (startLevel === -1) {\n    if ((numBidi / strLength) < 0.3) {\n      isLTR = true;\n      startLevel = 0;\n    } else {\n      isLTR = false;\n      startLevel = 1;\n    }\n  }\n\n  var levels = [];\n  for (i = 0; i < strLength; ++i) {\n    levels[i] = startLevel;\n  }\n\n  /*\n   X1-X10: skip most of this, since we are NOT doing the embeddings.\n   */\n  var e = (isOdd(startLevel) ? 'R' : 'L');\n  var sor = e;\n  var eor = sor;\n\n  /*\n   W1. Examine each non-spacing mark (NSM) in the level run, and change the\n   type of the NSM to the type of the previous character. If the NSM is at the\n   start of the level run, it will get the type of sor.\n   */\n  var lastType = sor;\n  for (i = 0; i < strLength; ++i) {\n    if (types[i] === 'NSM') {\n      types[i] = lastType;\n    } else {\n      lastType = types[i];\n    }\n  }\n\n  /*\n   W2. Search backwards from each instance of a European number until the\n   first strong type (R, L, AL, or sor) is found.  If an AL is found, change\n   the type of the European number to Arabic number.\n   */\n  lastType = sor;\n  var t;\n  for (i = 0; i < strLength; ++i) {\n    t = types[i];\n    if (t === 'EN') {\n      types[i] = (lastType === 'AL') ? 'AN' : 'EN';\n    } else if (t === 'R' || t === 'L' || t === 'AL') {\n      lastType = t;\n    }\n  }\n\n  /*\n   W3. Change all ALs to R.\n   */\n  for (i = 0; i < strLength; ++i) {\n    t = types[i];\n    if (t === 'AL') {\n      types[i] = 'R';\n    }\n  }\n\n  /*\n   W4. A single European separator between two European numbers changes to a\n   European number. A single common separator between two numbers of the same\n   type changes to that type:\n   */\n  for (i = 1; i < strLength - 1; ++i) {\n    if (types[i] === 'ES' && types[i - 1] === 'EN' && types[i + 1] === 'EN') {\n      types[i] = 'EN';\n    }\n    if (types[i] === 'CS' &&\n        (types[i - 1] === 'EN' || types[i - 1] === 'AN') &&\n        types[i + 1] === types[i - 1]) {\n      types[i] = types[i - 1];\n    }\n  }\n\n  /*\n   W5. A sequence of European terminators adjacent to European numbers changes\n   to all European numbers:\n   */\n  for (i = 0; i < strLength; ++i) {\n    if (types[i] === 'EN') {\n      // do before\n      var j;\n      for (j = i - 1; j >= 0; --j) {\n        if (types[j] !== 'ET') {\n          break;\n        }\n        types[j] = 'EN';\n      }\n      // do after\n      for (j = i + 1; j < strLength; ++j) {\n        if (types[j] !== 'ET') {\n          break;\n        }\n        types[j] = 'EN';\n      }\n    }\n  }\n\n  /*\n   W6. Otherwise, separators and terminators change to Other Neutral:\n   */\n  for (i = 0; i < strLength; ++i) {\n    t = types[i];\n    if (t === 'WS' || t === 'ES' || t === 'ET' || t === 'CS') {\n      types[i] = 'ON';\n    }\n  }\n\n  /*\n   W7. Search backwards from each instance of a European number until the\n   first strong type (R, L, or sor) is found. If an L is found,  then change\n   the type of the European number to L.\n   */\n  lastType = sor;\n  for (i = 0; i < strLength; ++i) {\n    t = types[i];\n    if (t === 'EN') {\n      types[i] = ((lastType === 'L') ? 'L' : 'EN');\n    } else if (t === 'R' || t === 'L') {\n      lastType = t;\n    }\n  }\n\n  /*\n   N1. A sequence of neutrals takes the direction of the surrounding strong\n   text if the text on both sides has the same direction. European and Arabic\n   numbers are treated as though they were R. Start-of-level-run (sor) and\n   end-of-level-run (eor) are used at level run boundaries.\n   */\n  for (i = 0; i < strLength; ++i) {\n    if (types[i] === 'ON') {\n      var end = findUnequal(types, i + 1, 'ON');\n      var before = sor;\n      if (i > 0) {\n        before = types[i - 1];\n      }\n\n      var after = eor;\n      if (end + 1 < strLength) {\n        after = types[end + 1];\n      }\n      if (before !== 'L') {\n        before = 'R';\n      }\n      if (after !== 'L') {\n        after = 'R';\n      }\n      if (before === after) {\n        setValues(types, i, end, before);\n      }\n      i = end - 1; // reset to end (-1 so next iteration is ok)\n    }\n  }\n\n  /*\n   N2. Any remaining neutrals take the embedding direction.\n   */\n  for (i = 0; i < strLength; ++i) {\n    if (types[i] === 'ON') {\n      types[i] = e;\n    }\n  }\n\n  /*\n   I1. For all characters with an even (left-to-right) embedding direction,\n   those of type R go up one level and those of type AN or EN go up two\n   levels.\n   I2. For all characters with an odd (right-to-left) embedding direction,\n   those of type L, EN or AN go up one level.\n   */\n  for (i = 0; i < strLength; ++i) {\n    t = types[i];\n    if (isEven(levels[i])) {\n      if (t === 'R') {\n        levels[i] += 1;\n      } else if (t === 'AN' || t === 'EN') {\n        levels[i] += 2;\n      }\n    } else { // isOdd\n      if (t === 'L' || t === 'AN' || t === 'EN') {\n        levels[i] += 1;\n      }\n    }\n  }\n\n  /*\n   L1. On each line, reset the embedding level of the following characters to\n   the paragraph embedding level:\n\n   segment separators,\n   paragraph separators,\n   any sequence of whitespace characters preceding a segment separator or\n   paragraph separator, and any sequence of white space characters at the end\n   of the line.\n   */\n\n  // don't bother as text is only single line\n\n  /*\n   L2. From the highest level found in the text to the lowest odd level on\n   each line, reverse any contiguous sequence of characters that are at that\n   level or higher.\n   */\n\n  // find highest level & lowest odd level\n  var highestLevel = -1;\n  var lowestOddLevel = 99;\n  var level;\n  for (i = 0, ii = levels.length; i < ii; ++i) {\n    level = levels[i];\n    if (highestLevel < level) {\n      highestLevel = level;\n    }\n    if (lowestOddLevel > level && isOdd(level)) {\n      lowestOddLevel = level;\n    }\n  }\n\n  // now reverse between those limits\n  for (level = highestLevel; level >= lowestOddLevel; --level) {\n    // find segments to reverse\n    var start = -1;\n    for (i = 0, ii = levels.length; i < ii; ++i) {\n      if (levels[i] < level) {\n        if (start >= 0) {\n          reverseValues(chars, indices, start, i);\n          start = -1;\n        }\n      } else if (start < 0) {\n        start = i;\n      }\n    }\n    if (start >= 0) {\n      reverseValues(chars, indices, start, levels.length);\n    }\n  }\n\n  /*\n   L3. Combining marks applied to a right-to-left base character will at this\n   point precede their base character. If the rendering engine expects them to\n   follow the base characters in the final display process, then the ordering\n   of the marks and the base character must be reversed.\n   */\n\n  // don't bother for now\n\n  /*\n   L4. A character that possesses the mirrored property as specified by\n   Section 4.7, Mirrored, must be depicted by a mirrored glyph if the resolved\n   directionality of that character is R.\n   */\n\n  // don't mirror as characters are already mirrored in the pdf\n\n  // Finally, return string\n  for (i = 0, ii = chars.length; i < ii; ++i) {\n    var ch = chars[i];\n    if (ch === '<' || ch === '>') {\n      chars[i] = '';\n    }\n  }\n  return createBidiText(chars.join(''), isLTR);\n}\n\n\n\n\n\n/***/ }),\n/* 8 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_bidi_js__ = __webpack_require__(7);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return Typr; });\n\n\n\n\n//get rid of compiler mess\nvar bidi = __WEBPACK_IMPORTED_MODULE_0__worker_bidi_js__[\"a\" /* bidi */];\n\n\nvar Typr = {};\n\nTypr.parse = function(buff) {\n    var bin = Typr._bin;\n    var data = new Uint8Array(buff);\n    var offset = 0;\n    \n    var sfnt_version = bin.readFixed(data, offset);\n    offset += 4;\n    var numTables = bin.readUshort(data, offset);\n    offset += 2;\n    var searchRange = bin.readUshort(data, offset);\n    offset += 2;\n    var entrySelector = bin.readUshort(data, offset);\n    offset += 2;\n    var rangeShift = bin.readUshort(data, offset);\n    offset += 2;\n    \n    var tags = [\n        \"cmap\",\n        \"head\",\n        \"hhea\",\n        \"maxp\",\n        \"hmtx\",\n        //\"name\",\n        //\"OS/2\",\n        //\"post\",\n        \n        //\"cvt\",\n        //\"fpgm\",\n        //\"loca\",\n        //\"glyf\",\n        \"kern\",\n        \n        //\"prep\"\n        //\"gasp\"\n        \n        \"GPOS\",\n        \"GSUB\"\n        //\"VORG\",\n        ];\n    \n    var obj = {_data:data};\n    //console.log(sfnt_version, numTables, searchRange, entrySelector, rangeShift);\n    \n    var tabs = {};\n    var tablesOffset = 0;\n    \n    for(var i=0; i<numTables; i++) {\n        var tag = bin.readASCII(data, offset, 4);   offset += 4;\n        var checkSum = bin.readUint(data, offset);  offset += 4;\n        var toffset = bin.readUint(data, offset);   offset += 4;\n        var length = bin.readUint(data, offset);    offset += 4;\n        tabs[tag] = {offset:toffset, length:length};\n        tablesOffset = toffset + length;\n        //if(tags.indexOf(tag)==-1) console.log(\"unknown tag\", tag);\n    }\n    \n    for(var i=0; i< tags.length; i++) {\n        var t = tags[i];\n        //console.log(t);\n        //if(tabs[t]) console.log(t, tabs[t].offset, tabs[t].length);\n        if(tabs[t]) obj[t.trim()] = Typr[t.trim()].parse(data, tabs[t].offset, tabs[t].length, obj);\n    }\n\n    obj._tabs = tabs;\n\n    Typr._processGlyphs(data, tablesOffset, tabs, obj);\n\n    //get tables\n    var gsub = obj['GSUB'];\n    if (gsub) {\n        var llist = gsub.lookupList, flist = gsub.featureList;\n\n        obj.gsubIsolTable = [];\n        obj.gsubInitTable = [];\n        obj.gsubFinaTable = [];\n        obj.gsubMediTable = [];\n\n        obj.gsubRligLigaTable = [];\n\n        for(var fi = 0; fi < flist.length; fi++) {\n            var tag = flist[fi].tag;\n\n            switch (tag) {\n                case 'isol':\n                case 'init':\n                case 'fina':\n                case 'medi':\n\n                    for(var ti = 0; ti < flist[fi].tab.length; ti++) {\n                        var tab = llist[flist[fi].tab[ti]];\n                        \n                        if(tab.ltype == 1) {\n                            switch (tag) {\n                                case 'isol': obj.gsubIsolTable.push(tab.tabs); break;\n                                case 'init': obj.gsubInitTable.push(tab.tabs); break;\n                                case 'fina': obj.gsubFinaTable.push(tab.tabs); break;\n                                case 'medi': obj.gsubMediTable.push(tab.tabs); break;\n                            }\n                        }\n                    }\n\n                    break;\n\n                case 'rlig':\n                case 'liga':\n\n                    for(var ti = 0; ti < flist[fi].tab.length; ti++) {\n                        var tab = llist[flist[fi].tab[ti]];\n                        \n                        if(tab.ltype == 4) {\n                            obj.gsubRligLigaTable.push(tab.tabs);\n                        }\n                    }\n\n                    break;\n            }\n\n        }\n    }\n   \n    return obj;\n}\n\nTypr._processGlyphs = function(data, index, tabs, obj) {\n    var version = data[index]; index += 1;\n    var textureLX = (data[index] << 8) | (data[index+1]); index += 2;\n    var textureLY = (data[index] << 8) | (data[index+1]); index += 2;\n    var size = data[index]; index += 1;\n    var flags = data[index]; index += 1;\n\n    obj.version = version;\n    obj.textureLX = textureLX;\n    obj.textureLY = textureLY;\n    obj.size = size;\n    obj.cly = size * 1.5;\n    obj.flags = flags;\n\n    var glyphs = new Array(obj.maxp.numGlyphs);\n    var fx = 1.0 / textureLX, fy = 1.0 / textureLY;\n    var step = (textureLX > 256) ? 7 : 6;\n\n    var filesIndicesIndex = index + obj.maxp.numGlyphs * step;\n    var filesIndicesCount = (data[filesIndicesIndex] << 8) | data[filesIndicesIndex+1];\n    var files = new Array(filesIndicesCount);\n\n    filesIndicesIndex += 2;\n\n    for (var i = 0, li = filesIndicesCount; i < li; i++) {\n        files[i] = (data[filesIndicesIndex+i*2] << 8) | data[filesIndicesIndex+i*2+1];\n    }\n\n    var fileIndex = 0;\n\n    for (i = 0, li = obj.maxp.numGlyphs; i < li; i++) {\n        if (i == files[fileIndex]) {\n            fileIndex++;\n        }\n\n        glyphs[i] = Typr._processGlyph(data, index, fx, fy, textureLX, obj, i, fileIndex);\n        index += step;\n    }\n\n    obj.glyphs = glyphs;\n}\n\nTypr._processGlyph = function(data, index, fx, fy, textureLX, font, glyphIndex, fileIndex) {\n    var value = (data[index] << 24) | (data[index+1] << 16) | (data[index+2] << 8) | (data[index+3]);\n\n    // w 6bit | h 6bit | sx sign 1bit | abs sx 6bit | sy sign 1bit | abs sy 6bit | plane 2bit \n    var w = (value >> 22) & 63;\n    var h = (value >> 16) & 63;\n    var sx = ((value >> 9) & 63) * (((value >> 15) & 1) ? -1 : 1);\n    var sy = -((value >> 2) & 63) * (((value >> 8) & 1) ? -1 : 1);\n    var plane = (value & 3) + (fileIndex * 4);\n\n    if (textureLX > 256) {\n        value = (data[index+4] << 16) | (data[index+5] << 8) | (data[index+6]);\n    } else {\n        value = (data[index+4] << 8) | (data[index+5]);\n    }    \n\n    var scale = ((font.size/0.75) / font.head.unitsPerEm) * 0.75;\n    var x, y, step = font.hmtx.aWidth[glyphIndex] * scale;\n\n    //store glyph position\n    switch (textureLX) {\n        case 2048: // x 11bit | y 11bit\n            x = ((value >> 11) & 2047), y = (value & 2047); break;\n                   \n        case 1024: // x 10bit | y 10bit\n            x = ((value >> 10) & 1023), y = (value & 1023); break;\n\n        case 512:  // x 9bit | y 9bit\n            x = ((value >> 9) & 511), y = (value & 511); break;\n\n        default:   // x 8bit | y 8bit\n            x = ((value >> 8) & 255), y = (value & 255); break;\n    }\n\n    return {\n        u1 : (x) * fx,\n        v1 : (y * fy) + plane,\n        u2 : (x + w) * fx,\n        v2 : ((y + h) * fy) + plane,\n        lx : w,\n        ly : h,\n        sx : sx, \n        sy : sy, \n        step : (step), \n        plane: plane\n    };\n}\n\nTypr._tabOffset = function(data, tab) {\n    var bin = Typr._bin;\n    var numTables = bin.readUshort(data, 4);\n    var offset = 12;\n    for(var i=0; i<numTables; i++) {\n        var tag = bin.readASCII(data, offset, 4);   offset += 4;\n        var checkSum = bin.readUint(data, offset);  offset += 4;\n        var toffset = bin.readUint(data, offset);   offset += 4;\n        var length = bin.readUint(data, offset);    offset += 4;\n        if(tag==tab) return toffset;\n    }\n    return 0;\n}\n\n\n\n\nTypr._bin = {\n    readFixed : function(data, o) {\n        return ((data[o]<<8) | data[o+1]) +  (((data[o+2]<<8)|data[o+3])/(256*256+4));\n    },\n\n    readF2dot14 : function(data, o) {\n        var num = Typr._bin.readShort(data, o);\n        return num / 16384;\n        \n        var intg = (num >> 14), frac = ((num & 0x3fff)/(0x3fff+1));\n        return (intg>0) ? (intg+frac) : (intg-frac);\n    },\n\n    readInt : function(buff, p) {\n        //if(p>=buff.length) throw \"error\";\n        var a = Typr._bin.t.uint8;\n        a[0] = buff[p+3];\n        a[1] = buff[p+2];\n        a[2] = buff[p+1];\n        a[3] = buff[p];\n        return Typr._bin.t.int32[0];\n    },\n    \n    readInt8 : function(buff, p) {\n        //if(p>=buff.length) throw \"error\";\n        var a = Typr._bin.t.uint8;\n        a[0] = buff[p];\n        return Typr._bin.t.int8[0];\n    },\n\n    readShort : function(buff, p) {\n        //if(p>=buff.length) throw \"error\";\n        var a = Typr._bin.t.uint8;\n        a[1] = buff[p]; a[0] = buff[p+1];\n        return Typr._bin.t.int16[0];\n    },\n\n    readUshort : function(buff, p) {\n        //if(p>=buff.length) throw \"error\";\n        return (buff[p]<<8) | buff[p+1];\n    },\n\n    readUshorts : function(buff, p, len) {\n        var arr = [];\n        for(var i=0; i<len; i++) arr.push(Typr._bin.readUshort(buff, p+i*2));\n        return arr;\n    },\n\n    readUint : function(buff, p) {\n        //if(p>=buff.length) throw \"error\";\n        var a = Typr._bin.t.uint8;\n        a[3] = buff[p];  a[2] = buff[p+1];  a[1] = buff[p+2];  a[0] = buff[p+3];\n        return Typr._bin.t.uint32[0];\n    },\n\n    readUint64 : function(buff, p) {\n        //if(p>=buff.length) throw \"error\";\n        return (Typr._bin.readUint(buff, p)*(0xffffffff+1)) + Typr._bin.readUint(buff, p+4);\n    },\n\n    readASCII : function(buff, p, l) {   // l : length in Characters (not Bytes)\n        //if(p>=buff.length) throw \"error\";\n        var s = \"\";\n        for(var i = 0; i < l; i++) s += String.fromCharCode(buff[p+i]);\n        return s;\n    },\n\n    readUnicode : function(buff, p, l) {\n        //if(p>=buff.length) throw \"error\";\n        var s = \"\";\n        for(var i = 0; i < l; i++)  \n        {\n            var c = (buff[p++]<<8) | buff[p++];\n            s += String.fromCharCode(c);\n        }\n        return s;\n    },\n\n    readBytes : function(buff, p, l) {\n        //if(p>=buff.length) throw \"error\";\n        var arr = [];\n        for(var i=0; i<l; i++) arr.push(buff[p+i]);\n        return arr;\n    },\n\n    readASCIIArray : function(buff, p, l) {  // l : length in Characters (not Bytes)\n        //if(p>=buff.length) throw \"error\";\n        var s = [];\n        for(var i = 0; i < l; i++)  \n            s.push(String.fromCharCode(buff[p+i]));\n        return s;\n    }\n};\n\nTypr._bin.t = {\n    buff: new ArrayBuffer(8),\n};\nTypr._bin.t.int8   = new Int8Array  (Typr._bin.t.buff);\nTypr._bin.t.uint8  = new Uint8Array (Typr._bin.t.buff);\nTypr._bin.t.int16  = new Int16Array (Typr._bin.t.buff);\nTypr._bin.t.uint16 = new Uint16Array(Typr._bin.t.buff);\nTypr._bin.t.int32  = new Int32Array (Typr._bin.t.buff);\nTypr._bin.t.uint32 = new Uint32Array(Typr._bin.t.buff);\n\n\n\n\n\n// OpenType Layout Common Table Formats\n\nTypr._lctf = {};\n\nTypr._lctf.parse = function(data, offset, length, font, subt) {\n    var bin = Typr._bin;\n    var obj = {};\n    var offset0 = offset;\n    var tableVersion = bin.readFixed(data, offset);  offset += 4;\n    \n    var offScriptList  = bin.readUshort(data, offset);  offset += 2;\n    var offFeatureList = bin.readUshort(data, offset);  offset += 2;\n    var offLookupList  = bin.readUshort(data, offset);  offset += 2;\n    \n    \n    obj.scriptList  = Typr._lctf.readScriptList (data, offset0 + offScriptList);\n    obj.featureList = Typr._lctf.readFeatureList(data, offset0 + offFeatureList);\n    obj.lookupList  = Typr._lctf.readLookupList (data, offset0 + offLookupList, subt);\n    \n    return obj;\n}\n\nTypr._lctf.readLookupList = function(data, offset, subt) {\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = [];\n    var count = bin.readUshort(data, offset);  offset+=2;\n\n    for(var i=0; i<count; i++) \n    {\n        var noff = bin.readUshort(data, offset);  offset+=2;\n        var lut = Typr._lctf.readLookupTable(data, offset0 + noff, subt);\n        obj.push(lut);\n    }\n    return obj;\n}\n\nTypr._lctf.readLookupTable = function(data, offset, subt) {\n    //console.log(\"Parsing lookup table\", offset);\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = {tabs:[]};\n    \n    obj.ltype = bin.readUshort(data, offset);  offset+=2;\n    obj.flag  = bin.readUshort(data, offset);  offset+=2;\n    var cnt   = bin.readUshort(data, offset);  offset+=2;\n    \n    for(var i=0; i<cnt; i++) {\n        var noff = bin.readUshort(data, offset);  offset+=2;\n        var tab = subt(data, obj.ltype, offset0 + noff);\n        //console.log(obj.type, tab);\n        obj.tabs.push(tab);\n    }\n    return obj;\n}\n\nTypr._lctf.numOfOnes = function(n) {\n    var num = 0;\n    for(var i=0; i<32; i++) if(((n>>>i)&1) != 0) num++;\n    return num;\n}\n\nTypr._lctf.readClassDef = function(data, offset) {\n    var bin = Typr._bin;\n    var obj = { start:[], end:[], class:[] };\n    var format = bin.readUshort(data, offset);  offset+=2;\n\n    if(format==1) {\n        var startGlyph  = bin.readUshort(data, offset);  offset+=2;\n        var glyphCount  = bin.readUshort(data, offset);  offset+=2;\n        for(var i=0; i<glyphCount; i++) {\n            obj.start.push(startGlyph+i);\n            obj.end  .push(startGlyph+i);\n            obj.class.push(bin.readUshort(data, offset));  offset+=2;\n        }\n    }\n\n    if(format==2) {\n        var count = bin.readUshort(data, offset);  offset+=2;\n        for(var i=0; i<count; i++) {\n            obj.start.push(bin.readUshort(data, offset));  offset+=2;\n            obj.end  .push(bin.readUshort(data, offset));  offset+=2;\n            obj.class.push(bin.readUshort(data, offset));  offset+=2;\n        }\n    }\n    return obj;\n}\n\nTypr._lctf.readValueRecord = function(data, offset, valFmt) {\n    var bin = Typr._bin;\n    var arr = [];\n    arr.push( (valFmt&1) ? bin.readShort(data, offset) : 0 );  offset += (valFmt&1) ? 2 : 0;\n    arr.push( (valFmt&2) ? bin.readShort(data, offset) : 0 );  offset += (valFmt&2) ? 2 : 0;\n    arr.push( (valFmt&4) ? bin.readShort(data, offset) : 0 );  offset += (valFmt&4) ? 2 : 0;\n    arr.push( (valFmt&8) ? bin.readShort(data, offset) : 0 );  offset += (valFmt&8) ? 2 : 0;\n    return arr;\n}\n\nTypr._lctf.readCoverage = function(data, offset) {\n    var bin = Typr._bin;\n    var cvg = {};\n    cvg.fmt   = bin.readUshort(data, offset);  offset+=2;\n    var count = bin.readUshort(data, offset);  offset+=2;\n    //console.log(\"parsing coverage\", offset-4, format, count);\n    if(cvg.fmt==1) cvg.tab = bin.readUshorts(data, offset, count); \n    if(cvg.fmt==2) cvg.tab = bin.readUshorts(data, offset, count*3);\n\n    //get min,max\n\n    var min = Number.POSITIVE_INFINITY, max = 0;\n    var tab = cvg.tab;\n\n    if(cvg.fmt==1) {\n\n        for(var i=0; i<tab.length; i++) {\n            var v = tab[i];\n            if (v > max) max = v;\n            if (v < min) min = v;\n        }\n    }\n\n    if(cvg.fmt==2) {\n        for(var i=0; i<tab.length; i+=3) {\n            var start = tab[i], end = tab[i+1];\n            if (start > max) max = start;\n            if (start < min) min = start;\n            if (end > max) max = end;\n            if (end < min) min = end;\n        }\n    }\n\n    cvg.min = min;\n    cvg.max = max;\n\n    return cvg;\n}\n\nTypr._lctf.coverageIndex = function(cvg, val) {\n    if (val < cvg.min || val > cvg.max) {\n        return -1;\n    }\n\n    var tab = cvg.tab;\n    if(cvg.fmt==1) return tab.indexOf(val);\n    \n    for(var i=0; i<tab.length; i+=3) {\n        var start = tab[i], end = tab[i+1], index = tab[i+2];\n        if(start<=val && val<=end) return index + (val-start);\n    }\n    return -1;\n}\n\nTypr._lctf.readFeatureList = function(data, offset) {\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = [];\n    \n    var count = bin.readUshort(data, offset);  offset+=2;\n    \n    for(var i=0; i<count; i++) {\n        var tag = bin.readASCII(data, offset, 4);  offset+=4;\n        var noff = bin.readUshort(data, offset);  offset+=2;\n        obj.push({tag: tag.trim(), tab:Typr._lctf.readFeatureTable(data, offset0 + noff)});\n    }\n    return obj;\n}\n\nTypr._lctf.readFeatureTable = function(data, offset) {\n    var bin = Typr._bin;\n    \n    var featureParams = bin.readUshort(data, offset);  offset+=2;   // = 0\n    var lookupCount = bin.readUshort(data, offset);  offset+=2;\n    \n    var indices = [];\n    for(var i=0; i<lookupCount; i++) indices.push(bin.readUshort(data, offset+2*i));\n    return indices;\n}\n\n\nTypr._lctf.readScriptList = function(data, offset) {\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = {};\n    \n    var count = bin.readUshort(data, offset);  offset+=2;\n    \n    for(var i=0; i<count; i++) {\n        var tag = bin.readASCII(data, offset, 4);  offset+=4;\n        var noff = bin.readUshort(data, offset);  offset+=2;\n        obj[tag.trim()] = Typr._lctf.readScriptTable(data, offset0 + noff);\n    }\n    return obj;\n}\n\nTypr._lctf.readScriptTable = function(data, offset) {\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = {};\n    \n    var defLangSysOff = bin.readUshort(data, offset);  offset+=2;\n    obj.default = Typr._lctf.readLangSysTable(data, offset0 + defLangSysOff);\n    \n    var langSysCount = bin.readUshort(data, offset);  offset+=2;\n    \n    for(var i=0; i<langSysCount; i++) {\n        var tag = bin.readASCII(data, offset, 4);  offset+=4;\n        var langSysOff = bin.readUshort(data, offset);  offset+=2;\n        obj[tag.trim()] = Typr._lctf.readLangSysTable(data, offset0 + langSysOff);\n    }\n    return obj;\n}\n\nTypr._lctf.readLangSysTable = function(data, offset) {\n    var bin = Typr._bin;\n    var obj = {};\n    \n    var lookupOrder = bin.readUshort(data, offset);  offset+=2;\n    //if(lookupOrder!=0)  throw \"lookupOrder not 0\";\n    obj.reqFeature = bin.readUshort(data, offset);  offset+=2;\n    //if(obj.reqFeature != 0xffff) throw \"reqFeatureIndex != 0xffff\";\n    \n    //console.log(lookupOrder, obj.reqFeature);\n    \n    var featureCount = bin.readUshort(data, offset);  offset+=2;\n    obj.features = bin.readUshorts(data, offset, featureCount);\n    return obj;\n}\n\n\nTypr.cmap = {};\nTypr.cmap.parse = function(data, offset, length) {\n    data = new Uint8Array(data.buffer, offset, length);\n    offset = 0;\n\n    var offset0 = offset;\n    var bin = Typr._bin;\n    var obj = {};\n    var version   = bin.readUshort(data, offset);  offset += 2;\n    var numTables = bin.readUshort(data, offset);  offset += 2;\n    \n    //console.log(version, numTables);\n    \n    var offs = [];\n    obj.tables = [];\n    \n    \n    for(var i=0; i<numTables; i++) {\n        var platformID = bin.readUshort(data, offset);  offset += 2;\n        var encodingID = bin.readUshort(data, offset);  offset += 2;\n        var noffset = bin.readUint(data, offset);       offset += 4;\n        \n        var id = \"p\"+platformID+\"e\"+encodingID;\n        \n        //console.log(\"cmap subtable\", platformID, encodingID, noffset);\n                \n        var tind = offs.indexOf(noffset);\n        \n        if(tind==-1) {\n            tind = obj.tables.length;\n            var subt;\n            offs.push(noffset);\n            var format = bin.readUshort(data, noffset);\n            if     (format== 0) subt = Typr.cmap.parse0(data, noffset);\n            else if(format== 4) subt = Typr.cmap.parse4(data, noffset);\n            else if(format== 6) subt = Typr.cmap.parse6(data, noffset);\n            else if(format==12) subt = Typr.cmap.parse12(data,noffset);\n            else console.log(\"unknown format: \"+format, platformID, encodingID, noffset);\n            obj.tables.push(subt);\n        }\n        \n        if(obj[id]!=null) throw \"multiple tables for one platform+encoding\";\n        obj[id] = tind;\n    }\n    return obj;\n}\n\nTypr.cmap.parse0 = function(data, offset) {\n    var bin = Typr._bin;\n    var obj = {};\n    obj.format = bin.readUshort(data, offset);  offset += 2;\n    var len    = bin.readUshort(data, offset);  offset += 2;\n    var lang   = bin.readUshort(data, offset);  offset += 2;\n    obj.map = [];\n    for(var i=0; i<len-6; i++) obj.map.push(data[offset+i]);\n    return obj;\n}\n\nTypr.cmap.parse4 = function(data, offset) {\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = {};\n    \n    obj.format = bin.readUshort(data, offset);  offset+=2;\n    var length = bin.readUshort(data, offset);  offset+=2;\n    var language = bin.readUshort(data, offset);  offset+=2;\n    var segCountX2 = bin.readUshort(data, offset);  offset+=2;\n    var segCount = segCountX2/2;\n    obj.searchRange = bin.readUshort(data, offset);  offset+=2;\n    obj.entrySelector = bin.readUshort(data, offset);  offset+=2;\n    obj.rangeShift = bin.readUshort(data, offset);  offset+=2;\n    obj.endCount   = bin.readUshorts(data, offset, segCount);  offset += segCount*2;\n    offset+=2;\n    obj.startCount = bin.readUshorts(data, offset, segCount);  offset += segCount*2;\n    obj.idDelta = [];\n    for(var i=0; i<segCount; i++) {obj.idDelta.push(bin.readShort(data, offset));  offset+=2;}\n    obj.idRangeOffset = bin.readUshorts(data, offset, segCount);  offset += segCount*2;\n    obj.glyphIdArray = [];\n    while(offset< offset0+length) {obj.glyphIdArray.push(bin.readUshort(data, offset));  offset+=2;}\n    return obj;\n}\n\nTypr.cmap.parse6 = function(data, offset) {\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = {};\n    \n    obj.format = bin.readUshort(data, offset);  offset+=2;\n    var length = bin.readUshort(data, offset);  offset+=2;\n    var language = bin.readUshort(data, offset);  offset+=2;\n    obj.firstCode = bin.readUshort(data, offset);  offset+=2;\n    var entryCount = bin.readUshort(data, offset);  offset+=2;\n    obj.glyphIdArray = [];\n    for(var i=0; i<entryCount; i++) {obj.glyphIdArray.push(bin.readUshort(data, offset));  offset+=2;}\n    \n    return obj;\n}\n\nTypr.cmap.parse12 = function(data, offset) {\n    var bin = Typr._bin;\n    var offset0 = offset;\n    var obj = {};\n    \n    obj.format = bin.readUshort(data, offset);  offset+=2;\n    offset += 2;\n    var length = bin.readUint(data, offset);  offset+=4;\n    var lang   = bin.readUint(data, offset);  offset+=4;\n    var nGroups= bin.readUint(data, offset);  offset+=4;\n    obj.groups = [];\n    \n    for(var i=0; i<nGroups; i++) {\n        var off = offset + i * 12;\n        var startCharCode = bin.readUint(data, off+0);\n        var endCharCode   = bin.readUint(data, off+4);\n        var startGlyphID  = bin.readUint(data, off+8);\n        obj.groups.push([  startCharCode, endCharCode, startGlyphID  ]);\n    }\n    return obj;\n}\n\n\n\nTypr.GPOS = {};\nTypr.GPOS.parse = function(data, offset, length, font) {  return Typr._lctf.parse(data, offset, length, font, Typr.GPOS.subt);  }\n\n\n\nTypr.GPOS.subt = function(data, ltype, offset) { // lookup type\n    if(ltype!=2) return null;\n    \n    var bin = Typr._bin, offset0 = offset, tab = {};\n    \n    tab.format  = bin.readUshort(data, offset);  offset+=2;\n    var covOff  = bin.readUshort(data, offset);  offset+=2;\n    tab.coverage = Typr._lctf.readCoverage(data, covOff+offset0);\n    tab.valFmt1 = bin.readUshort(data, offset);  offset+=2;\n    tab.valFmt2 = bin.readUshort(data, offset);  offset+=2;\n    var ones1 = Typr._lctf.numOfOnes(tab.valFmt1);\n    var ones2 = Typr._lctf.numOfOnes(tab.valFmt2);\n\n    if(tab.format==1) {\n        tab.pairsets = [];\n        var count = bin.readUshort(data, offset);  offset+=2;\n        \n        for(var i=0; i<count; i++) {\n            var psoff = bin.readUshort(data, offset);  offset+=2;\n            psoff += offset0;\n            var pvcount = bin.readUshort(data, psoff);  psoff+=2;\n            var arr = [];\n\n            for(var j=0; j<pvcount; j++) {\n                var gid2 = bin.readUshort(data, psoff);  psoff+=2;\n                var value1, value2;\n                if(tab.valFmt1!=0) {  value1 = Typr._lctf.readValueRecord(data, psoff, tab.valFmt1);  psoff+=ones1*2;  }\n                if(tab.valFmt2!=0) {  value2 = Typr._lctf.readValueRecord(data, psoff, tab.valFmt2);  psoff+=ones2*2;  }\n                arr.push({gid2:gid2, val1:value1, val2:value2});\n            }\n            tab.pairsets.push(arr);\n        }\n    }\n\n    if(tab.format==2) {\n        var classDef1 = bin.readUshort(data, offset);  offset+=2;\n        var classDef2 = bin.readUshort(data, offset);  offset+=2;\n        var class1Count = bin.readUshort(data, offset);  offset+=2;\n        var class2Count = bin.readUshort(data, offset);  offset+=2;\n        \n        tab.classDef1 = Typr._lctf.readClassDef(data, offset0 + classDef1);\n        tab.classDef2 = Typr._lctf.readClassDef(data, offset0 + classDef2);\n        \n        tab.matrix = [];\n        for(var i=0; i<class1Count; i++) {\n            var row = [];\n            for(var j=0; j<class2Count; j++) {\n                var value1 = null, value2 = null;\n                if(tab.valFmt1!=0) { value1 = Typr._lctf.readValueRecord(data, offset, tab.valFmt1);  offset+=ones1*2; }\n                if(tab.valFmt2!=0) { value2 = Typr._lctf.readValueRecord(data, offset, tab.valFmt2);  offset+=ones2*2; }\n                row.push({val1:value1, val2:value2});\n            }\n            tab.matrix.push(row);\n        }\n    }\n    return tab;\n}\n\nTypr.GSUB = {};\nTypr.GSUB.parse = function(data, offset, length, font) {  return Typr._lctf.parse(data, offset, length, font, Typr.GSUB.subt);  }\n\n\nTypr.GSUB.subt = function(data, ltype, offset) { // lookup type\n    var bin = Typr._bin, offset0 = offset, tab = {};\n    \n    if(ltype!=1 && ltype!=4) return null;\n    \n    tab.fmt  = bin.readUshort(data, offset);  offset+=2;\n    var covOff  = bin.readUshort(data, offset);  offset+=2;\n    tab.coverage = Typr._lctf.readCoverage(data, covOff+offset0);   // not always is coverage here\n    \n    if(false) {}\n    else if(ltype==1) {\n        if(tab.fmt==1) {\n            tab.delta = bin.readShort(data, offset);  offset+=2;\n        }\n        else if(tab.fmt==2) {\n            var cnt = bin.readUshort(data, offset);  offset+=2;\n            tab.newg = bin.readUshorts(data, offset, cnt);  offset+=tab.newg.length*2;\n        }\n    }\n    else if(ltype==4) {\n        tab.vals = [];\n        var cnt = bin.readUshort(data, offset);  offset+=2;\n        for(var i=0; i<cnt; i++) {\n            var loff = bin.readUshort(data, offset);  offset+=2;\n            tab.vals.push(Typr.GSUB.readLigatureSet(data, offset0+loff));\n        }\n        //console.log(tab.coverage);\n        //console.log(tab.vals);\n    } \n    \n    return tab;\n}\n\nTypr.GSUB.readChainSubClassSet = function(data, offset) {\n    var bin = Typr._bin, offset0 = offset, lset = [];\n    var cnt = bin.readUshort(data, offset);  offset+=2;\n    for(var i=0; i<cnt; i++) {\n        var loff = bin.readUshort(data, offset);  offset+=2;\n        lset.push(Typr.GSUB.readChainSubClassRule(data, offset0+loff));\n    }\n    return lset;\n}\n\nTypr.GSUB.readChainSubClassRule= function(data, offset) {\n    var bin = Typr._bin, offset0 = offset, rule = {};\n    var pps = [\"backtrack\", \"input\", \"lookahead\"];\n    for(var pi=0; pi<pps.length; pi++) {\n        var cnt = bin.readUshort(data, offset);  offset+=2;  if(pi==1) cnt--;\n        rule[pps[pi]]=bin.readUshorts(data, offset, cnt);  offset+= rule[pps[pi]].length*2;\n    }\n    var cnt = bin.readUshort(data, offset);  offset+=2;\n    rule.subst = bin.readUshorts(data, offset, cnt*2);  offset += rule.subst.length*2;\n    return rule;\n}\n\nTypr.GSUB.readLigatureSet = function(data, offset) {\n    var bin = Typr._bin, offset0 = offset, lset = [];\n    var lcnt = bin.readUshort(data, offset);  offset+=2;\n    for(var j=0; j<lcnt; j++) {\n        var loff = bin.readUshort(data, offset);  offset+=2;\n        lset.push(Typr.GSUB.readLigature(data, offset0+loff));\n    }\n    return lset;\n}\n\nTypr.GSUB.readLigature = function(data, offset) {\n    var bin = Typr._bin, lig = {chain:[]};\n    lig.nglyph = bin.readUshort(data, offset);  offset+=2;\n    var ccnt = bin.readUshort(data, offset);  offset+=2;\n    for(var k=0; k<ccnt-1; k++) {  lig.chain.push(bin.readUshort(data, offset));  offset+=2;  }\n    return lig;\n}\n\n\n\nTypr.head = {};\nTypr.head.parse = function(data, offset, length) {\n    var bin = Typr._bin;\n    var obj = {};\n    var tableVersion = bin.readFixed(data, offset);  offset += 4;\n    obj.fontRevision = bin.readFixed(data, offset);  offset += 4;\n    var checkSumAdjustment = bin.readUint(data, offset);  offset += 4;\n    var magicNumber = bin.readUint(data, offset);  offset += 4;\n    obj.flags = bin.readUshort(data, offset);  offset += 2;\n    obj.unitsPerEm = bin.readUshort(data, offset);  offset += 2;\n    obj.created  = bin.readUint64(data, offset);  offset += 8;\n    obj.modified = bin.readUint64(data, offset);  offset += 8;\n    obj.xMin = bin.readShort(data, offset);  offset += 2;\n    obj.yMin = bin.readShort(data, offset);  offset += 2;\n    obj.xMax = bin.readShort(data, offset);  offset += 2;\n    obj.yMax = bin.readShort(data, offset);  offset += 2;\n    obj.macStyle = bin.readUshort(data, offset);  offset += 2;\n    obj.lowestRecPPEM = bin.readUshort(data, offset);  offset += 2;\n    obj.fontDirectionHint = bin.readShort(data, offset);  offset += 2;\n    obj.indexToLocFormat  = bin.readShort(data, offset);  offset += 2;\n    obj.glyphDataFormat   = bin.readShort(data, offset);  offset += 2;\n    return obj;\n}\n\n\nTypr.hhea = {};\nTypr.hhea.parse = function(data, offset, length) {\n    var bin = Typr._bin;\n    var obj = {};\n    var tableVersion = bin.readFixed(data, offset);  offset += 4;\n    obj.ascender  = bin.readShort(data, offset);  offset += 2;\n    obj.descender = bin.readShort(data, offset);  offset += 2;\n    obj.lineGap = bin.readShort(data, offset);  offset += 2;\n    \n    obj.advanceWidthMax = bin.readUshort(data, offset);  offset += 2;\n    obj.minLeftSideBearing  = bin.readShort(data, offset);  offset += 2;\n    obj.minRightSideBearing = bin.readShort(data, offset);  offset += 2;\n    obj.xMaxExtent = bin.readShort(data, offset);  offset += 2;\n    \n    obj.caretSlopeRise = bin.readShort(data, offset);  offset += 2;\n    obj.caretSlopeRun  = bin.readShort(data, offset);  offset += 2;\n    obj.caretOffset    = bin.readShort(data, offset);  offset += 2;\n    \n    offset += 4*2;\n    \n    obj.metricDataFormat = bin.readShort (data, offset);  offset += 2;\n    obj.numberOfHMetrics = bin.readUshort(data, offset);  offset += 2;\n    return obj;\n}\n\n\nTypr.hmtx = {};\nTypr.hmtx.parse = function(data, offset, length, font) {\n    var bin = Typr._bin;\n    var obj = {};\n    \n    obj.aWidth = [];\n    obj.lsBearing = [];\n        \n    var aw = 0, lsb = 0;\n    \n    for(var i=0; i<font.maxp.numGlyphs; i++) {\n        if(i<font.hhea.numberOfHMetrics) {  aw=bin.readUshort(data, offset);  offset += 2;  lsb=bin.readShort(data, offset);  offset+=2;  }\n        obj.aWidth.push(aw);\n        obj.lsBearing.push(lsb);\n    }\n    \n    return obj;\n}\n\n\nTypr.kern = {};\nTypr.kern.parse = function(data, offset, length, font) {\n    var bin = Typr._bin;\n    \n    var version = bin.readUshort(data, offset);  offset+=2;\n    if(version==1) return Typr.kern.parseV1(data, offset-2, length, font);\n    var nTables = bin.readUshort(data, offset);  offset+=2;\n    \n    var map = {glyph1: [], rval:[]};\n    for(var i=0; i<nTables; i++) {\n        offset+=2;  // skip version\n        var length  = bin.readUshort(data, offset);  offset+=2;\n        var coverage = bin.readUshort(data, offset);  offset+=2;\n        var format = coverage>>>8;\n        /* I have seen format 128 once, that's why I do */ format &= 0xf;\n        if(format==0) offset = Typr.kern.readFormat0(data, offset, map);\n        else throw \"unknown kern table format: \"+format;\n    }\n    return map;\n}\n\nTypr.kern.parseV1 = function(data, offset, length, font) {\n    var bin = Typr._bin;\n    \n    var version = bin.readFixed(data, offset);  offset+=4;\n    var nTables = bin.readUint(data, offset);  offset+=4;\n    \n    var map = {glyph1: [], rval:[]};\n    for(var i=0; i<nTables; i++) {\n        var length = bin.readUint(data, offset);   offset+=4;\n        var coverage = bin.readUshort(data, offset);  offset+=2;\n        var tupleIndex = bin.readUshort(data, offset);  offset+=2;\n        var format = coverage>>>8;\n        /* I have seen format 128 once, that's why I do */ format &= 0xf;\n        if(format==0) offset = Typr.kern.readFormat0(data, offset, map);\n        else throw \"unknown kern table format: \"+format;\n    }\n    return map;\n}\n\nTypr.kern.readFormat0 = function(data, offset, map) {\n    var bin = Typr._bin;\n    var pleft = -1;\n    var nPairs        = bin.readUshort(data, offset);  offset+=2;\n    var searchRange   = bin.readUshort(data, offset);  offset+=2;\n    var entrySelector = bin.readUshort(data, offset);  offset+=2;\n    var rangeShift    = bin.readUshort(data, offset);  offset+=2;\n    for(var j=0; j<nPairs; j++) {\n        var left  = bin.readUshort(data, offset);  offset+=2;\n        var right = bin.readUshort(data, offset);  offset+=2;\n        var value = bin.readShort (data, offset);  offset+=2;\n        if(left!=pleft) { map.glyph1.push(left);  map.rval.push({ glyph2:[], vals:[] }) }\n        var rval = map.rval[map.rval.length-1];\n        rval.glyph2.push(right);   rval.vals.push(value);\n        pleft = left;\n    }\n    return offset;\n}\n\n\n\nTypr.maxp = {};\nTypr.maxp.parse = function(data, offset, length) {\n    //console.log(data.length, offset, length);\n    \n    var bin = Typr._bin;\n    var obj = {};\n    \n    // both versions 0.5 and 1.0\n    var ver = bin.readUint(data, offset); offset += 4;\n    obj.numGlyphs = bin.readUshort(data, offset);  offset += 2;\n    \n    // only 1.0\n    if(ver == 0x00010000) {\n        obj.maxPoints             = bin.readUshort(data, offset);  offset += 2;\n        obj.maxContours           = bin.readUshort(data, offset);  offset += 2;\n        obj.maxCompositePoints    = bin.readUshort(data, offset);  offset += 2;\n        obj.maxCompositeContours  = bin.readUshort(data, offset);  offset += 2;\n        obj.maxZones              = bin.readUshort(data, offset);  offset += 2;\n        obj.maxTwilightPoints     = bin.readUshort(data, offset);  offset += 2;\n        obj.maxStorage            = bin.readUshort(data, offset);  offset += 2;\n        obj.maxFunctionDefs       = bin.readUshort(data, offset);  offset += 2;\n        obj.maxInstructionDefs    = bin.readUshort(data, offset);  offset += 2;\n        obj.maxStackElements      = bin.readUshort(data, offset);  offset += 2;\n        obj.maxSizeOfInstructions = bin.readUshort(data, offset);  offset += 2;\n        obj.maxComponentElements  = bin.readUshort(data, offset);  offset += 2;\n        obj.maxComponentDepth     = bin.readUshort(data, offset);  offset += 2;\n    }\n    \n    return obj;\n}\n\n\nTypr.U = {};\n\nTypr.U.codeToGlyph = function(font, code) {\n    var cmap = font.cmap;\n    \n    \n    var tind = -1;\n    if(cmap.p0e4!=null) tind = cmap.p0e4;\n    else if(cmap.p3e1!=null) tind = cmap.p3e1;\n    else if(cmap.p1e0!=null) tind = cmap.p1e0;\n    \n    if(tind==-1) throw \"no familiar platform and encoding!\";\n    \n    var tab = cmap.tables[tind];\n    \n    if (tab.format==0) {\n        if(code>=tab.map.length) return 0;\n        return tab.map[code];\n    } else if(tab.format==4) {\n        var sind = -1;\n        for(var i=0; i<tab.endCount.length; i++)   if(code<=tab.endCount[i]){  sind=i;  break;  } \n        if(sind==-1) return 0;\n        if(tab.startCount[sind]>code) return 0;\n        \n        var gli = 0;\n        if(tab.idRangeOffset[sind]!=0) gli = tab.glyphIdArray[(code-tab.startCount[sind]) + (tab.idRangeOffset[sind]>>1) - (tab.idRangeOffset.length-sind)];\n        else                           gli = code + tab.idDelta[sind];\n        return gli & 0xFFFF;\n    } else if(tab.format==12) {\n        if(code>tab.groups[tab.groups.length-1][1]) return 0;\n        for(var i=0; i<tab.groups.length; i++) {\n            var grp = tab.groups[i];\n            if(grp[0]<=code && code<=grp[1]) return grp[2] + (code-grp[0]);\n        }\n        return 0;\n    }\n    else throw \"unknown cmap table format \"+tab.format;\n}\n\n\nTypr.U._getGlyphClass = function(g, cd) {\n    for(var i=0; i<cd.start.length; i++) \n        if(cd.start[i]<=g && cd.end[i]>=g) return cd.class[i];\n    return 0;\n}\n\nTypr.U.getPairAdjustment = function(font, g1, g2) {\n    if(font.GPOS) {\n        var ltab = null;\n        for(var i = 0; i < font.GPOS.featureList.length; i++) {\n            var fl = font.GPOS.featureList[i];\n            if (fl.tag==\"kern\")\n                for(var j=0; j<fl.tab.length; j++) \n                    if(font.GPOS.lookupList[fl.tab[j]].ltype==2) ltab=font.GPOS.lookupList[fl.tab[j]];\n        }\n        if(ltab) {\n            for(var i = 0; i < ltab.tabs.length; i++) {\n                var tab = ltab.tabs[i];\n                var ind = Typr._lctf.coverageIndex(tab.coverage, g1);\n                if (ind==-1) continue;\n                var adj = 0;\n                if (tab.format==1) {\n                    var right = tab.pairsets[ind];\n                    for (var j=0; j<right.length; j++) if (right[j].gid2==g2) adj = right[j];\n                    if (adj==null) continue;\n                } else if (tab.format==2) {\n                    var c1 = Typr.U._getGlyphClass(g1, tab.classDef1);\n                    var c2 = Typr.U._getGlyphClass(g2, tab.classDef2);\n                    adj = tab.matrix[c1][c2];\n                }\n                return adj.val1[2];\n            }\n        }\n    }\n    if(font.kern) {\n        var ind1 = font.kern.glyph1.indexOf(g1);\n        if(ind1!=-1) {\n            var ind2 = font.kern.rval[ind1].glyph2.indexOf(g2);\n            if(ind2!=-1) return font.kern.rval[ind1].vals[ind2];\n        }\n    }\n    \n    return 0;\n}\n\n/*\nTypr.U.isRTL = function(str) {           \n    var weakChars       = '\\u0000-\\u0040\\u005B-\\u0060\\u007B-\\u00BF\\u00D7\\u00F7\\u02B9-\\u02FF\\u2000-\\u2BFF\\u2010-\\u2029\\u202C\\u202F-\\u2BFF',\n        rtlChars        = '\\u0591-\\u07FF\\u200F\\u202B\\u202E\\uFB1D-\\uFDFD\\uFE70-\\uFEFC',\n        rtlDirCheck     = new RegExp('^['+weakChars+']*['+rtlChars+']');\n\n    return rtlDirCheck.test(str);\n};*/\n\n// var wsep = \"\\n\\t\\\" ,.:;!?()  ،\";\n//Typr.U.WSepTable = [9, 10, 32, 33, 34, 40, 41, 44, 46, 58, 59, 63, 1548]\n\n//var L = \"ꡲ્૗\";\n//Typr.U.LTable = [ 2765, 2775, 43122 ]\n\n//var R = \"آأؤإاةدذرزوٱٲٳٵٶٷڈډڊڋڌڍڎڏڐڑڒړڔڕږڗژڙۀۃۄۅۆۇۈۉۊۋۍۏےۓەۮۯܐܕܖܗܘܙܞܨܪܬܯݍݙݚݛݫݬݱݳݴݸݹࡀࡆࡇࡉࡔࡧࡩࡪࢪࢫࢬࢮࢱࢲࢹૅેૉ૊૎૏ૐ૑૒૝ૡ૤૯஁ஃ஄அஉ஌எஏ஑னப஫஬\";\nTypr.U.RTable = [\n    1570, 1571, 1572, 1573, 1575, 1577, 1583, 1584, 1585, 1586,\n    1608, 1649, 1650, 1651, 1653, 1654, 1655, 1672, 1673, 1674,\n    1675, 1676, 1677, 1678, 1679, 1680, 1681, 1682, 1683, 1684,\n    1685, 1686, 1687, 1688, 1689, 1728, 1731, 1732, 1733, 1734,\n    1735, 1736, 1737, 1738, 1739, 1741, 1743, 1746, 1747, 1749,\n    1774, 1775, 1808, 1813, 1814, 1815, 1816, 1817, 1822, 1832,\n    1834, 1836, 1839, 1869, 1881, 1882, 1883, 1899, 1900, 1905,\n    1907, 1908, 1912, 1913, 2112, 2118, 2119, 2121, 2132, 2151,\n    2153, 2154, 2218, 2219, 2220, 2222, 2225, 2226, 2233, 2757,\n    2759, 2761, 2762, 2766, 2767, 2768, 2769, 2770, 2781, 2785,\n    2788, 2799, 2945, 2947, 2948, 2949, 2953, 2956, 2958, 2959,\n    2961, 2985, 2986, 2987, 2988 ];\n\n\nTypr.U.stringToGlyphs = function(fonts, str) {\n    var gls = [], g, i, li, j, lj, k, ti, c, c2, gsub, font, llist, flist, t, gsubTable;\n    var gl, gfonts = [], codes = [], scodes = [], scodesType = [], str2 = '';\n\n    var bidiResult = bidi(str, -1, false);\n\n    var rtable = Typr.U.RTable;\n\n   for (i = 0, li = str.length; i < li; i++) {\n        c = str.charCodeAt(i);\n        scodes.push(c);\n        scodesType.push(0);\n\n        //types wsep = 1, L = 2, R = 3\n\n        if (c == 2765 || c == 2775 || c == 43122) { // L\n            scodesType[i] = 2;\n        } else if (c == 1548) { // wsep\n            scodesType[i] = 1;\n        } else if (c <= 63) { // wsep\n            if (c == 9 || c == 10 || c == 32 || c == 33 || c == 34 || c == 40 || c == 41 || c == 44 || c == 46 || c == 58 || c == 59 || c == 63) {\n                scodesType[i] = 1;\n            }\n        } else if (c >= 1570 && c <= 2988) { // R\n            if (rtable.indexOf(c) != -1) {\n                scodesType[i] = 3;\n            }\n        }\n    }\n\n    //basic shaping\n    for (i = 0, li = str.length; i < li; i++) {\n        c = scodes[i];\n\n        if (scodesType[i] != 1) { //not wsep\n            if (i < li - 2) {\n                c2 = scodes[i+1];\n\n                //myanmar \n                if (c2 == 0x103c) { //medial ra - prebase substitution\n                    scodes[i] = c2;\n                    scodes[i+1] = c;\n                    i++;\n                    continue;\n                }\n            }\n        }\n    }\n\n    //get glyphs and fonts for codes\n    for (i = 0, li = str.length; i < li; i++) {\n        c = scodes[i];\n\n        for (j = 0, lj = fonts.length; j < lj; j++) {\n            font = fonts[j];\n            g = Typr.U.codeToGlyph(font, c);\n            if (g) {\n                break;\n            }\n        }\n\n        gls.push(g);\n        gfonts.push(g ? j : 0);\n    }\n\n    codes = scodes;\n    font = null;\n    \n    \n    for(var ci = 0; ci < gls.length; ci++) {\n        gl = gls[ci];\n\n        if (font != gfonts[ci]) {\n            font = fonts[gfonts[ci]];\n            gsub = font['GSUB'];\n        }\n\n        if(!gsub) {\n            continue;\n        }\n\n        var t1 = scodesType[ci-1], t2 = scodesType[ci], t3 = scodesType[ci+1];\n\n        var slft = (ci==0) || (t1 == 1);\n        var srgt = (ci==gls.length-1) || (t3 == 1);\n        \n        if(!slft && (t1 == 3)) slft=true;\n        if(!srgt && (t2 == 3)) srgt=true;\n        \n        if(!srgt && (t3 == 2)) srgt=true;\n        if(!slft && (t2 == 2)) slft=true;\n        \n        gsubTable = null;\n        if (slft) {\n            gsubTable = srgt ? font.gsubIsolTable : font.gsubInitTable;        \n        } else {\n            gsubTable = srgt ? font.gsubFinaTable : font.gsubMediTable;            \n        }\n        \n        if (gsubTable) {\n            for(ti = 0; ti < gsubTable.length; ti++) {\n                var tab = gsubTable[ti];\n\n                for(j = 0; j < tab.length; j++) {\n                    var ttab = tab[j];\n                    var ind = Typr._lctf.coverageIndex(ttab.coverage,gl);\n                    if(ind == -1) continue;  \n\n                    if(ttab.fmt == 0) {\n                        gls[ci] = ind+ttab.delta;\n                    } else {\n                        if (!ttab.newg) {\n                            gls[ci] = gl;\n                            console.log(ci, gl, 'subst-error', ' original:', str);\n                        } else {\n                            gls[ci] = ttab.newg[ind];\n                        }\n                    }\n                }\n            }\n        }\n    }\n\n    font = null;\n    \n    for(var ci=0; ci<gls.length; ci++) {\n        gl = gls[ci];\n\n        if (font != gfonts[ci]) {\n            font = fonts[gfonts[ci]];\n            gsub = font['GSUB'];\n        }\n\n        if(!gsub) {\n            continue;\n        }\n\n        gsubTable = font.gsubRligLigaTable;\n\n        if (gsubTable) {\n            var rlim = Math.min(3, gls.length-ci-1);\n\n            for(ti = 0; ti < gsubTable.length; ti++) {\n                var tab = gsubTable[ti];\n\n                for(j = 0; j < tab.length; j++) {\n                    var ttab = tab[j];\n                    var ind = Typr._lctf.coverageIndex(ttab.coverage, gl);\n                    if(ind==-1) continue;  \n\n                    var vals = ttab.vals[ind];\n                    \n                    for(k=0; k<vals.length; k++) {\n                        var lig = vals[k], rl = lig.chain.length;  if(rl>rlim) continue;\n                        var good = true;\n                        for(var l=0; l<rl; l++) if(lig.chain[l]!=gls[ci+(1+l)]) good=false;\n                        if(!good) continue;\n                        gls[ci]=lig.nglyph;\n                        for(var l=0; l<rl; l++) gls[ci+l+1]=-1;\n                        //console.log(\"lig\", fl.tag,  gl, lig.chain, lig.nglyph);\n                    }\n                }\n            }\n        }\n    }\n\n    var indices = bidiResult.indices;\n    var gls2 = gls.slice();\n    var codes2 = codes.slice();\n    var gfonts2 = gfonts.slice();\n\n    for (i = 0, li = gls.length; i < li; i++) {\n        c = indices[i];\n        gls2[i] = gls[c];\n        codes2[i] = codes[c];\n        gfonts2[i] = gfonts[c];\n    }\n\n    return [gls2, gfonts2, codes2];\n}\n\n\n\n\n\n\n\n\n/***/ }),\n/* 9 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\nObject.defineProperty(__webpack_exports__, \"__esModule\", { value: true });\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__worker_text_js__ = __webpack_require__(3);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__worker_style_js__ = __webpack_require__(2);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__worker_linestring_js__ = __webpack_require__(5);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__ = __webpack_require__(4);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__worker_polygon_js__ = __webpack_require__(6);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__worker_message_js__ = __webpack_require__(1);\n\n\n\n\n\n\n\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */];\nvar setFont = __WEBPACK_IMPORTED_MODULE_1__worker_text_js__[\"a\" /* setFont */];\nvar unint8ArrayToString = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"b\" /* unint8ArrayToString */], Utf8ArrayToStr = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"c\" /* Utf8ArrayToStr */];\nvar setFontMap = __WEBPACK_IMPORTED_MODULE_1__worker_text_js__[\"b\" /* setFontMap */], makeFasterFilter = __WEBPACK_IMPORTED_MODULE_2__worker_style_js__[\"a\" /* makeFasterFilter */];\nvar getLayer = __WEBPACK_IMPORTED_MODULE_2__worker_style_js__[\"b\" /* getLayer */], getLayerPropertyValue = __WEBPACK_IMPORTED_MODULE_2__worker_style_js__[\"c\" /* getLayerPropertyValue */],\n    processStylesheet = __WEBPACK_IMPORTED_MODULE_2__worker_style_js__[\"d\" /* processStylesheet */], getFilterResult = __WEBPACK_IMPORTED_MODULE_2__worker_style_js__[\"e\" /* getFilterResult */];\nvar processLineStringPass = __WEBPACK_IMPORTED_MODULE_3__worker_linestring_js__[\"a\" /* processLineStringPass */];\nvar processPointArrayPass = __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__[\"a\" /* processPointArrayPass */];\nvar processPointArrayVSwitchPass = __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__[\"b\" /* processPointArrayVSwitchPass */];\nvar processPolygonPass = __WEBPACK_IMPORTED_MODULE_5__worker_polygon_js__[\"a\" /* processPolygonPass */];\nvar processLineStringGeometry = __WEBPACK_IMPORTED_MODULE_3__worker_linestring_js__[\"b\" /* processLineStringGeometry */];\nvar processPointArrayGeometry = __WEBPACK_IMPORTED_MODULE_4__worker_pointarray_js__[\"c\" /* processPointArrayGeometry */],\n    postGroupMessageLite = __WEBPACK_IMPORTED_MODULE_6__worker_message_js__[\"a\" /* postGroupMessageLite */], optimizeGroupMessages = __WEBPACK_IMPORTED_MODULE_6__worker_message_js__[\"b\" /* optimizeGroupMessages */];\nvar postGroupMessageFast = __WEBPACK_IMPORTED_MODULE_6__worker_message_js__[\"c\" /* postGroupMessageFast */], postPackedMessage = __WEBPACK_IMPORTED_MODULE_6__worker_message_js__[\"d\" /* postPackedMessage */], postPackedMessages = __WEBPACK_IMPORTED_MODULE_6__worker_message_js__[\"e\" /* postPackedMessages */];\nvar getLayerPropertyValueInner = __WEBPACK_IMPORTED_MODULE_2__worker_style_js__[\"f\" /* getLayerPropertyValueInner */];\n\nvar exportedGeometries = [];\nvar featureCache = new Array(1024), featureCacheIndex = 0, finalFeatureCache = new Array(1024), finalFeatureCacheIndex = 0, finalFeatureCacheIndex2 = 0;\n\nfunction processLayerFeaturePass(type, feature, lod, layer, featureIndex, zIndex, eventInfo) {\n\n    globals.stylesheetLocals = {};\n\n    switch(type) {\n    case 'line-string':\n        if (getLayerPropertyValue(layer, 'point', feature, lod) ||\n            getLayerPropertyValue(layer, 'label', feature, lod)) {\n            processPointArrayPass(feature, lod, layer, featureIndex, zIndex, eventInfo);\n        }\n\n        processLineStringPass(feature, lod, layer, featureIndex, zIndex, eventInfo);\n        break;\n\n    case 'point-array':\n        processPointArrayPass(feature, lod, layer, featureIndex, zIndex, eventInfo);\n        break;\n            \n    case 'polygon':\n        processPolygonPass(feature, lod, layer, featureIndex, zIndex, eventInfo);\n        break;     \n    }\n\n}\n\nfunction processFeatures(type, features, lod, featureType, group) {\n    var reduceParams = globals.reduceParams;\n\n    //loop layers\n    for (var key in globals.stylesheetLayers) {\n        var layer = globals.stylesheetLayers[key];\n\n        if (type == 'point-array') {\n            var importance = layer['importance-source'];\n\n            if (!importance && features[0] && features[0]['importance']) {\n                importance = '$importance';\n            }\n\n            if (importance) {\n                //importance = '$importance';\n                switch (globals.reduceMode) {\n                    case 'scr-count1': \n                    case 'scr-count2': \n                        layer['reduce'] = ['top',100,importance];\n                        layer['dynamic-reduce'] = ['scr-count2', reduceParams[0], reduceParams[1]];\n                        break;\n                    case 'scr-count4': \n                        layer['dynamic-reduce'] = ['scr-count4',importance];\n                        break;\n                    case 'scr-count5': \n                        layer['dynamic-reduce'] = ['scr-count5',importance];\n                        break;\n                    case 'scr-count6': \n                    case 'scr-count7': \n                    case 'scr-count8': \n                        layer['dynamic-reduce'] = [globals.reduceMode,importance, (typeof layer['importance-weight'] !== 'undefined') ? layer['importance-weight'] : 1 ];\n                        layer['label-no-overlap-margin'] = [reduceParams[0]*reduceParams[5], reduceParams[0]*reduceParams[5]];\n                        layer['icon-no-overlap-margin'] = [reduceParams[0]*reduceParams[5], reduceParams[0]*reduceParams[5]];\n                        layer['label-no-overlap-factor'] = [\"div-by-dist\",importance];\n                        break;\n                }\n            }\n        }\n\n        var filter =  layer['filter'];\n        var reduce =  layer['reduce'], i, li, j, lj;\n\n        if (filter) {\n            filter = layer['#filter'];\n            if (!filter) {\n                layer['#filter'] = makeFasterFilter(layer['filter']);\n                filter = layer['#filter'];\n            }\n        }\n\n        featureCacheIndex = 0, finalFeatureCacheIndex = 0, finalFeatureCacheIndex2 = 0;\n\n        for (i = 0, li = features.length; i < li; i++) {\n            var feature = features[i];\n            feature.properties = feature['properties'] || {};\n\n            if (feature['id']) {\n                feature.properties['#id'] = feature['id']; \n            }\n            \n            if (!filter || getFilterResult(filter, feature, featureType, group, layer, 'filter', lod, 0, true)) {\n                if (reduce) {\n                    featureCache[featureCacheIndex] = feature;\n                    featureCacheIndex++;\n                } else {\n                    processLayerFeature(type, feature, lod, layer, i);\n                }\n            }\n        }\n\n        if (reduce) {\n\n            var count = reduce[1];\n            var property = reduce[2];\n\n            switch (reduce[0]) {\n                case 'top':\n                case 'bottom':\n\n                    if (typeof property === 'string' && property.charAt(0) == '@') {\n                        property = globals.stylesheetConstants[property];\n\n                        if (typeof property === 'undefined') {\n                            break;\n                        }\n                    }\n\n                    if ((typeof property === 'string' && property.charAt(0) == '$') || (typeof property === 'object')) {\n                        var complexProperty = (typeof property === 'object');\n\n                        if (!complexProperty) {\n                            property = property.substr(1);\n                        }\n\n                        if (count > featureCacheIndex) {\n                            count = featureCacheIndex;\n                        }\n\n                        var top = (reduce[0] == 'top'), value;\n                        var currentIndex = 0;\n                        var currentValue2 = top ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;\n\n                        do {\n                            var currentValue = top ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY;\n                            finalFeatureCacheIndex2 = finalFeatureCacheIndex;\n\n                            for (i = 0, li = featureCacheIndex; i < li; i++) {\n                                feature = featureCache[i];\n\n                                if (!currentIndex) {\n                                    if (!complexProperty) {\n                                        value = parseFloat(feature.properties[property]);\n                                    } else {\n                                        value = getLayerPropertyValueInner(layer, null, feature, lod, property, 0);\n                                    }\n                                    feature.tmp = value;\n                                } else {\n                                    value = feature.tmp;\n                                }\n\n                                if (!isNaN(value) && ((top && value >= currentValue && value < currentValue2) || (value <= currentValue && value > currentValue2)) ) {\n                                    if (currentValue != value) {\n                                        finalFeatureCacheIndex = finalFeatureCacheIndex2;\n                                    }\n\n                                    finalFeatureCache[finalFeatureCacheIndex] = feature;\n                                    finalFeatureCacheIndex++;\n                                    currentValue = value;\n                                }\n                            }\n\n                            currentValue2 = currentValue;\n                            currentIndex++;\n\n                        } while(currentIndex < count);\n                    }\n\n                    break;\n\n                case 'odd':\n                case 'even':\n\n                    for (i = (reduce[0] == 'odd') ? 1 : 0, li = featureCacheIndex; i < li; i+=2) {\n                        feature = featureCache[i];\n                        finalFeatureCache[finalFeatureCacheIndex] = feature;\n                        finalFeatureCacheIndex++;\n                    }\n\n                case 'every':\n\n                    if (count > featureCacheIndex) {\n                        count = featureCacheIndex;\n                    }\n\n                    for (i = 0, li = featureCacheIndex; i < li; i += count) {\n                        feature = featureCache[i];\n                        finalFeatureCache[finalFeatureCacheIndex] = feature;\n                        finalFeatureCacheIndex++;\n                    }\n\n                    break;\n            }\n\n            //process reduced features\n            for (i = 0, li = finalFeatureCacheIndex; i < li; i++) {\n                feature = finalFeatureCache[i];\n                processLayerFeature(type, finalFeatureCache[i], lod, layer, i);\n            }\n\n        }\n\n    }\n}\n\n\nfunction processLayerFeatureMultipass(type, feature, lod, layer, featureIndex, eventInfo) {\n    var multiPass = getLayerPropertyValue(layer, 'next-pass', feature, lod);\n\n    var mylayer;\n\n    if (multiPass != null) {\n        for (var i = 0, li = multiPass.length; i < li; i++) {\n            var zIndex = multiPass[i][0];\n            mylayer = getLayer(multiPass[i][1], type, featureIndex);\n            \n            if (!getLayerPropertyValue(mylayer, 'visible', feature, lod)) {\n                continue;\n            }\n\n            var selectedLayerId = getLayerPropertyValue(mylayer, 'selected-layer', feature, lod);\n            var selectedLayer = (selectedLayerId != '') ? getLayer(selectedLayerId, type, featureIndex) : null;\n\n            var selectedHoverLayerId = getLayerPropertyValue(mylayer, 'selected-hover-layer', feature, lod);\n            var selectedHoverLayer = (selectedHoverLayerId != '') ? getLayer(selectedHoverLayerId, type, featureIndex) : null;\n\n            var hoverLayerId = getLayerPropertyValue(mylayer, 'hover-layer', feature, lod);\n            var hoverLayer = (hoverLayerId != '') ? getLayer(hoverLayerId, type, featureIndex) : null;\n\n            var flags =  ((hoverLayer != null) ? (1<<8) : 0) | ((selectedLayer != null) ? (1<<9) : 0) | ((selectedHoverLayer != null) ? (1<<10) : 0);\n\n            var lastHitState = globals.hitState;\n\n            if (selectedLayer != null) {\n                globals.hitState = flags | 2;\n                processLayerFeaturePass(type, feature, lod, selectedLayer, featureIndex, zIndex, eventInfo);\n            }\n\n            if (selectedHoverLayer != null) {\n                globals.hitState = flags | 3;\n                processLayerFeaturePass(type, feature, lod, selectedHoverLayer, featureIndex, zIndex, eventInfo);\n            }\n\n            if (hoverLayer != null) {\n                globals.hitState = flags | 1;\n                processLayerFeaturePass(type, feature, lod, hoverLayer, featureIndex, zIndex, eventInfo);\n            }\n                \n            //globals.hitState = flags | 0;\n            processLayerFeaturePass(type, feature, lod, mylayer, featureIndex, zIndex, eventInfo);\n\n            globals.hitState = lastHitState;\n        }\n    }\n}\n\n\nfunction processLayerFeature(type, feature, lod, layer, featureIndex, skipPack) {\n    if (!getLayerPropertyValue(layer, 'visible', feature, lod)) {\n        return;\n    }\n\n    if (type == 'point-array') {\n        if (layer['visibility-switch']) {\n            postGroupMessageLite(5, 16);\n            //postGroupMessage({'command':'addRenderJob', 'type':'vswitch-begin'});\n            var zIndex = getLayerPropertyValue(layer, 'z-index', feature, lod);\n            var eventInfo = feature.properties;\n            processPointArrayVSwitchPass(feature, lod, layer, featureIndex, zIndex, eventInfo);\n\n            var vswitch = layer['visibility-switch'];\n            for (var i = 0, li = vswitch.length; i <li; i++) {\n                if (vswitch[i][1]) {\n                    var slayer = getLayer(vswitch[i][1], type, featureIndex);\n                    processLayerFeature(type, feature, lod, slayer, featureIndex);\n                }\n                postGroupMessageLite(5, 17, vswitch[i][0]);\n            }\n\n            postGroupMessageLite(5, 18);\n            return;\n        }\n    }\n\n    if (!skipPack && layer['pack'] == true) {\n        globals.directPoints = [];\n\n        postGroupMessageLite(5, 14);\n        processLayerFeature(type, feature, lod, layer, featureIndex, true);\n        postGroupMessageLite(5, 15);\n\n        if (globals.directPoints)\n\n        return;\n    }\n\n    var zIndex = getLayerPropertyValue(layer, 'z-index', feature, lod);\n\n    if (getLayerPropertyValue(layer, 'export-geometry', feature, lod) && (typeof feature['id'] !== 'undefined')) {\n        if (!exportedGeometries[feature]) {\n\n            switch(type) {\n            case 'line-string':\n                processLineStringGeometry(feature);\n                break;\n\n            case 'point-array':\n                processPointArrayGeometry(feature);\n                break;\n                    \n            case 'polygon':\n                break;     \n            }\n\n            exportedGeometries[feature] = true;\n        }\n    }\n\n    var eventInfo = feature.properties;\n\n    var selectedLayerId = getLayerPropertyValue(layer, 'selected-layer', feature, lod);\n    var selectedLayer = (selectedLayerId != '') ? getLayer(selectedLayerId, type, featureIndex) : null;\n\n    var selectedHoverLayerId = getLayerPropertyValue(layer, 'selected-hover-layer', feature, lod);\n    var selectedHoverLayer = (selectedHoverLayerId != '') ? getLayer(selectedHoverLayerId, type, featureIndex) : null;\n\n    var hoverLayerId = getLayerPropertyValue(layer, 'hover-layer', feature, lod);\n    var hoverLayer = (hoverLayerId != '') ? getLayer(hoverLayerId, type, featureIndex) : null;\n\n    var flags =  ((hoverLayer != null) ? (1<<8) : 0) | ((selectedLayer != null) ? (1<<9) : 0) | ((selectedHoverLayer != null) ? (1<<10) : 0);\n\n    if (selectedLayer != null) {\n        globals.hitState = flags | 2;\n        processLayerFeaturePass(type, feature, lod, selectedLayer, featureIndex, zIndex, eventInfo);\n        processLayerFeatureMultipass(type, feature, lod, selectedLayer, featureIndex, eventInfo);\n    }\n\n    if (selectedHoverLayer != null) {\n        globals.hitState = flags | 3;\n        processLayerFeaturePass(type, feature, lod, selectedHoverLayer, featureIndex, zIndex, eventInfo);\n        processLayerFeatureMultipass(type, feature, lod, selectedHoverLayer, featureIndex, eventInfo);\n    }\n\n    if (hoverLayer != null) {\n        globals.hitState = flags | 1;\n        processLayerFeaturePass(type, feature, lod, hoverLayer, featureIndex, zIndex, eventInfo);\n        processLayerFeatureMultipass(type, feature, lod, hoverLayer, featureIndex, eventInfo);\n    }\n\n    globals.hitState = flags | 0;\n    processLayerFeaturePass(type, feature, lod, layer, featureIndex, zIndex, eventInfo);\n    processLayerFeatureMultipass(type, feature, lod, layer, featureIndex, eventInfo);\n}\n\nfunction processGroup(group, lod) {\n    var i, li;\n    var groupId = group['id'] || '';\n    globals.groupId = groupId;\n\n    var bbox = group['bbox'];    \n    if (!bbox) {\n        return;\n    }\n          \n    var bboxMin = bbox[0];\n    var bboxMax = bbox[1];\n    globals.bboxMin = bboxMin;\n    globals.bboxMax = bboxMax;\n\n    var bboxDelta = [bbox[1][0] - bbox[0][0],\n        bbox[1][1] - bbox[0][1],\n        bbox[1][2] - bbox[0][2]];\n    var bboxResolution = group['resolution'] || 4096;\n    \n    globals.groupOrigin = [0,0,0];\n    globals.forceScale = [bboxDelta[0] / bboxResolution,\n        bboxDelta[1] / bboxResolution,\n        bboxDelta[2] / bboxResolution];\n\n    postGroupMessageFast(9, 0, {'id': group['id'], 'bbox': [bboxMin, bboxMax], 'origin': bboxMin}, [], \"\");\n\n    //process points\n    var points = group['points'] || [];\n    globals.featureType = 'point';\n    processFeatures('point-array', points, lod, 'point', groupId);\n\n    //process lines\n    var lines = group['lines'] || [];\n    globals.featureType = 'line';\n    processFeatures('line-string', lines, lod, 'line', groupId);\n\n    //process polygons\n    var polygons = group['polygons'] || [];\n    globals.featureType = 'polygon';\n    processFeatures('polygon', polygons, lod, 'polygon', groupId);\n\n    postGroupMessageLite(10, 0);\n\n    if (globals.groupOptimize) {\n        optimizeGroupMessages();\n    }\n}\n\n\nfunction processGeodata(data, lod) {\n    //console.log(\"processGeodata\");\n\n    //create object from JSON\n    if ((typeof data) == 'string') {\n        try {\n            var geodata = JSON.parse(data);\n        } catch (e) {\n            geodata = null;\n        }\n    } else {\n        geodata = data;\n    }\n\n    if (geodata) {\n\n        var groups = geodata['groups'] || [];\n\n        //process layers\n        for (var i = 0, li = groups.length; i < li; i++) {\n            processGroup(groups[i], lod);\n        }\n    }\n\n    //console.log(\"processGeodata-ready\");\n}\n\n\nself.onmessage = function (e) {\n    var message = e.data;\n    var command = message['command'];\n    var data = message['data'];\n    var dataRaw = null;\n\n    //console.log(\"workeronmessage: \" + command);\n\n    switch(command) {\n\n    case 'config':\n        globals.config = data;\n        break;\n\n    case 'setStylesheet':\n        if (data) {\n            globals.geocent = data['geocent'];\n            globals.metricUnits = data['metric'];\n            globals.reduceMode = data['reduceMode'];\n            globals.reduceParams = data['reduceParams'];\n            globals.log = data['log'];\n            globals.language = data['language'];\n            processStylesheet(data['data']);\n        }\n        //postMessage({'command' : 'ready'});\n        break;\n\n    case 'setFont':\n        setFont(data);\n        //postMessage({'command' : 'ready'});\n        break;\n\n    case 'setFontMap':\n        setFontMap(data);\n        postMessage({'command' : 'styleDone'});\n        postMessage({'command' : 'ready'});\n        break;\n\n    case 'processGeodataRaw':\n        dataRaw = data;\n        data = Utf8ArrayToStr(data);\n\n    case 'processGeodata':\n        globals.tileLod = message['lod'] || 0;\n        globals.tileSize = message['tileSize'] || 1;\n        globals.pixelSize = message['pixelSize'] || 1;\n        globals.pixelFactor = message['dpr'] || 1;\n        globals.invPixelFactor = 1.0 / globals.pixelFactor;\n        globals.pixelsPerMM = (globals.pixelFactor / 96) / 2.54;\n        globals.invPixelsPerMM = 1.0 / globals.pixelsPerMM;\n\n        data = JSON.parse(data);            \n        exportedGeometries = [];\n        processGeodata(data, globals.tileLod);\n\n        postGroupMessageLite(7, 0);\n            \n        if (globals.groupOptimize) {  //we need send all processed message\n            optimizeGroupMessages();\n        }\n            \n        //postMessage({'command' : 'allProcessed'});\n\n        if (dataRaw) {\n            postPackedMessage({'command' : 'ready', 'geodata': dataRaw}, [dataRaw]);\n        } else {\n            postPackedMessage({'command' : 'ready'});\n        }\n\n        if (globals.config.mapPackLoaderEvents) {\n            postPackedMessages();\n        }\n\n        break;\n\n    //case 'tick':\n      //  postPackedMessages();\n        //break;\n\n    }\n};\n\n\n\n/***/ })\n/******/ ]);\n//# sourceMappingURL=5b66088baf1591f433eb.worker.js.map", null);
+};
+
+/***/ }),
+/* 118 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = function() {
+	return __webpack_require__(47)("/*!\n * Copyright (c) 2017 Melown Technologies SE\n * \n * Redistribution and use in source and binary forms, with or without\n * modification, are permitted provided that the following conditions are met:\n * \n * *  Redistributions of source code must retain the above copyright notice,\n *    this list of conditions and the following disclaimer.\n * \n * *  Redistributions in binary form must reproduce the above copyright\n *    notice, this list of conditions and the following disclaimer in the\n *    documentation and/or other materials provided with the distribution.\n * \n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n * ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n * POSSIBILITY OF SUCH DAMAGE.\n * \n */\n/******/ (function(modules) { // webpackBootstrap\n/******/ \t// The module cache\n/******/ \tvar installedModules = {};\n/******/\n/******/ \t// The require function\n/******/ \tfunction __webpack_require__(moduleId) {\n/******/\n/******/ \t\t// Check if module is in cache\n/******/ \t\tif(installedModules[moduleId]) {\n/******/ \t\t\treturn installedModules[moduleId].exports;\n/******/ \t\t}\n/******/ \t\t// Create a new module (and put it into the cache)\n/******/ \t\tvar module = installedModules[moduleId] = {\n/******/ \t\t\ti: moduleId,\n/******/ \t\t\tl: false,\n/******/ \t\t\texports: {}\n/******/ \t\t};\n/******/\n/******/ \t\t// Execute the module function\n/******/ \t\tmodules[moduleId].call(module.exports, module, module.exports, __webpack_require__);\n/******/\n/******/ \t\t// Flag the module as loaded\n/******/ \t\tmodule.l = true;\n/******/\n/******/ \t\t// Return the exports of the module\n/******/ \t\treturn module.exports;\n/******/ \t}\n/******/\n/******/\n/******/ \t// expose the modules object (__webpack_modules__)\n/******/ \t__webpack_require__.m = modules;\n/******/\n/******/ \t// expose the module cache\n/******/ \t__webpack_require__.c = installedModules;\n/******/\n/******/ \t// identity function for calling harmony imports with the correct context\n/******/ \t__webpack_require__.i = function(value) { return value; };\n/******/\n/******/ \t// define getter function for harmony exports\n/******/ \t__webpack_require__.d = function(exports, name, getter) {\n/******/ \t\tif(!__webpack_require__.o(exports, name)) {\n/******/ \t\t\tObject.defineProperty(exports, name, {\n/******/ \t\t\t\tconfigurable: false,\n/******/ \t\t\t\tenumerable: true,\n/******/ \t\t\t\tget: getter\n/******/ \t\t\t});\n/******/ \t\t}\n/******/ \t};\n/******/\n/******/ \t// getDefaultExport function for compatibility with non-harmony modules\n/******/ \t__webpack_require__.n = function(module) {\n/******/ \t\tvar getter = module && module.__esModule ?\n/******/ \t\t\tfunction getDefault() { return module['default']; } :\n/******/ \t\t\tfunction getModuleExports() { return module; };\n/******/ \t\t__webpack_require__.d(getter, 'a', getter);\n/******/ \t\treturn getter;\n/******/ \t};\n/******/\n/******/ \t// Object.prototype.hasOwnProperty.call\n/******/ \t__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };\n/******/\n/******/ \t// __webpack_public_path__\n/******/ \t__webpack_require__.p = \"\";\n/******/\n/******/ \t// Load entry module and return exports\n/******/ \treturn __webpack_require__(__webpack_require__.s = 2);\n/******/ })\n/************************************************************************/\n/******/ ([\n/* 0 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return globals; });\n\nvar globals = {};\n\n\n\n\n/***/ }),\n/* 1 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"a\", function() { return parseMesh; });\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */];\n\nvar flagsInternalTexcoords =  1;\nvar flagsExternalTexcoords =  2;\nvar flagsPerVertexUndulation =  4;\nvar flagsTextureMode =  8;\n\n\nfunction parseMesh(stream) {\n    /*\n    struct MapMesh {\n        struct MapMeshHeader {\n            char magic[2];                // letters \"ME\"\n            ushort version;               // currently 1\n            double meanUndulation;        // read more about undulation below\n            ushort numSubmeshes;          // number of submeshes\n        } header;\n        struct Submesh submeshes [];      // array of submeshes, size of array is defined by numSubmeshes property\n    };\n    */\n\n    var mesh = {}, i, li, submesh;\n\n    //parase header\n    var streamData = stream.data;\n    var magic = '';\n\n    if (streamData.length < 2) {\n        return false;\n    }\n\n    magic += String.fromCharCode(streamData.getUint8(stream.index, true)); stream.index += 1;\n    magic += String.fromCharCode(streamData.getUint8(stream.index, true)); stream.index += 1;\n\n    if (magic != 'ME') {\n        return false;\n    }\n\n    mesh.version = streamData.getUint16(stream.index, true); stream.index += 2;\n\n    if (mesh.version > 3) {\n        return false;\n    }\n    \n    stream.uint8Data = new Uint8Array(stream.data.buffer);\n\n    mesh.meanUndulation = streamData.getFloat64(stream.index, true); stream.index += 8;\n    mesh.numSubmeshes = streamData.getUint16(stream.index, true); stream.index += 2;\n\n    mesh.submeshes = [];\n    mesh.gpuSize = 0; \n    mesh.faces = 0;\n    mesh.size = 0;\n\n    var use16bit = globals.config.map16bitMeshes;\n\n    for (i = 0, li = mesh.numSubmeshes; i < li; i++) {\n        var submesh = parseSubmesh(mesh, stream);\n        if (submesh.valid) {\n            mesh.submeshes.push(submesh); \n            mesh.size += submesh.size;\n            mesh.faces += submesh.faces;\n\n            //aproximate size\n            mesh.gpuSize += submesh.size;\n        }\n    }\n    \n    mesh.numSubmeshes = mesh.submeshes.length;\n\n    //prevent minification\n\n    var submeshes = [];\n    var transferables = [];\n\n    for (i = 0, li = mesh.numSubmeshes; i < li; i++) {\n        submesh = mesh.submeshes[i];\n        submeshes.push({\n\n            'bboxMax': submesh.bboxMax,\n            'bboxMin': submesh.bboxMin,\n            'externalUVs': (submesh.externalUVs) ? submesh.externalUVs.buffer : null,\n            'faces': submesh.faces,\n            'flags': submesh.flags,\n            'gpuSize': submesh.gpuSize,\n            'indices': (submesh.indices) ? submesh.indices.buffer : null,\n            'internalUVs': (submesh.internalUVs) ? submesh.internalUVs.buffer : null,\n            'size': submesh.size,\n            'surfaceReference': submesh.surfaceReference,\n            'textureLayer': submesh.textureLayer,\n            'textureLayer2': submesh.textureLayer2,\n            //'valid': submesh.valid\n            'vertices': submesh.vertices.buffer\n\n        });\n\n        if (submesh.externalUVs) transferables.push(submesh.externalUVs.buffer);\n        if (submesh.internalUVs) transferables.push(submesh.internalUVs.buffer);\n        if (submesh.vertices) transferables.push(submesh.vertices.buffer);\n        if (submesh.indices) transferables.push(submesh.indices.buffer);\n    }\n\n    return { mesh:{\n               'faces': mesh.faces,\n               'gpuSize': mesh.gpuSize,\n               'meanUndulation': mesh.meanUndulation,\n               'numSubmeshes': mesh.numSubmeshes,\n               'size': mesh.size,\n               'submeshes': mesh.submeshes,\n               'version': mesh.version\n             },\n             transferables:transferables\n           };\n};\n\n\nfunction parseSubmesh(mesh, stream) {\n    /*\n    struct MapSubmesh {\n        struct MapSubmeshHeader header;\n        struct VerticesBlock vertices;\n        struct TexcoordsBlock internalTexcoords;   // if header.flags & ( 1 << 0 )\n        struct FacesBlock faces;\n    };\n    */\n\n    var submesh = { valid:true };\n\n    parseHeader(mesh, submesh, stream);\n    if (mesh.version >= 3) {\n        parseVerticesAndFaces2(mesh, submesh, stream);\n    } else {\n        parseVerticesAndFaces(mesh, submesh, stream);\n    }\n\n    return submesh;\n};\n\n\nfunction parseHeader(mesh, submesh, stream) {\n    /*\n    struct MapSubmeshHeader {\n        char flags;                    // bit 0 - contains internal texture coords\n                                       // bit 1 - contains external texture coords\n                                       // bit 2 - contains per vertex undulation\n                                       // bit 3 - texture mode (0 - internal, 1 - external)\n        \n        uchar surfaceReference;        // reference to the surface of origin, see bellow\n        ushort textureLayer;           // applicable if texture mode is external: texture layer numeric id\n        double boundingBox[2][3];      // read more about bounding box bellow\n    };\n    */\n\n    //debugger\n    var streamData = stream.data;\n\n    submesh.flags = streamData.getUint8(stream.index, true); stream.index += 1;\n\n    if (mesh.version > 1) {\n        submesh.surfaceReference = streamData.getUint8(stream.index, true); stream.index += 1;\n    } else {\n        submesh.surfaceReference = 0;\n    }\n\n    submesh.textureLayer = streamData.getUint16(stream.index, true); stream.index += 2;\n    submesh.textureLayer2 = submesh.textureLayer; //hack for presentation\n\n    var bboxMin = [];\n    var bboxMax = [];\n\n    bboxMin[0] = streamData.getFloat64(stream.index, true); stream.index += 8;\n    bboxMin[1] = streamData.getFloat64(stream.index, true); stream.index += 8;\n    bboxMin[2] = streamData.getFloat64(stream.index, true); stream.index += 8;\n\n    bboxMax[0] = streamData.getFloat64(stream.index, true); stream.index += 8;\n    bboxMax[1] = streamData.getFloat64(stream.index, true); stream.index += 8;\n    bboxMax[2] = streamData.getFloat64(stream.index, true); stream.index += 8;\n    \n    submesh.bboxMin = bboxMin;\n    submesh.bboxMax = bboxMax;\n};\n\n\nfunction parseVerticesAndFaces(mesh, submesh, stream) {\n    /*\n    struct VerticesBlock {\n        ushort numVertices;              // number of vertices\n\n        struct Vertex {                  // array of vertices, size of array is defined by numVertices property\n            // vertex coordinates\n            ushort x;\n            ushort y;\n            ushort z;\n\n            // if header.flags & ( 1 << 1 ): external texture coordinates\n            // values in 2^16^ range represents the 0..1 normalized texture space\n            ushort eu;\n            ushort ev;\n\n            // if header.flags & ( 1 << 2 ): undulation delta\n            float16 undulationDelta;\n        } vertices[];\n    };\n    */\n\n    var data = stream.data;\n    var index = stream.index;\n    var uint8Data = stream.uint8Data;\n\n    var use16bit = globals.config.map16bitMeshes;\n\n    var numVertices = data.getUint16(index, true); index += 2;\n\n    if (!numVertices) {\n        submesh.valid = false;\n    }\n\n    var internalUVs = null;\n    var externalUVs = null;\n    var onlyOneUVs = globals.config.mapOnlyOneUVs && (submesh.flags & flagsInternalTexcoords);\n    var tmpVertices, tmpExternalUVs, tmpInternalUVs;\n\n    var vertices = use16bit ? (new Uint16Array(numVertices * 3)) : (new Float32Array(numVertices * 3));\n\n    if (submesh.flags & flagsExternalTexcoords) {\n        if (onlyOneUVs) {\n            externalUVs = true;\n        } else {\n            externalUVs = use16bit ? (new Uint16Array(numVertices * 2)) : (new Float32Array(numVertices * 2));\n        }\n    }\n\n    var uvfactor = use16bit ? 1.0 : (1.0 / 65535);\n    var vindex = 0;\n    var uvindex = 0;\n    var i, li;\n\n    for (i = 0; i < numVertices; i++) {\n        vertices[vindex] = (uint8Data[index] + (uint8Data[index + 1]<<8)) * uvfactor;\n        vertices[vindex+1] = (uint8Data[index+2] + (uint8Data[index + 3]<<8)) * uvfactor;\n        vertices[vindex+2] = (uint8Data[index+4] + (uint8Data[index + 5]<<8)) * uvfactor;\n        vindex += 3;\n\n        if (externalUVs) {\n            if (!onlyOneUVs) {\n                externalUVs[uvindex] = (uint8Data[index+6] + (uint8Data[index + 7]<<8)) * uvfactor;\n                externalUVs[uvindex+1] = (65535 - (uint8Data[index+8] + (uint8Data[index + 9]<<8))) * uvfactor;\n                uvindex += 2;\n            }\n            index += 10;\n        } else {\n            index += 6;\n        }\n    }\n\n\n    tmpVertices = vertices;\n    tmpExternalUVs = externalUVs;\n   \n    /*\n    struct TexcoorsBlock {\n        ushort numTexcoords;              // number of texture coordinates\n\n        struct TextureCoords {            // array of texture coordinates, size of array is defined by numTexcoords property\n\n            // internal texture coordinates\n            // values in 2^16^ range represents the 0..1 normalized texture space\n            ushort u;\n            ushort v;\n        } texcoords[];\n    };\n    */\n\n    if (submesh.flags & flagsInternalTexcoords) {\n        var numUVs = data.getUint16(index, true); index += 2;\n    \n        internalUVs = use16bit ? (new Uint16Array(numUVs * 2)) : (new Float32Array(numUVs * 2));\n        //var uvfactor = 1.0 / 65535;\n    \n        for (i = 0, li = numUVs * 2; i < li; i+=2) {\n            internalUVs[i] = (uint8Data[index] + (uint8Data[index + 1]<<8)) * uvfactor;\n            internalUVs[i+1] = (65535 - (uint8Data[index+2] + (uint8Data[index + 3]<<8))) * uvfactor;\n            index += 4;\n        }\n    \n        tmpInternalUVs = internalUVs;\n    }\n\n    /*\n    struct FacesBlock {\n        ushort numFaces;              // number of faces\n\n        struct Face {                 // array of faces, size of array is defined by numFaces property\n\n            ushort v[3]; // array of indices to stored vertices\n            ushort t[3]; // if header.flags & ( 1 << 0 ): array of indices to stored internal texture coords\n\n        } faces[];\n    };\n    */\n\n    var numFaces = data.getUint16(index, true); index += 2;\n    var indices = null;\n\n    internalUVs = null;\n    externalUVs = null;\n\n    var onlyExternalIndices = (globals.config.mapIndexBuffers && globals.config.mapOnlyOneUVs && !(submesh.flags & flagsInternalTexcoords));\n    var onlyInternalIndices = (globals.config.mapIndexBuffers && globals.config.mapOnlyOneUVs && (submesh.flags & flagsInternalTexcoords));\n    var onlyIndices = onlyExternalIndices || onlyInternalIndices;\n\n    if (onlyIndices) {\n        indices = new Uint16Array(numFaces * 3);\n    } else {\n        vertices = use16bit ? (new Uint16Array(numFaces * 3 * 3)) : (new Float32Array(numFaces * 3 * 3));\n\n        if (submesh.flags & flagsInternalTexcoords) {\n            internalUVs = use16bit ? (new Uint16Array(numFaces * 3 * 2)) : (new Float32Array(numFaces * 3 * 2));\n        }\n\n        if (!onlyOneUVs && (submesh.flags & flagsExternalTexcoords)) {\n            externalUVs = use16bit ? (new Uint16Array(numFaces * 3 * 2)) : (new Float32Array(numFaces * 3 * 2));\n        }\n    }\n\n    var vtmp = tmpVertices;\n    var eUVs = tmpExternalUVs;\n    var iUVs = tmpInternalUVs;\n    var v1, v2, v3, vv1, vv2, vv3, sindex;\n\n    if (onlyExternalIndices) {\n        vertices = tmpVertices;\n        externalUVs = tmpExternalUVs;\n    }\n\n    if (onlyInternalIndices) {\n        vertices = use16bit ? (new Uint16Array((iUVs.length / 2) * 3)) : (new Float32Array((iUVs.length / 2) * 3));\n        internalUVs = tmpInternalUVs;\n    }\n\n    for (i = 0; i < numFaces; i++) {\n        v1 = (uint8Data[index] + (uint8Data[index + 1]<<8));\n        v2 = (uint8Data[index+2] + (uint8Data[index + 3]<<8));\n        v3 = (uint8Data[index+4] + (uint8Data[index + 5]<<8));\n\n        if (onlyIndices) {\n            vindex = i * 3;\n\n            if (internalUVs != null) {\n                vv1 = (uint8Data[index+6] + (uint8Data[index + 7]<<8));\n                vv2 = (uint8Data[index+8] + (uint8Data[index + 9]<<8));\n                vv3 = (uint8Data[index+10] + (uint8Data[index + 11]<<8));\n\n                vertices[vv1*3] = vtmp[v1*3];\n                vertices[vv1*3+1] = vtmp[v1*3+1];\n                vertices[vv1*3+2] = vtmp[v1*3+2];\n\n                vertices[vv2*3] = vtmp[v2*3];\n                vertices[vv2*3+1] = vtmp[v2*3+1];\n                vertices[vv2*3+2] = vtmp[v2*3+2];\n\n                vertices[vv3*3] = vtmp[v3*3];\n                vertices[vv3*3+1] = vtmp[v3*3+1];\n                vertices[vv3*3+2] = vtmp[v3*3+2];\n\n                indices[vindex] = vv1;\n                indices[vindex+1] = vv2;\n                indices[vindex+2] = vv3;\n\n                index += 12;\n            } else {\n                indices[vindex] = v1;\n                indices[vindex+1] = v2;\n                indices[vindex+2] = v3;\n\n                index += 6;\n            }\n\n        } else {\n            vindex = i * (3 * 3);\n\n            sindex = v1 * 3;\n            vertices[vindex] = vtmp[sindex];\n            vertices[vindex+1] = vtmp[sindex+1];\n            vertices[vindex+2] = vtmp[sindex+2];\n\n            sindex = v2 * 3;\n            vertices[vindex+3] = vtmp[sindex];\n            vertices[vindex+4] = vtmp[sindex+1];\n            vertices[vindex+5] = vtmp[sindex+2];\n\n            sindex = v3 * 3;\n            vertices[vindex+6] = vtmp[sindex];\n            vertices[vindex+7] = vtmp[sindex+1];\n            vertices[vindex+8] = vtmp[sindex+2];\n\n            if (externalUVs != null) {\n                vindex = i * (3 * 2);\n                externalUVs[vindex] = eUVs[v1*2];\n                externalUVs[vindex+1] = eUVs[v1*2+1];\n                externalUVs[vindex+2] = eUVs[v2*2];\n                externalUVs[vindex+3] = eUVs[v2*2+1];\n                externalUVs[vindex+4] = eUVs[v3*2];\n                externalUVs[vindex+5] = eUVs[v3*2+1];\n            }\n\n            if (internalUVs != null) {\n                v1 = (uint8Data[index+6] + (uint8Data[index + 7]<<8));\n                v2 = (uint8Data[index+8] + (uint8Data[index + 9]<<8));\n                v3 = (uint8Data[index+10] + (uint8Data[index + 11]<<8));\n                index += 12;\n\n                vindex = i * (3 * 2);\n                internalUVs[vindex] = iUVs[v1*2];\n                internalUVs[vindex+1] = iUVs[v1*2+1];\n                internalUVs[vindex+2] = iUVs[v2*2];\n                internalUVs[vindex+3] = iUVs[v2*2+1];\n                internalUVs[vindex+4] = iUVs[v3*2];\n                internalUVs[vindex+5] = iUVs[v3*2+1];\n            } else {\n                index += 6;\n            }\n        }\n    }\n\n    submesh.vertices = vertices;\n    submesh.internalUVs = internalUVs;\n    submesh.externalUVs = externalUVs;\n    submesh.indices = indices;\n\n    tmpVertices = null;\n    tmpInternalUVs = null;\n    tmpExternalUVs = null;\n\n    stream.index = index;\n\n    submesh.size = submesh.vertices.byteLength;\n    if (submesh.internalUVs) submesh.size += submesh.internalUVs.byteLength;\n    if (submesh.externalUVs) submesh.size += submesh.externalUVs.byteLength;\n    if (submesh.indices) submesh.size += submesh.indices.byteLength;\n    submesh.faces = numFaces;\n};\n\n\nfunction parseWord(data, res) {\n    var value = data[res[1]];\n    \n    if (value & 0x80) {\n        res[0] = (value & 0x7f) | (data[res[1]+1] << 7);\n        res[1] += 2;\n    } else {\n        res[0] = value;\n        res[1] ++;\n    }\n};\n\n\nfunction parseDelta(data, res) {\n    var value = data[res[1]];\n    \n    if (value & 0x80) {\n        value = (value & 0x7f) | (data[res[1]+1] << 7);\n\n        if (value & 1) {\n            res[0] = -((value >> 1)+1); \n            res[1] += 2;\n        } else {\n            res[0] = (value >> 1); \n            res[1] += 2;\n        }\n    } else {\n        if (value & 1) {\n            res[0] = -((value >> 1)+1); \n            res[1] ++;\n        } else {\n            res[0] = (value >> 1); \n            res[1] ++;\n        }\n    }\n};\n\n\nfunction parseVerticesAndFaces2(mesh, submesh, stream) {\n    /*\n    struct VerticesBlock {\n        ushort numVertices;              // number of vertices\n        ushort geomQuantCoef;            // geometry quantization coefficient\n\n        struct Vertex {                  // array of vertices, size of array is defined by numVertices property\n            // vertex coordinates\n            delta x;\n            delta y;\n            delta z;\n        } vertices[];\n    };\n    */\n\n    var data = stream.data;\n    var index = stream.index;\n    var uint8Data = stream.uint8Data;\n\n    var use16bit = globals.config.map16bitMeshes;\n    var onlyOneUVs = globals.config.mapOnlyOneUVs && (submesh.flags & flagsInternalTexcoords);\n    var tmpVertices, tmpExternalUVs, tmpInternalUVs;\n\n    var numVertices = data.getUint16(index, true); index += 2;\n    var quant = data.getUint16(index, true); index += 2;\n\n    if (!numVertices) {\n        submesh.valid = false;\n    }\n\n    var bmin = submesh.bboxMin;\n    var bmax = submesh.bboxMax;\n\n    var center = [(bmin[0] + bmax[0])*0.5, (bmin[1] + bmax[1])*0.5, (bmin[2] + bmax[2])*0.5];\n    var scale = Math.abs(Math.max(bmax[0] - bmin[0], bmax[1] - bmin[1], bmax[2] - bmin[2]));\n\n    var multiplier = 1.0 / quant;\n    var externalUVs = null;\n\n    var vertices = use16bit ? (new Uint16Array(numVertices * 3)) : (new Float32Array(numVertices * 3));\n    var vindex;\n    \n    var x = 0, y = 0,z = 0;\n    var cx = center[0], cy = center[1], cz = center[2];\n    var mx = bmin[0];\n    var my = bmin[1];\n    var mz = bmin[2];\n    var sx = 1.0 / (bmax[0] - bmin[0]);\n    var sy = 1.0 / (bmax[1] - bmin[1]);\n    var sz = 1.0 / (bmax[2] - bmin[2]);\n    \n    var res = [0, index];\n    var i, li, t;\n\n    if (use16bit) {\n        for (i = 0; i < numVertices; i++) {\n            parseDelta(uint8Data, res);\n            x += res[0];\n            parseDelta(uint8Data, res);\n            y += res[0];\n            parseDelta(uint8Data, res);\n            z += res[0];\n            \n            vindex = i * 3;\n            t = ((x * multiplier * scale + cx) - mx) * sx;\n            if (t < 0) t = 0; if (t > 1.0) t = 1.0;\n            vertices[vindex] = t * 65535;\n            t = ((y * multiplier * scale + cy) - my) * sy;\n            if (t < 0) t = 0; if (t > 1.0) t = 1.0;\n            vertices[vindex+1] = t * 65535;\n            t = ((z * multiplier * scale + cz) - mz) * sz;\n            if (t < 0) t = 0; if (t > 1.0) t = 1.0;\n            vertices[vindex+2] = t * 65535;\n        }\n    } else {\n        for (i = 0; i < numVertices; i++) {\n            parseDelta(uint8Data, res);\n            x += res[0];\n            parseDelta(uint8Data, res);\n            y += res[0];\n            parseDelta(uint8Data, res);\n            z += res[0];\n            \n            vindex = i * 3;\n            vertices[vindex] = ((x * multiplier * scale + cx) - mx) * sx;\n            vertices[vindex+1] = ((y * multiplier * scale + cy) - my) * sy;\n            vertices[vindex+2] = ((z * multiplier * scale + cz) - mz) * sz;\n        }\n    }\n    \n    index = res[1];\n\n    if (submesh.flags & flagsExternalTexcoords) {\n        quant = data.getUint16(index, true); index += 2;\n        res[1] = index;\n\n        if (onlyOneUVs) {\n\n            for (i = 0; i < numVertices; i++) {\n                parseDelta(uint8Data, res);\n                parseDelta(uint8Data, res);\n            }\n\n        } else {\n            multiplier = (use16bit) ? (65535 / quant) : (1.0 / quant);\n            externalUVs = use16bit ? (new Uint16Array(numVertices * 2)) : (new Float32Array(numVertices * 2));\n            x = 0, y = 0;\n\n            if (use16bit) {\n                for (i = 0; i < numVertices; i++) {\n                    parseDelta(uint8Data, res);\n                    x += res[0];\n                    parseDelta(uint8Data, res);\n                    y += res[0];\n\n                    var uvindex = i * 2;\n                    t = x * multiplier;\n                    if (t < 0) t = 0; if (t > 65535) t = 65535;\n                    externalUVs[uvindex] = t;\n                    t = y * multiplier;\n                    if (t < 0) t = 0; if (t > 65535) t = 65535;\n                    externalUVs[uvindex+1] = 65535 - t;\n                }\n            } else {\n                for (i = 0; i < numVertices; i++) {\n                    parseDelta(uint8Data, res);\n                    x += res[0];\n                    parseDelta(uint8Data, res);\n                    y += res[0];\n\n                    var uvindex = i * 2;\n                    externalUVs[uvindex] = x * multiplier;\n                    externalUVs[uvindex+1] = 1 - (y * multiplier);\n                }\n            }\n        }\n    }\n\n    index = res[1];\n\n    tmpVertices = vertices;\n    tmpExternalUVs = externalUVs;\n    \n    /*\n    struct TexcoorsBlock {\n        ushort numTexcoords;              // number of texture coordinates\n\n        struct TextureCoords {            // array of texture coordinates, size of array is defined by numTexcoords property\n\n            // internal texture coordinates\n            // values in 2^16^ range represents the 0..1 normalized texture space\n            ushort u;\n            ushort v;\n        } texcoords[];\n    };\n    */\n\n    if (submesh.flags & flagsInternalTexcoords) {\n        var numUVs = data.getUint16(index, true); index += 2;\n        var quantU = data.getUint16(index, true); index += 2;\n        var quantV = data.getUint16(index, true); index += 2;\n        var multiplierU = (use16bit) ? (65536.0 / quantU) : (1.0 / quantU);\n        var multiplierV = (use16bit) ? (65536.0 / quantV) : (1.0 / quantV);\n        x = 0, y = 0;\n    \n        var internalUVs = use16bit ? (new Uint16Array(numUVs * 2)) : (new Float32Array(numUVs * 2));\n        res[1] = index;7\n\n        if (use16bit) {\n            for (i = 0, li = numUVs * 2; i < li; i+=2) {\n                parseDelta(uint8Data, res);\n                x += res[0];\n                parseDelta(uint8Data, res);\n                y += res[0];\n\n                t = x * multiplierU;\n                if (t < 0) t = 0; if (t > 65535) t = 65535;\n                internalUVs[i] = t;\n                t = y * multiplierV;\n                if (t < 0) t = 0; if (t > 65535) t = 65535;\n                internalUVs[i+1] = 65535 - t;\n            }\n        } else {\n            for (i = 0, li = numUVs * 2; i < li; i+=2) {\n                parseDelta(uint8Data, res);\n                x += res[0];\n                parseDelta(uint8Data, res);\n                y += res[0];\n\n                internalUVs[i] = x * multiplierU;\n                internalUVs[i+1] = 1 - (y * multiplierV);\n            }\n        }\n\n        index = res[1];\n    \n        tmpInternalUVs = internalUVs;\n    }\n\n    /*\n    struct FacesBlock {\n        ushort numFaces;              // number of faces\n\n        struct Face {                 // array of faces, size of array is defined by numFaces property\n\n            ushort v[3]; // array of indices to stored vertices\n            ushort t[3]; // if header.flags & ( 1 << 0 ): array of indices to stored internal texture coords\n\n        } faces[];\n    };\n    */\n\n    var numFaces = data.getUint16(index, true); index += 2;\n    var indices = null;\n\n    internalUVs = null;\n    externalUVs = null;\n\n    var onlyExternalIndices = (globals.config.mapIndexBuffers && globals.config.mapOnlyOneUVs && !(submesh.flags & flagsInternalTexcoords));\n    var onlyInternalIndices = (globals.config.mapIndexBuffers && globals.config.mapOnlyOneUVs && (submesh.flags & flagsInternalTexcoords));\n    var onlyIndices = onlyExternalIndices || onlyInternalIndices;\n\n    if (onlyIndices) {\n        indices = new Uint16Array(numFaces * 3);\n    } else {\n        vertices = use16bit ? (new Uint16Array(numFaces * 3 * 3)) : (new Float32Array(numFaces * 3 * 3));\n\n        if (submesh.flags & flagsInternalTexcoords) {\n            internalUVs = use16bit ? (new Uint16Array(numFaces * 3 * 2)) : (new Float32Array(numFaces * 3 * 2));\n        }\n\n        if (!onlyOneUVs && (submesh.flags & flagsExternalTexcoords)) {\n            externalUVs = use16bit ? (new Uint16Array(numFaces * 3 * 2)) : (new Float32Array(numFaces * 3 * 2));\n        }\n    }\n\n    var vtmp = tmpVertices;\n    var eUVs = tmpExternalUVs;\n    var iUVs = tmpInternalUVs;\n    var high = 0;\n    var v1, v2, v3, vv1, vv2, vv3;\n    res[1] = index;\n\n    for (i = 0; i < numFaces; i++) {\n        parseWord(uint8Data, res);\n        v1 = high - res[0];\n        if (!res[0]) { high++; }\n\n        parseWord(uint8Data, res);\n        v2 = high - res[0];\n        if (!res[0]) { high++; }\n\n        parseWord(uint8Data, res);\n        v3 = high - res[0];\n        if (!res[0]) { high++; }\n\n        if (onlyIndices) {\n            vindex = i * 3;\n            indices[vindex] = v1;\n            indices[vindex+1] = v2;\n            indices[vindex+2] = v3;\n        } else {\n            vindex = i * (3 * 3);\n            var sindex = v1 * 3;\n            vertices[vindex] = vtmp[sindex];\n            vertices[vindex+1] = vtmp[sindex+1];\n            vertices[vindex+2] = vtmp[sindex+2];\n\n            sindex = v2 * 3;\n            vertices[vindex+3] = vtmp[sindex];\n            vertices[vindex+4] = vtmp[sindex+1];\n            vertices[vindex+5] = vtmp[sindex+2];\n\n            sindex = v3 * 3;\n            vertices[vindex+6] = vtmp[sindex];\n            vertices[vindex+7] = vtmp[sindex+1];\n            vertices[vindex+8] = vtmp[sindex+2];\n\n            if (externalUVs != null) {\n                vindex = i * (3 * 2);\n                externalUVs[vindex] = eUVs[v1*2];\n                externalUVs[vindex+1] = eUVs[v1*2+1];\n                externalUVs[vindex+2] = eUVs[v2*2];\n                externalUVs[vindex+3] = eUVs[v2*2+1];\n                externalUVs[vindex+4] = eUVs[v3*2];\n                externalUVs[vindex+5] = eUVs[v3*2+1];\n            }\n        }\n    }\n\n    if (onlyExternalIndices) {\n        vertices = tmpVertices;\n        externalUVs = tmpExternalUVs;\n    }\n\n    if (onlyInternalIndices) {\n        vertices = use16bit ? (new Uint16Array((iUVs.length / 2) * 3)) : (new Float32Array((iUVs.length / 2) * 3));\n        internalUVs = tmpInternalUVs;\n    }\n\n    high = 0;\n\n    if (internalUVs != null) {\n        for (i = 0; i < numFaces; i++) {\n            parseWord(uint8Data, res);\n            v1 = high - res[0];\n            if (!res[0]) { high++; }\n    \n            parseWord(uint8Data, res);\n            v2 = high - res[0];\n            if (!res[0]) { high++; }\n    \n            parseWord(uint8Data, res);\n            v3 = high - res[0];\n            if (!res[0]) { high++; }\n\n            if (onlyInternalIndices) {\n                vindex = i * 3;\n\n                vv1 = indices[vindex] * 3;\n                vv2 = indices[vindex+1] * 3;\n                vv3 = indices[vindex+2] * 3;\n\n                vertices[v1*3] = vtmp[vv1];\n                vertices[v1*3+1] = vtmp[vv1+1];\n                vertices[v1*3+2] = vtmp[vv1+2];\n\n                vertices[v2*3] = vtmp[vv2];\n                vertices[v2*3+1] = vtmp[vv2+1];\n                vertices[v2*3+2] = vtmp[vv2+2];\n\n                vertices[v3*3] = vtmp[vv3];\n                vertices[v3*3+1] = vtmp[vv3+1];\n                vertices[v3*3+2] = vtmp[vv3+2];\n\n                indices[vindex] = v1;\n                indices[vindex+1] = v2;\n                indices[vindex+2] = v3;\n            } else {\n                vindex = i * (3 * 2);\n                internalUVs[vindex] = iUVs[v1*2];\n                internalUVs[vindex+1] = iUVs[v1*2+1];\n                internalUVs[vindex+2] = iUVs[v2*2];\n                internalUVs[vindex+3] = iUVs[v2*2+1];\n                internalUVs[vindex+4] = iUVs[v3*2];\n                internalUVs[vindex+5] = iUVs[v3*2+1];\n            }\n        }\n    }\n\n    index = res[1];\n\n    submesh.vertices = vertices;\n    submesh.internalUVs = internalUVs;\n    submesh.externalUVs = externalUVs;\n    submesh.indices = indices;\n\n    //tmpVertices = null;\n    //tmpInternalUVs = null;\n    //tmpExternalUVs = null;\n\n    stream.index = index;\n\n    submesh.size = submesh.vertices.byteLength;\n    if (submesh.internalUVs) submesh.size += submesh.internalUVs.byteLength;\n    if (submesh.externalUVs) submesh.size += submesh.externalUVs.byteLength;\n    if (submesh.indices) submesh.size += submesh.indices.byteLength;\n    submesh.faces = numFaces;\n};\n\n\n\n\n\n/***/ }),\n/* 2 */\n/***/ (function(module, __webpack_exports__, __webpack_require__) {\n\n\"use strict\";\nObject.defineProperty(__webpack_exports__, \"__esModule\", { value: true });\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__ = __webpack_require__(0);\n/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__worker_mesh_js__ = __webpack_require__(1);\n\n\n\n\n//get rid of compiler mess\nvar globals = __WEBPACK_IMPORTED_MODULE_0__worker_globals_js__[\"a\" /* globals */];\nvar parseMesh = __WEBPACK_IMPORTED_MODULE_1__worker_mesh_js__[\"a\" /* parseMesh */];\n\nvar packedEvents = [];\nvar packedTransferables = [];\n\nfunction postPackedMessage(message, transferables) {\n\n    if (globals.config.mapPackLoaderEvents) {\n\n        packedEvents.push(message);\n\n        if (transferables) {\n            packedTransferables = packedTransferables.concat(transferables);\n        }\n\n    } else {\n\n        if (transferables) {\n            postMessage(message, transferables);\n        } else {\n            postMessage(message);\n        }\n\n    }\n}\n\nfunction loadBinary(path, onLoaded, onError, withCredentials, xhrParams, responseType, kind) {\n    var xhr = new XMLHttpRequest();\n\n    xhr.onreadystatechange = (function (){\n\n        switch (xhr.readyState) {\n        case 0 : // UNINITIALIZED\n        case 1 : // LOADING\n        case 2 : // LOADED\n        case 3 : // INTERACTIVE\n            break;\n        case 4 : // COMPLETED\n    \n            if (xhr.status >= 400 || xhr.status == 0) {\n                if (onError) {\n                    postPackedMessage({'command' : 'on-error', 'path': path, 'status':xhr.status});\n                }\n                break;\n            }\n    \n            var abuffer = xhr.response;\n                    \n            if (!abuffer) {\n                if (onError) {\n                    postPackedMessage({'command' : 'on-error', 'path': path});\n                }\n                break;\n            }\n    \n            if (onLoaded) {\n                if (kind == 'direct-texture') {\n                    createImageBitmap(abuffer).then((function(bitmap){\n                        postPackedMessage({'command' : 'on-loaded', 'path': path, 'data': bitmap, 'filesize': abuffer.size}, [bitmap]);                        \n                    }).bind(this));\n                } else if (kind == 'direct-mesh') {\n                    //debugger\n                    var data = parseMesh({data:new DataView(abuffer), index:0});\n                    postPackedMessage({'command' : 'on-loaded', 'path': path, 'data': data.mesh}, data.transferables);\n                } else {\n\n                    postPackedMessage({'command' : 'on-loaded', 'path': path, 'data': abuffer}, [abuffer]);\n                }\n            }\n    \n            break;\n    \n        default:\n    \n            if (onError) {\n                postPackedMessage({'command' : 'on-error', 'path': path});\n            }\n    \n            break;\n        }\n\n    }).bind(this);\n    \n    /*\n    xhr.onerror  = (function() {\n        if (onError) {\n            onError();\n        }\n    }).bind(this);*/\n\n    xhr.open('GET', path, true);\n    xhr.responseType = responseType ? responseType : 'arraybuffer';\n    xhr.withCredentials = withCredentials;\n\n    if (xhrParams && xhrParams['token'] /*&& xhrParams[\"tokenHeader\"]*/) {\n        //xhr.setRequestHeader(xhrParams[\"tokenHeader\"], xhrParams[\"token\"]); //old way\n        xhr.setRequestHeader('Accept', 'token/' + xhrParams['token'] + ', */*');\n    }\n\n    xhr.send('');\n};\n\n\nself.onmessage = function (e) {\n    var message = e.data;\n    var command = message['command'];\n    //var data = message['data'];\n\n    //console.log(\"workeronmessage: \" + command);\n\n    switch(command) {\n\n        case 'config':\n            globals.config = message['data'];\n            break;\n\n        case 'tick':\n\n            if (packedEvents.length > 0) {\n                if (packedTransferables.length > 0) {\n                    postMessage({'command': 'packed-events', 'messages':packedEvents}, packedTransferables);\n                } else {\n                    postMessage({'command': 'packed-events', 'messages':packedEvents});\n                }\n            }\n\n            packedEvents = [];\n            packedTransferables = [];\n\n            break;\n\n        case 'load-binary':\n            loadBinary(message['path'], true, true, message['withCredentials'], message['xhrParams'], message['responseType'], message['kind']);\n            break;\n\n    }\n};\n\n\n\n/***/ })\n/******/ ]);\n//# sourceMappingURL=67d9ba12f3d972ffe101.worker.js.map", null);
+};
+
+/***/ }),
+/* 119 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -20793,7 +22257,7 @@ InspectorGraphs.prototype.updateGraphs = function(stats, ignoreRefresh) {
 
 
 /***/ }),
-/* 118 */
+/* 120 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -21277,19 +22741,19 @@ InspectorInput.prototype.setParameter = function(key, value) {
 
 
 /***/ }),
-/* 119 */
+/* 121 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_matrix__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_math__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__input__ = __webpack_require__(118);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__stats__ = __webpack_require__(122);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__graphs__ = __webpack_require__(117);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__layers__ = __webpack_require__(120);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__replay__ = __webpack_require__(121);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__stylesheets__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__input__ = __webpack_require__(120);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__stats__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__graphs__ = __webpack_require__(119);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__layers__ = __webpack_require__(122);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__replay__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__stylesheets__ = __webpack_require__(125);
 
 
 
@@ -21612,7 +23076,7 @@ Inspector.prototype.onMapUpdate = function() {
 
 
 /***/ }),
-/* 120 */
+/* 122 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -22558,7 +24022,7 @@ InspectorLayers.prototype.updatePanel = function() {
 
 
 /***/ }),
-/* 121 */
+/* 123 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -23478,7 +24942,7 @@ InspectorReplay.prototype.buildReplayCombo = function() {
 
 
 /***/ }),
-/* 122 */
+/* 124 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -23667,7 +25131,7 @@ InspectorStats.prototype.updateStatsPanel = function(stats) {
 
 
 /***/ }),
-/* 123 */
+/* 125 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -23932,7 +25396,7 @@ InspectorStylesheets.prototype.buildStylesheetsCombo = function() {
 
 
 /***/ }),
-/* 124 */
+/* 126 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -23972,7 +25436,7 @@ MapBody.prototype.getInfo = function() {
 /* harmony default export */ __webpack_exports__["a"] = (MapBody);
 
 /***/ }),
-/* 125 */
+/* 127 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -24186,7 +25650,7 @@ MapCache.prototype["itemUsed"] = MapCache.prototype.itemUsed;
 /* harmony default export */ __webpack_exports__["a"] = (MapCache);
 
 /***/ }),
-/* 126 */
+/* 128 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -24360,19 +25824,19 @@ MapCamera.prototype.getAspect = function() {
 
 
 /***/ }),
-/* 127 */
+/* 129 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bound_layer__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bound_layer__ = __webpack_require__(48);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__credit__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__refframe__ = __webpack_require__(144);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view__ = __webpack_require__(55);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__srs__ = __webpack_require__(49);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__body__ = __webpack_require__(124);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__surface__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__virtual_surface__ = __webpack_require__(154);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__stylesheet__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__refframe__ = __webpack_require__(146);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__srs__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__body__ = __webpack_require__(126);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__surface__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__virtual_surface__ = __webpack_require__(156);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__stylesheet__ = __webpack_require__(52);
 
 
 
@@ -24656,7 +26120,7 @@ MapConfig.prototype.cloneConfig = function() {
 
 
 /***/ }),
-/* 128 */
+/* 130 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -25021,7 +26485,7 @@ MapConvert.prototype.getGeodesicLinePoints = function(coords, coords2, height, d
 
 
 /***/ }),
-/* 129 */
+/* 131 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -25066,11 +26530,11 @@ MapDivisionNode.prototype.getExtents = function (coords) {
 
 
 /***/ }),
-/* 130 */
+/* 132 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geodata_view__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geodata_view__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
 
 
@@ -26145,15 +27609,15 @@ MapDrawTiles.prototype.drawTileInfo = function(tile, node, cameraPos, mesh) {
 
 
 /***/ }),
-/* 131 */
+/* 133 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_matrix__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_math__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__geodata__ = __webpack_require__(48);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__geodata_view__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__draw_tiles__ = __webpack_require__(130);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__geodata__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__geodata_view__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__draw_tiles__ = __webpack_require__(132);
 
 
 
@@ -27051,13 +28515,13 @@ MapDraw.prototype.setupDetailDegradation = function(degradeMore) {
 
 
 /***/ }),
-/* 132 */
+/* 134 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geodata_geometry__ = __webpack_require__(133);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geodata_import_geojson__ = __webpack_require__(134);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__geodata_import_vts_geodata__ = __webpack_require__(135);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geodata_geometry__ = __webpack_require__(135);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geodata_import_geojson__ = __webpack_require__(136);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__geodata_import_vts_geodata__ = __webpack_require__(137);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_matrix__ = __webpack_require__(1);
 
 //import Delaunator_ from './geodata-utils';
@@ -28976,7 +30440,7 @@ MapGeodataBuilder.prototype.makeFreeLayer = function(style, resolution) {
 
 
 /***/ }),
-/* 133 */
+/* 135 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -29310,7 +30774,7 @@ MapGeodataGeometry.prototype.getSurfaceArea = function() {
 
 
 /***/ }),
-/* 134 */
+/* 136 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -29451,7 +30915,7 @@ MapGeodataImportGeoJSON.prototype.processJSON = function(json) {
 
 
 /***/ }),
-/* 135 */
+/* 137 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -29555,7 +31019,7 @@ MapGeodataImportVTSGeodata.prototype.processJSON = function(json) {
 
 
 /***/ }),
-/* 136 */
+/* 138 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -29575,7 +31039,7 @@ var MapGeodataProcessor = function(surface, listener) {
 
 
     // eslint-disable-next-line
-    var worker = __webpack_require__(115);
+    var worker = __webpack_require__(117);
     //var worker = require('worker-loader?!./worker-main');
 
     //debug worker
@@ -29816,15 +31280,15 @@ MapGeodataProcessor.prototype.setFont = function(url, font) {
 
 
 /***/ }),
-/* 137 */
+/* 139 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__trajectory__ = __webpack_require__(152);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bound_layer__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__surface__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__trajectory__ = __webpack_require__(154);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bound_layer__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__surface__ = __webpack_require__(55);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__position__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__geodata_builder__ = __webpack_require__(132);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__geodata_builder__ = __webpack_require__(134);
 
 
 
@@ -30325,7 +31789,7 @@ MapInterface.prototype.getGeodataSelection = function() {
 
 
 /***/ }),
-/* 138 */
+/* 140 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -30362,7 +31826,7 @@ var MapLoader = function(map, maxThreads) {
 
     if (this.config.mapSeparateLoader) {
         // eslint-disable-next-line
-        var worker = __webpack_require__(116);
+        var worker = __webpack_require__(118);
 
         this.processWorker = new worker;
         
@@ -30689,29 +32153,29 @@ MapLoader.prototype.update = function(skipTick) {
 
 
 /***/ }),
-/* 139 */
+/* 141 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_matrix__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_platform__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view__ = __webpack_require__(55);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__surface_tree__ = __webpack_require__(52);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__resource_tree__ = __webpack_require__(147);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__srs__ = __webpack_require__(49);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__cache__ = __webpack_require__(125);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__camera__ = __webpack_require__(126);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__config__ = __webpack_require__(127);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__convert__ = __webpack_require__(128);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__measure__ = __webpack_require__(140);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__draw__ = __webpack_require__(131);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__loader_loader__ = __webpack_require__(138);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__surface_tree__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__resource_tree__ = __webpack_require__(149);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__srs__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__cache__ = __webpack_require__(127);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__camera__ = __webpack_require__(128);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__config__ = __webpack_require__(129);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__convert__ = __webpack_require__(130);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__measure__ = __webpack_require__(142);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__draw__ = __webpack_require__(133);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__loader_loader__ = __webpack_require__(140);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__position__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__render_slots__ = __webpack_require__(145);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__stats__ = __webpack_require__(148);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__surface_sequence__ = __webpack_require__(150);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__url__ = __webpack_require__(153);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__render_slots__ = __webpack_require__(147);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__stats__ = __webpack_require__(150);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__surface_sequence__ = __webpack_require__(152);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__url__ = __webpack_require__(155);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__renderer_gpu_texture__ = __webpack_require__(6);
 
 
@@ -32269,7 +33733,7 @@ Map.prototype.update = function() {
 
 
 /***/ }),
-/* 140 */
+/* 142 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33262,16 +34726,16 @@ MapMeasure.prototype.getPositionCameraInfo = function(position, projected, clamp
 
 
 /***/ }),
-/* 141 */
+/* 143 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_matrix__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__submesh__ = __webpack_require__(149);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__submesh__ = __webpack_require__(151);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__renderer_bbox__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__renderer_gpu_program__ = __webpack_require__(57);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__renderer_gpu_shaders__ = __webpack_require__(161);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__renderer_gpu_program__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__renderer_gpu_shaders__ = __webpack_require__(59);
 
 
 
@@ -33940,7 +35404,7 @@ MapMesh.prototype.drawSubmesh = function (cameraPos, index, texture, type, alpha
 
 
 /***/ }),
-/* 142 */
+/* 144 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -34739,12 +36203,12 @@ MapMetanode.prototype.getGridHeight = function(coords, data, dataWidth) {
 
 
 /***/ }),
-/* 143 */
+/* 145 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__metanode__ = __webpack_require__(142);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__metanode__ = __webpack_require__(144);
 
 
 
@@ -35225,11 +36689,11 @@ MapMetatile.prototype.parseMetatatileNodes = function(stream) {
 
 
 /***/ }),
-/* 144 */
+/* 146 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__division_node__ = __webpack_require__(129);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__division_node__ = __webpack_require__(131);
 
 
 
@@ -35397,7 +36861,7 @@ MapRefFrame.prototype.convertCoords = function(coords, source, destination) {
 
 
 /***/ }),
-/* 145 */
+/* 147 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -35505,15 +36969,15 @@ MapRenderSlots.prototype.processRenderSlots = function() {
 
 
 /***/ }),
-/* 146 */
+/* 148 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__texture__ = __webpack_require__(54);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__subtexture__ = __webpack_require__(51);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__metatile__ = __webpack_require__(143);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__mesh__ = __webpack_require__(141);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__geodata__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__texture__ = __webpack_require__(56);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__subtexture__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__metatile__ = __webpack_require__(145);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__mesh__ = __webpack_require__(143);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__geodata__ = __webpack_require__(50);
 
 
 
@@ -35717,11 +37181,11 @@ MapResourceNode.prototype.getMetatile = function(surface, allowCreation, tile) {
 
 
 /***/ }),
-/* 147 */
+/* 149 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__resource_node__ = __webpack_require__(146);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__resource_node__ = __webpack_require__(148);
 
 
 
@@ -35819,7 +37283,7 @@ MapResourceTree.prototype.findAgregatedNode = function(id, agregation, createNon
 
 
 /***/ }),
-/* 148 */
+/* 150 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -36039,13 +37503,13 @@ MapStats.prototype.end = function(dirty) {
 
 
 /***/ }),
-/* 149 */
+/* 151 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_matrix__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_math__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__renderer_gpu_mesh__ = __webpack_require__(56);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__renderer_gpu_mesh__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__renderer_bbox__ = __webpack_require__(5);
 // An index-less mesh. Each triangle has three items in the array 'vertices'.
 
@@ -36909,7 +38373,7 @@ MapSubmesh.prototype.drawBBox = function(cameraPos) {
 
 
 /***/ }),
-/* 150 */
+/* 152 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -37225,7 +38689,7 @@ MapSurfaceSequence.prototype.generateBoundLayerSequence = function() {
 
 
 /***/ }),
-/* 151 */
+/* 153 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -39081,7 +40545,7 @@ MapSurfaceTile.prototype.drawHmapTile = function(cameraPos, divNode, angle, pipe
 
 
 /***/ }),
-/* 152 */
+/* 154 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -39509,7 +40973,7 @@ MapTrajectory.prototype.getFlightOrienation = function(time) {
 
 
 /***/ }),
-/* 153 */
+/* 155 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -39768,7 +41232,7 @@ MapUrl.prototype.processUrl = function(url, fallback) {
 
 
 /***/ }),
-/* 154 */
+/* 156 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -40001,7 +41465,7 @@ MapVirtualSurface.prototype.getMetaUrl = function(id, skipBaseUrl) {
 
 
 /***/ }),
-/* 155 */
+/* 157 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -40404,13 +41868,13 @@ Camera.prototype.update = function(zoffset) {
 
 
 /***/ }),
-/* 156 */
+/* 158 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_matrix__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_math__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gmap__ = __webpack_require__(157);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gmap__ = __webpack_require__(160);
 
 
 
@@ -42873,7 +44337,266 @@ RendererDraw.prototype.drawGpuSubJob = function(gpu, gl, renderer, screenPixelSi
 
 
 /***/ }),
-/* 157 */
+/* 159 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bbox__ = __webpack_require__(5);
+
+
+
+//get rid of compiler mess
+var BBox = __WEBPACK_IMPORTED_MODULE_0__bbox__["a" /* default */];
+
+
+var RendererGeometry = {};
+
+
+RendererGeometry.setFaceVertices = function(vertices, a, b, c, index) {
+    vertices[index] = a[0];
+    vertices[index+1] = a[1];
+    vertices[index+2] = a[2];
+
+    vertices[index+3] = b[0];
+    vertices[index+4] = b[1];
+    vertices[index+5] = b[2];
+
+    vertices[index+6] = c[0];
+    vertices[index+7] = c[1];
+    vertices[index+8] = c[2];
+};
+
+
+RendererGeometry.setFaceUVs = function(uvs, a, b, c, index) {
+    uvs[index] = a[0];
+    uvs[index+1] = a[1];
+
+    uvs[index+2] = b[0];
+    uvs[index+3] = b[1];
+
+    uvs[index+4] = c[0];
+    uvs[index+5] = c[1];
+};
+
+
+// Procedural mesh representing a heightmap block
+// Creates a grid of size x size vertices, all coords are [0..1].
+RendererGeometry.buildHeightmap = function(size, use16bit) {
+    size--;
+
+    var g = RendererGeometry;
+    var numFaces = (size* size) * 2;
+    var vertices = new Float32Array(numFaces * 3 * 3);//[];
+    var uvs = new Float32Array(numFaces * 3 * 2);//[];
+
+    var factor = 1.0 * size;
+    var index = 0;
+    var index2 = 0;
+
+    for (var i = 0; i < size; i++) {
+        for (var j = 0; j < size; j++) {
+            var x1 = (j) * factor;
+            var x2 = (j+1) * factor;
+
+            var y1 = (i) * factor;
+            var y2 = (i+1) * factor;
+
+            g.setFaceVertices(vertices, [x1, y1, 0], [x2, y1, 0], [x2, y2, 0], index);
+            g.setFaceUVs(uvs, [x1, y1], [x2, y1], [x2, y2], index2);
+            index += 9;
+            index2 += 6;
+
+            g.setFaceVertices(vertices, [x2, y2, 0], [x1, y2, 0], [x1, y1, 0], index);
+            g.setFaceUVs(uvs, [x2, y2], [x1, y2], [x1, y1], index2);
+            index += 9;
+            index2 += 6;
+        }
+    }
+
+    var bbox = new BBox(0,0,0,1,1,1);
+
+    if (use16bit) {
+        return { bbox:bbox, vertices:this.covnetTo16Bit(vertices), uvs: this.covnetTo16Bit(uvs)};
+    } else {
+        return { bbox:bbox, vertices:vertices, uvs: uvs};
+    }
+};
+
+
+RendererGeometry.buildPlane = function(size, use16bit) {
+    size--;
+
+    var g = RendererGeometry;
+    var numFaces = (size* size) * 2;
+    var vertices = (use16bit) ? (new Uint16Array(numFaces * 3 * 3)) : (new Float32Array(numFaces * 3 * 3));
+    var uvs = new Float32Array(numFaces * 3 * 2);//[];
+
+    var factor = 1.0 / (size);
+    var index = 0, index2 = 0;
+    var x1, y1, x2, y2, xx1, xx2, yy1, yy2;
+
+    for (var i = 0; i < size; i++) {
+        for (var j = 0; j < size; j++) {
+            x1 = j;
+            x2 = j+1;
+            y1 = i;
+            y2 = i+1;
+
+            xx1 = j * factor;
+            xx2 = (j+1) * factor;
+            yy1 = (i) * factor;
+            yy2 = (i+1) * factor;
+
+            g.setFaceVertices(vertices, [x1, y1, 0], [x1, y2, 0], [x2, y2, 0], index);
+            g.setFaceUVs(uvs, [xx1, yy1], [xx1, yy2], [xx2, yy2], index2);
+            index += 9;
+            index2 += 6;
+
+            g.setFaceVertices(vertices, [x2, y2, 0], [x2, y1, 0], [x1, y1, 0], index);
+            g.setFaceUVs(uvs, [xx2, yy2], [xx2, yy1], [xx1, yy1], index2);
+            index += 9;
+            index2 += 6;
+        }
+    }
+
+    var bbox = new BBox(0,0,0,1,1,1);
+
+    if (use16bit) {
+        return { bbox:bbox, vertices:vertices, uvs: this.covnetTo16Bit(uvs)};
+    } else {
+        return { bbox:bbox, vertices:vertices, uvs: uvs};
+    }
+};
+
+RendererGeometry.spherePos = function(lon, lat) {
+    lat *= Math.PI;
+    lon *= 2*Math.PI;
+
+    return [Math.cos(lon)*Math.sin(lat)*0.5 + 0.5,
+        Math.sin(lon)*Math.sin(lat)*0.5 + 0.5,
+        Math.cos(lat) * 0.5 + 0.5];
+};
+
+
+// Creates an approximation of a unit sphere, note that all coords are
+// in the range [0..1] and the center is in (0.5, 0.5). Triangle "normals"
+// are oriented inwards.
+RendererGeometry.buildSkydome = function(latitudeBands, longitudeBands, use16bit, useIndices) {
+    var g = RendererGeometry;
+    var numFaces = (latitudeBands * longitudeBands) * 2;
+    var numVertices = (latitudeBands * longitudeBands) * (useIndices ? 1 : 3);
+    var vertices = new Float32Array(numVertices * 3);
+    var uvs = new Float32Array(numVertices * 2);
+    var indices = useIndices ? (new Uint16Array(numFaces * 3)) : null;
+    var index = 0, index2 = 0;
+    var g = RendererGeometry, lat, lon, lon2, lat2, v, flon, flat;
+
+    if (useIndices) {
+
+        for (lat = 0; lat < latitudeBands; lat++) {
+            for (lon = 0; lon < longitudeBands; lon++) {
+
+                flon = lon / longitudeBands;
+                flat = lat / latitudeBands;
+                v = g.spherePos(flon, flat);
+
+                vertices[index] = v[0];
+                vertices[index+1] = v[1];
+                vertices[index+2] = v[2];
+
+                uvs[index2] = flon;
+                uvs[index2+1] = flat;
+
+                index += 3;
+                index2 += 2;
+            }
+        }
+
+        index = 0;
+
+        for (lat = 0; lat < (latitudeBands - 1); lat++) {
+            for (lon = 0; lon < longitudeBands; lon++) {
+
+                lat2 = lat + 1;
+                lon2 = lon + 1;
+
+                if (lon2 >= longitudeBands) {
+                    lon2 = 0;
+                }
+
+                indices[index] = (lat2 * longitudeBands) + lon;
+                indices[index+1] = (lat * longitudeBands) + lon;
+                indices[index+2] = (lat * longitudeBands) + lon2;
+
+                indices[index+3] = (lat * longitudeBands) + lon2;
+                indices[index+4] = (lat2 * longitudeBands) + lon2;
+                indices[index+5] = (lat2 * longitudeBands) + lon;
+
+                index += 6;
+            }
+        }
+
+    } else {
+
+        for (var lat = 0; lat < latitudeBands; lat++) {
+            for (var lon = 0; lon < longitudeBands; lon++) {
+
+                var lon1 = ((lon) / longitudeBands);
+                var lon2 = ((lon+1) / longitudeBands);
+
+                var lat1 = ((lat) / latitudeBands);
+                var lat2 = ((lat+1) / latitudeBands);
+
+                g.makeQuad(lon1, lat1, lon2, lat2, vertices, index, uvs, index2);
+                index += 9*2;
+                index2 += 6*2;
+            }
+        }
+
+    }
+
+    var bbox = new BBox(0,0,0,1,1,1);
+
+    if (use16bit) {
+        return { bbox:bbox, vertices:this.covnetTo16Bit(vertices), uvs: this.covnetTo16Bit(uvs), indices:indices};
+    } else {
+        return { bbox:bbox, vertices:vertices, uvs: uvs, indices:indices};
+    }
+};
+
+RendererGeometry.covnetTo16Bit = function(array) {
+    var t, array2 = new Uint16Array(array.length);
+
+    for (var i = 0, li = array.length; i < li; i++) {
+        t = array[i] * 65535;
+        if (t < 0) t = 0; if (t > 65535) t = 65535;
+        array2[i] = t;
+    }
+
+    return array2;
+}
+
+
+RendererGeometry.makeQuad = function(lon1, lat1, lon2, lat2, vertices, index, uvs, index2) {
+    var g = RendererGeometry;
+    var a = g.spherePos(lon1, lat1), ta = [lon1, lat1];
+    var b = g.spherePos(lon1, lat2), tb = [lon1, lat2];
+    var c = g.spherePos(lon2, lat1), tc = [lon2, lat1];
+    var d = g.spherePos(lon2, lat2), td = [lon2, lat2];
+    g.setFaceVertices(vertices, b, a, c, index);
+    g.setFaceUVs(uvs, tb, ta, tc, index2);
+    g.setFaceVertices(vertices, c, d, b, index+9);
+    g.setFaceUVs(uvs, tc, td, tb, index2+6);
+};
+
+
+/* harmony default export */ __webpack_exports__["a"] = (RendererGeometry);
+
+
+
+
+/***/ }),
+/* 160 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -43964,7 +45687,98 @@ function processGMap7(gpu, gl, renderer, screenPixelSize, draw) {
 
 
 /***/ }),
-/* 158 */
+/* 161 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+
+var GpuBBox = function(gpu, free) {
+    this.gl = gpu.gl;
+
+    var gl = this.gl;
+
+    if (gl == null)
+        return;
+
+    this.free = free;
+    this.vertexPositionBuffer = null;
+
+    //create vertex buffer
+    this.vertexPositionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexPositionBuffer);
+
+    var vertices;
+
+    if (free) {
+        vertices = [0,0,0, 0,0,1,
+            0,0,1, 0,0,2,
+            0,0,2, 0,0,3,
+            0,0,3, 0,0,0,
+
+            0,0,4, 0,0,5,
+            0,0,5, 0,0,6,
+            0,0,6, 0,0,7,
+            0,0,7, 0,0,4,
+
+            0,0,0, 0,0,4,
+            0,0,1, 0,0,5,
+            0,0,2, 0,0,6,
+            0,0,3, 0,0,7 ];
+    } else {
+        vertices = [0,0,0, 1,0,0,
+            1,0,0, 1,1,0,
+            1,1,0, 0,1,0,
+            0,1,0, 0,0,0,
+
+            0,0,1, 1,0,1,
+            1,0,1, 1,1,1,
+            1,1,1, 0,1,1,
+            0,1,1, 0,0,1,
+
+            0,0,0, 0,0,1,
+            1,0,0, 1,0,1,
+            1,1,0, 1,1,1,
+            0,1,0, 0,1,1 ];
+    }
+
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    this.vertexPositionBuffer.itemSize = 3;
+    this.vertexPositionBuffer.numItems = vertices.length / 3;
+
+    this.size = 4 + 4 * 8;
+    this.lines = this.vertexPositionBuffer.numItems / 3;
+};
+
+//destructor
+GpuBBox.prototype.kill = function() {
+    this.gl.deleteBuffer(this.vertexPositionBuffer);
+};
+
+// Draws the mesh, given the two vertex shader attributes locations.
+GpuBBox.prototype.draw = function(program, attrPosition) {
+    var gl = this.gl;
+    if (gl == null)
+        return;
+
+    var vertexPositionAttribute = program.getAttribute(attrPosition);
+
+    //bind vetex positions
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexPositionBuffer);
+    gl.vertexAttribPointer(vertexPositionAttribute, this.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    //draw lines
+    gl.drawArrays(gl.LINES, 0, this.vertexPositionBuffer.numItems);
+
+};
+
+
+/* harmony default export */ __webpack_exports__["a"] = (GpuBBox);
+
+
+
+/***/ }),
+/* 162 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -44291,107 +46105,7 @@ GpuDevice.prototype.setState = function(state) {
 
 
 /***/ }),
-/* 159 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__texture__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_utils__ = __webpack_require__(2);
-
-
-
-
-//get rid of compiler mess
-var GpuTexture = __WEBPACK_IMPORTED_MODULE_0__texture__["a" /* default */];
-var utils = __WEBPACK_IMPORTED_MODULE_1__utils_utils__["a" /* utils */];
-
-
-var GpuFont = function(gpu, core, font, size, path) {
-    this.bbox = null;
-    this.gpu = gpu;
-    this.gl = gpu.gl;
-    this.core = core;
-
-    this.data = null;
-    this.path = path;
-
-    this.texture = {width:256, height:256}; //hack
-
-    this.textures = [];
-    this.images = [];
-    this.ready = false;    
-    this.version = 1;    
-
-    this.load(path);
-};
-
-
-//destructor
-GpuFont.prototype.kill = function() {
-};
-
-// Returns GPU RAM used, in bytes.
-GpuFont.prototype.getSize = function(){ return this.size; };
-
-
-GpuFont.prototype.load = function(path) {
-    utils.loadBinary(path, this.onLoaded.bind(this), this.onError.bind(this));
-};
-
-GpuFont.prototype.onLoaded = function(data) {
-    this.data = data;
-    this.ready = true;    
-    this.core.markDirty();
-};
-
-GpuFont.prototype.isReady = function() {
-    return this.ready;
-};
-
-GpuFont.prototype.onError = function() {
-
-};
-
-GpuFont.prototype.onFileLoaded = function(index, data) {
-    this.core.markDirty();
-    this.textures[index].createFromData(256, 256, new Uint8Array(data), 'linear');
-};
-
-GpuFont.prototype.onFileLoadError = function() {
-};
-
-GpuFont.prototype.areTexturesReady = function(files) {
-    var ready = true;
-    for (var i = 0, li = files.length; i < li; i++) {
-        var index = files[i];//Math.round( (planes[i] - (planes[i] % 3)) );
-
-        if (!this.textures[index]) {
-            utils.loadBinary(this.path + (index+2), this.onFileLoaded.bind(this, index), this.onFileLoadError.bind(this));
-            this.textures[index] = new GpuTexture(this.gpu, null, this.core);
-            ready = false;
-        } else {
-            ready = (ready && this.textures[index].loaded);
-        }
-    }
-
-    return ready;
-};
-
-GpuFont.prototype.getTexture = function(file) {
-    //if (!this.textures[file]) {
-        //debugger;
-    //}
-
-    return this.textures[file];
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (GpuFont);
-
-
-
-
-/***/ }),
-/* 160 */
+/* 163 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -45248,1384 +46962,628 @@ GpuGroup.prototype.draw = function(mv, mvp, applyOrigin, tiltAngle, texelSize) {
 
 
 /***/ }),
-/* 161 */
+/* 164 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 
-var GpuShaders = {};
-
-GpuShaders.bboxVertexShader =
-    'attribute vec3 aPosition;\n'+
-    'uniform mat4 uMVP;\n'+
-    'void main(){ \n'+
-        'gl_Position = uMVP * vec4(aPosition, 1.0);\n'+
-    '}';
-
-
-GpuShaders.bbox2VertexShader =
-    'attribute vec3 aPosition;\n'+
-    'uniform mat4 uMVP;\n'+
-    'uniform float uPoints[8*3];\n'+
-    'void main(){ \n'+
-        'int index = int(aPosition.z) * 3; \n'+
-        'gl_Position = uMVP * vec4(uPoints[index], uPoints[index+1], uPoints[index+2], 1.0);\n'+
-    '}';
-
-
-GpuShaders.bboxFragmentShader = 'precision mediump float;\n'+
-    'void main() {\n'+
-        'gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);\n'+
-    '}';
-
-GpuShaders.text2VertexShader =
-    'attribute vec4 aPosition;\n'+
-    'void main(){ \n'+
-    '}';
-
-
-GpuShaders.lineVertexShader = //line
-    'uniform mat4 uMVP;\n'+
-
-    '#ifdef pixelLine\n'+
-        'attribute vec4 aPosition;\n'+
-        'attribute vec4 aNormal;\n'+
-
-        '#ifdef dataPoints\n'+
-            'uniform vec3 uScale;\n'+
-            'uniform vec3 uPoints[32];\n'+
-        '#else\n'+
-            'uniform vec2 uScale;\n'+
-        '#endif\n'+
-    '#else\n'+
-
-        '#ifdef lineLabel\n'+
-            'attribute vec4 aPosition;\n'+
-            'attribute vec4 aTexCoord;\n'+
-            'uniform vec4 uVec;\n'+
-            'uniform float uFile;\n'+
-            'varying vec2 vTexCoord;\n'+
-        '#else\n'+
-            'attribute vec3 aPosition;\n'+
-        '#endif\n'+
-
-        '#ifdef dynamicWidth\n'+
-            'attribute vec4 aNormal;\n'+
-            'uniform vec4 uParams;\n'+
-        '#endif\n'+
-
-    '#endif\n'+
-
-    '#ifdef applySE\n'+
-        'uniform mat4 uParamsSE;\n'+
-    '#endif\n'+
-
-    '#ifdef withElements\n'+
-        'attribute float aElement;\n'+
-        'varying float vElement;\n'+
-    '#endif\n'+
-
-    'void main() {\n'+
-
-        '#ifdef withElements\n'+
-            'vElement = aElement;\n'+
-        '#endif\n'+
-
-        '#ifdef dataPoints\n'+
-            'vec3 p1 = uPoints[int(aPosition.x)];\n'+
-        '#else\n'+
-            'vec3 p1 = aPosition.xyz;\n'+
-        '#endif\n'+
-
-        '#ifdef pixelLine\n'+
-            '#ifdef dataPoints\n'+
-                'vec3 p2 = uPoints[int(aPosition.y)];\n'+
-            '#else\n'+
-                'vec3 p2 = aNormal.xyz;\n'+
-            '#endif\n'+
-        '#endif\n'+
-
-        '#ifdef applySE\n'+
-            'vec3 geoPos2 = p1.xyz*vec3(uParamsSE[0][3],uParamsSE[1][0],uParamsSE[1][1]);\n'+
-            'vec3 geoPos = geoPos2+vec3(uParamsSE[0][0],uParamsSE[0][1],uParamsSE[0][2]);\n'+
-            'geoPos.z *= uParamsSE[3][3];\n'+
-            'float ll = length(geoPos);\n'+
-            'vec3 v = geoPos * (1.0/(ll+0.0001));\n'+
-            'float h = ll - uParamsSE[3][2];\n'+
-            'float h2 = clamp(h, uParamsSE[2][1], uParamsSE[2][3]);\n'+
-            'float h3 = h;\n'+
-            'h *= (uParamsSE[2][2] + ((h2 - uParamsSE[2][1]) * uParamsSE[3][0]) * uParamsSE[3][1]);\n'+
-            'geoPos2.xyz += v * (h - h3);\n'+
-
-            '#ifdef pixelLine\n'+
-
-                'vec4 pp0 = uMVP * vec4(geoPos2, 1.0);\n'+
-
-                'if (aNormal.w == 0.0) {\n'+
-                    'gl_Position = pp0 + vec4((vec3(aNormal.x*uScale.x*pp0.w, aNormal.y*uScale.y*pp0.w, 0.0)), 0.0);\n'+
-                '} else {\n'+
-                    'geoPos2 = p2.xyz*vec3(uParamsSE[0][3],uParamsSE[1][0],uParamsSE[1][1]);\n'+
-                    'geoPos = geoPos2+vec3(uParamsSE[0][0],uParamsSE[0][1],uParamsSE[0][2]);\n'+
-                    'geoPos.z *= uParamsSE[3][3];\n'+
-                    'll = length(geoPos);\n'+
-                    'v = geoPos * (1.0/(ll+0.0001));\n'+
-                    'h = ll - uParamsSE[3][2];\n'+
-                    'h2 = clamp(h, uParamsSE[2][1], uParamsSE[2][3]);\n'+
-                    'h3 = h;\n'+
-                    'h *= (uParamsSE[2][2] + ((h2 - uParamsSE[2][1]) * uParamsSE[3][0]) * uParamsSE[3][1]);\n'+
-                    'geoPos2.xyz += v * (h - h3);\n'+
-
-                    'vec4 pp3 = uMVP * vec4(geoPos2, 1.0);\n'+
-                    'vec2 pp1 = pp0.xy / pp0.w;\n'+
-                    'vec2 pp2 = pp3.xy / pp3.w;\n'+
-                    'vec2 n = normalize(pp2 - pp1);\n'+
-                    'gl_Position = pp0 + vec4((vec3(-n.y*uScale.x*aNormal.w*pp0.w, n.x*uScale.y*aNormal.w*pp0.w, 0.0)), 0.0);\n'+
-                '}\n'+
-
-            '#else\n'+
-
-                '#ifdef lineLabel\n'+
-
-                    'vTexCoord = aTexCoord.xy;\n'+
-                    'if (dot(uVec.xyz, vec3(aTexCoord.z, aTexCoord.w, aPosition.w)) < 0.0) {\n'+
-                        'gl_Position = uMVP * vec4(8.0, 0.0, 0.0, 1.0);\n'+
-                    '}else{\n'+
-                        'float file = floor(aTexCoord.y/4.0);\n'+
-                        'vTexCoord.y = mod(aTexCoord.y,4.0);\n'+
-                        'if (file != floor(uFile)) {\n'+
-                            'gl_Position = uMVP * vec4(8.0, 0.0, 0.0, 1.0);\n'+
-                        '}else{\n'+
-                            'gl_Position = uMVP * vec4(geoPos2, 1.0);\n'+
-                        '}\n'+
-                    '}\n'+
-
-                '#else\n'+
-
-                    'gl_Position = uMVP * vec4(geoPos2, 1.0);\n'+
-
-                '#endif\n'+
-
-            '#endif\n'+
-
-        '#else\n'+
-
-            '#ifdef pixelLine\n'+
-
-                'vec4 pp0 = (uMVP * vec4(p1.xyz, 1.0));\n'+
-
-                '#ifdef dataPoints\n'+
-
-                    'if (p1.y < 0.0) {\n'+
-                        'if (p1.y == -1.0) {\n'+
-                            'gl_Position = pp0;\n'+
-                        '} else {\n'+
-                            'gl_Position = pp0 + vec4((vec3(-sin(p1.z)*uScale.x*uScale.z, cos(p1.z)*uScale.y*uScale.z, 0.0)), 0.0);\n'+
-                        '}\n'+
-                    '} else {\n'+
-                        'vec4 pp3 = (uMVP * vec4(p2.xyz, 1.0));\n'+
-                        'vec2 pp1 = pp0.xy / pp0.w;\n'+
-                        'vec2 pp2 = pp3.xy / pp3.w;\n'+
-                        'vec2 n = normalize(pp2 - pp1);\n'+
-                        'gl_Position = pp0 + vec4((vec3(-n.y*uScale.x*aPosition.z*uScale.z, n.x*uScale.y*aPosition.z*uScale.z, 0.0)), 0.0);\n'+
-                    '}\n'+
-
-                '#else\n'+
-
-                    'if (aNormal.w == 0.0) {\n'+
-                        'gl_Position = pp0 + vec4((vec3(aNormal.x*uScale.x*pp0.w, aNormal.y*uScale.y*pp0.w, 0.0)), 0.0);\n'+
-                    '} else {\n'+
-                        'vec4 pp3 = (uMVP * vec4(p2.xyz, 1.0));\n'+
-                        'vec2 pp1 = pp0.xy / pp0.w;\n'+
-                        'vec2 pp2 = pp3.xy / pp3.w;\n'+
-                        'vec2 n = normalize(pp2 - pp1);\n'+
-                        'gl_Position = pp0 + vec4((vec3(-n.y*uScale.x*aNormal.w*pp0.w, n.x*uScale.y*aNormal.w*pp0.w, 0.0)), 0.0);\n'+
-                    '}\n'+
-
-                '#endif\n'+
-
-            '#else\n'+
-
-                '#ifdef lineLabel\n'+
-
-                    'vTexCoord = aTexCoord.xy;\n'+
-                    'if (dot(uVec.xyz, vec3(aTexCoord.z, aTexCoord.w, aPosition.w)) < 0.0) {\n'+
-                        'gl_Position = uMVP * vec4(8.0, 0.0, 0.0, 1.0);\n'+
-                    '}else{\n'+
-                        'float file = floor(aTexCoord.y/4.0);\n'+
-                        'vTexCoord.y = mod(aTexCoord.y,4.0);\n'+
-                        'if (file != floor(uFile)) {\n'+
-                            'gl_Position = uMVP * vec4(8.0, 0.0, 0.0, 1.0);\n'+
-                        '}else{\n'+
-                            'gl_Position = uMVP * vec4(aPosition.xyz, 1.0);\n'+
-                        '}\n'+
-                    '}\n'+
-
-                '#else\n'+
-
-                    '#ifdef dynamicWidth\n'+
-                        'gl_Position = uMVP * vec4(aPosition.xyz + aNormal.xyz*(abs(aNormal.w)*uParams[3]), 1.0);\n'+
-                    '#else\n'+
-                        'gl_Position = uMVP * vec4(aPosition, 1.0);\n'+
-                    '#endif\n'+
-
-                '#endif\n'+
-
-            '#endif\n'+
-
-        '#endif\n'+
-        
-    '}';
-
-
-GpuShaders.lineFragmentShader = 'precision mediump float;\n'+ //line
-
-    'uniform vec4 uColor;\n'+
-
-    '#ifdef withElements\n'+
-        'varying float vElement;\n'+
-    '#endif\n'+
-
-    'void main() {\n'+
-
-        '#ifdef withElements\n'+
-            'gl_FragColor.xyz = fract(vec3(1.0/255.0, 1.0/65025.0, 1.0/16581375.0) * vElement) + (-0.5/255.0);\n'+
-            'gl_FragColor.w = 1.0;\n'+
-        '#else\n'+
-            'gl_FragColor = uColor;\n'+
-        '#endif\n'+
-
-    '}';
-
-GpuShaders.tlineVertexShader = // textured line
-    'attribute vec4 aPosition;\n'+
-    'attribute vec4 aNormal;\n'+
-    'uniform mat4 uMVP;\n'+
-    'uniform vec2 uScale;\n'+
-    'uniform vec4 uParams;\n'+
-    'varying vec2 vTexCoord;\n'+
-    'void main(){ \n'+
-        'vec4 p=vec4(aPosition.xyz, 1.0);\n'+
-        'p.xyz+=aNormal.xyz*(abs(aNormal.w)*uParams[3]);\n'+
-        'if (aNormal.w < 0.0){\n'+
-            'vTexCoord=vec2(abs(aPosition.w)*uParams[0], (uParams[1]+uParams[2])*0.5);\n'+
-        '} else {\n'+
-            'vTexCoord=vec2(abs(aPosition.w)*uParams[0], aPosition.w < 0.0 ? uParams[1] : uParams[2]);\n'+
-        '}\n'+
-
-        'gl_Position = uMVP * p;\n'+
-    '}';
-
-
-GpuShaders.etlineVertexShader = // textured line elements
-    'attribute vec4 aPosition;\n'+
-    'attribute vec4 aNormal;\n'+
-    'attribute float aElement;\n'+
-    'uniform mat4 uMVP;\n'+
-    'uniform vec2 uScale;\n'+
-    'uniform vec4 uParams;\n'+
-    'varying float vElement;\n'+
-    'void main(){ \n'+
-        'vec4 p=vec4(aPosition.xyz, 1.0);\n'+
-        'p.xyz+=aNormal.xyz*(abs(aNormal.w)*uParams[3]);\n'+
-        'vElement = aElement;\n'+
-        'gl_Position = uMVP * p;\n'+
-    '}';
-
-GpuShaders.tplineVertexShader = // textured pixel line
-    'attribute vec4 aPosition;\n'+
-    'attribute vec4 aNormal;\n'+
-    'uniform mat4 uMVP;\n'+
-    'uniform vec2 uScale;\n'+
-    'uniform vec4 uParams;\n'+
-    'varying vec2 vTexCoord;\n'+
-    'void main(){ \n'+
-        'vec4 pp0 = (uMVP * vec4(aPosition.xyz, 1.0));\n'+
-        'vTexCoord=vec2(abs(aPosition.w)*uParams[0], aPosition.w < 0.0 ? uParams[1] : uParams[2]);\n'+
-        'if (aNormal.w == 0.0) {\n'+
-            'gl_Position = pp0 + vec4((vec3(aNormal.x*uParams[3]*uScale.x*pp0.w, aNormal.y*uParams[3]*uScale.y*pp0.w, 0.0)), 0.0);\n'+
-        '} else {\n'+
-            'vec2 pp1 = pp0.xy / pp0.w;\n'+
-            'vec4 pp3 = (uMVP * vec4(aNormal.xyz, 1.0));\n'+
-            'vec2 pp2 = pp3.xy / pp3.w;\n'+
-            'vec2 n = normalize(pp2 - pp1);\n'+
-            'gl_Position = pp0 + vec4((vec3(-n.y*uParams[3]*uScale.x*aNormal.w*pp0.w, n.x*uParams[3]*uScale.y*aNormal.w*pp0.w, 0.0)), 0.0);\n'+
-        '}\n'+
-    '}';
-
-GpuShaders.etplineVertexShader = // textured pixel line elements
-    'attribute vec4 aPosition;\n'+
-    'attribute vec4 aNormal;\n'+
-    'attribute float aElement;\n'+
-    'uniform mat4 uMVP;\n'+
-    'uniform vec2 uScale;\n'+
-    'uniform vec4 uParams;\n'+
-    'varying float vElement;\n'+
-    'void main(){ \n'+
-        'vec4 pp0 = (uMVP * vec4(aPosition.xyz, 1.0));\n'+
-        'vElement = aElement;\n'+
-        'if (aNormal.w == 0.0) {\n'+
-            'gl_Position = pp0 + vec4((vec3(aNormal.x*uParams[3]*uScale.x*pp0.w, aNormal.y*uParams[3]*uScale.y*pp0.w, 0.0)), 0.0);\n'+
-        '} else {\n'+
-            'vec2 pp1 = pp0.xy / pp0.w;\n'+
-            'vec4 pp3 = (uMVP * vec4(aNormal.xyz, 1.0));\n'+
-            'vec2 pp2 = pp3.xy / pp3.w;\n'+
-            'vec2 n = normalize(pp2 - pp1);\n'+
-            'gl_Position = pp0 + vec4((vec3(-n.y*uParams[3]*uScale.x*aNormal.w*pp0.w, n.x*uParams[3]*uScale.y*aNormal.w*pp0.w, 0.0)), 0.0);\n'+
-        '}\n'+
-    '}';
-
-GpuShaders.tlineFragmentShader = 'precision mediump float;\n'+ // textured line
-    'uniform sampler2D uSampler;\n'+
-    'uniform vec4 uColor;\n'+
-    'uniform vec4 uColor2;\n'+
-    'varying vec2 vTexCoord;\n'+
-    'void main() {\n'+
-        'vec4 c=texture2D(uSampler, vTexCoord)*uColor;\n'+
-        'gl_FragColor = c;\n'+
-    '}';
-
-
-GpuShaders.tblineFragmentShader = 'precision mediump float;\n'+  // textured line with background color
-    'uniform sampler2D uSampler;\n'+
-    'uniform vec4 uColor;\n'+
-    'uniform vec4 uColor2;\n'+
-    'varying vec2 vTexCoord;\n'+
-    'void main() {\n'+
-        'vec4 c1=texture2D(uSampler, vTexCoord)*uColor;\n'+
-        'vec4 c2=uColor2,c=c1;\n'+
-        'c.xyz*=c.w; c2.xyz*=c2.w;\n'+
-        'c=mix(c,c2,1.0-c.w);\n'+
-        'c.xyz/=(c.w+0.00001);\n'+
-        'c.w=max(c1.w,c2.w);\n'+
-        'gl_FragColor = c;\n'+
-    '}';
-
-
-GpuShaders.polygonVertexShader =
-    'attribute vec3 aPosition;\n'+
-    'attribute vec3 aNormal;\n'+
-    'uniform mat4 uMVP;\n'+
-    'uniform mat4 uRot;\n'+
-    'uniform vec4 uColor;\n'+
-    'varying vec4 vColor;\n'+
-    'void main(){ \n'+
-        'float l = dot((uRot*vec4(aNormal,1.0)).xyz, vec3(0.0,0.0,1.0)) * 0.5;\n'+
-        'vec3 c = uColor.xyz;\n'+
-        'c = (l > 0.0) ? mix(c,vec3(1.0,1.0,1.0),l) : mix(vec3(0.0,0.0,0.0),c,1.0+l);\n'+
-        'vColor = vec4(c, uColor.w);\n'+
-        'gl_Position = uMVP * vec4(aPosition, 1.0);\n'+
-    '}';
-
-
-GpuShaders.polygonFragmentShader = 'precision mediump float;\n'+
-    'varying vec4 vColor;\n'+
-    'void main() {\n'+
-        'gl_FragColor = vColor;\n'+
-    '}';
-
-
-GpuShaders.iconVertexShader =
-    'attribute vec4 aPosition;\n'+
-    'attribute vec4 aTexCoord;\n'+
-    'attribute vec3 aOrigin;\n'+
-    'uniform mat4 uMVP;\n'+
-    'uniform vec4 uScale;\n'+
-    'varying vec2 vTexCoord;\n'+
-    'void main(){ \n'+
-        'vTexCoord = aTexCoord.xy * uScale[2];\n'+
-        'vec4 pos = (uMVP * vec4(aOrigin, 1.0));\n'+
-        'gl_Position = pos + vec4(aPosition.x*uScale.x*pos.w, (aPosition.y+uScale.w)*uScale.y*pos.w, 0.0, 0.0);\n'+
-    '}';
-
-GpuShaders.icon2VertexShader =
-    'attribute vec4 aPosition;\n'+
-    'attribute vec4 aTexCoord;\n'+
-    'attribute vec3 aOrigin;\n'+
-    'uniform mat4 uMVP;\n'+
-    'uniform vec4 uScale;\n'+
-    'uniform float uFile;\n'+
-    'varying vec2 vTexCoord;\n'+
-    //'float round(float x) { return floor(x + 0.5); }\n'+
-    'void main(){ \n'+
-        'vTexCoord = aTexCoord.xy * uScale[2];\n'+
-        'float file = floor(aTexCoord.y/4.0);\n'+
-        'vTexCoord.y = mod(aTexCoord.y,4.0);\n'+
-        'if (file != floor(uFile)) {\n'+
-            'gl_Position = uMVP * vec4(8.0, 0.0, 0.0, 1.0);\n'+
-        '}else{\n'+
-            'vec4 pos = (uMVP * vec4(aOrigin, 1.0));\n'+
-            //'pos.x = (floor((pos.x/pos.w)*800.0+0.5)/800.0)*pos.w;\n'+
-            //'pos.y = (floor((pos.y/pos.w)*410.0+0.5)/410.0)*pos.w;\n'+
-            'gl_Position = pos + vec4(aPosition.x*uScale.x*pos.w, (aPosition.y+uScale.w)*uScale.y*pos.w, 0.0, 0.0);\n'+
-        '}'+
-    '}';
-
-
-GpuShaders.icon3VertexShader =
-    'attribute vec2 aPosition;\n'+
-    'uniform mat4 uProjectionMatrix;\n'+
-    'uniform vec4 uScale;\n'+
-    'uniform vec3 uOrigin;\n'+
-    'uniform vec4 uData[DSIZE];\n'+
-    'uniform float uFile;\n'+
-    'varying vec2 vTexCoord;\n'+
-    'void main(){ \n'+
-        'int index = int(aPosition.x);\n'+
-        'vec4 data = uData[index];\n'+
-        'vec4 data2 = uData[index+1];\n'+
-        'vec4 v;\n'+
-        'int corner = int(aPosition.y);\n'+
-        'if (corner==0) v = vec4(data.x, data.y, data2.x, data2.y);\n'+
-        'if (corner==1) v = vec4(data.z, data.y, data2.z, data2.y);\n'+
-        'if (corner==2) v = vec4(data.z, data.w, data2.z, data2.w);\n'+
-        'if (corner==3) v = vec4(data.x, data.w, data2.x, data2.w);\n'+
-        'vTexCoord = vec2(v.z, v.w);\n'+
-        'float file = floor(v.w/4.0);\n'+
-        //'vTexCoord.y = mod(v.w,4.0);\n'+
-        'vTexCoord.y = (v.w-file*4.0);\n'+
-
-        'if (file != floor(uFile)) {\n'+
-            'gl_Position = uProjectionMatrix * vec4(2.0, 0.0, 0.0, 2.0);\n'+
-        '}else{\n'+
-            'vec4 pos = (uProjectionMatrix * vec4(uOrigin.xyz, 1.0));\n'+
-            'gl_Position = pos + vec4(v.x*uScale.x*pos.w, v.y*uScale.y*pos.w, 0.0, 0.0);\n'+
-        '}'+
-    '}';
-
-GpuShaders.textFragmentShader = 'precision mediump float;\n'+
-    'uniform sampler2D uSampler;\n'+
-    'uniform vec4 uColor;\n'+
-    'varying vec2 vTexCoord;\n'+
-    'void main() {\n'+
-        'vec4 c=texture2D(uSampler, vTexCoord);\n'+
-        'if(c.w < 0.01){ discard; }\n'+
-        'gl_FragColor = c*uColor;\n'+
-    '}';
-
-GpuShaders.text2FragmentShader = 'precision mediump float;\n'+
-    'uniform sampler2D uSampler;\n'+
-    'uniform vec4 uColor;\n'+
-    'uniform vec2 uParams;\n'+
-    'varying vec2 vTexCoord;\n'+
-    'float round(float x) { return floor(x + 0.5); }\n'+
-
-    'void main() {\n'+
-        'vec2 uv=(vTexCoord);\n'+
-        'uv.y=fract(uv.y);\n'+
-        'vec4 c=texture2D(uSampler, uv);\n'+
-
-        'float r = 0.0;\n'+
-        'int i=int(floor(vTexCoord.y));\n'+
-
-        'if (i == 0) r=c.x;else\n'+
-        'if (i == 1) r=c.y;else\n'+
-        'if (i == 2) r=c.z;else\n'+
-        'if (i == 3) r=c.w;\n'+
-        
-        'float u_buffer = uParams[0];\n'+
-        'float u_gamma = uParams[1];\n'+
-        'float alpha = uColor.a * smoothstep(u_buffer - u_gamma, u_buffer + u_gamma, r);\n'+
-
-        'if(alpha < 0.01){ discard; }\n'+
-        'gl_FragColor = vec4(uColor.rgb, alpha);\n'+
-        //'gl_FragColor = vec4(1.0);\n'+
-    '}';
-
-GpuShaders.skydomeVertexShader =
-    'attribute vec3 aPosition;\n'+
-    'attribute vec2 aTexCoord;\n'+
-    'uniform mat4 uMVP;\n'+
-    'varying vec2 vTexCoord;\n'+
-    'void main(){ \n'+
-        'gl_Position = uMVP * vec4(aPosition, 1.0);\n'+
-        'vTexCoord = aTexCoord;\n'+
-    '}';
-
-
-GpuShaders.skydomeFragmentShader = 'precision mediump float;\n'+
-    'uniform sampler2D uSampler;\n'+
-    'varying vec2 vTexCoord;\n'+
-    'const vec4 gray = vec4(0.125, 0.125, 0.125, 1.0);\n'+
-    'void main() {\n'+
-        'float fade = smoothstep(0.51, 0.55, vTexCoord.t);\n'+
-        'gl_FragColor = mix(texture2D(uSampler, vTexCoord), gray, fade);\n'+
-    '}';
-
-
-GpuShaders.stardomeFragmentShader = 'precision mediump float;\n'+
-    'uniform sampler2D uSampler;\n'+
-    'varying vec2 vTexCoord;\n'+
-    'void main() {\n'+
-        'gl_FragColor = texture2D(uSampler, vTexCoord);\n'+
-    '}';
-
-
-GpuShaders.atmoVertexShader =
-    'attribute vec3 aPosition;\n'+
-    'attribute vec2 aTexCoord;\n'+
-    'uniform mat4 uMV, uProj;\n'+
-    'uniform mat3 uNorm;\n'+
-    'varying vec3 vNormal;\n'+
-    'varying vec4 vPosition;\n'+
-    'void main(){ \n'+
-        'vec4 camSpacePos = uMV * vec4(aPosition, 1.0);\n'+
-        'gl_Position = uProj * camSpacePos;\n'+
-        'vec4 c = uMV * vec4(aPosition, 1.0);\n'+
-        'vNormal = (aPosition.xyz - vec3(0.5));\n'+
-        'vPosition = camSpacePos;\n'+
-    '}';
-
-
-GpuShaders.atmoFragmentShader = 'precision mediump float;\n'+
-    'uniform sampler2D uSampler;\n'+
-    'uniform vec4 uParams;\n'+       //[radius, atmoSize, 0 ,0]
-    'uniform vec4 uParams2;\n'+       //[radius, atmoSize, 0 ,0]
-    'varying vec4 vPosition;\n'+
-    'varying vec3 vNormal;\n'+
-    'uniform vec4 uFogColor;\n'+ //= vec4(216.0/255.0, 232.0/255.0, 243.0/255.0, 1.0);\n'+
-    'uniform vec4 uFogColor2;\n'+ //= vec4(72.0/255.0, 154.0/255.0, 255.0/255.0, 1.0);\n'+
-    'void main() {\n'+
-        'float l = dot(normalize(vNormal),-uParams2.xyz);\n'+
-        'l = (1.0-pow(abs(l),uParams.x));\n'+
-        'vec4 c = mix(uFogColor2, uFogColor, l);\n'+
-        'gl_FragColor = vec4(c.xyz, c.w*l);\n'+
-    '}';
-
-
-GpuShaders.atmoFragmentShader2 = 'precision mediump float;\n'+
-    'uniform sampler2D uSampler;\n'+
-    'uniform float uNFactor;\n'+
-    'uniform vec2 uRadius;\n'+
-    'uniform vec3 uPos;\n'+
-    'varying vec4 vPosition;\n'+
-    'varying vec3 vNormal;\n'+
-    'uniform vec4 uFogColor;\n'+ //= vec4(216.0/255.0, 232.0/255.0, 243.0/255.0, 1.0);\n'+
-    'void main() {\n'+
-        'vec3 ldir = normalize(-vPosition.xyz);\n'+
-        'vec3 diff = uPos;\n'+
-        'float a = dot(ldir, ldir);\n'+
-        'float b = 2 * dot(ldir, diff);\n'+
-        'float c = dot(diff, diff) - (uRadius[0] * uRadius[0]);\n'+
-        'float i = 0;\n'+
-        'float discr = b * b - 4 * a * c;\n'+
-        'if (discr > 0.0) {}\n'+
-
-        '}\n'+
-        'gl_FragColor = uFogColor;\n'+
-    '}';
-
-
-GpuShaders.atmoVertexShader3 =
-    'attribute vec3 aPosition;\n'+
-    //'attribute vec2 aTexCoord;\n'+
-    'uniform mat4 uMV, uProj;\n'+
-    //"uniform mat3 uNorm;\n"+
-    'uniform vec4 uParams;\n'+       //[surfaceRadius, surfaceRadius, strech ,safetyfactor]
-    'uniform vec4 uParams2;\n'+       //[cameraPos, 1]
-
-    'varying vec2 vTexcoords;\n'+
-
-    'void main(){ \n'+
-        'gl_Position = uProj * (uMV * vec4(aPosition, 1.0));\n'+
-
-        'vec3 position = (aPosition.xyz - vec3(0.5)) * vec3(uParams.w * 2.0);\n'+
-        'vec4 camPos = uParams2;\n'+
-        'float SurfaceRadius = uParams.x;\n'+ 
-        'float AtmosphereRadius = uParams.y;\n'+ 
-        'float StretchAmt = uParams.z;\n'+ 
-     
-        'float camHeight = length(camPos.xyz);\n'+
-        'vec3 camToPos = position - camPos.xyz;\n'+
-        'float farDist = length(camToPos);\n'+
+var GpuPixelLine3 = function(gpu, core, lines, maxLines, joins, joinSides) {
+    this.bbox = null;
+    this.gpu = gpu;
+    this.gl = gpu.gl;
+    this.core = core;
+
+    var gl = this.gl;
+
+    if (gl == null){
+        return;
+    }
+
+    this.vertices = [];
+    this.normals = [];
+    this.vertexBuffer = null;
+    this.lines = lines;
+    this.joins = joins;
+    this.joinSides = joinSides;
+    this.maxLines = maxLines;
+
+    this.init();
+};
+
+//destructor
+GpuPixelLine3.prototype.kill = function() {
+    this.gl.deleteBuffer(this.vertexBuffer);
+};
+
+
+GpuPixelLine3.prototype.init = function() {
+    var i;
+    if (this.lines) {
+        if (this.joins) {
+            this.addCircle(0, this.joinSides);
+        }
+
+        for (i = 0; i < this.maxLines; i++) {
+            this.addLine(i, i+1);
+
+            if (this.joins) {
+                this.addCircle(i+1, this.joinSides);
+            }
+        }
+    } else if (this.joins) {
+        for (i = 0; i <= this.maxLines; i++) {
+            this.addCircle(i, this.joinSides);
+        }
+    }
+
+    this.compile();
+};
+
+//add line to vertices buffer
+GpuPixelLine3.prototype.addLine = function(i1, i2) {
+    var index = this.vertices.length;
+
+    //first polygon
+    this.vertices[index] = i1;
+    this.vertices[index+1] = i2;
+    this.vertices[index+2] = 1;
+
+    this.vertices[index+3] = i1;
+    this.vertices[index+4] = i2;
+    this.vertices[index+5] = -1;
+
+    this.vertices[index+6] = i2;
+    this.vertices[index+7] = i1;
+    this.vertices[index+8] = 1;
+
+    //next polygon
+    this.vertices[index+9] = i1;
+    this.vertices[index+10] = i2;
+    this.vertices[index+11] = 1;
+
+    this.vertices[index+12] = i2;
+    this.vertices[index+13] = i1;
+    this.vertices[index+14] = 1;
+
+    this.vertices[index+15] = i2;
+    this.vertices[index+16] = i1;
+    this.vertices[index+17] = -1;
+
+    this.polygons += 2;
+};
+
+//add circle to vertices buffer
+GpuPixelLine3.prototype.addCircle = function(i1, sides) {
+    var index = this.vertices.length;
+    var step = (2.0*Math.PI) / sides;
+
+    for (var i = 0; i < sides; i++) {
+        this.vertices[index] = i1;
+        this.vertices[index+1] = -1;
+        this.vertices[index+2] = 0;
+
+        this.vertices[index+3] = i1;
+        this.vertices[index+4] = -2;
+        this.vertices[index+5] = step * i;
+
+        this.vertices[index+6] = i1;
+        this.vertices[index+7] = -2;
+        this.vertices[index+8] = step * (i+1);
+
+        index += 9;
+    }
+
+    this.polygons += sides;
+};
+
+//compile content of vertices buffer into gpu buffer
+GpuPixelLine3.prototype.compile = function() {
+    var gl = this.gl;
+
+    //create vertex buffer
+    this.vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
+    this.vertexBuffer.itemSize = 3;
+    this.vertexBuffer.numItems = this.vertices.length / 3;
+
+    this.size = this.vertexBuffer.numItems * 3 * 4 * 2;
+    this.polygons = this.vertexBuffer.numItems / 3;
+};
+
+// Draws the mesh, given the two vertex shader attributes locations.
+GpuPixelLine3.prototype.draw = function(program, attrPosition, points) {
+    var gl = this.gl;
+    if (gl == null || this.vertexBuffer == null || points > this.maxLines){
+        return;
+    }
+
+    var vertexPositionAttribute = program.getAttribute(attrPosition);
+
+    //bind vetex positions
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+    gl.vertexAttribPointer(vertexPositionAttribute, this.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    var size = 0;
+
+    if (this.lines) {
+        size += ((points-1) * 3 * 2);
+    }
+
+    if (this.joins) {
+        size += points * (this.joinSides * 3);
+    }
+
+    //draw polygons
+    gl.drawArrays(gl.TRIANGLES, 0, size);
+};
+
+// Returns GPU RAM used, in bytes.
+GpuPixelLine3.prototype.getSize = function(){ return this.size; };
+
+
+GpuPixelLine3.prototype.getBbox = function(){ return this.bbox; };
+
+
+GpuPixelLine3.prototype.getPolygons = function(){ return this.polygons; };
+
+
+/* harmony default export */ __webpack_exports__["a"] = (GpuPixelLine3);
+
+/***/ }),
+/* 165 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geometry__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gpu_bbox__ = __webpack_require__(161);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gpu_font__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gpu_mesh__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gpu_pixel_line3__ = __webpack_require__(164);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__gpu_program__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__gpu_shaders__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__gpu_texture__ = __webpack_require__(6);
+
+
+
+
+
+
+
+
+
+
+//get rid of compiler mess
+var RendererGeometry = __WEBPACK_IMPORTED_MODULE_0__geometry__["a" /* default */];
+var GpuBBox = __WEBPACK_IMPORTED_MODULE_1__gpu_bbox__["a" /* default */];
+var GpuFont = __WEBPACK_IMPORTED_MODULE_2__gpu_font__["a" /* default */];
+var GpuMesh = __WEBPACK_IMPORTED_MODULE_3__gpu_mesh__["a" /* default */];
+var GpuPixelLine3 = __WEBPACK_IMPORTED_MODULE_4__gpu_pixel_line3__["a" /* default */];
+var GpuProgram = __WEBPACK_IMPORTED_MODULE_5__gpu_program__["a" /* default */];
+var GpuShaders = __WEBPACK_IMPORTED_MODULE_6__gpu_shaders__["a" /* default */];
+var GpuTexture = __WEBPACK_IMPORTED_MODULE_7__gpu_texture__["a" /* default */];
+
+
+var RendererInit = function(renderer) {
+    this.renderer = renderer;
+    this.core = renderer.core;
+    this.gpu = renderer.gpu;
+
+    //renderer.font = new GpuFont(this.gpu, this.core);
+    //renderer.fonts['#default'] = renderer.font;
+    //renderer.font = new GpuFont(this.gpu, this.core, null, null, './allinone.fnt');
+
+    this.initShaders();
+    this.initHeightmap();
+    this.initSkydome();
+    this.initHitmap();
+    this.initTextMap();
+    this.initImage();
+    this.initTestMap();
+    this.initBBox();
+    this.initLines();
+    this.initBaricentricBuffer();
+};
+
+
+RendererInit.prototype.initShaders = function() {
+    var shaders = GpuShaders;
+    var renderer = this.renderer;
+    var gpu = this.gpu;
+
+    renderer.progTile = new GpuProgram(gpu, shaders.tileVertexShader, shaders.tileFragmentShader);
+    renderer.progTile2 = new GpuProgram(gpu, '#define externalTex\n' + shaders.tileVertexShader, '#define externalTex\n' + shaders.tileFragmentShader.replace('__FILTER__', ''));
+    renderer.progTile3 = new GpuProgram(gpu, '#define externalTex\n' + shaders.tileVertexShader, '#define externalTex\n#define mask\n' + shaders.tileFragmentShader.replace('__FILTER__', ''));
+    renderer.progFogTile = new GpuProgram(gpu, '#define onlyFog\n' + shaders.tileVertexShader, '#define onlyFog\n' + shaders.tileFragmentShader);
+
+    renderer.progTileSE = new GpuProgram(gpu, '#define applySE\n' + shaders.tileVertexShader, shaders.tileFragmentShader);
+    renderer.progTile2SE = new GpuProgram(gpu, '#define externalTex\n#define applySE\n' + shaders.tileVertexShader, '#define externalTex\n' + shaders.tileFragmentShader.replace('__FILTER__', ''));
+    renderer.progTile3SE = new GpuProgram(gpu, '#define externalTex\n#define applySE\n' + shaders.tileVertexShader, '#define externalTex\n#define mask\n' + shaders.tileFragmentShader.replace('__FILTER__', ''));
+
+    renderer.progFlatShadeTile = new GpuProgram(gpu, '#define flatShadeVar\n' + shaders.tileVertexShader, '#define flatShadeVar\n#define flatShade\n' + shaders.tileFragmentShader);
+    renderer.progFlatShadeTileSE = new GpuProgram(gpu, '#define applySE\n#define flatShadeVar\n' + shaders.tileVertexShader, '#define flatShadeVar\n#define flatShade\n' + shaders.tileFragmentShader);
+    renderer.progCFlatShadeTile = new GpuProgram(gpu, '#define flatShadeVar\n' + shaders.tileVertexShader, ('#define flatShadeVar\n#define flatShade\n#define fogAndColor\n' + shaders.tileFragmentShader).replace('mediump', 'highp'));
+    renderer.progCFlatShadeTileSE = new GpuProgram(gpu, '#define applySE\n#define flatShadeVar\n' + shaders.tileVertexShader, ('#define flatShadeVar\n#define flatShade\n#define fogAndColor\n' + shaders.tileFragmentShader).replace('mediump', 'highp'));
+
+    renderer.progDepthTile = new GpuProgram(gpu, '#define depth\n' + shaders.tileVertexShader, ('#define depth\n' + shaders.tileFragmentShader).replace('mediump', 'highp'));
+    renderer.progDepthTileSE = new GpuProgram(gpu, '#define applySE\n#define depth\n' + shaders.tileVertexShader, ('#define depth\n' + shaders.tileFragmentShader).replace('mediump', 'highp'));
+    renderer.progDepthHeightmap = new GpuProgram(gpu, shaders.heightmapDepthVertexShader, (shaders.heightmapDepthFragmentShader).replace('mediump', 'highp'));
+
+    renderer.progShadedTile = new GpuProgram(gpu, shaders.shadedMeshVertexShader, shaders.shadedMeshFragmentShader);
+    renderer.progTShadedTile = new GpuProgram(gpu, shaders.shadedMeshVertexShader, '#define textured\n' + shaders.shadedMeshFragmentShader);
+
+    renderer.progWireFrameBasic = new GpuProgram(gpu, shaders.tileVertexShader, shaders.tileWireFrameBasicShader);
+    renderer.progWireFrameBasicSE = new GpuProgram(gpu, '#define applySE\n' + shaders.tileVertexShader, shaders.tileWireFrameBasicShader);
+
+    renderer.progHeightmap = new GpuProgram(gpu, shaders.heightmapVertexShader, shaders.heightmapFragmentShader);
+    renderer.progPlane = new GpuProgram(gpu, shaders.planeVertexShader, shaders.planeFragmentShader); //flat
+    renderer.progPlane2 = new GpuProgram(gpu, shaders.planeVertex2Shader, shaders.planeFragment2Shader); //poles
+    renderer.progPlane3 = new GpuProgram(gpu, shaders.planeVertex3Shader, shaders.planeFragmentShader); // grid         
+
+    renderer.progSkydome = new GpuProgram(gpu, shaders.skydomeVertexShader, shaders.skydomeFragmentShader);
+    renderer.progStardome = new GpuProgram(gpu, shaders.skydomeVertexShader, shaders.stardomeFragmentShader);
     
-        // get distance to surface horizon
-        'float altitude = max(0.0,camHeight - SurfaceRadius);\n'+
-        'float horizonDist = sqrt((altitude*altitude) + (2.0 * SurfaceRadius * altitude));\n'+
-        'float maxDot = horizonDist / camHeight;\n'+
-     
-        // get distance to atmosphere horizon - use max(0,...) because we can go into the atmosphere
-        'altitude = max(0.0,camHeight - AtmosphereRadius);\n'+
-        'horizonDist = sqrt((altitude*altitude) + (2.0 * AtmosphereRadius * altitude));\n'+
-     
-        // without this, the shift between inside and outside atmosphere is  jarring
-        'float tweakAmount = 0.1;\n'+
-        'float minDot = max(tweakAmount,horizonDist / camHeight);\n'+
-     
-        // scale minDot from 0 to -1 as we enter the atmosphere
-        'float minDot2 = ((camHeight - SurfaceRadius) * (1.0 / (AtmosphereRadius  - SurfaceRadius))) - (1.0 - tweakAmount);\n'+
-        'minDot = min(minDot, minDot2);\n'+
-      
-        // get dot product of the vertex we're looking out
-        'float posDot = dot(camToPos / farDist,-camPos.xyz / camHeight) - minDot;\n'+
-     
-        // calculate the height from surface in range 0..1
-        'float height = posDot * (1.0 / (maxDot - minDot));\n'+
-    
-        'vTexcoords.y = height;\n'+ 
-     
-        'height -= min(0.0,minDot2 + ((1.0 + StretchAmt) * minDot2));\n'+
-        'vTexcoords.x = height;\n'+
-    '}';
-
-
-GpuShaders.atmoFragmentShader3 = 'precision mediump float;\n'+
-    'varying vec2 vTexcoords;\n'+
-    'uniform vec4 uParams3;\n'+       //[treshold, mutiplier, 0,0]
-    'uniform vec4 uFogColor;\n'+ // = vec4(216.0/255.0, 232.0/255.0, 243.0/255.0, 1.0);\n'+
-    'uniform vec4 uFogColor2;\n'+ // = vec4(72.0/255.0, 154.0/255.0, 255.0/255.0, 1.0);\n'+
-    'const vec4 fogColor3 = vec4(0.0/255.0, 0.0/255.0, 0.0/255.0, 1.0);\n'+
-
-    'void main() {\n'+
-        'float l = vTexcoords.y;\n'+
-        'if (l > uParams3.z){ discard; } else {\n'+
-            'float l2 = clamp((l*l)*0.9+0.1, 0.0, 1.5);\n'+
-            'vec4 c = mix(uFogColor2, uFogColor, l2);\n'+
-            'gl_FragColor = vec4(c.xyz, c.w*l);\n'+
-        
-            'if (l > uParams3.x){ gl_FragColor.xyz = mix(gl_FragColor.xyz, fogColor3.xyz, (l-uParams3.x)*uParams3.y); }\n'+
-        '}'+
-
-    '}';
-
-
-//heightmap tile
-GpuShaders.heightmapVertexShader =
-    'attribute vec3 aPosition;\n'+
-    'attribute vec2 aTexCoord;\n'+
-    'uniform mat4 uMV, uProj;\n'+
-    'uniform float uFogDensity;\n'+
-    'uniform mat4 uGridMat;\n'+
-    'uniform float uGridStep1, uGridStep2;\n'+
-    'const int HMSize = 5;\n'+
-    'const float HMSize1 = float(HMSize-1);\n'+
-    'uniform float uHeight[HMSize*HMSize];\n'+
-    'varying vec2 vTexCoord1;\n'+
-    'varying vec2 vTexCoord2;\n'+
-    'varying float vFogFactor;\n'+
-    'float round(float x) { return floor(x + 0.5); }\n'+
-    'void main() {\n'+
-        'vec3 pos = aPosition;\n'+
-        'float z = uHeight[int(round(pos.y*HMSize1)*float(HMSize) + round(pos.x*HMSize1))];\n'+
-        'vec4 camSpacePos = uMV * vec4(pos.xy, z, 1.0);\n'+
-        'gl_Position = uProj * camSpacePos;\n'+
-        'float camDist = length(camSpacePos.xyz);\n'+
-        'vFogFactor = exp(uFogDensity * camDist);\n'+
-        'vec4 gridCoord = uGridMat * vec4(pos, 1.0);\n'+
-        'vTexCoord1 = aTexCoord;\n'+
-        'vTexCoord1 = gridCoord.xy * vec2(uGridStep1);\n'+
-        'vTexCoord2 = gridCoord.xy * vec2(uGridStep2);\n'+
-    '}';
-
-
-GpuShaders.heightmapFragmentShader = 'precision mediump float;\n'+
-    'uniform sampler2D uSampler;\n'+
-    'uniform float uGridBlend;\n'+
-    'varying vec2 vTexCoord1;\n'+
-    'varying vec2 vTexCoord2;\n'+
-    'varying float vFogFactor;\n'+
-    'uniform vec4 uFogColor;\n'+ // = vec4(216.0/255.0, 232.0/255.0, 243.0/255.0, 1.0);\n'+
-    'void main() {\n'+
-        'vec4 gridColor = mix(texture2D(uSampler, vTexCoord1), texture2D(uSampler, vTexCoord2), uGridBlend);\n'+
-        'gl_FragColor = mix(uFogColor, gridColor, vFogFactor);\n'+
-    '}';
-
-
-//depth encoded heightmap tile
-GpuShaders.heightmapDepthVertexShader =
-    'attribute vec3 aPosition;\n'+
-    'attribute vec2 aTexCoord;\n'+
-    'uniform mat4 uMV, uProj;\n'+
-    'uniform float uFogDensity;\n'+
-    'uniform mat4 uGridMat;\n'+
-    'uniform float uGridStep1, uGridStep2;\n'+
-    'const int HMSize = 5;\n'+
-    'const float HMSize1 = float(HMSize-1);\n'+
-    'uniform float uHeight[HMSize*HMSize];\n'+
-    'varying vec2 vTexCoord1;\n'+
-    'varying vec2 vTexCoord2;\n'+
-    'varying float vDepth;\n'+
-    'float round(float x) { return floor(x + 0.5); }\n'+
-    'void main() {\n'+
-        'vec3 pos = aPosition;\n'+
-        'float z = uHeight[int(round(pos.y*HMSize1)*float(HMSize) + round(pos.x*HMSize1))];\n'+
-        'vec4 camSpacePos = uMV * vec4(pos.xy, z, 1.0);\n'+
-        'gl_Position = uProj * camSpacePos;\n'+
-        'float camDist = length(camSpacePos.xyz);\n'+
-        'vDepth = camDist;\n'+
-        'vec4 gridCoord = uGridMat * vec4(pos, 1.0);\n'+
-        'vTexCoord1 = aTexCoord;\n'+
-        'vTexCoord1 = gridCoord.xy * vec2(uGridStep1);\n'+
-        'vTexCoord2 = gridCoord.xy * vec2(uGridStep2);\n'+
-    '}';
-
-
-GpuShaders.heightmapDepthFragmentShader = 'precision mediump float;\n'+
-    'uniform sampler2D uSampler;\n'+
-    'uniform float uGridBlend;\n'+
-    'varying vec2 vTexCoord1;\n'+
-    'varying vec2 vTexCoord2;\n'+
-    'varying float vDepth;\n'+
-    'void main() {\n'+
-        'gl_FragColor = fract(vec4(1.0, 1.0/255.0, 1.0/65025.0, 1.0/16581375.0) * vDepth) + (-0.5/255.0);\n'+
-    '}';
-
-GpuShaders.quadPoint = 
-    'vec3 quadPoint(int i1, int i2, int i3, float t, float t2) {\n'+
-        'float p1x = uPoints[i1], p1y = uPoints[i1+1], p1z = uPoints[i1+2];\n'+
-        'float p3x = uPoints[i3], p3y = uPoints[i3+1], p3z = uPoints[i3+2];\n'+
-        'float p2x = 2.0*uPoints[i2]-p1x*0.5-p3x*0.5;\n'+
-        'float p2y = 2.0*uPoints[i2+1]-p1y*0.5-p3y*0.5;\n'+
-        'float p2z = 2.0*uPoints[i2+2]-p1z*0.5-p3z*0.5;\n'+
-        'return vec3(t2*t2*p1x+2.0*t2*t*p2x+t*t*p3x, t2*t2*p1y+2.0*t2*t*p2y+t*t*p3y, t2*t2*p1z+2.0*t2*t*p2z+t*t*p3z); }\n';
-
-   
-GpuShaders.planeVertexShader =
-    'attribute vec3 aPosition;\n'+
-    'attribute vec2 aTexCoord;\n'+
-    'uniform mat4 uMV, uProj;\n'+
-    'uniform vec4 uParams;\n'+    //[uGridStep1, fogDensity, indexFactor, uGridStep2]
-    'uniform vec4 uParams3;\n'+    //[px, py, sx, sy]
-    'uniform float uPoints[9*3];\n'+
-    'varying vec2 vTexCoord;\n'+
-    'varying vec2 vTexCoord2;\n'+
-    'varying float vFogFactor;\n'+ GpuShaders.quadPoint +
-    'void main() {\n'+
-        'vec3 indices = aPosition;\n'+
-        'float t = aPosition.y * uParams[2];\n'+  //vertical index
-        'float t2 = (1.0-t);\n'+
-        'vec3 p1 = quadPoint(0, 3, 6, t, t2);\n'+
-        'vec3 p2 = quadPoint(9, 9+3, 9+6, t, t2);\n'+
-        'vec3 p3 = quadPoint(18, 18+3, 18+6, t, t2);\n'+
-        't = aPosition.x * uParams[2];\n'+  //horizontal index
-        't2 = (1.0-t);\n'+
-        'float p2x = 2.0*p2.x-p1.x*0.5-p3.x*0.5;\n'+
-        'float p2y = 2.0*p2.y-p1.y*0.5-p3.y*0.5;\n'+
-        'float p2z = 2.0*p2.z-p1.z*0.5-p3.z*0.5;\n'+
-        'vec4 p = vec4(t2*t2*p1.x+2.0*t2*t*p2x+t*t*p3.x, t2*t2*p1.y+2.0*t2*t*p2y+t*t*p3.y, t2*t2*p1.z+2.0*t2*t*p2z+t*t*p3.z, 1);\n'+
-        'vec4 camSpacePos = uMV * p;\n'+
-        'gl_Position = uProj * camSpacePos;\n'+
-        'float camDist = length(camSpacePos.xyz);\n'+
-        'vFogFactor = exp(uParams[1] * camDist);\n'+
-        'vec2 uv;\n'+
-        'uv.x = aTexCoord.y * uParams3[2] + uParams3[0];\n'+
-        'uv.y = 1.0-(aTexCoord.x * uParams3[3] + uParams3[1]);\n'+
-        'vTexCoord = uv;\n'+
-    '}';
-
-
-GpuShaders.planeFragmentShader = 'precision mediump float;\n'+
-    'uniform sampler2D uSampler;\n'+
-    'uniform vec4 uParams2;\n'+    //[uGridStep1, uGridStep2, uGridBlend, 0]
-    'varying vec2 vTexCoord;\n'+
-    'varying float vFogFactor;\n'+
-    'uniform vec4 uFogColor;\n'+ // = vec4(216.0/255.0, 232.0/255.0, 243.0/255.0, 1.0);\n'+
-    'void main() {\n'+
-        'vec4 c = mix(texture2D(uSampler, vTexCoord), texture2D(uSampler, vTexCoord*8.0), uParams2[2]);\n'+
-        'gl_FragColor = mix(uFogColor, c, vFogFactor);\n'+
-    '}';
-
-GpuShaders.planeVertex2Shader =
-    'attribute vec3 aPosition;\n'+
-    'attribute vec2 aTexCoord;\n'+
-    'uniform mat4 uMV, uProj;\n'+
-    'uniform vec4 uParams;\n'+    //[uGridStep1, fogDensity, indexFactor, uGridStep2]
-    'uniform vec4 uParams3;\n'+    //[px, py, sx, sy]
-    'uniform float uPoints[9*3];\n'+
-    'varying vec2 vTexCoord;\n'+
-    'varying vec2 vTexCoord2;\n'+
-    'varying float vFogFactor;\n'+ GpuShaders.quadPoint +
-    'void main() {\n'+
-        'vec3 indices = aPosition;\n'+
-        'float t = aPosition.y * uParams[2];\n'+  //vertical index
-        'float t2 = (1.0-t);\n'+
-        'vec3 p1 = quadPoint(0, 3, 6, t, t2);\n'+
-        'vec3 p2 = quadPoint(9, 9+3, 9+6, t, t2);\n'+
-        'vec3 p3 = quadPoint(18, 18+3, 18+6, t, t2);\n'+
-        't = aPosition.x * uParams[2];\n'+  //horizontal index
-        't2 = (1.0-t);\n'+
-        'float p2x = 2.0*p2.x-p1.x*0.5-p3.x*0.5;\n'+
-        'float p2y = 2.0*p2.y-p1.y*0.5-p3.y*0.5;\n'+
-        'float p2z = 2.0*p2.z-p1.z*0.5-p3.z*0.5;\n'+
-        'vec4 p = vec4(t2*t2*p1.x+2.0*t2*t*p2x+t*t*p3.x, t2*t2*p1.y+2.0*t2*t*p2y+t*t*p3.y, t2*t2*p1.z+2.0*t2*t*p2z+t*t*p3.z, 1);\n'+
-        'vec4 camSpacePos = uMV * p;\n'+
-        'gl_Position = uProj * camSpacePos;\n'+
-        'float camDist = length(camSpacePos.xyz);\n'+
-        'vFogFactor = exp(uParams[1] * camDist);\n'+
-        'vec2 uv;\n'+
-        'uv.x = aTexCoord.y * uParams3[2] + uParams3[0];\n'+
-        'uv.y = 1.0-(aTexCoord.x * uParams3[3] + uParams3[1]);\n'+
-        'vTexCoord = uv;\n'+
-        'vTexCoord2 = p.xy;\n'+
-    '}';
-
-
-GpuShaders.planeFragment2Shader = 'precision mediump float;\n'+
-    'uniform sampler2D uSampler;\n'+
-    'uniform vec4 uParams2;\n'+    //[uGridStep1, uGridStep2, uGridBlend, 0]
-    'uniform vec4 uParams4;\n'+    //[pole-x, pole-y, pole-radius, 0]
-    'varying vec2 vTexCoord;\n'+
-    'varying vec2 vTexCoord2;\n'+
-    'varying float vFogFactor;\n'+
-    'uniform vec4 uFogColor;\n'+ // = vec4(216.0/255.0, 232.0/255.0, 243.0/255.0, 1.0);\n'+
-    'void main() {\n'+
-        'if (length(uParams4.xy - vTexCoord2.xy) > uParams4.z){ discard; }'+ 
-        'vec4 c = mix(texture2D(uSampler, vTexCoord), texture2D(uSampler, vTexCoord*8.0), uParams2[2]);\n'+
-        'gl_FragColor = mix(uFogColor, c, vFogFactor);\n'+
-    '}';
-
-GpuShaders.planeVertex3Shader =
-    'attribute vec3 aPosition;\n'+
-    'attribute vec2 aTexCoord;\n'+
-    'uniform mat4 uMV, uProj;\n'+
-    'uniform vec4 uParams;\n'+    //[uGridStep1, fogDensity, indexFactor, uGridStep2]
-    'uniform vec4 uParams3;\n'+    //[px, py, sx, sy]
-    'uniform float uPoints[9*3];\n'+
-    'uniform vec3 uVector;\n'+  
-    'uniform float uHeights[9];\n'+
-    'varying vec2 vTexCoord;\n'+
-    'varying vec2 vTexCoord2;\n'+
-    'varying float vFogFactor;\n'+ GpuShaders.quadPoint + 
-    'float linearHeight(float x, float y) {\n'+
-        'int ix = int(x);\n'+
-        'int iy = int(y);\n'+
-        'int index = (2-iy)*3+ix;\n'+
-        'int index2 = (2-(iy+1))*3+ix;\n'+
-        'float fx = fract(x);\n'+
-        'float fy = fract(y);\n'+
-        'float w0 = (uHeights[index] + (uHeights[index+1] - uHeights[index])*fx);\n'+
-        'float w1 = (uHeights[index2] + (uHeights[index2+1] - uHeights[index2])*fx);\n'+
-        'return (w0 + (w1 - w0)*fy);\n'+
-    '}\n'+
-    'void main() {\n'+
-        'vec3 indices = aPosition;\n'+
-        'float t = aPosition.y * uParams[2];\n'+  //vertical index
-        'float tt = t;\n'+
-        'float t2 = (1.0-t);\n'+
-        'vec3 p1 = quadPoint(0, 3, 6, t, t2);\n'+
-        'vec3 p2 = quadPoint(9, 9+3, 9+6, t, t2);\n'+
-        'vec3 p3 = quadPoint(18, 18+3, 18+6, t, t2);\n'+
-        't = aPosition.x * uParams[2];\n'+  //horizontal index
-        'float tt2 = t;\n'+
-        't2 = (1.0-t);\n'+
-        'float p2x = 2.0*p2.x-p1.x*0.5-p3.x*0.5;\n'+
-        'float p2y = 2.0*p2.y-p1.y*0.5-p3.y*0.5;\n'+
-        'float p2z = 2.0*p2.z-p1.z*0.5-p3.z*0.5;\n'+
-        'vec4 p = vec4(t2*t2*p1.x+2.0*t2*t*p2x+t*t*p3.x, t2*t2*p1.y+2.0*t2*t*p2y+t*t*p3.y, t2*t2*p1.z+2.0*t2*t*p2z+t*t*p3.z, 1);\n'+
-        'p.xyz += uVector * linearHeight(tt*2.0, tt2*2.0);\n'+
-        'vec4 camSpacePos = uMV * p;\n'+
-        'gl_Position = uProj * camSpacePos;\n'+
-        'float camDist = length(camSpacePos.xyz);\n'+
-        'vFogFactor = exp(uParams[1] * camDist);\n'+
-        'vec2 uv;\n'+
-        'uv.x = aTexCoord.y * uParams3[2] + uParams3[0];\n'+
-        'uv.y = (1.0-aTexCoord.x) * uParams3[3] + uParams3[1];\n'+
-        'vTexCoord = uv;\n'+
-    '}';
-
-GpuShaders.getHFNormal =
-    'vec3 getHFNormal(vec2 uv, float texelSize, float heightDelta) {\n'+
-        'vec4 h;\n'+
-        'h[0] = texture2D(uSampler2, uv + (texelSize * vec2( 0.0,-1.0))).r * heightDelta;\n'+
-        'h[1] = texture2D(uSampler2, uv + (texelSize * vec2(-1.0, 0.0))).r * heightDelta;\n'+
-        'h[2] = texture2D(uSampler2, uv + (texelSize * vec2( 1.0, 0.0))).r * heightDelta;\n'+
-        'h[3] = texture2D(uSampler2, uv + (texelSize * vec2( 0.0, 1.0))).r * heightDelta;\n'+
-        'return normalize(vec3(h[1] - h[2], h[3] - h[0], 2.0));}\n';
-
-GpuShaders.getHFNormal2 =
-    'vec2 getHFNormal2(vec2 uv, float texelSize, float heightDelta) {\n'+
-        'vec4 h;\n'+
-        'h[0] = texture2D(uSampler2, uv + (texelSize * vec2( 0.0,-1.0))).r * heightDelta;\n'+
-        'h[1] = texture2D(uSampler2, uv + (texelSize * vec2(-1.0, 0.0))).r * heightDelta;\n'+
-        'h[2] = texture2D(uSampler2, uv + (texelSize * vec2( 1.0, 0.0))).r * heightDelta;\n'+
-        'h[3] = texture2D(uSampler2, uv + (texelSize * vec2( 0.0, 1.0))).r * heightDelta;\n'+
-        'return vec2(h[1] - h[2], h[3] - h[0]);}\n';
-
-GpuShaders.planeVertex4Shader =
-    '#define newspace\n'+
-    'uniform sampler2D uSampler2;\n'+
-    'attribute vec3 aPosition;\n'+
-    //'attribute vec2 aTexCoord;\n'+
-    //'attribute vec3 aBarycentric;\n'+
-    'uniform mat4 uMV, uProj;\n'+
-    'uniform vec4 uParams;\n'+    //[uGridStep1, fogDensity, indexFactor, uGridStep2]
-    'uniform vec4 uParams3;\n'+    //[px, py, sx, sy]
-    'uniform float uPoints[9*3];\n'+
-    'uniform vec3 uVector;\n'+  
-    'uniform vec3 uHeights;\n'+   //[hmin, hmax]
-    'uniform vec4 uTransform;\n'+
-    //'uniform vec4 uTransform2;\n'+
-    'varying vec2 vTexCoord;\n'+
-    'varying vec2 vTexCoord2;\n'+
-    'varying vec3 vBarycentric;\n'+
-
-    '#ifdef newspace\n'+
-        'varying mat3 vTBN;\n'+
-    '#else\n'+
-        'varying vec3 vNormal;\n'+
-    '#endif\n'+
-
-    'varying float vFogFactor;\n'+ GpuShaders.quadPoint +  GpuShaders.getHFNormal + GpuShaders.getHFNormal2 +
-    //'float random(vec2 p) { return fract(cos(dot(p,vec2( 23.14069263277926, 2.665144142690225)))*12345.6789);}\n'+
-
-    'void main() {\n'+
-        'vec3 indices = aPosition;\n'+
-        'float t = aPosition.y * uParams[2];\n'+  //vertical index
-        'float tt = t;\n'+
-        'float t2 = (1.0-t);\n'+
-        'vec3 p1 = quadPoint(0, 3, 6, t, t2);\n'+
-        'vec3 p2 = quadPoint(9, 9+3, 9+6, t, t2);\n'+
-        'vec3 p3 = quadPoint(18, 18+3, 18+6, t, t2);\n'+
-        't = aPosition.x * uParams[2];\n'+  //horizontal index
-        'float tt2 = t;\n'+
-        't2 = (1.0-t);\n'+
-        'float p2x = 2.0*p2.x-p1.x*0.5-p3.x*0.5;\n'+
-        'float p2y = 2.0*p2.y-p1.y*0.5-p3.y*0.5;\n'+
-        'float p2z = 2.0*p2.z-p1.z*0.5-p3.z*0.5;\n'+
-        'vec4 p = vec4(t2*t2*p1.x+2.0*t2*t*p2x+t*t*p3.x, t2*t2*p1.y+2.0*t2*t*p2y+t*t*p3.y, t2*t2*p1.z+2.0*t2*t*p2z+t*t*p3.z, 1);\n'+
-        'vec2 uv2 = vec2(tt, 1.0-tt2);\n'+
-        'uv2 = vec2(uTransform[0] * uv2[0] + uTransform[2], uTransform[1] * uv2[1] + uTransform[3]);\n'+
-
-        'p.xyz += uVector * (uHeights[0] + (uHeights[1]-uHeights[0])*texture2D(uSampler2, uv2).x);\n'+
-
-        'vec4 camSpacePos = uMV * p;\n'+
-        'gl_Position = uProj * camSpacePos;\n'+
-        'float camDist = length(camSpacePos.xyz);\n'+
-        'vFogFactor = exp(uParams[1] * camDist);\n'+
-
-        'vec2 uv = vec2(tt, 1.0-tt2);\n'+
-        'uv.x = uv.x * uParams3[0] + uParams3[2];\n'+
-        'uv.y = uv.y * uParams3[1] + uParams3[3];\n'+
-        'vTexCoord = uv;\n'+
-
-        'vBarycentric = camSpacePos.xyz;\n'+
-
-        '#ifdef newspace\n'+
-            'vec2 d = getHFNormal2(uv2, 1.0/(128.0), (uHeights[1]-uHeights[0]) * uHeights[2]);\n'+
-            'vec3 T = vec3(2.0,0.0,-d.x); vec3 B = vec3(0.0,2.0,-d.y);\n'+
-            'vTBN = mat3(normalize(T), normalize(B), cross(T,B));\n'+
-        '#else\n'+
-            'vec3 n = getHFNormal(uv2, 1.0/(128.0), (uHeights[1]-uHeights[0]) * uHeights[2]);\n'+
-            'vNormal = normalize(n);\n'+
-        '#endif\n'+
-
-    '}';    
-
-GpuShaders.planeFragmentShader2 = 'precision mediump float;\n'+
-    '#extension GL_OES_standard_derivatives : enable\n'+
-    '#define newspace\n'+
-    'uniform sampler2D uSampler;\n'+
-    'uniform vec4 uParams2;\n'+    //[uGridStep1, uGridStep2, uGridBlend, 0]
-    'uniform mat3 uSpace;\n'+  
-    'varying vec2 vTexCoord;\n'+
-    'varying float vFogFactor;\n'+
-    'varying vec3 vBarycentric;\n'+
-
-    '#ifdef newspace\n'+
-        'varying mat3 vTBN;\n'+
-    '#else\n'+
-        'varying vec3 vNormal;\n'+
-    '#endif\n'+
-
-    'uniform vec4 uFogColor;\n'+ // = vec4(216.0/255.0, 232.0/255.0, 243.0/255.0, 1.0);\n'+
-    'void main() {\n'+
-        'vec3 ldir = normalize(-vBarycentric);\n'+
-        
-        '#ifdef flat\n'+
-            'vec3 nx = dFdx(vBarycentric);\n'+
-            'vec3 ny = dFdy(vBarycentric);\n'+
-            'vec3 normal2 = normalize(cross(nx,ny));\n'+
-            'vec4 c2 = vec4(vec3(max(0.0,normal2.z*(204.0/255.0))+(32.0/255.0)),1.0);\n'+
-        '#else\n'+
-
-            '#ifdef newspace\n'+
-                //'vec3 normal = cross(normalize(vTangent), normalize(vBitangent));\n'+
-
-                '#ifdef nmix\n'+
-                    'vec3 normal = vTBN * normalize((texture2D(uSampler, vTexCoord).xyz-0.5)*2.0);\n'+
-                '#else\n'+
-                    'vec3 normal = vTBN * vec3(0.0,0.0,1.0);\n'+
-                '#endif\n'+
-
-            '#else\n'+
-                'vec3 normal = vNormal;\n'+
-            '#endif\n'+
-
-            'normal = normalize(uSpace * normal);\n'+
-
-            'vec3 eyeDir = ldir;\n'+
-            'vec3 refDir = reflect(-ldir, normal);\n'+
-            'float specW = min(1.0, pow(max(dot(refDir, eyeDir), 0.0), 90.0));\n'+
-            'float diffW = min(1.0, max(dot(normal, ldir), 0.0));\n'+
-            'float lcolor = (dot(normal, ldir) + 1.0) * 0.5;\n'+
-            //'float lcolor = 0.25+(0.5*diffW)+(0.25*specW);\n'+
-            //'float lcolor = 0.25+(0.75*diffW);\n'+
-
-            '#ifdef normals\n'+
-                'vec4 c2 = vec4(normal*0.5+0.5,1.0);\n'+        
-            '#else\n'+
-                'vec4 c2 = vec4(vec3(dot(vec3(0.0,0.0,1.0), normal)),1.0);\n'+        
-            '#endif\n'+
-            //'vec4 c2 = vec4(normalize(ldir)*0.5+0.5,1.0);\n'+
-            //'vec4 c2 = vec4(vec3(lcolor),1.0);\n'+
-        '#endif\n'+
-
-        '#ifdef grid\n'+
-            'vec4 c = mix(texture2D(uSampler, vTexCoord), texture2D(uSampler, vTexCoord*8.0), uParams2[2]);\n'+
-            'c = mix(c, c2, 0.5);\n'+
-        '#else\n'+
-            '#ifdef exmap\n'+
-
-                'vec4 c = texture2D(uSampler, vTexCoord);\n'+
-
-                '#ifdef classmap\n'+
-                    'int i = int(c.x*255.0);\n'+
-
-                    /*
-                    'if (i == 0) c = vec4(0.3, 0.44, 0.64, 1.0);\n'+
-                    'if (i == 1) c = vec4(0.0, 0.24, 0.0, 1.0);\n'+
-                    'if (i == 2) c = vec4(0.58, 0.61, 0.44, 1.0);\n'+
-                    'if (i == 3) c = vec4(0.0, 0.39, 0.0, 1.0);\n'+
-                    'if (i == 4) c = vec4(0.12, 0.67, 0.02, 1.0);\n'+
-                    'if (i == 5) c = vec4(0.08, 0.55, 0.24, 1.0);\n'+
-                    'if (i == 6) c = vec4(0.36, 0.46, 0.17, 1.0);\n'+
-                    'if (i == 7) c = vec4(0.7, 0.62, 0.18, 1.0);\n'+
-                    'if (i == 8) c = vec4(0.7, 0.54, 0.2, 1.0);\n'+
-                    'if (i == 9) c = vec4(0.91, 0.86, 0.37, 1.0);\n'+
-                    'if (i == 10) c = vec4(0.88, 0.81, 0.54, 1.0);\n'+
-                    'if (i == 11) c = vec4(0.61, 0.46, 0.33, 1.0);\n'+
-                    'if (i == 12) c = vec4(0.73, 0.83, 0.56, 1.0);\n'+
-                    'if (i == 13) c = vec4(0.25, 0.54, 0.45, 1.0);\n'+
-                    'if (i == 14) c = vec4(0.42, 0.64, 0.54, 1.0);\n'+
-                    'if (i == 15) c = vec4(0.9, 0.68, 0.4, 1.0);\n'+
-                    'if (i == 16) c = vec4(0.66, 0.67, 0.68, 1.0);\n'+
-                    'if (i == 17) c = vec4(0.86, 0.13, 0.15, 1.0);\n'+
-                    'if (i == 18) c = vec4(0.3, 0.44, 0.64, 1.0);\n'+
-                    'if (i == 19) c = vec4(1.0, 0.98, 1.0, 1.0);\n'+
-                    'c = c * c2;\n'+
-                    */
-
-                    'if (i == 1 || i == 2 || i == 5 || i == 6) c = vec4(146.0, 178.0, 144.0, 255.0);\n'+
-                    'if (i == 3 || i == 4) c = vec4(94.0, 169.0, 133.0, 255.0);\n'+
-                    'if (i == 8 || i == 11) c = vec4(238.0, 221.0, 185.0, 255.0);\n'+
-                    'if (i == 7) c = vec4(226.0, 192.0, 154.0, 255.0);\n'+
-                    'if (i == 9 || i == 10 || i == 12) c = vec4(250.0, 246.0, 167.0, 255.0);\n'+
-                    'if (i == 13 || i == 16) c = vec4(245.0, 236.0, 211.0, 255.0);\n'+
-                    'if (i == 14) c = vec4(139.0, 185.0, 166.0, 255.0);\n'+
-                    'if (i == 15) c = vec4(199.0, 219.0, 155.0, 255.0);\n'+
-                    'if (i == 17) c = vec4(149.0, 132.0, 162.0, 255.0);\n'+
-                    'if (i == 18 || i == 0) c = vec4(188.0, 221.0, 255.0, 255.0);\n'+
-                    'if (i == 19) c = vec4(255.0, 255.0, 255.0, 255.0);\n'+
-                    'c = (c*(1.0/255.0)) * c2;\n'+
-                '#endif\n'+
-
-            '#else\n'+
-                'vec4 c = c2;\n'+
-            '#endif\n'+
-        '#endif\n'+
-
-        '#ifdef fog\n'+
-            'gl_FragColor = mix(uFogColor, c, vFogFactor);\n'+
-        '#else\n'+
-            'gl_FragColor = c;\n'+
-        '#endif\n'+
-    '}';
-
-
-//textured tile mesh
-GpuShaders.tileVertexShader =
-    'attribute vec3 aPosition;\n'+
-
-    '#ifdef onlyFog\n'+
-        'varying float vFogFactor;\n'+
-    '#else\n'+
-
-        '#ifdef externalTex\n'+
-            'attribute vec2 aTexCoord2;\n'+
-        '#else\n'+
-            'attribute vec2 aTexCoord;\n'+
-        '#endif\n'+
-    
-        'varying vec3 vTexCoord;\n'+  //u,v,fogFactor
-
-    '#endif\n'+
-
-    '#ifdef depth\n'+
-        'varying float vDepth;\n'+
-    '#endif\n'+
-
-    '#ifdef flatShadeVar\n'+
-        ///'attribute vec3 aBarycentric;\n'+
-        'varying vec3 vBarycentric;\n'+
-    '#endif\n'+
-
-                                             //0-3                            4-7          8-11            12-15 
-    'uniform mat4 uMV, uProj, uParams;\n'+  //[zfactor, fogDensity, scale.xy][camVec.xyzw][transform.xyzw][scale.z, trans.xyz]
-
-    '#ifdef applySE\n'+
-        'uniform mat4 uParamsSE;\n'+
-    '#endif\n'+
-
-    'void main() {\n'+
-
-        '#ifdef applySE\n'+
-            'vec3 geoPos2 = aPosition*vec3(uParamsSE[0][3],uParamsSE[1][0],uParamsSE[1][1]);\n'+
-            'vec3 geoPos = geoPos2+vec3(uParamsSE[0][0],uParamsSE[0][1],uParamsSE[0][2]);\n'+
-            'geoPos.z *= uParamsSE[3][3];\n'+
-            'float ll = length(geoPos);\n'+
-            'vec3 v = geoPos * (1.0/(ll+0.0001));\n'+
-            'float h = ll - uParamsSE[3][2];\n'+
-            'float h2 = clamp(h, uParamsSE[2][1], uParamsSE[2][3]);\n'+
-            'float h3 = h;\n'+
-            'h *= (uParamsSE[2][2] + ((h2 - uParamsSE[2][1]) * uParamsSE[3][0]) * uParamsSE[3][1]);\n'+
-            'geoPos2.xyz += v * (h - h3);\n'+
-            'vec4 camSpacePos = uMV * vec4(geoPos2, 1.0);\n'+
-            'float l = dot(v, vec3(uParams[1][0],uParams[1][1],uParams[1][2]));\n'+
-        '#else\n'+
-            'vec4 camSpacePos = uMV * vec4(aPosition, 1.0);\n'+
-            'vec3 worldPos = vec3(aPosition.x * uParams[0][2] + uParams[3][1], aPosition.y * uParams[0][3] + uParams[3][2], aPosition.z * uParams[3][0] + uParams[3][3]);\n'+
-            'float l = dot(normalize(worldPos.xyz), vec3(uParams[1][0],uParams[1][1],uParams[1][2]));\n'+
-        '#endif\n'+
-
-        'gl_Position = uProj * camSpacePos;\n'+
-        'float camDist = length(camSpacePos.xyz);\n'+
-
-        '#ifdef depth\n'+
-            'vDepth = camDist;\n'+
-        '#endif\n'+
-
-        '#ifdef flatShadeVar\n'+
-            'vBarycentric = camSpacePos.xyz;\n'+
-        '#endif\n'+
-
-        'float fogFactor = 1.0-exp(uParams[0][1] * camDist);\n'+
-        'fogFactor = clamp((1.0-abs(l))*uParams[1][3] + fogFactor, 0.0, 1.0);\n'+
-
-        '#ifdef onlyFog\n'+
-            'vFogFactor = fogFactor;\n'+
-        '#else\n'+
-            'vTexCoord.z = fogFactor;\n'+
-
-            '#ifdef externalTex\n'+
-                'vTexCoord.xy = vec2(uParams[2][0] * aTexCoord2[0] + uParams[2][2], uParams[2][1] * aTexCoord2[1] + uParams[2][3]);\n'+
-            '#else\n'+
-                'vTexCoord.xy = aTexCoord;\n'+
-            '#endif\n'+
-
-        '#endif\n'+
-    '}';
-
-GpuShaders.tileFragmentShader = 'precision mediump float;\n'+
-
-    '#ifdef onlyFog\n'+
-        'varying float vFogFactor;\n'+
-    '#else\n'+
-
-        'varying vec3 vTexCoord;\n'+
-        'uniform sampler2D uSampler;\n'+
-
-        '#ifdef mask\n'+
-            'uniform sampler2D uSampler2;\n'+
-        '#endif\n'+
-
-    '#endif\n'+
-
-    '#ifdef depth\n'+
-        'varying float vDepth;\n'+
-    '#endif\n'+
-
-    '#ifdef flatShadeVar\n'+
-        '#extension GL_OES_standard_derivatives : enable\n'+
-        'varying vec3 vBarycentric;\n'+
-
-        '#ifdef fogAndColor\n'+
-            'uniform vec4 uColor;\n'+
-        '#endif\n'+
-
-    '#endif\n'+
-
-    'uniform vec4 uParams2;\n'+        
-    'void main() {\n'+
-
-        '#ifdef flatShadeVar\n'+
-
-            '#ifdef flatShadeVarFallback\n'+
-                'vec4 flatShadeData = vec4(1.0);\n'+
-            '#else\n'+
-                '#ifdef GL_OES_standard_derivatives\n'+
-                    'vec3 nx = dFdx(vBarycentric);\n'+
-                    'vec3 ny = dFdy(vBarycentric);\n'+
-                    'vec3 normal=normalize(cross(nx,ny));\n'+
-                    'vec4 flatShadeData = vec4(vec3(max(0.0,normal.z*(204.0/255.0))+(32.0/255.0)),1.0);\n'+
-                '#else\n'+
-                    'vec4 flatShadeData = vec4(1.0);\n'+
-                '#endif\n'+
-            '#endif\n'+
-
-        '#endif\n'+
-
-        '#ifdef flatShade\n'+
-
-            '#ifdef fogAndColor\n'+
-               // 'gl_FragColor = vec4(mix(uColor.xyz * flatShadeData.xyz, uParams2.xyz, vTexCoord.z), uColor.w);\n'+
-                'gl_FragColor = vec4(uColor.xyz * flatShadeData.xyz, uColor.w);\n'+
-            '#else\n'+
-                'gl_FragColor = vec4(flatShadeData.xyz, 1.0);\n'+
-            '#endif\n'+
-
-        '#else\n'+
-
-            'vec4 fogColor = vec4(uParams2.xyz, 1.0);\n'+
-
-            '#ifdef onlyFog\n'+
-                'gl_FragColor = vec4(fogColor.xyz, vFogFactor);\n'+
-            '#else\n'+
-
-                '#ifdef depth\n'+
-                    'gl_FragColor = fract(vec4(1.0, 1.0/255.0, 1.0/65025.0, 1.0/16581375.0) * vDepth) + (-0.5/255.0);\n'+
-                '#else\n'+
-
-                    '#ifdef externalTex\n'+
-                        'vec4 c = texture2D(uSampler, vTexCoord.xy);\n'+'__FILTER__' +
-                        'vec4 cc = mix(c, fogColor, vTexCoord.z);\n'+
-                        '#ifdef mask\n'+
-                            'vec4 c2 = texture2D(uSampler2, vTexCoord.xy);\n'+
-                            'cc.w = c.w * uParams2.w * c2.x;\n'+
-                        '#else\n'+
-                            'cc.w = c.w * uParams2.w;\n'+
-                        '#endif\n'+
-
-                        'gl_FragColor = cc;\n'+
-                    '#else\n'+
-                        'gl_FragColor = mix(texture2D(uSampler, vTexCoord.xy), fogColor, vTexCoord.z);\n'+
-                    '#endif\n'+
-
-                '#endif\n'+
-
-            '#endif\n'+
-
-        '#endif\n'+
-    '}';
-
-
-GpuShaders.shadedMeshVertexShader =
-    'attribute vec3 aPosition;\n'+
-    'attribute vec2 aTexCoord;\n'+
-    'attribute vec3 aNormal;\n'+
-    'uniform mat4 uMV, uProj;\n'+
-    'uniform mat3 uNorm;\n'+
-    'uniform float uFogDensity;\n'+
-    'varying vec2 vTexCoord;\n'+
-    'varying vec4 vPosition;\n'+
-    'varying vec3 vNormal;\n'+
-    'varying float vFogFactor;\n'+
-    'void main() {\n'+
-        'vec4 camSpacePos = uMV * vec4(aPosition, 1.0);\n'+
-        'gl_Position = uProj * camSpacePos;\n'+
-        'float camDist = length(camSpacePos.xyz);\n'+
-        'vFogFactor = exp(uFogDensity * camDist);\n'+
-        'vTexCoord = aTexCoord;\n'+
-        'vPosition = camSpacePos;\n'+
-        'vNormal = aNormal * uNorm;\n'+
-    '}';
-
-
-GpuShaders.shadedMeshFragmentShader = 'precision mediump float;\n'+
-    '#ifdef textured\n'+
-        'uniform sampler2D uSampler;\n'+
-        'varying vec2 vTexCoord;\n'+
-    '#endif\n'+
-    'varying vec4 vPosition;\n'+
-    'varying vec3 vNormal;\n'+
-    'uniform mat4 uMaterial;\n'+
-    'varying float vFogFactor;\n'+
-    'uniform vec4 uFogColor;\n'+
-    'void main() {\n'+
-        'vec3 ldir = normalize(-vPosition.xyz);\n'+
-        'vec3 normal = normalize(vNormal);\n'+
-        'vec3 eyeDir = ldir;\n'+
-        'vec3 refDir = reflect(-ldir, normal);\n'+
-        'float specW = min(1.0, pow(max(dot(refDir, eyeDir), 0.0), uMaterial[3][0]));\n'+
-        'float diffW = min(1.0, max(dot(normal, ldir), 0.0));\n'+
-        'vec4 lcolor = uMaterial[0]+(uMaterial[1]*diffW)+(uMaterial[2]*specW);\n'+
-        '#ifdef textured\n'+
-            'vec4 tcolor = texture2D(uSampler, vTexCoord);\n'+
-            'gl_FragColor = mix(uFogColor, vec4(lcolor.xyz*(1.0/255.0), 1.0) * tcolor, vFogFactor); gl_FragColor.w *= uMaterial[3][1];\n'+
-        '#else\n'+
-            'gl_FragColor = mix(uFogColor, vec4(lcolor.xyz*(1.0/255.0), 1.0), vFogFactor);  gl_FragColor.w = uMaterial[3][1];\n'+
-        '#endif\n'+
-
-    '}';
-
-GpuShaders.tileWireFrameBasicShader = 'precision mediump float;\n'+
-    'uniform vec4 uColor;\n'+
-    'void main() {\n'+
-        'gl_FragColor = uColor;\n'+
-    '}';
-
-
-//used for 2d images
-GpuShaders.imageVertexShader = '\n'+
-    'attribute vec4 aPosition;\n'+
-    'uniform mat4 uProjectionMatrix;\n'+
-    'uniform mat4 uData;\n'+
-    'uniform vec4 uColor;\n'+
-    'uniform float uDepth;\n'+
-    'varying vec4 vColor;\n'+
-    'varying vec2 vTexcoords;\n'+
-    'void main(void){\n'+
-        'int i=int(aPosition.x);\n'+
-        //"gl_Position=uProjectionMatrix*vec4(floor(uData[i][0]+0.1),floor(uData[i][1]+0.1),0.0,1.0);\n"+
-        //IE11 :(
-
-        'vec4 p;\n'+
-
-        'if(i==0) p = vec4(floor(uData[0][0]+0.1),floor(uData[0][1]+0.1),uDepth,1.0), vTexcoords=vec2(uData[0][2], uData[0][3]);\n'+
-        'if(i==1) p = vec4(floor(uData[1][0]+0.1),floor(uData[1][1]+0.1),uDepth,1.0), vTexcoords=vec2(uData[1][2], uData[1][3]);\n'+
-        'if(i==2) p = vec4(floor(uData[2][0]+0.1),floor(uData[2][1]+0.1),uDepth,1.0), vTexcoords=vec2(uData[2][2], uData[2][3]);\n'+
-        'if(i==3) p = vec4(floor(uData[3][0]+0.1),floor(uData[3][1]+0.1),uDepth,1.0), vTexcoords=vec2(uData[3][2], uData[3][3]);\n'+
-
-        'gl_Position=uProjectionMatrix*p;\n'+
-        'vec4 c=uColor;\n'+
-        'c.w*=1.0;\n'+
-        'vColor=c;\n'+
-    '}';
-
-
-GpuShaders.imageFragmentShader = 'precision mediump float;\n'+
-    'varying vec4 vColor;\n'+
-    'varying vec2 vTexcoords;\n'+
-    'uniform sampler2D uSampler;\n'+
-    'void main(void){\n'+
-        'vec4 c=texture2D(uSampler, vec2(vTexcoords.x, vTexcoords.y) );\n'+
-        'c*=vColor;\n'+
-        'if(c.w < 0.01){ discard; }\n'+
-        'gl_FragColor = c;\n'+
-    '}';
-    
-
-/* harmony default export */ __webpack_exports__["a"] = (GpuShaders);
+    renderer.progAtmo2 = new GpuProgram(gpu, shaders.atmoVertexShader, shaders.atmoFragmentShader);
+    renderer.progAtmo = new GpuProgram(gpu, shaders.atmoVertexShader3, shaders.atmoFragmentShader3);
+
+    renderer.progBBox = new GpuProgram(gpu, shaders.bboxVertexShader, shaders.bboxFragmentShader);
+    renderer.progBBox2 = new GpuProgram(gpu, shaders.bbox2VertexShader, shaders.bboxFragmentShader);
+
+    renderer.progLine = new GpuProgram(gpu, shaders.lineVertexShader, shaders.lineFragmentShader); //line
+    renderer.progLineSE = new GpuProgram(gpu, '#define applySE\n' + shaders.lineVertexShader, shaders.lineFragmentShader); //line SE
+    renderer.progELine = new GpuProgram(gpu, '#define withElements\n' + shaders.lineVertexShader, '#define withElements\n' + shaders.lineFragmentShader); //line elements 
+    renderer.progELineSE = new GpuProgram(gpu, '#define applySE\n#define withElements\n' + shaders.lineVertexShader, '#define withElements\n' + shaders.lineFragmentShader); //line SE elements 
+    renderer.progLine3 = new GpuProgram(gpu, '#define pixelLine\n' + shaders.lineVertexShader, shaders.lineFragmentShader); //pixel line
+    renderer.progELine3 = new GpuProgram(gpu, '#define pixelLine\n#define withElements\n' + shaders.lineVertexShader, '#define withElements\n' + shaders.lineFragmentShader); //pixel line elements
+    renderer.progLine3SE = new GpuProgram(gpu, '#define applySE\n#define pixelLine\n' + shaders.lineVertexShader, shaders.lineFragmentShader); //pixel line SE
+    renderer.progELine3SE = new GpuProgram(gpu, '#define applySE\n#define pixelLine\n#define withElements\n' + shaders.lineVertexShader, '#define withElements\n' + shaders.lineFragmentShader); //pixel line SE elements
+    renderer.progLine4 = new GpuProgram(gpu, '#define pixelLine\n#define dataPoints\n' + shaders.lineVertexShader, shaders.lineFragmentShader); //direct linestring pixel line
+    renderer.progLine4SE = new GpuProgram(gpu, '#define applySE\n#define pixelLine\n#define dataPoints\n' + shaders.lineVertexShader, shaders.lineFragmentShader); //direct linestring pixel line SE
+    renderer.progRLine = new GpuProgram(gpu, '#define dynamicWidth\n' + shaders.lineVertexShader, shaders.lineFragmentShader); //dynamic width line
+    renderer.progRLineSE = new GpuProgram(gpu, '#define applySE\n#define dynamicWidth\n' + shaders.lineVertexShader, shaders.lineFragmentShader); //dynamic width line
+    renderer.progERLine = new GpuProgram(gpu, '#define dynamicWidth\n#define withElements\n' + shaders.lineVertexShader, '#define withElements\n' + shaders.lineFragmentShader); //dynamic width line elements
+    renderer.progERLineSE = new GpuProgram(gpu, '#define applySE\n#define dynamicWidth\n#define withElements\n' + shaders.lineVertexShader, '#define withElements\n' + shaders.lineFragmentShader); //dynamic width line elements
+
+    renderer.progTLine = new GpuProgram(gpu, shaders.tlineVertexShader, shaders.tlineFragmentShader); //textured line
+    renderer.progTPLine = new GpuProgram(gpu, shaders.tplineVertexShader, shaders.tlineFragmentShader); //textured pixed line
+    renderer.progTBLine = new GpuProgram(gpu, shaders.tlineVertexShader, shaders.tblineFragmentShader); //textured line with background color
+    renderer.progTPBLine = new GpuProgram(gpu, shaders.tplineVertexShader, shaders.tblineFragmentShader); //textured pixel line with background color
+    renderer.progETLine = new GpuProgram(gpu, shaders.etlineVertexShader, shaders.elineFragmentShader); //textured line elements
+    renderer.progETPLine = new GpuProgram(gpu, shaders.etplineVertexShader, shaders.elineFragmentShader); //textured pixed line elements
+    //renderer.progLineWireframe = new GpuProgram(gpu, shaders.lineWireframeVertexShader, shaders.lineWireframeFragmentShader); //line with wireframe for debugging
+
+    renderer.progText2 = new GpuProgram(gpu, '#define lineLabel\n' + shaders.lineVertexShader, shaders.text2FragmentShader); //line label 
+    renderer.progText2SE = new GpuProgram(gpu, '#define applySE\n#define lineLabel\n' + shaders.lineVertexShader, shaders.text2FragmentShader); //line label 
+
+    renderer.progPolygon = new GpuProgram(gpu, shaders.polygonVertexShader, shaders.polygonFragmentShader);
+    renderer.progImage = new GpuProgram(gpu, shaders.imageVertexShader, shaders.imageFragmentShader);
+    renderer.progIcon = new GpuProgram(gpu, shaders.iconVertexShader, shaders.textFragmentShader); //label or icon
+    renderer.progIcon2 = new GpuProgram(gpu, shaders.icon2VertexShader, shaders.text2FragmentShader); //label
+
+    renderer.progLabel16 = new GpuProgram(gpu, '#define DSIZE 16\n' + shaders.icon3VertexShader, shaders.text2FragmentShader); //label with singleBuffer
+    renderer.progLabel32 = new GpuProgram(gpu, '#define DSIZE 32\n' + shaders.icon3VertexShader, shaders.text2FragmentShader);
+    renderer.progLabel48 = new GpuProgram(gpu, '#define DSIZE 48\n' + shaders.icon3VertexShader, shaders.text2FragmentShader);
+    renderer.progLabel64 = new GpuProgram(gpu, '#define DSIZE 64\n' + shaders.icon3VertexShader, shaders.text2FragmentShader);
+    renderer.progLabel96 = new GpuProgram(gpu, '#define DSIZE 96\n' + shaders.icon3VertexShader, shaders.text2FragmentShader); 
+    renderer.progLabel128 = new GpuProgram(gpu, '#define DSIZE 128\n' + shaders.icon3VertexShader, shaders.text2FragmentShader); 
+};
+
+RendererInit.prototype.initProceduralShaders = function() {
+    var shaders = GpuShaders;
+    var renderer = this.renderer;
+    var gpu = this.gpu;
+    renderer.progHmapPlane = new GpuProgram(gpu, shaders.planeVertex4Shader, shaders.planeFragmentShader2);
+    renderer.progHmapPlane2 = new GpuProgram(gpu, shaders.planeVertex4Shader, '#define grid\n' + shaders.planeFragmentShader2);
+    renderer.progHmapPlane3 = new GpuProgram(gpu, shaders.planeVertex4Shader, '#define exmap\n' + shaders.planeFragmentShader2);
+    renderer.progHmapPlane4 = new GpuProgram(gpu, shaders.planeVertex4Shader, '#define flat\n' + shaders.planeFragmentShader2);
+    renderer.progHmapPlane5 = new GpuProgram(gpu, shaders.planeVertex4Shader, '#define normals\n' + shaders.planeFragmentShader2);
+    renderer.progHmapPlane6 = new GpuProgram(gpu, shaders.planeVertex4Shader, '#define nmix\n#define normals\n' + shaders.planeFragmentShader2);
+    renderer.progHmapPlane7 = new GpuProgram(gpu, shaders.planeVertex4Shader, '#define nmix\n' + shaders.planeFragmentShader2);
+    renderer.progHmapPlane8 = new GpuProgram(gpu, shaders.planeVertex4Shader, '#define exmap\n#define classmap\n' + shaders.planeFragmentShader2);
+}
+
+RendererInit.prototype.initHeightmap = function() {
+    var renderer = this.renderer;
+    var use16Bit = renderer.core.config.map16bitMeshes;
+    var gpu = this.gpu;
+
+    // initialize heightmap geometry
+    var meshData = RendererGeometry.buildHeightmap(5, true);
+    //renderer.heightmapMesh = new GpuMesh(gpu, meshData, null, this.core, true, use16Bit);
+
+    meshData = RendererGeometry.buildPlane(16, true);
+    renderer.planeMesh = new GpuMesh(gpu, meshData, null, this.core, true, use16Bit, true);
+
+    meshData = RendererGeometry.buildPlane(128, true);
+    renderer.planeMesh2 = new GpuMesh(gpu, meshData, null, this.core, true, use16Bit, true);
+
+    // create heightmap texture
+    var size = 64;
+    var halfLineWidth = 1;
+    var data = new Uint8Array( size * size * 4 );
+
+    for (var i = 0; i < size; i++) {
+        for (var j = 0; j < size; j++) {
+
+            var index = (i*size+j)*4;
+
+            if (i < halfLineWidth || i >= size-halfLineWidth || j < halfLineWidth || j >= size-halfLineWidth) {
+                data[index] = 255;
+                data[index + 1] = 255;
+                data[index + 2] = 255;
+            } else {
+                data[index] = 32;
+                data[index + 1] = 32;
+                data[index + 2] = 32;
+            }
+
+            data[index + 3] = 255;
+        }
+    }
+
+
+    renderer.heightmapTexture = new GpuTexture(gpu);
+    renderer.heightmapTexture.createFromData(size, size, data, 'trilinear', true);
+};
+
 
+RendererInit.prototype.initHitmap = function() {
+    var renderer = this.renderer;
+    var size = renderer.hitmapSize;
+    var data = new Uint8Array( size * size * 4 );
 
+    if (renderer.hitmapMode > 2) {
+        renderer.hitmapData = data;
+    }
 
+    renderer.hitmapTexture = new GpuTexture(this.gpu);
+    renderer.hitmapTexture.createFromData(size, size, data);
+    renderer.hitmapTexture.createFramebuffer(size, size);
 
+    renderer.geoHitmapTexture = new GpuTexture(this.gpu);
+    renderer.geoHitmapTexture.createFromData(size, size, data);
+    renderer.geoHitmapTexture.createFramebuffer(size, size);
 
+    renderer.geoHitmapTexture2 = new GpuTexture(this.gpu);
+    renderer.geoHitmapTexture2.createFromData(size, size, data);
+    renderer.geoHitmapTexture2.createFramebuffer(size, size);
+};
+
+
+RendererInit.prototype.initTestMap = function() {
+    var renderer = this.renderer;
+    var gpu = this.gpu;
+
+   // create red texture
+    var size = 16, i, j, index;
+    var data = new Uint8Array( size * size * 4 );
+
+    for (i = 0; i < size; i++) {
+        for (j = 0; j < size; j++) {
+            index = (i*size+j)*4;
+            data[index] = 255;
+            data[index + 1] = 0;
+            data[index + 2] = 0;
+            data[index + 3] = 255;
+        }
+    }
+
+    renderer.redTexture = new GpuTexture(gpu);
+    renderer.redTexture.createFromData(size, size, data);
+
+    data = new Uint8Array( size * size * 4 );
+
+    for (i = 0; i < size; i++) {
+        for (j = 0; j < size; j++) {
+            index = (i*size+j)*4;
+            data[index] = 255;
+            data[index + 1] = 255;
+            data[index + 2] = 255;
+            data[index + 3] = 255;
+        }
+    }
+
+    renderer.whiteTexture = new GpuTexture(gpu);
+    renderer.whiteTexture.createFromData(size, size, data);
+
+    data = new Uint8Array( size * size * 4 );
+
+    for (i = 0; i < size; i++) {
+        for (j = 0; j < size; j++) {
+            index = (i*size+j)*4;
+            data[index] = 0;
+            data[index + 1] = 0;
+            data[index + 2] = 0;
+            data[index + 3] = 255;
+        }
+    }
+
+    renderer.blackTexture = new GpuTexture(gpu);
+    renderer.blackTexture.createFromData(size, size, data);
+};
+
+
+RendererInit.prototype.initTextMap = function() {
+    var renderer = this.renderer;
+
+    //font texture
+    var texture = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAACACAMAAADTa0c4AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFAAAA////pdmf3QAABIFJREFUeNrsnNuyqzAIhsP7v/Se6Yxra0L4OUVNCzetVqP5DAQItrVOiLg95739NnfOaR99RDj6esBw+CKZXiMK4PiuBkAcANoHAP3J5fzzAV2jePQIt6f4Ndb/MIChlVcCEFpAACZPfN4KUAF0/ufboDW3AuBMFgBwHTCfg2ftYgDUKBuA1ABuHKvA2P+5XdONIEt7BO2o2MdlAJoTQOsV6GEAswt0Zq/bsBhdeQQkqEDMwmIAnJHzA8i3ASkWRFKBbADyLGB3mlYD6DyhA4DfBlgsBDtirUPcBgC5woStYMgVtgKATWcB6DskKUEkGFLYrGw3+l3ydR16wKbbPDlWp4Xfo9vZwR1jtOMA6GkABrdvNmt1Vluy6pyvxu4Xt62fquyTggCTsIkCoIuv8gAA08w+ATBXAdSRY56xPDFPx/VPWFZp5v65kFMPgFjP70YASMfRsDn01xLPcwkRq1HLMoK647hR8v+nId74MQBjvIbUQePra42ZVXVcBCR3mIY89mYAlNGLflqA0V1seosCQNMg80B0bsLGAIDNwvFyiqu66ngVGGMGVBwyWwIwpty2DqEr/qf0Bq+DbjYkkcr4VUoOxiRjrYn3YY5SC4BQB/cF0Lq4kD1RCJ+tN4g6Jps5zfWu+QmSz9sUABkA0BIAXocmBwCJ99MDIASATkmtLQAIft4IgE/ZDStZ59yQbOQQAGZWYMbZ3FFCAGRHnwHQznegGAE+zwxNi8kALCOgS9tzAC4jYG1Qo0myRm0Ae/z8eleqewBoZLwfUswCsbT1KgBZD6QAzAEoXUe3K+xxVf2uLf5U3nBeMPRyACW/LtrwVX989id3PRQOG5Io6vh9XwC6stHIdGdJozun03lxNlwvH4u6UgDM8/LmJyx7ak12feEebaXmUwCOYJWk1JcYKsl74HL74wAaH93NqkE1FSKXc4cv0AjaPEEPgE4ru/ieWdvzVq/4psG3AYDFHlEAioQCuEgMgPjK1VDrqlkbTABAiQBGK38B0BlBSf9xtiAJQDM4NtDqMlaeyduTtkDjHgAtEQBj5ZGK2QE0aCcMAIxLSw0WVYlGDgOQXWE+afouAM0S398O4Nej3wIQf4cIHSfz9pbWugyep4MFIAFARvspbm8BcE2DOdvWnCJQAWFhJ/hKzh4AaB2A7NxedKmLPc+6PN4cL2S8GYC1QMIEQJvmFsJfxdvkEQAoLV4AogBS8/kNvdXlWe5GKhABvQUAZASDALJffY1XfsrToFXFbvYD1gBo6wC8LR7/uvj9CwHcfWuoUJItsVl5nwWAnhxxqsXatUq0OYCcaS/fkbK61u5H8jwAuUIEZXHNL1Jmub5oSKZWiDR9FttM4HEAigqRpn8TeB2AuWNiByAXSHCGbB7/3qYCfgCgPgADEEskbjCCaJDB/+kR6wP4P1Obl8jsBwDUB4yAxqKkthaATjX0KmCtDyCxm+yIMLjCbwBgrg94FYC3h8vLPPmfAVBSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlJSUlLy9fJPgAEAvWMULbGsSjwAAAAASUVORK5CYII=';
+    renderer.textTexture2 = new GpuTexture(this.gpu, texture, this.core, null, true);
+};
+
+
+RendererInit.prototype.initImage = function() {
+    var renderer = this.renderer;
+    var gl = this.gpu.gl;
+
+    //create vertices buffer for rect
+    renderer.rectVerticesBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, renderer.rectVerticesBuffer);
+
+    var vertices = [ 0, 0, 0, 1,   1, 0, 0, 1,   2, 0, 0, 1,   3, 0, 0, 1 ];
+
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    renderer.rectVerticesBuffer.itemSize = 4;
+    renderer.rectVerticesBuffer.numItems = 4;
+
+    //create indices buffer for rect
+    renderer.rectIndicesBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, renderer.rectIndicesBuffer);
+
+    var indices = [ 0, 2, 1,    0, 3, 2 ];
+
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+    renderer.rectIndicesBuffer.itemSize = 1;
+    renderer.rectIndicesBuffer.numItems = 6;
+
+    renderer.textBuff16 = new Float32Array(16 * 4);
+    renderer.textBuff32 = new Float32Array(32 * 4);
+    renderer.textBuff48 = new Float32Array(48 * 4);
+    renderer.textBuff64 = new Float32Array(64 * 4);
+
+    renderer.textQuads16 = this.generateTextQuads(16);
+    renderer.textQuads32 = this.generateTextQuads(32);
+    renderer.textQuads48 = this.generateTextQuads(48);
+    renderer.textQuads64 = this.generateTextQuads(64);
+    renderer.textQuads96 = this.generateTextQuads(96);
+    renderer.textQuads128 = this.generateTextQuads(128);
+};
+
+
+RendererInit.prototype.generateTextQuads = function(num) {
+    var renderer = this.renderer;
+    var gl = this.gpu.gl;
+
+    var buffer = new Float32Array(num * 2 * 6);
+    var index, j;
+
+    for (var i = 0; i < num; i++) {
+        index = i * 6 * 2;
+
+        j = 0;
+        buffer[index] = i;
+        buffer[index+1] = j;
+
+        j = 1;
+        buffer[index+2] = i;
+        buffer[index+3] = j;
+
+        j = 2;
+        buffer[index+4] = i;
+        buffer[index+5] = j;
+
+        j = 2;
+        buffer[index+6] = i;
+        buffer[index+7] = j;
+
+        j = 3;
+        buffer[index+8] = i;
+        buffer[index+9] = j;
+
+        j = 0;
+        buffer[index+10] = i;
+        buffer[index+11] = j;
+    }
+
+    //create vertices buffer for rect
+    var vbuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbuffer);
+
+    gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.STATIC_DRAW);
+    vbuffer.itemSize = 2;
+    vbuffer.numItems = num * 6;
+
+    return vbuffer;
+};
+
+RendererInit.prototype.initSkydome = function() {
+    var renderer = this.renderer;
+    var use16Bit = renderer.core.config.map16bitMeshes;
+    var meshData = RendererGeometry.buildSkydome(32, 64, use16Bit);
+    renderer.skydomeMesh = new GpuMesh(this.gpu, meshData, null, this.core, true, use16Bit);
+    //this.skydomeTexture = new GpuTexture(this.gpu, "./skydome.jpg", this.core);
+
+    meshData = RendererGeometry.buildSkydome(128, 256, use16Bit, true);
+//    var meshData = RendererGeometry.buildSkydome(256, 512);
+    renderer.atmoMesh = new GpuMesh(this.gpu, meshData, null, this.core, true, use16Bit);
+};
+
+
+RendererInit.prototype.initBBox = function() {
+    var renderer = this.renderer;
+    var gpu = this.gpu;
+    renderer.bboxMesh = new GpuBBox(gpu);
+    renderer.bboxMesh2 = new GpuBBox(gpu, true);
+};
+
+
+RendererInit.prototype.initLines = function() {
+    var gpu = this.gpu;
+    var renderer = this.renderer;
+    renderer.plineBuffer = new Float32Array(32*3);
+    renderer.plines = new GpuPixelLine3(gpu, this.core, true, 64, true, 8);
+    renderer.plineJoints = new GpuPixelLine3(gpu, this.core, false, 64, true, 8);
+
+    renderer.stencilLineState = gpu.createState({blend:true, stencil:true, culling: false});
+    renderer.lineLabelState = gpu.createState({blend:true, culling: false, zequal: true, zwrite:false});
+    renderer.labelState = gpu.createState({blend:true, culling: false, zequal: true});
+    renderer.stencilLineHitState = gpu.createState({blend:false, stencil:true, culling: false});
+    renderer.lineLabelHitState = gpu.createState({blend:false, culling: false});
+
+    renderer.polygonB1S1C1tate = gpu.createState({blend:true, stencil:true, culling: true, zequal: true});
+    renderer.polygonB1S0C1tate = gpu.createState({blend:true, stencil:false, culling: true, zequal: true});
+    renderer.polygonB1S1C0tate = gpu.createState({blend:true, stencil:true, culling: false, zequal: true});
+    renderer.polygonB1S0C0tate = gpu.createState({blend:true, stencil:false, culling: false, zequal: true});
+
+    renderer.polygonB0S1C1tate = gpu.createState({blend:false, stencil:true, culling: true, zequal: true});
+    renderer.polygonB0S0C1tate = gpu.createState({blend:false, stencil:false, culling: true, zequal: true});
+    renderer.polygonB0S1C0tate = gpu.createState({blend:false, stencil:true, culling: false, zequal: true});
+    renderer.polygonB0S0C0tate = gpu.createState({blend:false, stencil:false, culling: false, zequal: true});
+
+};
+
+
+RendererInit.prototype.initBaricentricBuffer = function() {
+    var gpu = this.gpu;
+    var buffer = new Array(65535*3);
+
+    for (var i = 0; i < 65535*3; i+=9) {
+        buffer[i] = 1.0;
+        buffer[i+1] = 0;
+        buffer[i+2] = 0;
+
+        buffer[i+3] = 0;
+        buffer[i+4] = 1.0;
+        buffer[i+5] = 0;
+
+        buffer[i+6] = 0;
+        buffer[i+7] = 0;
+        buffer[i+8] = 1.0;
+    }
+
+    var gl = gpu.gl;
+    gpu.barycentricBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, gpu.barycentricBuffer);
+
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(buffer), gl.STATIC_DRAW);
+    gpu.barycentricBuffer.itemSize = 3;
+    gpu.barycentricBuffer.numItems = buffer.length / 3;
+};
+
+
+/* harmony default export */ __webpack_exports__["a"] = (RendererInit);
 
 
 /***/ }),
-/* 162 */
-/***/ (function(module, exports) {
-
-throw new Error("Module parse failed: g:\\code\\melown\\src\\core\\renderer\\init.js Unexpected token (64:163)\nYou may need an appropriate loader to handle this file type.\n| \n|     renderer.progDepthTile = new GpuProgram(gpu, '#define depth\\n' + shaders.tileVertexShader, ('#define depth\\n' + shaders.tileFragmentShader).replace('mediump', 'highp'));\n|     renderer.progDepthTileSE = new GpuProgram(gpu, '#define applySE\\n#define depth\\n' + shaders.tileVertexShader, ('#define depth\\n' + shaders.tileFragmentShader))replace('mediump', 'highp'));\n|     renderer.progDepthHeightmap = new GpuProgram(gpu, shaders.heightmapDepthVertexShader, (shaders.heightmapDepthFragmentShader).replace('mediump', 'highp'));\n| ");
-
-/***/ }),
-/* 163 */
+/* 166 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gpu_texture__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gpu_mesh__ = __webpack_require__(56);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gpu_program__ = __webpack_require__(57);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__octree_js__ = __webpack_require__(164);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gpu_mesh__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gpu_program__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__octree_js__ = __webpack_require__(167);
 
 
 
@@ -47109,7 +48067,7 @@ RendererInterface.prototype.getMarginFlags = function() {
 
 
 /***/ }),
-/* 164 */
+/* 167 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -47686,19 +48644,18 @@ OctreeRaycaster.prototype.intersectOctants = function(rayPos, rayDir, octants) {
 
 
 /***/ }),
-/* 165 */
+/* 168 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_matrix__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gpu_device__ = __webpack_require__(158);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gpu_device__ = __webpack_require__(162);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gpu_texture__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gpu_font__ = __webpack_require__(159);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__camera__ = __webpack_require__(155);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__init__ = __webpack_require__(162);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__init___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__init__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__draw__ = __webpack_require__(156);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__rmap__ = __webpack_require__(166);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gpu_font__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__camera__ = __webpack_require__(157);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__init__ = __webpack_require__(165);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__draw__ = __webpack_require__(158);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__rmap__ = __webpack_require__(169);
 
 
 
@@ -47715,7 +48672,7 @@ var GpuDevice = __WEBPACK_IMPORTED_MODULE_1__gpu_device__["a" /* default */];
 var GpuTexture = __WEBPACK_IMPORTED_MODULE_2__gpu_texture__["a" /* default */];
 var GpuFont = __WEBPACK_IMPORTED_MODULE_3__gpu_font__["a" /* default */];
 var Camera = __WEBPACK_IMPORTED_MODULE_4__camera__["a" /* default */];
-var RenderInit = __WEBPACK_IMPORTED_MODULE_5__init__["default"];
+var RenderInit = __WEBPACK_IMPORTED_MODULE_5__init__["a" /* default */];
 var RenderDraw = __WEBPACK_IMPORTED_MODULE_6__draw__["a" /* default */];
 var RenderRMap = __WEBPACK_IMPORTED_MODULE_7__rmap__["a" /* default */];
 
@@ -48501,7 +49458,7 @@ Renderer.prototype.getFont = function(url) {
 
 
 /***/ }),
-/* 166 */
+/* 169 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -48849,7 +49806,7 @@ RendererRMap.prototype.processRectangles = function(gpu, gl, renderer, screenPix
 
 
 /***/ }),
-/* 167 */
+/* 170 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -49378,7 +50335,7 @@ function constrainMapPosition(browser, pos) {
 
 
 /***/ }),
-/* 168 */
+/* 171 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50271,7 +51228,7 @@ UIControlMeasure.prototype.getTextNumber = function(value) {
 
 
 /***/ }),
-/* 169 */
+/* 172 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50566,19 +51523,19 @@ UIEvent.prototype.getType = function() {
 
 
 /***/ }),
-/* 170 */
+/* 173 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_browser_browser_css__ = __webpack_require__(171);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_browser_browser_css__ = __webpack_require__(174);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_browser_browser_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_browser_browser_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_browser_presenter_css_main_css__ = __webpack_require__(172);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_browser_presenter_css_main_css__ = __webpack_require__(175);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_browser_presenter_css_main_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_browser_presenter_css_main_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_browser_presenter_css_panel_css__ = __webpack_require__(173);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_browser_presenter_css_panel_css__ = __webpack_require__(176);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_browser_presenter_css_panel_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_browser_presenter_css_panel_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_browser_presenter_css_subtitles_css__ = __webpack_require__(174);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_browser_presenter_css_subtitles_css__ = __webpack_require__(177);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_browser_presenter_css_subtitles_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_browser_presenter_css_subtitles_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__browser__ = __webpack_require__(176);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__browser__ = __webpack_require__(179);
 
 //css stuff
 
@@ -50705,24 +51662,6 @@ BrowserInterface.prototype.getParam = function(key) {
 
 
 /***/ }),
-/* 171 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 172 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 173 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
 /* 174 */
 /***/ (function(module, exports) {
 
@@ -50730,6 +51669,24 @@ BrowserInterface.prototype.getParam = function(key) {
 
 /***/ }),
 /* 175 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 176 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 177 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 178 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -50931,18 +51888,18 @@ Autopilot.prototype.generatePIHTrajectory = function(position, azimuth, distance
 
 
 /***/ }),
-/* 176 */
+/* 179 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__core_core__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_interface__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_interface__ = __webpack_require__(60);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__core_utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ui_ui__ = __webpack_require__(200);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__autopilot_autopilot__ = __webpack_require__(175);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__control_mode_control_mode__ = __webpack_require__(177);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__presenter_presenter__ = __webpack_require__(181);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__rois_rois__ = __webpack_require__(182);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ui_ui__ = __webpack_require__(203);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__autopilot_autopilot__ = __webpack_require__(178);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__control_mode_control_mode__ = __webpack_require__(180);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__presenter_presenter__ = __webpack_require__(184);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__rois_rois__ = __webpack_require__(185);
 
 
 
@@ -51474,13 +52431,13 @@ Browser.prototype.getConfigParam = function(key) {
 
 
 /***/ }),
-/* 177 */
+/* 180 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__disabled__ = __webpack_require__(178);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__map_observer__ = __webpack_require__(167);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pano__ = __webpack_require__(179);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__disabled__ = __webpack_require__(181);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__map_observer__ = __webpack_require__(170);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pano__ = __webpack_require__(182);
 
 
 
@@ -51667,7 +52624,7 @@ ControlMode.prototype.checkAutopilot = function() {
 
 
 /***/ }),
-/* 178 */
+/* 181 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -51681,7 +52638,7 @@ var ControlModeDisabled = function() {
 
 
 /***/ }),
-/* 179 */
+/* 182 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -51823,20 +52780,20 @@ ControlModePano.prototype.reset = function(config) {
 
 
 /***/ }),
-/* 180 */
+/* 183 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_proj4__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_earcut__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_earcut__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_earcut___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_earcut__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__core_core__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__core_utils_matrix__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__core_utils_utils__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__core_utils_math__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__core_utils_platform__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__interface__ = __webpack_require__(170);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__interface__ = __webpack_require__(173);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__utility_dom__ = __webpack_require__(9);
 /* harmony reexport (default from non-hamory) */ __webpack_require__.d(__webpack_exports__, "earcut", function() { return __WEBPACK_IMPORTED_MODULE_1_earcut___default.a; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "vec2", function() { return vec2; });
@@ -51888,7 +52845,7 @@ function getBrowserVersion() {
 
 
 /***/ }),
-/* 181 */
+/* 184 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -52491,7 +53448,7 @@ Presenter.prototype.showSections = function(elem) {
 
 
 /***/ }),
-/* 182 */
+/* 185 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -52526,7 +53483,7 @@ Rois.prototype.roisAtPosition = function(/*position, count, clb*/) {
 
 
 /***/ }),
-/* 183 */
+/* 186 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -52643,7 +53600,7 @@ UIControlCompass.prototype.onDoubleClick = function(event) {
 
 
 /***/ }),
-/* 184 */
+/* 187 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -52806,7 +53763,7 @@ UIControlCredits.prototype.onMoreButton = function(butt, html) {
 
 
 /***/ }),
-/* 185 */
+/* 188 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -52829,7 +53786,7 @@ var UIControlFallback = function(ui, visible, visibleLock) {
 
 
 /***/ }),
-/* 186 */
+/* 189 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -52908,7 +53865,7 @@ UIControlFullscreen.prototype.onClick = function() {
 
 
 /***/ }),
-/* 187 */
+/* 190 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -52928,11 +53885,11 @@ var UIControlGithub = function(ui, visible, visibleLock) {
 
 
 /***/ }),
-/* 188 */
+/* 191 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__element_element__ = __webpack_require__(199);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__element_element__ = __webpack_require__(202);
 
 
 
@@ -53025,7 +53982,7 @@ UIControlHolder.prototype["getVisible"] = UIControlHolder.prototype.getVisible;
 
 
 /***/ }),
-/* 189 */
+/* 192 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -53042,7 +53999,7 @@ var UIControlLayers = function(ui, visible, visibleLock) {
 
 
 /***/ }),
-/* 190 */
+/* 193 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -53122,7 +54079,7 @@ UIControlLink.prototype.updateLink = function() {
 
 
 /***/ }),
-/* 191 */
+/* 194 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -53259,7 +54216,7 @@ UIControlLoading.prototype.update = function() {
 
 
 /***/ }),
-/* 192 */
+/* 195 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -53286,12 +54243,12 @@ UIControlMap.prototype.getMapElement = function() {
 
 
 /***/ }),
-/* 193 */
+/* 196 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utility_dom__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__measure__ = __webpack_require__(168);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__measure__ = __webpack_require__(171);
 
 
 
@@ -53531,7 +54488,7 @@ UIControlMeasureLite.prototype.updateLink = function() {
 
 
 /***/ }),
-/* 194 */
+/* 197 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -53571,7 +54528,7 @@ UIControlPopup.prototype.hide = function() {
 
 
 /***/ }),
-/* 195 */
+/* 198 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -53859,13 +54816,13 @@ function geoSearch = ( { lat,lon,zoom,lang } ) => {
 
 
 /***/ }),
-/* 196 */
+/* 199 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utility_dom__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__search_filter__ = __webpack_require__(195);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__search_filter__ = __webpack_require__(198);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__core_utils_matrix__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__core_utils_math__ = __webpack_require__(4);
 
@@ -54480,12 +55437,12 @@ UIControlSearch.prototype.update = function() {
 
 
 /***/ }),
-/* 197 */
+/* 200 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utility_dom__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__control_mode_map_observer__ = __webpack_require__(167);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__control_mode_map_observer__ = __webpack_require__(170);
 
 
 var dom = __WEBPACK_IMPORTED_MODULE_0__utility_dom__["a" /* default */];
@@ -54602,7 +55559,7 @@ UIControlSpace.prototype.update = function() {
 
 
 /***/ }),
-/* 198 */
+/* 201 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -54686,11 +55643,11 @@ UIControlZoom.prototype.repeat = function(count, factor, delay) {
 
 
 /***/ }),
-/* 199 */
+/* 202 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__event__ = __webpack_require__(169);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__event__ = __webpack_require__(172);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utility_dom__ = __webpack_require__(9);
 
 
@@ -55256,28 +56213,28 @@ UIElement.prototype.updateDragButtonsState = function(event, state) {
 
 
 /***/ }),
-/* 200 */
+/* 203 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utility_dom__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_utils_utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__control_holder__ = __webpack_require__(188);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__control_map__ = __webpack_require__(192);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__control_compass__ = __webpack_require__(183);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__control_credits__ = __webpack_require__(184);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__control_fullscreen__ = __webpack_require__(186);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__control_zoom__ = __webpack_require__(198);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__control_space__ = __webpack_require__(197);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__control_search__ = __webpack_require__(196);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__control_link__ = __webpack_require__(190);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__control_github__ = __webpack_require__(187);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__control_layers__ = __webpack_require__(189);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__control_fallback__ = __webpack_require__(185);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__control_popup__ = __webpack_require__(194);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__control_loading__ = __webpack_require__(191);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__control_measure__ = __webpack_require__(168);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__control_measure_lite__ = __webpack_require__(193);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__control_holder__ = __webpack_require__(191);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__control_map__ = __webpack_require__(195);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__control_compass__ = __webpack_require__(186);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__control_credits__ = __webpack_require__(187);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__control_fullscreen__ = __webpack_require__(189);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__control_zoom__ = __webpack_require__(201);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__control_space__ = __webpack_require__(200);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__control_search__ = __webpack_require__(199);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__control_link__ = __webpack_require__(193);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__control_github__ = __webpack_require__(190);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__control_layers__ = __webpack_require__(192);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__control_fallback__ = __webpack_require__(188);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__control_popup__ = __webpack_require__(197);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__control_loading__ = __webpack_require__(194);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__control_measure__ = __webpack_require__(171);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__control_measure_lite__ = __webpack_require__(196);
 
 
 var dom = __WEBPACK_IMPORTED_MODULE_0__utility_dom__["a" /* default */];
