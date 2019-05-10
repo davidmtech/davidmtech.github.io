@@ -3525,7 +3525,7 @@ string getCoreVersion()
 */
 
 function getCoreVersion(full) {
-    return (full ? 'Core: ' : '') + '2.21.1';
+    return (full ? 'Core: ' : '') + '2.21.2';
 }
 
 
@@ -49879,15 +49879,20 @@ ControlModeMapObserver.prototype.drag = function(event) {
 
         } else if (config.zoomAllowed) {
 
-            var factor = 1.0 + (event.getTouchParameter('touchDistanceDelta') > 1.0 ? -1 : 1)*0.01;
-            this.viewExtentDeltas.push(factor);
-            this.reduceFloatingHeight(0.8);
-            
-            if (config.legacyInertia) {
-                this.updateDeltas(false, false, true);
-            }
+            var delta = event.getTouchParameter('touchDistanceDelta');
 
-            this.browser.callListener('map-position-zoomed', {});
+            if (Math.abs(delta) > 10) {
+
+                var factor = 1.0 + (delta > 0 ? -1 : 1)*0.01;
+                this.viewExtentDeltas.push(factor);
+                this.reduceFloatingHeight(0.8);
+                
+                if (config.legacyInertia) {
+                    this.updateDeltas(false, false, true);
+                }
+
+                this.browser.callListener('map-position-zoomed', {});
+            }
         }
         
     } else if ((event.getDragButton('left') && !modifierKey) && config.panAllowed) { //pan
