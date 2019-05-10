@@ -339,7 +339,7 @@
                 browserCounter++;
             }
 
-            console.log('counter: ' + browserCounter);
+            //console.log('counter: ' + browserCounter);
             
             if (browserCounter > 50) {
                 browserCounter = 0;
@@ -408,7 +408,7 @@
      
         html += '<link rel="stylesheet" type="text/css" href="https://cdn.melown.com/libs/vtsjs/browser/v2/vts-browser.min.css" />' +
                 //'<script type="text/javascript" src="https://cdn.melown.com/libs/vtsjs/browser/v2/vts-browser.min.js"></' +'script >' +
-                '<script type="text/javascript" src="../../build/vts-browser.js">'+ '</' +'script >' +
+                '<script type="text/javascript" src="./vts-browser.min.js">'+ '</' +'script >' +
                 '<script> var browser,noposts=true,mapParams=' + JSON.stringify(mapParams) + ',lastFrameTimer=0; ' + code + '</' +'script >';
 
      
