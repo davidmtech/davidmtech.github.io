@@ -56118,7 +56118,8 @@ UIElement.prototype.onDragMove = function(touchUsed, event) {
                     d2 = Math.sqrt(dx * dx + dy * dy);
                     
                     //get delta betwwen distances
-                    distanceDelta += d2 - d1;   
+                    distanceDelta += d2 - d1;
+                    d1 = d2;
                 }
 
                 //}  
