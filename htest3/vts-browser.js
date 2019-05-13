@@ -49877,11 +49877,11 @@ ControlModeMapObserver.prototype.drag = function(event) {
             this.orientationDeltas.push([delta[0] * sensitivity,  -delta[1] * sensitivity, 0]);
             this.browser.callListener('map-position-rotated', {});
 
-        } else if (config.zoomAllowed) {
+        } else if (event.getTouchParameter('touchMode') == 'zoom' && config.zoomAllowed) {
 
             var delta = event.getTouchParameter('touchDistanceDelta');
 
-            if (Math.abs(delta) > 10) {
+            if (Math.abs(delta) >= 1) {
 
                 var factor = 1.0 + (delta > 0 ? -1 : 1)*0.01;
                 this.viewExtentDeltas.push(factor);
@@ -56104,7 +56104,7 @@ UIElement.prototype.onDragMove = function(touchUsed, event) {
                 dy = (t2[5][1] - t[5][1]);
                 d2 = Math.sqrt(dx * dx + dy * dy);
                 
-                    //get delta betwwen distances
+                //get delta betwwen distances
                 distanceDelta = d2 - d1;   
                 */
 
@@ -56117,7 +56117,7 @@ UIElement.prototype.onDragMove = function(touchUsed, event) {
                     dy = (t2[i][1] - t[i][1]);
                     d2 = Math.sqrt(dx * dx + dy * dy);
                     
-                    //get delta betwwen distances
+                    //get delta between distances
                     distanceDelta += d2 - d1;
                     d1 = d2;
                 }
