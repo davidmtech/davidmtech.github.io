@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+                [
+					[14.2696575, 50.4055053, 0],
+					[14.3281088, 50.3939467, 0],
+					[14.3145503, 50.3631405, 0],
+					[14.2531631, 50.3764260, 0]
+                ]
+            ]
+        },
+        "type": "Feature",
+        "properties": {
+            "CNTR_NAME": "Hill",
+            "ISO3_CODE": "CZE",
+            "CNTR_ID": "CZ",
+            "NAME_ENGL": "Czechia",
+            "FID": "CZ"
+        },
+        "id": "CZ"
+
+    }
+  ]
+}
