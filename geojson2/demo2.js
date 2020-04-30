@@ -77,7 +77,7 @@ function geojsonLoaded(data) {
     geodata.importVTSGeodata(data);
 
     //make free layer
-    var freeLayer = geodata.makeFreeLayer(style); // null, data);
+    var freeLayer = geodata.makeFreeLayer(style);
 
     //add free layer to the map
     map.addFreeLayer('geodatatest', freeLayer);
