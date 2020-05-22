@@ -22,6 +22,19 @@ var geodata = null;
     params['fixedHeight'] = 48; //48???
     params['mapCheckTextureSize'] = true;
 
+    //parse mapSplitSpace url param
+    var params2 = vts.utils.getParamsFromUrl(window.location.href);
+    if (params2['mapSplitSpace']) {
+        var value = decodeURIComponent(params2['mapSplitSpace']);
+        value = value.split(',');
+        
+        for (var i = 0, li = value.length; i < li; i++) {
+            value[i] = parseFloat(value[i]);
+        }
+        
+        params['mapSplitSpace'] = [ [value[0],value[1],value[2]], [value[3],value[4],value[5]], [value[6],value[7],value[8]], [value[9],value[10],value[11]] ];
+    }	
+	
     if (!params['pos']) {
         params['pos'] = [ 'obj', 0.075365034865010019 * (180/Math.PI), 0.90892506334583045 * (180/Math.PI), 'float', 0.00, -23.00, -49.10, 0.00, 41033.50, 45.00 ]
         //params['pos'] = [ 'obj', -2.1362545626053979 * (180/Math.PI), 0.65953372844334801 * (180/Math.PI), 'float', 0.00, -23.00, -49.10, 0.00, 41033.50, 45.00 ]
