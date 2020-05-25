@@ -24,6 +24,11 @@ var geodata = null;
 
     //parse mapSplitSpace url param
     var params2 = vts.utils.getParamsFromUrl(window.location.href);
+
+    if (params2['fixedHeight']) {
+        params['fixedHeight'] = parseFloat(params2['fixedHeight']);
+    }
+	
     if (params2['mapSplitSpace']) {
         var value = decodeURIComponent(params2['mapSplitSpace']);
         value = value.split(',');
