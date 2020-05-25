@@ -19,7 +19,7 @@ var geodata = null;
     };
 
     params['walkMode'] = true;
-    params['fixedHeight'] = 48; //48???
+    params['fixedHeight'] = 47; //48???
     params['mapCheckTextureSize'] = true;
 
     //parse mapSplitSpace url param
