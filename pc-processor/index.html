@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title>Point Cloud Processor</title>
+
+    <style type="text/css">
+      
+      body {
+        font-family: Verdana, Tahoma, Geneva, Arial, Sans-serif;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      h4 {
+        margin-top: 20px;
+        margin-bottom: -10px;
+        font-size: 14px;
+      }
+
+      a {
+        color: #0366d6;
+      }
+
+      p {
+        font-size: 14px;
+      }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <div style="width:800px;margin: auto;">
+
+      <h1>Point Cloud Processor</h1>
+
+      <h4 class="panel-title">Set PLY file</h4><br>
+      <input type="file" id="plyfile" accept=".ply">
+
+      <br>
+
+      <h4 class="panel-title">Set JSON file</h4><br>
+      <input type="file" id="jsonfile" accept=".json">
+
+      <br><br><br>
+
+      <button id="startbutton">Start Processing</button>
+
+      <br><br>
+      <span id="status" style="font-size: 12px"></span>
+
+    </div>
+
+    <script type="module" >
+      
+      import { Editor } from './main.js';
+
+      var editor = new Editor();
+
+      function convert() {
+
+          editor.convert();
+
+      }
+
+      document.getElementById('startbutton').onclick = convert;
+
+
+    </script>
+
+  <body>
+</html>
