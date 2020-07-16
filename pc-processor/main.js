@@ -243,7 +243,7 @@ Editor.prototype = {
 
             poly = shapeParams.poly;
             m.elements = shapeParams.m.slice();
-            layerIndex = (shapeParams.layer || 1);// / 255.0;
+            layerIndex = (shapeParams.layer || 0);// / 255.0;
             onlyUnclassified = shapeParams.onlyUnclassified || false;
 
            
