@@ -103,6 +103,105 @@ Editor.prototype = {
         }
     },
 
+
+    checkPlanePack: function() {
+        let hit = false;
+        let planePack = [];
+
+        for (let i = 0, li = this.currentPlanePack.length; i < li; i++) {
+
+            if (this.currentPlanePack[i] != this.viewPlanePackIndices[i]) {
+                hit = true;
+                break;
+            }
+        }
+
+        if (hit || this.currentPlanePack.length != editor.viewPlanePackIndices.length) {
+            this.currentPlanePack = [];
+
+            for (let i = 0, li = this.viewPlanePackIndices.length; i < li; i++) {
+                this.currentPlanePack.push(this.viewPlanePackIndices[i]);
+                planePack.push(this.planes[this.viewPlanePackIndices[i]]);
+            }
+
+            this.commands[this.commandsIndex] = {
+                'type': 'clipping-planes',
+                'planes': this.viewPlanePackIndices.slice()
+
+            };
+
+            this.commandsIndex++;
+        }
+
+        for (let i = 0, li = this.viewPlanePackIndices.length; i < li; i++) {
+            planePack.push(this.planes[this.viewPlanePackIndices[i]]);
+        }
+
+        return planePack;
+    },
+
+
+    checkLayerPack: function() {
+        let hit = false;
+        let layers = this.project.layers;
+
+        for (let i = 0, li = layers.length; i < li; i++) {
+
+            if (this.currentLayerPack[layers[i].render_color] != (layers[i].visible ? 1:0)) {
+                hit = true;
+                break;
+            }
+        }
+
+        if (hit) {
+            let visiblePack = [];
+            let hiddenPack = [];
+            //let justInit = (this.currentLayerPack.length == 0);
+
+            for (let i = 0, li = layers.length; i < li; i++) {
+                let visible = layers[i].visible;
+
+                if (visible) {
+                    visiblePack.push(layers[i].render_color);
+                } else {
+                    hiddenPack.push(layers[i].render_color);
+                }
+               
+                //this.currentLayerPack[i] = visible;
+            }
+
+            //if (!(justInit && layers.length == visiblePack.length)) {
+                if (visiblePack.length < hiddenPack.length) {
+                    this.commands[this.commandsIndex] = {
+                        'type': 'layers-visibility',
+                        'visible': visiblePack
+                    };
+                } else {
+                    this.commands[this.commandsIndex] = {
+                        'type': 'layers-visibility',
+                        'hidden': hiddenPack
+                    };
+                }
+
+                this.commandsIndex++;
+            //}
+        }
+
+        let layerPack = new Uint8Array(256);
+        layerPack.fill(0);
+
+        for (let i = 0, li = layers.length; i < li; i++) {
+            if (layers[i].visible) {
+                layerPack[layers[i].render_color] = 1;
+            }
+        }
+
+        this.currentLayerPack = layerPack.slice();
+
+        return layerPack;
+    },
+
+
     checkPlanes: function(x, y, z, planePack) {
 
         for (let i = 0, li = planePack.length; i < li; i++) {
@@ -117,80 +216,41 @@ Editor.prototype = {
         return true;
     },
 
-    applyBoxVolume: function(shapeParams, planePack, layerPack) {
 
-        let model = this.model;
-        let shape = this.selected;
-
-        if (model && (shape || shapeParams)) {
-
-            let layerIndex;// / 255.0;
-            let vertices = model.geometry.attributes.position.array;
-            let colors = model.colors;
-            let m = new THREE.Matrix4(), bbox, onlyUnclassified;
-
-            m.elements = shapeParams.m.slice();
-            m.getInverse(m);
-            bbox = new THREE.Box3(shapeParams.bbox.min, shapeParams.bbox.max);
-            layerIndex = (shapeParams.layer || 1) / 255.0;
-            onlyUnclassified = shapeParams.onlyUnclassified || false;
-
-
-            let c = new THREE.Vector3(0,0,0);
-            
-            for (let i = 0, li = vertices.length, j = 0; i < li; i+=3, j++) {
-
-                if ((onlyUnclassified && colors[j+3]) || !layerPack[colors[j]]) {
-                    continue;
-                }
-
-                if (planePack && !this.checkPlanes(vertices[i],vertices[i+1],vertices[i+2],planePack)) {
-                    continue;
-                }
-                
-                let p = new THREE.Vector3(vertices[i],vertices[i+1],vertices[i+2]);
-
-                p.applyMatrix4(m);
-
-                if (bbox.containsPoint(p)) {
-                    colors[j] = layerIndex;
-                }
-
-                /*
-                if (p.distanceTo(c) < 10) {
-                    colors[j+3] = layerIndex;
-                }*/
-            }
-
-            model.geometry.attributes.colorRGBA.needsUpdate = true;
-
-        }
-
-    },
-
-
-    applyFrustumVolume: function(rect, shapeParams, planePack, layerPack) {
+    applyFrustumVolume: function(rect, shapeParams, planePack, layerPack, removeMode) {
 
         let model = this.model;
 
         if (model) {
 
-            let layerIndex;// / 255.0;
             let vertices = model.geometry.attributes.position.array;
             let colors = model.colors;
-            let m = new THREE.Matrix4(), onlyUnclassified;
-            let pp = new THREE.Vector4(), x1,x2,y1,y2;
+            let m = new THREE.Matrix4();
+            let pp = new THREE.Vector4();
 
             m.elements = shapeParams.m.slice();
-            layerIndex = (shapeParams.layer || 0);// / 255.0;
-            rect = shapeParams.rect;
-            x1 = rect.x1, x2 = rect.x2, y1 = rect.y1, y2 = rect.y2;
-            onlyUnclassified = shapeParams.onlyUnclassified || false;
-
+            let layerIndex2 = (shapeParams.layer || 0);
+            let layerIndex = shapeParams.removeMode ? 0 : layerIndex2;
+            let rect = shapeParams.rect;
+            let x1 = rect.x1, x2 = rect.x2, y1 = rect.y1, y2 = rect.y2;
+            let onlyUnclassified = shapeParams.onlyUnclassified || false;
+            let removeMode = shapeParams.removeMode || false;
             
             for (let i = 0, li = vertices.length, j = 0; i < li; i+=3, j++) {
 
-                if ((onlyUnclassified && colors[j+3]) || !layerPack[colors[j]]) {
+                if (onlyUnclassified) {
+                    if (removeMode) {
+                        if (colors[j] != layerIndex2) {
+                            continue;
+                        }
+                    } else {
+                        if (colors[j]) {
+                            continue;
+                        }
+                    }
+                } 
+
+                if (!layerPack[colors[j]]) {
                     continue;
                 }
 
@@ -210,7 +270,6 @@ Editor.prototype = {
                     colors[j] = layerIndex;
                 }
             }
-
         }
     },
 
@@ -228,28 +287,40 @@ Editor.prototype = {
       return c;
     },
 
-    applyPolyFrustumVolume: function(line, shapeParams, planePack, layerPack) {
+    applyPolyFrustumVolume: function(line, shapeParams, planePack, layerPack, removeMode) {
 
         let model = this.model;
 
         if (model) {
 
-            let layerIndex;// / 255.0;
             let vertices = model.geometry.attributes.position.array;
             let colors = model.colors;
-            let m = new THREE.Matrix4(), onlyUnclassified;
+            let m = new THREE.Matrix4();
             let pp = new THREE.Vector4();
-            let poly;
 
-            poly = shapeParams.poly;
+            let poly = shapeParams.poly;
             m.elements = shapeParams.m.slice();
-            layerIndex = (shapeParams.layer || 0);// / 255.0;
-            onlyUnclassified = shapeParams.onlyUnclassified || false;
-
-           
+            
+            let layerIndex2 = (shapeParams.layer || 0);
+            let layerIndex = shapeParams.removeMode ? 0 : layerIndex2;
+            let onlyUnclassified = shapeParams.onlyUnclassified || false;
+            let removeMode = shapeParams.removeMode || false;
+            
             for (let i = 0, li = vertices.length, j = 0; i < li; i+=3, j++) {
 
-                if ((onlyUnclassified && colors[j+3]) || !layerPack[colors[j]]) {
+                if (onlyUnclassified) {
+                    if (removeMode) {
+                        if (colors[j] != layerIndex2) {
+                            continue;
+                        }
+                    } else {
+                        if (colors[j]) {
+                            continue;
+                        }
+                    }
+                } 
+
+                if (!layerPack[colors[j]]) {
                     continue;
                 }
 
@@ -271,6 +342,7 @@ Editor.prototype = {
             }
         }
     },
+
 
     fromJSON: function ( json ) {
 
