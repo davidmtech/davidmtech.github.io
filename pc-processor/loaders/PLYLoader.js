@@ -353,7 +353,7 @@ PLYLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 
 
 				//if (options.flipYZ) {
-					buffer.vertices.push( element.x, element.z, element.y );
+					buffer.vertices.push( element.x, element.z, -element.y );
 				//} else {
 				//	buffer.vertices.push( element.x, element.y, element.z );
 				//}

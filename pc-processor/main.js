@@ -350,6 +350,8 @@ Editor.prototype = {
             return;
         }
 
+        let version = json.version || 0;
+
         if (json.commands) {
             this.commands = JSON.parse(JSON.stringify(json.commands));
         }
@@ -365,6 +367,45 @@ Editor.prototype = {
         if (json.viewPlanes) {
             this.viewPlanes = JSON.parse(JSON.stringify(json.viewPlanes));
         }
+
+        if (version <= 0.1) {
+            this.oldjson = json;
+
+            //flip axis in commands
+            for (let i = 0, li = this.commands.length; i < li; i++) {
+
+                let type = this.commands[i]['type'];
+
+                if (type == 'frustum' || type == 'poly-frustum') {
+                    let m = this.commands[i]['m'];
+
+                    let m2 = new THREE.Matrix4();
+                    m2.fromArray(m);
+
+                    let m3 = new THREE.Matrix4();
+                    m3.fromArray([1,0,0,0,
+                                  0,1,0,0,
+                                  0,0,-1,0,
+                                  0,0,0,1]);
+
+                    m2.multiply(m3);
+
+                    this.commands[i]['m'] = m2.toArray();
+                }
+
+            }
+
+            //flip axis in planes
+            for (let i = 0, li = this.planes.length; i < li; i++) {
+
+                let plane = this.planes[i];
+                plane[2] = -plane[2];
+            }
+
+            json.viewPlanes = [];
+        }
+
+
     },
 
 
