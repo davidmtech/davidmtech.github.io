@@ -1,0 +1,524 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>3D Map of Planet Mercury Based on NASA&#39;s MESSENGER Mission | Melown Technologies</title>
+    <meta name="description"
+          content="Aerial surveys and country-wide 3D reconstruction and photogrammetry projects. Mass-scale 3D map streaming and rendering. Cloud-based 3D map APIs, and more.">
+    
+    
+    <meta property="og:image" content="https://cdn.melown.com/static/web/homepage-web-static/mercury/resources/screenshot.jpg" >
+    
+    <meta property="og:title" content="Melown - 3D Map of Planet Mercury Based on NASA's MESSENGER Mission" >
+    
+    <meta property="og:site_name" content="Melown" >
+    
+    <meta property="og:type" content="product" >
+    
+    <meta property="og:description" content="An interactive map based on the topographic model of Mercury created from images collected by the MESSENGER mission's MDIS instrument between March 2011 and April 2015." >
+    
+    <meta name="msvalidate.01" content="97BB9FACCFF36E2B93A3EAC4B93C2E44" />
+
+    <link rel="icon" type="image/png" href="//cdn.melown.com/static/web/img/core/favicon.png?1549545798"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,800">
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdn.melown.com/static/web/libs/twentytwenty.css?1549545798" type="text/css" media="screen" />
+    <link rel="stylesheet" href="//cdn.melown.com/static/web/style/style.css?1549545798">
+    <link rel="canonical" href="https://www.melown.com/mercury/">
+    <link rel="alternate"
+          href="/feed.xml"
+          type="application/rss+xml"
+          title="Melown" >
+
+
+
+    
+
+    
+ <script>
+    var trackingCode = 'UA-42854295-7';
+    if (document.location.href.indexOf('www.melown.com') !== -1) {
+            trackingCode = 'UA-42854295-4';
+    }
+ </script>
+
+    <script>
+        var goToConsole = function() {
+            location.href = '/console';
+        };
+    </script>
+
+    <!--MELOWN LIB-->
+    <!--<link rel="stylesheet" type="text/css" href="//cdn.melown.com/static/web/homepage-web-static/index.css?2.37">-->
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="//cdn.melown.com/libs/vtsjs/browser/v2/vts-browser.min.css" />
+    <script
+      type="text/javascript"
+      src="//cdn.melown.com/libs/vtsjs/browser/v2/vts-browser.min.js">
+    </script>
+    <script
+      type="text/javascript"
+      src="//cdn.melown.com/libs/vtsjs/support/v2/start-browser.js">
+    </script>
+
+    <style>
+        body {
+            background-color: #000;
+        }
+
+        #panel {
+            font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            position: absolute;
+            right: 30px;
+            bottom: 30px;
+            background-color: #eee;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: solid 1px #000;
+        }
+
+        #info-panel {
+            position: absolute;
+            left: 0px;
+            top: -200px;
+            display: none;
+            height:200px;
+            pointer-events: none;
+        }
+
+        #info-panel-text {
+            font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            position: absolute;
+            left: 0px;
+            top: -200px;
+            padding: 10px 20px;
+            color: #fff;
+            text-shadow: 0 0 5px #000, 0 0 5px #000;
+            height:200px;
+            width:270px;
+        }
+
+        #info-panel-text h3 {
+            font-weight: normal;
+            font-size: 20px;
+        }
+
+        #info-panel-text h4 {
+            font-size: 13px;
+            margin-bottom: -7px;
+            font-weight: normal;
+        }
+
+        #info-panel-line {
+            position: absolute;
+            left: 0px;
+            top: -170px;
+            background-color: #fff;
+            box-shadow: 0 0 5px #000;
+            width:1px;
+            height:170px;
+        }
+
+        #info-panel-point {
+            position: absolute;
+            left: -5px;
+            top: -5px;
+            background-color: #fff;
+            box-shadow: 0 0 5px #000;
+            border-radius: 8px;
+            width:10px;
+            height:10px;
+        }
+
+        header.header {
+            background-color: #000;
+            border-bottom: solid 1px #333;
+            z-index: 999;
+        }
+
+        header.header .logo a {
+            background-image: url('//cdn.melown.com/static/web/homepage-web-static/resources/melown-logo-white.png');
+            background-size: 100% 100%;
+        }
+
+        nav.navigation a, nav.signIn a {
+            color: #fff;
+        }
+
+        #map-div {
+            position: absolute;
+            left: 0px;
+            top: 81px;
+            right:210px;
+            height:calc(100% - 81px);
+        }
+
+        #layers-panel {
+            position: absolute;
+            top: 0px;
+            right:0px;
+            height:100%;
+            width:210px;
+            background-color: #000;
+            font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            color: #fff;
+            text-shadow: 0 0 5px #000, 0 0 5px #000;
+            box-shadow: 0 0 10px #000;
+            z-index: 100;
+        }
+
+        #layers-buttons-wrapper {
+            position: absolute;
+            top: 50%;
+            right:5px;
+            width:200px;
+            margin-top: -330px;
+        }
+
+        .layers-buttton {
+            height:165px;
+            cursor:pointer;
+        }
+
+        .layers-buttton-selected {
+            position:absolute;
+            left:-2px;
+            top:-2px;
+            height:158px;
+            width:200px;
+            border: solid 2px #ff0000;
+            display: none;
+        }
+
+        .layers-buttton h2 {
+            padding-left: 20px;
+            font-size: 20px;
+            font-weight: normal;
+            margin: 20px 0 20px;
+            text-align: left;
+        }
+
+        .layers-buttton img {
+            left:0px;
+            top:0px;
+            margin-bottom:-200px;
+        }
+
+        .layers-title-text {
+            width: 500px;
+            position: absolute;
+            right: 222px;
+            top: 0px;
+            background-color: #000;
+            padding: 10px;
+            display: none;
+            border: 1px solid #333;
+            border-radius: 5px;
+            line-height: 140%;
+        }
+
+        .layers-title-text:after, .layers-title-text:before {
+            left: 100%;
+            top: 60px;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .layers-title-text:after {
+            border-color: rgba(0, 0, 0, 0);
+            border-left-color: #000000;
+            border-width: 15px;
+            margin-top: -15px;
+        }
+        .layers-title-text:before {
+            border-color: rgba(51, 51, 51, 0);
+            border-left-color: #333;
+            border-width: 16px;
+            margin-top: -16px;
+        }
+
+        #welcome-page {
+            position:fixed;
+            left:0px;
+            top:0px;
+            background-color: rgba(0,0,0,0.9);
+            z-index:200;
+            width:100%;
+            height:100%;
+        }
+
+        #welcome-page-wrapper {
+            font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+            text-align: center;
+            height: 500px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-left: -400px;
+            margin-top: -250px;
+            color: #fff;
+            width:800px;
+        }
+
+        #welcome-page-wrapper h1 {
+            font-weight: normal;
+            text-transform: uppercase;
+            margin-bottom: 35px;
+        }
+
+        #welcome-page-wrapper h3 {
+            font-weight: normal;
+            font-size: 18px;
+            line-height: 150%;
+        }
+
+        #welcome-page-wrapper h4 {
+            font-weight: normal;
+            margin-bottom: -5px;
+        }
+
+        #welcome-page-wrapper a {
+            color: #87CEFA;
+            text-decoration: none;
+        }
+
+        .welcome-button {
+            border: solid 1px #fff;
+            padding: 10px 20px;
+            width: 200;
+            display: inline-block;
+            border-radius: 5px;
+            margin-top: 50px;
+            cursor: pointer;
+        }
+
+        .welcome-button:hover {
+            box-shadow: 0 0 3px #fff;
+        }
+
+        .welcome-control {
+            display: inline-block;
+            width: 140px;
+        }
+
+        .welcome-control img {
+        }
+
+        .welcome-control h3 {
+            font-weight: normal;
+        }
+
+        .mercury-iframe {
+            width: 100%;
+            height: calc(100% - 80px);
+            position: absolute;
+            top: 80px;
+            border: none;
+            left: 0;
+        }
+
+    </style>
+
+    <!-- MELOWN DEMO CODE -->
+    <script type="text/javascript">
+        var geojsonUrl = '//cdn.melown.com/static/web/homepage-web-static/mercury/resources/mercury.geojson';
+    </script>
+    <script type="text/javascript" src="//cdn.melown.com/static/web/homepage-web-static/mercury/main.js?2.37"></script>
+
+
+
+    <!-- load stylesheet for safari if needed -->
+    <script defer async>
+    if (navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1) {
+        var link = document.createElement( "link" );
+        link.href = "//cdn.melown.com/static/web/style/safari.css?1549545798";
+        link.rel = "stylesheet";
+        document.getElementsByTagName( "head" )[0].appendChild( link );
+    }
+    </script>
+
+</head>
+
+<body>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.11&appId=260728097421249';
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+<div class="site-container">
+    <div id="site-header" class="content-wrapper">
+
+    <div class="content content-fw">
+
+        <div class="mlwn-logo">
+            <h1>
+                <a href="/">
+                    <img src="//cdn.melown.com/static/web/icons/logo-melown-boundless.png?1549545798" alt="Melown" />
+                </a>
+            </h1>
+        </div>
+
+        <nav class="mlwn-navigation">
+            <ul>
+                <li class="nav-item">
+                    <a href="javascript:void(0)" onclick="openSubNav(this)">Products</a>
+                    <ul class="submenu" style="transform:translateX(-40%);">
+                        <div class="arrow"><div></div></div>
+                        <div class="submenu-content">
+                            
+                            
+                            <li class="submenu-item">
+                                <a href="/products/vadstena/">Vadstena 3D Reality&#8209;capture System</a>
+                            </li>
+                            
+                            <li class="submenu-item">
+                                <a href="/products/photogrammetry/">Melown Photogrammetry</a>
+                            </li>
+                            
+                            <li class="submenu-item">
+                                <a href="/products/vts/">VTS 3D Geospatial Software Stack</a>
+                            </li>
+                            
+                            <li class="submenu-item">
+                                <a href="/products/cloud/">Melown Cloud</a>
+                            </li>
+                            
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="http://vtsdocs.melown.com/en/latest/" target="_blank">Developers</a>
+                </li>
+                <!--<li class="nav-item">-->
+                    <!--<a href="/pricing">Pricing</a>-->
+                <!--</li>-->
+                <li class="nav-item">
+                    <a href="javascript:void(0)" onclick="openSubNav(this)">Company</a>
+                    <ul class="submenu" style="transform:translateX(-38px);">
+                        <div class="arrow"><div></div></div>
+                        <div class="submenu-content">
+                            <li class="submenu-item">
+                                <a href="/about">About Us</a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href="/our-team">Team</a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href="/careers">Careers</a>
+                            </li>
+                            <li class="submenu-item">
+                                <a href="/contact">Contact</a>
+                            </li>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="/blog">Blog</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="mlwn-navigation-toggle" onclick="openNav()">
+            <img src="//cdn.melown.com/static/web/icons/menu.svg?1549545798"/>
+        </div>
+
+    </div>
+
+</div>
+<div id="mobile-nav" class="overlay">
+    <div class="overlay-controls">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">
+            <img src="//cdn.melown.com/static/web/icons/close.svg?1549545798">
+        </a>
+    </div>
+    <nav class="overlay-content">
+        
+        
+        <a class="menu-item" href="/products/vadstena/">Vadstena 3D Reality&#8209;capture System</a>
+        
+        <a class="menu-item" href="/products/photogrammetry/">Melown Photogrammetry</a>
+        
+        <a class="menu-item" href="/products/vts/">VTS 3D Geospatial Software Stack</a>
+        
+        <a class="menu-item" href="/products/cloud/">Melown Cloud</a>
+        
+        <a class="menu-item" href="http://vtsdocs.melown.com/en/latest/">Developers</a>
+        <!--<a class="menu-item" href="/pricing">Pricing</a>-->
+        <a class="menu-item" href="/about">About Us</a>
+        <a class="menu-item" href="/our-team">Team</a>
+        <a class="menu-item" href="/careers">Careers</a>
+        <a class="menu-item" href="/contact">Contact</a>
+        <a class="menu-item" href="/blog">Blog</a>
+    </nav>
+</div>
+
+<script>
+function openNav() {
+    document.getElementById("mobile-nav").style.width = "100vw";
+}
+function closeNav() {
+    document.getElementById("mobile-nav").style.width = "0";
+}
+</script>
+
+
+<script>
+
+    var openedSubmenu = null;
+
+    function closeAllSubNavs() {
+        var submenus = document.getElementsByClassName('submenu');
+        if(submenus && submenus.length){
+            for(var i = 0; i < submenus.length; i++) {
+                const sm = submenus[i];
+                if(sm) {
+                    sm.style.display = 'none';
+                }
+            }
+        }
+    }
+
+    function openSubNav(self) {
+        const submenu = self.parentElement.getElementsByClassName('submenu')[0];
+        if(submenu !== openedSubmenu) {
+            submenu.style.display = 'flex';
+            openedSubmenu = submenu;
+        } else {
+            submenu.style.display = 'none';
+            openedSubmenu = null;
+        }
+    }
+
+    document.addEventListener('click', closeAllSubNavs, true);
+</script>
+
+    <div class="site-content">
+        
+
+
+<iframe src="iframe.html" class="mercury-iframe"></iframe>
+
+    </div>
+</div>
+
+
+
+</body>
+</html>
