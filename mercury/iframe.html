@@ -337,8 +337,12 @@
 	-->
     <script type="text/javascript">
         var mercuryIframe = window.top.document.getElementsByClassName('mercury-iframe')[0];
+        var lastPosTimer = performance.now(); 
+        
         function onMapPositionChanged() {
-            if(mercuryIframe) {
+            var timer = performance.now(); 
+            if (mercuryIframe && (timer - lastPosTimer) > 1000) {
+                lastPosTimer = timer;
                 var loc = mercuryIframe.contentWindow.location;
                 window.top.history.pushState({}, 'newPos' + loc.search, loc.search);
             }
