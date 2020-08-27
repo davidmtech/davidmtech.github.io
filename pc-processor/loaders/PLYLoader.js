@@ -47,7 +47,7 @@ var PLYLoader = function ( manager ) {
 PLYLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 
 	constructor: PLYLoader,
-	options : { useRGBA : true, flipYZ : true },
+	options : { useRGB8 : true, flipYZ : true },
 
 	load: function ( url, onLoad, onProgress, onError ) {
 
@@ -324,10 +324,10 @@ PLYLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 
 			if ( buffer.colors.length > 0 ) {
 
-				if (options.useRGBA) {
-					let att = new Uint8BufferAttribute( buffer.colors,  4)
+				if (scope.options.useRGB8) {
+					let att = new Uint8BufferAttribute( buffer.colors,  3)
 					att.normalized = true; 
-					geometry.setAttribute( 'colorRGBA',  att);
+					geometry.setAttribute( 'color',  att);
 				} else {
 					geometry.setAttribute( 'color', new Float32BufferAttribute( buffer.colors,  3 ) );
 				}
@@ -352,13 +352,12 @@ PLYLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 			if ( elementName === 'vertex' ) {
 
 
-				//if (options.flipYZ) {
+				if (scope.options.flipYZ) {
 					buffer.vertices.push( element.x, element.z, -element.y );
-				//} else {
-				//	buffer.vertices.push( element.x, element.y, element.z );
-				//}
+				} else {
+					buffer.vertices.push( element.x, element.y, element.z );
+				}
 
-				/*
 				if ( 'nx' in element && 'ny' in element && 'nz' in element ) {
 
 					buffer.normals.push( element.nx, element.ny, element.nz );
@@ -373,13 +372,13 @@ PLYLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 
 				if ( 'red' in element && 'green' in element && 'blue' in element ) {
 
-					if (options.useRGBA) {
-						buffer.colors.push( element.red, element.green, element.blue, 0.0);
+					if (scope.options.useRGB8) {
+						buffer.colors.push( element.red, element.green, element.blue);
 					} else {
 						buffer.colors.push( element.red / 255.0, element.green / 255.0, element.blue / 255.0 );
 					}
 
-				}*/
+				}
 
 			} else if ( elementName === 'face' ) {
 
