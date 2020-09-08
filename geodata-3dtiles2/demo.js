@@ -12,9 +12,7 @@ var geodata = null;
 
     params['view'] = {
       "surfaces": {},
-      "freeLayers": {
-        "geodatatest": {}
-      },
+      "freeLayers": {},
       "options": {}
     };
 
@@ -80,7 +78,7 @@ function on3DTilesLoaded() {
     //add free layer to the list of free layers
     //which will be rendered on the map
     var view = map.getView();
-    view.freeLayers.geodatatest = {};
+    view.freeLayers.geodatatest = { options: { fastParse: true }};
     map.setView(view);
 }
 
