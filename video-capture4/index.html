@@ -1,0 +1,714 @@
+<html>
+<head>
+    <title>VTS Video Capture</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.melown.com/libs/vtsjs/browser/v2/vts-browser.min.css" />
+    <!-- <script type="text/javascript" src="https://cdn.melown.com/libs/vtsjs/browser/v2/vts-browser.min.js"></script> -->
+    <script type="text/javascript" src="./vts-browser.js"></script>
+    <!-- <script type="text/javascript" src="https://cdn.melown.com/libs/vtsjs/support/v2/start-browser.js"></script> -->
+    <script type="text/javascript" src="./start-browser.js"></script>
+
+    <style>
+
+        .panel-controls {
+            width:calc(100% - 4px);
+            height: 30px;
+            font-family: 'Open Sans',Verdana,Arial,Tahoma,Calibri,Geneva,sans-serif;
+            padding: 10px;
+        }
+
+        .panel-right {
+            float: left;
+            margin-left:3px;
+            width: 270px;
+            height: 100%;
+        }
+
+        .panel-left {
+            float: left;
+            width: calc(100% - 302px);
+            height: calc(100% - 2px);
+        }
+
+        #panel-export {
+            font-family: 'Open Sans',Verdana,Arial,Tahoma,Calibri,Geneva,sans-serif;
+            position: absolute;
+            left: 30px;
+            top: 30px;
+            width: 300px;
+            height: 225px;
+            display: none;
+            background-color: #fff;
+            border: 1px solid #000;
+            padding: 5px;
+        }
+
+        #panel-export2 {
+            width: 300px;
+            height: 200px;
+            margin-bottom: 5px;
+            overflow: hidden;
+        }
+
+        #browser-export {
+            border: 1px solid #bbb;
+            background-color: eee;
+        }
+
+        #panel-list {
+            width: 275px;
+            height: 140px;
+            border: 1px solid #bbb;
+        }
+
+        #right-controls {
+            width: 275px;
+            line-height: 165%;        
+        }
+
+        #right-controls * {
+            float: right;   
+        }
+
+        #right-controls input {
+            width: 200px;
+        }
+
+        #right-controls2 {
+            width: 275px;        
+            line-height: 165%;        
+        }
+
+        #right-controls2 * {
+            float: right;   
+        }
+
+        #right-controls2 input {
+            width: 65px;
+        }
+
+        #panel-export-close {
+            float: right;
+            margin-top: -22px;
+            height: 21px;            
+        }
+        
+        .browser {
+            width:100%;
+            height:100%;
+            border: 1px solid #bbb;
+            background-color: eee;
+        }
+
+        .panel-list-item {
+            margin-bottom: 5px;            
+        }
+        
+        .panel-list-item button {
+            /*float: right;*/
+        }
+
+        .panel-list-item input {
+            width: 50px;
+        }        
+
+        .right-item {
+            width: 126px;
+        }
+       
+
+    </style>
+
+
+<script>
+
+    var focus = 'none';
+    var iframeLeft = null;
+    var iframeRight = null;
+    var panelList = null;
+    var positions = [];
+    var trajectory = [];
+    
+    function init() {
+        iframeLeft =  document.getElementById('browser-left');
+        iframeRight = document.getElementById('right-controls');
+        panelList =  document.getElementById('panel-list');
+
+        var urlParts = window.location.href.split('?');
+        var urlParams = urlParts[1];
+
+        if (urlParams) {
+            var params = parseParams(urlParams);
+            
+            var m1 = (params['m1'] && params['m1'] != '') ? decodeURIComponent(params['m1']) : '';
+            var p1 = (params['p1'] && params['p1'] != '') ? decodeURIComponent(params['p1']) : '';
+            var v1 = (params['v1'] && params['v1'] != '') ? decodeURIComponent(params['v1']) : '';
+
+            formLeft.elements['mapConfig'].value = m1;
+            formLeft.elements['mapParams'].value = p1;
+            formLeft.elements['vts'].checked = v1 == '1';
+        }
+        
+        addPosition(0);
+        addPosition(0);
+        updateList();
+    }
+
+    function addPosition(index) {
+        positions.push({
+            pos : '',
+            duration: 3000,
+            fade : 'inout',
+            fadePower: 1,
+            yawInterpolation : 'shortest',
+            mode : 'direct'
+        });
+    }
+
+    function updateList(index) {
+        var html = '';
+        for (var i = 0, li = positions.length; i < li; i++) {
+            var last = (i == li - 1);
+            html += '<div class="panel-list-item">';
+            html +=     '<input id="key-pos' + i + '" style="width:100%" type="text" value="" onchange="changeKey(0,' + i + ')">';
+            html +=     '<input id="key-duration' + i + '" type="text" value="3000" ' + (last ? "disabled" : "")  + ' onchange="changeKey(1,' + i + ')">';
+            
+            html +=     '<select id="key-fade' + i + '"' + (last ? "disabled" : "")  + ' onchange="changeKey(2,' + i + ')">';
+            html +=        '<option value="inout">fade-in-out</option>';
+            html +=        '<option value="in">fade-in</option>';
+            html +=        '<option value="out">fade-out</option>';
+            html +=        '<option value="none">none</option>';
+            html +=     '</select>';
+            html +=     '<input id="key-fade-power' + i + '" style="width:30px" type="text" value="1" ' + (last ? "disabled" : "")  + ' onchange="changeKey(3,' + i + ')">';
+            html +=     '<input id="key-yaw-interpolation' + i + '" title="Shortest Yaw Interpolation" style="width:20px" type="checkbox" checked ' + (last ? "disabled" : "")  + ' onchange="changeKey(4,' + i + ')">';
+            html +=     '<input id="key-mode' + i + '" title="Direct inter" style="width:20px" type="checkbox" checked ' + (last ? "disabled" : "")                             + ' onchange="changeKey(5,' + i + ')">';
+
+            html +=     '<br/><button type="button" onclick="storePos(' + i + ')">Set</button>'; 
+            html +=     '<button type="button" onclick="storePos(' + i + ', true)">Set Fixed</button>'; 
+            html +=     '<button type="button" onclick="viewPos(' + i + ')">View</button>'; 
+            html += '</div>';
+        }
+        
+        panelList.innerHTML = html;
+    };
+
+    function changeKey(type, index) {
+        switch(type) {
+            case 0:  //pos
+                try {
+                    var str_ = '{"data":' + document.getElementById('key-pos' + index).value + '}';
+                    var data = JSON.parse(str_);
+                } catch(e) {
+                    break;
+                }
+                
+                positions[index].pos = data['data']; 
+                break;
+
+            case 1: //duration
+                positions[index].duration = parseFloat(document.getElementById('key-duration' + index).value); 
+                break;
+
+            case 2: 
+                positions[index].fade = document.getElementById('key-fade' + index).value; 
+                break;
+
+            case 3: 
+                positions[index].fadePower = parseFloat(document.getElementById('key-fade-power' + index).value); 
+                break;
+
+            case 4: 
+                positions[index].yawInterpolation = document.getElementById('key-yaw-interpolation' + index).checked ? 'shortest' : 'longest'; 
+                break;
+
+            case 5: 
+                positions[index].mode = document.getElementById('key-mode' + index).checked ? 'direct' : 'auto'; 
+                break;
+        }
+    }
+
+    function storePos(index, fixed) {
+        positions[index].pos =  fixed ? currentPos2 : currentPos;
+        document.getElementById('key-pos' + index).value = JSON.stringify(positions[index].pos);
+    }
+
+    function viewPos(index) {
+        var iframe =  iframeLeft;
+        iframe.contentWindow.postMessage({'type': 'set-pos', 'data': positions[index].pos },'*');            
+    }
+
+    function parseParams(string) {
+        var queryString = {};
+        var query = string;            
+        if (string.indexOf('?') == 0) {
+            var query = string.substring(1);
+        }
+        var vars = query.split('&');
+        if (!(vars.length == 1 && vars[0] == '')) {
+            for (var i=0; i < vars.length; i++) {
+                var pair = vars[i].split('=');
+                if (typeof queryString[pair[0]] === 'undefined') {
+                    queryString[pair[0]] = pair[1];
+                } else if (typeof queryString[pair[0]] === 'string') {
+                    var arr = [ queryString[pair[0]], pair[1] ];
+                    queryString[pair[0]] = arr;
+                } else {
+                    queryString[pair[0]].push(pair[1]);
+                }
+            }
+        }
+        return queryString;        
+    }
+
+    function parseVtsParams(string) {
+        var params = vtsParseUrlParams(null, string);
+        return params;
+    }
+    
+    function vtsCode() {
+        browser = vts.browser('vadstena-engine', mapParams);
+        browser.on('map-position-changed', (function(event){
+            //console.log('mesasage-posted');
+            //if (!noposts) {
+
+                var p = browser.map.getPosition();
+                p = browser.map.convertPositionHeightMode(p, 'fix', true);
+
+                var d = { 'p1':event.position.slice(), 'p2': p };
+
+                window.parent.postMessage({'type': 'pos-changed', 'data': d},'*');            
+            //}
+        }));
+
+        window.addEventListener('message', (function(event) {
+            var data = event.data;
+            
+            if (data.type == 'set-pos') {
+                var pos = data.data;
+                //console.log('set-pos: ' + JSON.stringify(pos));
+                browser.map.setPosition(pos);
+            }
+            
+            if (data.type == 'get-trajectory') {
+                var p1 = data.p1;
+                var p2 = data.p2;
+                var duration = data.duration;
+                var t = browser.map.generateTrajectory(p1, p2, {'mode': data.mode, 'maxDuration': data.duration, 'minDuration': data.duration,
+                                                                'fade': data.fade, 'fadePower': data.fadePower, 'samplePeriod': data.samplePeriod,
+                                                                'yawInterpolation': data.yawInterpolation });
+                window.parent.postMessage({'type': 'export-trajectory', 'data': t },'*');            
+            }
+
+            if (data.type == 'fly') {
+                var p1 = data.p1;
+                var p2 = data.p2;
+                var duration = data.duration;
+                browser.map.setPosition(data.p1);
+                browser.autopilot.flyTo(data.p2, {'mode': data.mode, 'maxDuration': data.duration, 'minDuration': data.duration,
+                                                  'fade': data.fade, 'fadePower': data.fadePower, 'yawInterpolation': data.yawInterpolation });
+            }
+
+            if (data.type == 'play') {
+                //browser.map.setPosition(data.p1);
+                browser.autopilot.flyTrajectory(data.trajectory, 1000 / data.fps);
+            }
+
+            if (data.type == 'stop') {
+                browser.autopilot.cancelFlight();
+            }
+            
+        }), false);
+    }
+
+    function vtsCode2() {
+        browser = vts.browser('vadstena-engine', mapParams);
+        browserCounter = -1;
+        browser.setParam('mapForceFrameTime', -1);
+
+        browser.on('map-loaded', (function(event){
+            //console.log('mesasage-map-loaded');
+
+            lastFrameTimer = Date.now();
+            window.parent.postMessage({'type': 'export-map-loaded', 'data': {} },'*');            
+        }));
+        
+        
+        browser.on('tick', (function(event){
+            
+            if (browserCounter != -1) {
+                browserCounter++;
+            }
+
+            console.log('counter: ' + browserCounter);
+            
+            if (browserCounter > 50) {
+                browserCounter = 0;
+
+                var timer = Date.now();
+                var stats = browser.map.getStats();
+                var waitTime = MelownWaitTime__;
+                
+                if (exportingFrame == 0) {
+                    waitTime *= 10;
+                }
+                
+                //console.log(''+MelownWaitTime__);//JSON.stringify(stats));
+                
+                if (stats['processingTasks'] == 0 && stats['downloading'] == 0 && stats['busyWorkers'] == 0 && /*stats['dirty'] == false &&*/
+                    stats['lastDownload'] > 0 && (timer - stats['lastDownload']) > waitTime && (timer - lastFrameTimer) > waitTime) {
+                    window.parent.postMessage({'type': 'export-frame-loaded', 'data': {} },'*');
+                    lastFrameTimer = Date.now();
+                }
+            }
+        
+        }));
+        
+
+        window.addEventListener('message', (function(event) {
+            var data = event.data;
+            
+            if (data.type == 'export-set-pos') {
+                var pos = data.data;
+                //console.log('set-pos: ' + JSON.stringify(pos));
+                browserCounter = 0;
+                browser.map.setPosition(pos);
+            }
+
+            if (data.type == 'export-save-screenshot') {
+                browser.renderer.saveScreenshot('file', data.filename, 'png');
+                browser.setParam('mapForceFrameTime', 1000/data.fps);
+                console.log("frame saved: " +  data.filename);
+            }
+            
+        }), false);
+    }
+
+
+    var vtsCodeString = vtsCode.toString();
+    var vtsCode2String = vtsCode2.toString();
+
+
+    function getIframeContent(exporting, overwriteParams, delay) {
+        var form = iframeRight;
+        var config = form.elements['mapConfig'].value;
+        var params = form.elements['mapParams'].value;
+        
+        var code = exporting ? vtsCode2String : vtsCodeString;
+        var code = 'var MelownWaitTime__=' + delay + '; ' + code;
+       
+        var html = '' +
+            '<html>' +
+            '<head>' +
+                '<title>Vadstena Map Viewer</title>' +
+                '<meta http-equiv="content-type" content="text/html; charset=utf-8">';
+                
+        mapParams = parseVtsParams(params);
+        mapParams['map'] = config;
+        
+        if (overwriteParams) {
+            for (var key in overwriteParams) {
+                mapParams[key] = overwriteParams[key];
+            }
+        }
+     
+        html += '<link rel="stylesheet" type="text/css" href="https://cdn.melown.com/libs/vtsjs/browser/v2/vts-browser.min.css" />' +
+                //'<script type="text/javascript" src="https://cdn.melown.com/libs/vtsjs/browser/v2/vts-browser.min.js"></' +'script >' +
+                '<script type="text/javascript" src="./vts-browser.js">'+ '</' +'script >' +
+                '<script> var browser,noposts=true,mapParams=' + JSON.stringify(mapParams) + ',lastFrameTimer=0; ' + code + '</' +'script >';
+
+     
+        html += '</head>' +
+            '<body style = "padding: 0; margin: 0;" onload="vtsCode' + (exporting ? '2' : '') + '()">' +
+                '<div id="vadstena-engine" style="width:100%; height:100%;">' +
+                '</div>' +
+            '</body>' +
+            '</html>';
+            
+         return html;
+    }
+
+
+    function run(right) {
+        var iframe =  iframeLeft;
+       
+       var html = getIframeContent(false,{'rotate':0}, 0);
+            
+        iframe.contentWindow.document.open();
+        iframe.contentWindow.document.write(html);
+        iframe.contentWindow.document.close();
+
+        document.getElementById('browser-left').focus();
+    }
+        
+    window.addEventListener('message', onMessage, false);
+    
+    var currentPos = null;
+    var currentPos2 = null;
+    var currentTrajectory = null;
+    
+    function onMessage(event) {
+        var data = event.data;
+
+        switch (data.type) {
+            
+            case 'pos-changed':
+                currentPos = data.data.p1;
+                currentPos2 = data.data.p2.pos;
+                break; 
+        
+            case 'export-trajectory':
+                currentTrajectory = data.data;
+                exportTrajectory(data.data);
+                break;
+
+            case 'export-map-loaded':
+                var iframe = document.getElementById('browser-export');
+                iframe.contentWindow.postMessage({'type': 'export-set-pos', 'data': positions[0].pos },'*');
+                exportingFrame = 0;
+                break;            
+
+            case 'export-frame-loaded':
+                var iframe = document.getElementById('browser-export');
+
+                if (exportingFrame == -2) {
+                    break;
+                }
+                
+                if (exportingFrame > 0) {
+                    var frameNumber = Math.round(exportingFrame - 1);
+                    var filename = '' + frameNumber;
+
+                    if (frameNumber < 10000) {
+                        filename = '0' + filename;
+                    }
+                    
+                    if (frameNumber < 1000) {
+                        filename = '0' + filename;
+                    }
+
+                    if (frameNumber < 100) {
+                        filename = '0' + filename;
+                    }
+
+                    if (frameNumber < 10) {
+                        filename = '0' + filename;
+                    }
+                    
+                    iframe.contentWindow.postMessage({'type': 'export-save-screenshot', 'filename': ('frame' + filename + '.png'), 'fps' : exportingFps },'*');
+                }
+                
+                if (exportingFrame < currentTrajectory.length) {
+                    document.getElementById('panel-export-status').innerHTML = 'Frame ' + exportingFrame + '/' + currentTrajectory.length;
+
+                    iframe.contentWindow.postMessage({'type': 'export-set-pos', 'data': currentTrajectory[exportingFrame]},'*');
+                    exportingFrame++;
+                } else {
+                    exportingFrame = -2;
+                    exportingVideo =  false;
+                    document.getElementById('panel-export-status').innerHTML = 'Finished';
+                }
+                
+                break;
+        }            
+    }
+
+    function preview() {
+        var form =  document.getElementById('right-controls2');
+
+        iframeLeft.contentWindow.postMessage({'type': 'play', 'trajectory': currentTrajectory,
+                                          'fps': parseFloat(form.elements['videoFps'].value) },'*');
+
+        document.getElementById('browser-left').focus();
+    }
+
+    function stopPreview() {
+        iframeLeft.contentWindow.postMessage({'type': 'stop'},'*');
+        document.getElementById('browser-left').focus();
+    }
+
+    function closeExport() {
+        document.getElementById('panel-export').style.display = 'none';
+        exportingFrame = -2;
+        exportingVideo =  false;
+    }
+
+    exportingVideo = false;
+    exportingFrame = 0;
+    exportingFps = 25;
+
+    function exportVideo() {
+        var form =  document.getElementById('right-controls2');
+        var iframe =  iframeLeft;
+        exportingFps = parseFloat(form.elements['videoFps'].value); 
+
+        /*
+        iframe.contentWindow.postMessage({'type': 'get-trajectory', 'p1': positions[0].pos, 'p2': positions[1].pos,
+                                           'duration': positions[0].duration, 'fade': positions[0].fade, 'mode': positions[0].mode,
+                                           'fadePower': positions[0].fadePower, 'samplePeriod': (1000/exportingFps),
+                                           'yawInterpolation': positions[0].yawInterpolation },'*');            */
+
+        document.getElementById('panel-export-status').innerHTML = 'Initializing ...';
+        document.getElementById('panel-export').style.display = 'block';
+
+        var iframe = document.getElementById('browser-export');
+        
+        iframe.style.width = parseFloat(form.elements['videoWidth'].value);
+        iframe.style.height = parseFloat(form.elements['videoHeight'].value);
+        var delay = parseFloat(form.elements['videoDelay'].value);
+        
+        var html = getIframeContent(true, {'rotate':0, 'rendererAllowScreenshots':true, 'mapGPUCache':512}, delay);
+            
+        iframe.contentWindow.document.open();
+        iframe.contentWindow.document.write(html);
+        iframe.contentWindow.document.close();
+        
+        
+        exportingVideo =  true;
+        exportingFrame =  0;
+    }
+
+
+    function exportTrajectory(trajectory) {
+        var form =  document.getElementById('right-controls2');
+        var text = '# fps ' + parseFloat(form.elements['videoFps'].value) + '\n';
+
+        for (var i = 0, li = trajectory.length; i < li; i++) {
+            var pos = trajectory[i];
+            var filename = '0000' + i;
+            text += '' + filename.substr(filename.length-4) + ';' + pos[0] + ',' + pos[1] + ',' + pos[2] + ',' + pos[3] + 
+                    ',' + pos[4] + ',' + pos[5] + ',' + pos[6] + ',' + pos[7] + ',' + pos[8] + ',' + pos[9] + '\n';
+        }
+
+        document.getElementById('trajectory-text').value = text;
+    }
+
+
+    function importTrajectory() {
+        var text = document.getElementById('trajectory-text').value;
+        var lines = text.split('\n'), segments; 
+
+        currentTrajectory = [];
+
+        for (var i = 0, li = lines.length; i < li; i++) {
+            var line = lines[i].trim();
+
+            if (line.charAt(0) == '#') {
+                line = (line.substr(1)).toLowerCase().trim();
+                segments = line.split(' ');
+
+                if (segments[0] == 'fps') {
+                    document.getElementById('right-controls2').elements['videoFps'].value = segments[1];
+                }
+            } else {
+                segments = line.split(';')[1];
+                
+                if (segments) {
+                    segments = segments.split(',');
+
+                    for (var j = 1, lj = segments.length; j < lj; j++) {
+                        if (j != 3) {
+                            segments[j] = parseFloat(segments[j]);
+                        }
+                    }
+
+                    currentTrajectory.push(segments);
+                }
+            }
+        }
+    }
+
+
+    function generateTrajectory() {
+        var form =  document.getElementById('right-controls2');
+        var iframe =  iframeLeft;
+        exportingFps = parseFloat(form.elements['videoFps'].value); 
+
+        iframe.contentWindow.postMessage({'type': 'get-trajectory', 'p1': positions[0].pos, 'p2': positions[1].pos,
+                                           'duration': positions[0].duration, 'fade': positions[0].fade, 'mode': positions[0].mode,
+                                           'fadePower': positions[0].fadePower, 'samplePeriod': (1000/exportingFps),
+                                           'yawInterpolation': positions[0].yawInterpolation },'*');            
+    }
+
+
+
+/*
+    function tick() {
+
+        if (exportingVideo =  true;
+
+        
+    }
+*/
+</script>
+
+</head>
+<body style = "padding: 0; margin: 0;" onload="init()">
+
+
+    <div id="panel-left" class="panel-left">
+        <iframe id="browser-left" class="browser"></iframe>
+    </div>
+
+    <div id="panel-export">
+        <div id="panel-export2">
+            <iframe id="browser-export"></iframe>
+        </div>
+        <div id="panel-export-status">
+            Initializing ...
+        </div>
+        <button id="panel-export-close" type="button" onclick="closeExport()">Close</button> 
+    </div>
+
+    
+    <div id="panel-right" class="panel-right">
+        <div class="panel-controls">
+            <form id="right-controls">
+                <!--Map: <input type="text" name="mapConfig" value="https://cdn.melown.com/mario/store/melown2015/map-config/seznam-cz/ZpravyGeodata/mapConfig.json"><br/> -->
+                Map: <input type="text" name="mapConfig" value="https://rigel.mlwn.se/store/map-config/high-terrain/mapConfig.json"><br/>
+                Params: <input type="text" name="mapParams" value=""><br/>
+                <button type="button" onclick="run()">Load</button> 
+            </form>
+            <br/>
+
+            <div style="margin-bottom: 7px;">Trajectory:</div>
+            <textarea id="trajectory-text" style="width: 100%; height: 100px; white-space: nowrap;"></textarea>
+            <button type="button" onclick="preview()">Preview</button> 
+            <button type="button" onclick="stopPreview()">Stop</button> 
+            <button type="button" onclick="importTrajectory()">Import</button> 
+            <br/>
+            <br/>
+
+            <div style="margin-bottom: 7px;">Trajectory Generator:</div>
+            <div style="margin-bottom: 7px;">Key positions:</div>
+            <div id="panel-list">
+            </div>
+            <button type="button" onclick="generateTrajectory()">Generate</button> 
+            <br/>
+            <br/>
+
+            <form id="right-controls2">
+                <div style="float: left;margin-bottom: 7px; margin-left: 5px;">Video Export:</div>
+                <div>
+                    <div class="right-item">Height: <input type="text" name="videoHeight" value="1080"></div>
+                    <div class="right-item" style="margin-right:19px">Width: <input type="text" name="videoWidth" value="1920"></div>
+                </div>                        
+                <div>
+                    <div class="right-item">Delay: <input type="text" name="videoDelay" value="3000"></div>
+                    <div class="right-item" style="margin-right:19px">Fps: <input type="text" name="videoFps" value="25"></div>
+                </div>
+                <!--
+                <div>
+                    <div class="right-item">Prefix: <input type="text" name="prefix" value=""></div>
+                    <div class="right-item" style="margin-right:19px">Frame: <input type="text" name="videoWidth" value="1920"></div>
+                </div>
+                -->
+
+                <br/>
+                <button type="button" onclick="exportVideo()">Export</button> 
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
