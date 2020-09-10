@@ -324,6 +324,7 @@
     function vtsCode2() {
         browser = vts.browser('vadstena-engine', mapParams);
         browserCounter = -1;
+        frameCounter = 0;
         browser.setParam('mapForceFrameTime', -1);
 
         browser.on('map-loaded', (function(event){
@@ -340,7 +341,7 @@
                 browserCounter++;
             }
 
-            console.log('counter: ' + browserCounter);
+            //console.log('counter: ' + browserCounter);
             
             if (browserCounter > 50) {
                 browserCounter = 0;
@@ -349,7 +350,7 @@
                 var stats = browser.map.getStats();
                 var waitTime = MelownWaitTime__;
                 
-                if (exportingFrame == 0) {
+                if (frameCounter == 0) {
                     waitTime *= 10;
                 }
                 
@@ -359,6 +360,7 @@
                     stats['lastDownload'] > 0 && (timer - stats['lastDownload']) > waitTime && (timer - lastFrameTimer) > waitTime) {
                     window.parent.postMessage({'type': 'export-frame-loaded', 'data': {} },'*');
                     lastFrameTimer = Date.now();
+                    frameCounter++;
                 }
             }
         
@@ -535,7 +537,7 @@
 
     exportingVideo = false;
     exportingFrame = 0;
-    exportingFps = 25;
+    exportingFps = 30;
 
     function exportVideo() {
         var form =  document.getElementById('right-controls2');
@@ -695,7 +697,7 @@
                 </div>                        
                 <div>
                     <div class="right-item">Delay: <input type="text" name="videoDelay" value="3000"></div>
-                    <div class="right-item" style="margin-right:19px">Fps: <input type="text" name="videoFps" value="25"></div>
+                    <div class="right-item" style="margin-right:19px">Fps: <input type="text" name="videoFps" value="30"></div>
                 </div>
                 <!--
                 <div>
