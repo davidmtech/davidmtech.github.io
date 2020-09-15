@@ -84,10 +84,36 @@ Editor.prototype = {
     },
 
     save: function( blob, filename ) {
+    //return;
         let link = document.createElement( 'a' );
         link.href = URL.createObjectURL( blob );
         link.download = filename;
         link.dispatchEvent( new MouseEvent( 'click' ) );
+    },
+
+    getParamsFromUrl: function(url) {
+        let parser = document.createElement('a');
+        parser['href'] = url;
+
+        let queryString = {};
+        let query = parser['search'].substring(1);
+        let vars = query.split('&');
+        
+        if (!(vars.length == 1 && vars[0] == '')) {
+            for (let i = 0; i < vars.length; i++) {
+                let pair = vars[i].split('=');
+                if (typeof queryString[pair[0]] === 'undefined') {
+                    queryString[pair[0]] = pair[1];
+                } else if (typeof queryString[pair[0]] === 'string') {
+                    let arr = [ queryString[pair[0]], pair[1] ];
+                    queryString[pair[0]] = arr;
+                } else {
+                    queryString[pair[0]].push(pair[1]);
+                }
+            }
+        }
+        
+        return queryString;
     },
 
     onModelLoaded: function(geometry) {
@@ -102,6 +128,15 @@ Editor.prototype = {
         processor.commands = this.commands;
         processor.commandsIndex = this.commandsIndex;
         processor.planes = this.planes;
+        
+        let params = this.getParamsFromUrl(window.location.href);
+        
+        if('original' in params) processor.original = true;
+        if('debug' in params){
+            processor.debugDraw = true;
+            document.getElementById('myCanvas').style.display = 'block';
+        } 
+        
         processor.applyCommands();
 
         let timer2 = performance.now(); 
@@ -127,8 +162,6 @@ Editor.prototype = {
 
 
     convert: function () {
-
-        console.log('sdfsd fsd fsdf ');
 
         document.getElementById('status').innerHTML = '';
 
