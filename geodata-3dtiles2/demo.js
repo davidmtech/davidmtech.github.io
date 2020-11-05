@@ -63,7 +63,7 @@ function onMapLoaded() {
 
 //    geodata.load3DTiles('../../3DTiles/sf-vts/tileset.json', {}, on3DTilesLoaded);
 //    geodata.load3DTiles('../../3DTiles/haag-vts/tileset.json', {}, on3DTilesLoaded);
-    geodata.load3DTiles('./tileset.json', {}, on3DTilesLoaded);
+    geodata.load3DTiles('./tileset.json', { gradualJSONLoader : true }, on3DTilesLoaded);
 }
 
 
