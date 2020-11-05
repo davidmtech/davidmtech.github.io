@@ -19,6 +19,7 @@ var geodata = null;
     params['walkMode'] = true;
     params['fixedHeight'] = 47; //48???
     params['mapCheckTextureSize'] = true;
+    params['mapTraverseToMeshNode'] = true;
 
     //parse mapSplitSpace url param
     var params2 = vts.utils.getParamsFromUrl(window.location.href);
