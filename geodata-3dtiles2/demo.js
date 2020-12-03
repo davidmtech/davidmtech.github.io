@@ -48,7 +48,7 @@ var geodata = null;
 
     if(urlParams.has('mapTraverseToMeshNode')) {
         var value = urlParams.get('mapTraverseToMeshNode');
-        params['mapNormalizeOctantTexelSize'] = (value == '1' || value == 'true');
+        params['mapTraverseToMeshNode'] = (value == '1' || value == 'true');
     }
     
     if (!params['pos']) {
