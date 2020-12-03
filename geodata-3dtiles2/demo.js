@@ -38,7 +38,19 @@ var geodata = null;
         
         params['mapSplitSpace'] = [ [value[0],value[1],value[2]], [value[3],value[4],value[5]], [value[6],value[7],value[8]], [value[9],value[10],value[11]] ];
     }	
-	
+
+    var urlParams = new URLSearchParams(window.location.search);
+
+    if(urlParams.has('mapNormalizeOctantTexelSize')) {
+        var value = urlParams.get('mapNormalizeOctantTexelSize');
+        params['mapNormalizeOctantTexelSize'] = (value == '1' || value == 'true');
+    }
+
+    if(urlParams.has('mapTraverseToMeshNode')) {
+        var value = urlParams.get('mapTraverseToMeshNode');
+        params['mapNormalizeOctantTexelSize'] = (value == '1' || value == 'true');
+    }
+    
     if (!params['pos']) {
         params['pos'] = [ 'obj', 0.075365034865010019 * (180/Math.PI), 0.90892506334583045 * (180/Math.PI), 'float', 0.00, -23.00, -49.10, 0.00, 41033.50, 45.00 ]
         //params['pos'] = [ 'obj', -2.1362545626053979 * (180/Math.PI), 0.65953372844334801 * (180/Math.PI), 'float', 0.00, -23.00, -49.10, 0.00, 41033.50, 45.00 ]
