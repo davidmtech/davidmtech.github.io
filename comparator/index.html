@@ -1,0 +1,487 @@
+<html>
+<head>
+    <title>Melown API Demo</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <style>
+
+        .panel-controls {
+            width:calc(100% - 4px);
+            height: 30px;
+            font-family: 'Open Sans',Verdana,Arial,Tahoma,Calibri,Geneva,sans-serif;
+            padding: 2px;
+        }
+
+        .panel-right {
+            float: left;
+            margin-left:3px;
+            width: calc(50% - 3px);
+            height: calc(100% - 37px);
+        }
+
+        .panel-left {
+            float: left;
+            width: calc(50% - 3px);
+            height: calc(100% - 37px);
+        }
+        
+        .browser {
+            width:100%;
+            height:100%;
+            border: 1px solid #bbb;
+            background-color: eee;
+        }
+        
+        
+    </style>
+
+    <link 
+      rel="stylesheet" 
+      type="text/css" 
+      href="https://cdn.melown.com/libs/vtsjs/browser/v2/vts-browser.min.css" />
+    <script 
+      type="text/javascript" 
+      src="https://cdn.melown.com/libs/vtsjs/browser/v2/vts-browser.min.js">
+    </script>
+    <script 
+      type="text/javascript" 
+      src="https://cdn.melown.com/libs/vtsjs/support/v2/start-browser.js">
+    </script>
+    
+<script>
+    
+    //mapy.cz path
+    //http://127.0.0.1:8020/Melown/test-app/comparator.html?m1=http%3A%2F%2Fmelown.mapy.sbeta.cz%2F3d%2Fscenes%2Fall%2FmapConfig.json%3Fts%3D158441dcc58&p1=obj%2C16.611530487047695%2C49.19045748355014%2Cfix%2C206.57%2C-241.94%2C-83.77%2C0.00%2C562.59%2C45.00%26mapLoadMode%3Dfitonly&v1=1&m2=http%3A%2F%2F127.0.0.1%3A8020%2FMelown%2Ftest-app%2FseznamMapConfig.json&p2=&v2=0
+
+    var focus_ = "none";
+    var iframeLeft_ = null;
+    var iframeRight_ = null;
+    
+    function init() {
+        iframeLeft_ =  document.getElementById("browser-left");
+        iframeLeft_.contentWindow.onclick = focusLeft;
+        iframeRight_ =  document.getElementById("browser-right");
+        iframeRight_.contentWindow.onclick = focusRight;
+
+        formLeft_ = document.getElementById("left-controls");
+        formRight_ = document.getElementById("right-controls");
+
+
+        var urlParts_ = window.location.href.split("?");
+        var urlParams_ = urlParts_[1];
+
+        if (urlParams_) {
+            var params_ = parseParams(urlParams_);
+            
+            var m1_ = (params_["m1"] && params_["m1"] != "") ? decodeURIComponent(params_["m1"]) : "";
+            var p1_ = (params_["p1"] && params_["p1"] != "") ? decodeURIComponent(params_["p1"]) : "";
+            var v1_ = (params_["v1"] && params_["v1"] != "") ? decodeURIComponent(params_["v1"]) : "";
+            var m2_ = (params_["m2"] && params_["m2"] != "") ? decodeURIComponent(params_["m2"]) : "";
+            var p2_ = (params_["p2"] && params_["p2"] != "") ? decodeURIComponent(params_["p2"]) : "";
+            var v2_ = (params_["v2"] && params_["v2"] != "") ? decodeURIComponent(params_["v2"]) : "";
+
+            formLeft_.elements["mapConfig"].value = m1_;
+            formLeft_.elements["mapParams"].value = p1_;
+            formLeft_.elements["vts"].checked = v1_ == "1";
+            
+            formRight_.elements["mapConfig"].value = m2_;
+            formRight_.elements["mapParams"].value = p2_;
+            formRight_.elements["vts"].checked = v2_ == "1";
+        }
+    }
+
+    function parseParams(string_) {
+        var queryString_ = {};
+        var query_ = string_;            
+        if (string_.indexOf("?") == 0) {
+            var query_ = string_.substring(1);
+        }
+        var vars_ = query_.split("&");
+        if (!(vars_.length == 1 && vars_[0] == "")) {
+            for (var i=0; i < vars_.length; i++) {
+                var pair_ = vars_[i].split("=");
+                if (typeof queryString_[pair_[0]] === "undefined") {
+                    queryString_[pair_[0]] = pair_[1];
+                } else if (typeof queryString_[pair_[0]] === "string") {
+                    var arr_ = [ queryString_[pair_[0]], pair_[1] ];
+                    queryString_[pair_[0]] = arr_;
+                } else {
+                    queryString_[pair_[0]].push(pair_[1]);
+                }
+            }
+        }
+        return queryString_;        
+    }
+
+    function parseVtsParams(string_) {
+        string_ = string_.trim();
+        if (string_.indexOf("?") == -1) {
+            string_ = "?" + string_;
+        }
+
+        string_ = "http://www.abc.cz/abc" + string_;
+
+        var params_ = vtsParseUrlParams(null, string_);
+        return params_;
+    }
+    
+    function vtsCode() {
+        browser_ = vts.browser("vadstena-engine", mapParams_);
+        
+        if (useTiles3D_) {
+
+            browser_.on('map-loaded', (function(event_){
+
+                map = browser_.map;
+
+                var freeLayer = {
+                    credits:[],
+                    displaySize:1024,
+                    extents:{"ll":[null,null,null],"ur":[null,null,null]},
+                    style:{},
+                    type:"geodata"
+                };
+                                 
+                freeLayer.geodata = {  binPath : useTiles3D_ };
+
+                //add free layer to the map
+                map.addFreeLayer('geodatatest', freeLayer);
+
+                //add free layer to the list of free layers
+                //which will be rendered on the map
+                var view = map.getView();
+                view.freeLayers.geodatatest = { options: { fastParse: true }};
+                map.setView(view);
+
+            }));
+            
+        }
+        
+        browser_.on("map-position-changed", (function(event_){
+            //console.log("mesasage-posted");
+            if (!noposts_) {
+                window.parent.postMessage({"type": "vts-pos", "data": event_.position },"*");            
+            }
+        }));
+        
+        window.addEventListener("message", (function(event_) {
+            var data_ = event_.data;
+			
+            if (data_.type == "set-noposts") {
+                noposts_ = data_.data;
+                console.log("set-noposts: " + JSON.stringify(noposts_));
+            }
+            
+            if (data_.type == "vts-pos") {
+                var pos_ = data_.data;
+                //console.log("set-pos: " + JSON.stringify(pos_));
+                if (browser_.map)
+					browser_.map.setPosition(pos_);
+            }
+            
+            if (data_.type == "nonvts-pos") {
+                var posData_ = data_.data;
+
+                console.log("nonvts-pos-recived: " + JSON.stringify(posData_));
+                
+                //debugger;
+                var srs_ = browser_.getSrsInfo(browser_.getReferenceFrame()["navigationSrs"])["srsDef"];
+                var coords_ = browser_.getProj4()("+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84", srs_, [posData_.pos_[0], posData_.pos_[1]]);
+
+                //console.log("new-vts-pos: " + JSON.stringify(coords_));
+
+                //var coords_ = [posData_.pos_[0], posData_.pos_[1]];
+                var pos_ = [
+                    "obj", coords_[0], coords_[1],
+                    "fixed", (posData_.height_ + posData_.heightOffset_),
+                     posData_.rot_[0], posData_.rot_[1], posData_.rot_[2],
+                     (posData_.pos_[2]*(Math.tan((posData_.fov_* Math.PI / 180)*0.5)*2)),
+                     posData_.fov_
+                ];
+
+                console.log("pos-set: " + JSON.stringify(pos_));
+                
+				browser_.setPosition(pos_);
+            }
+            
+        }), false);
+    }
+
+    function nonvtsCode() {
+       //define engine configuration
+        var config_ = {
+            "hideNavigationControls" : false,
+            "hideToolPanel" : true,
+            "closeToolPanel" : true,
+            "hideToolbar" : true,
+            "hideInfo" : true,
+            "hideLink" : false,
+            "hideGis" : false,
+            "hideCredits" : false
+        };
+    
+        var engine_ = new Vadstena.Engine(config_);
+    
+        //define location    
+        var location_ = {};
+        location_["version"] = engine_.getSupportedLocationVersion() + ".0.0";
+        location_["mapConfigURL"] = mapPath_;
+        //location_["mapConfigTemplateURL"] = mapPath_;
+    
+        //define locations
+        var locations_ = {};
+        locations_["locations"] = [location_];
+    
+        //set locations to the engine
+        engine_.setLocations(locations_, 0);
+        
+        engine_.on("update", (function(event_){
+            //console.log("mesasage-posted");
+            if (!noposts_) {
+                var browser_ = engine_.getBrowser();
+                var pos_ = browser_.getPosition();
+                var rot_ = browser_.getOrientation();
+                var height_ = browser_.getData("cameraNavHeight"); //getTerrainHeight(pos_[0], pos_[1]);
+                var heightOffset_ = browser_.getOption("cameraHeightOffset");
+                var fov_ = browser_.getData("browserConfig").cameraFOV;
+                
+                var data_ = {
+                    pos_ : pos_,
+                    rot_ : rot_,
+                    height_ : height_,
+                    heightOffset_ : heightOffset_,
+                    fov_ : fov_
+                }; 
+
+                //console.log("nonvts-pos: " + JSON.stringify(data_));
+                
+                window.parent.postMessage({"type": "nonvts-pos", "data": data_ },"*");            
+            }
+        }));
+
+        window.addEventListener("message", (function(event_) {
+            var data_ = event_.data;
+            //debugger
+
+            if (data_.type == "set-noposts") {
+                noposts_ = data_.data;
+                console.log("set-noposts: " + JSON.stringify(noposts_));
+            }
+            
+            if (data_.type == "vts-pos") {
+                var pos_ = data_.data;
+                //console.log("vts-pos: " + JSON.stringify(pos_));
+                browser_.setPosition(pos_);
+            }
+
+            if (data_.type == "nonvts-pos") {
+                var posData_ = data_.data;
+                var browser_ = engine_.getBrowser();
+                browser_.setPosition(posData_.pos_[0], posData_.pos_[1], posData_.pos_[2]);
+                browser_.setOrientation(posData_.rot_[0], posData_.rot_[1], posData_.rot_[2]);
+                browser_.setOption("cameraHeightOffset", posData_.heightOffset_);
+                //browser_.setCamera(posData_.fov_,..);
+            }
+
+        }), false);
+    }
+
+    var vtsCodeString_ = vtsCode.toString();
+    var nonvtsCodeString_ = nonvtsCode.toString();
+
+    function setUrlParams() {
+        var config1_ = formLeft_.elements["mapConfig"].value;
+        var params1_ = formLeft_.elements["mapParams"].value;
+        var vts1_ = formLeft_.elements["vts"].checked;
+        var config2_ = formRight_.elements["mapConfig"].value;
+        var params2_ = formRight_.elements["mapParams"].value;
+        var vts2_ = formRight_.elements["vts"].checked;
+
+        var urlParts_ = window.location.href.split("?");
+        var url_ = urlParts_[0];
+        url_ += "?m1=" + encodeURIComponent(config1_);
+        url_ += "&p1=" + encodeURIComponent(params1_);
+        url_ += "&v1=" + (vts1_ ? "1" : "0");
+        url_ += "&m2=" + encodeURIComponent(config2_);
+        url_ += "&p2=" + encodeURIComponent(params2_);
+        url_ += "&v2=" + (vts2_ ? "1" : "0");
+
+        window.history.replaceState({}, null, url_);
+    }
+
+    function run(right_) {
+        if (right_) {
+            var form_ = formRight_; 
+            var iframe_ =  iframeRight_;
+        } else {
+            var form_ = formLeft_;
+            var iframe_ =  iframeLeft_;
+        }
+        
+        var config_ = form_.elements["mapConfig"].value;
+        var params_ = form_.elements["mapParams"].value;
+        var path_ = config_; 
+                
+        var vts_ = form_.elements["vts"].checked;
+        
+        /*
+        var path_ = "http://pomerol:8888/output/uav6.2015-04-29-krivoklat/targets/uav6.2015-04-29-krivoklat.000/target/webexport-manual-fixes-vts/mapConfig.json";
+
+        if (right_) {
+            var path_ = "http://pomerol:8888/output/uav6.2015-04-29-krivoklat/targets/uav6.2015-04-29-krivoklat.000/target/webexport-manual-fixes-vts0/mapConfig.json";
+        } else {
+            if (!form_.elements["mapConfig"].value || form_.elements["mapConfig"].value == "") {
+                form_.elements["mapConfig"].value = "http://pomerol:8888/output/uav6.2015-04-29-krivoklat/targets/uav6.2015-04-29-krivoklat.000/target/webexport-manual-fixes-vts0/mapConfig.json";    
+            }
+        }*/
+       
+        var html_ = '' +
+            '<html>' +
+            '<head>' +
+                '<title>Vadstena Map Viewer</title>' +
+                '<meta http-equiv="content-type" content="text/html; charset=utf-8">';
+                
+         if (vts_) {
+               mapParams_ = parseVtsParams(params_);
+               
+               var useTiles3D_ = '';
+
+               if (path_.indexOf('tileset.json') != -1) {
+                   mapParams_["map"] = 'https://cdn.melown.com/mario/store/melown2015/map-config/melown/VTS-Tutorial-map/mapConfig.json';
+                   
+                   if (!("walkMode" in mapParams_)) mapParams_["walkMode"] = true;
+                   if (!("mapCheckTextureSize" in mapParams_)) mapParams_["mapCheckTextureSize"] = true;
+                   if (!("fixedHeight" in mapParams_)) mapParams_["fixedHeight"] = 47;
+                   if (!("mapTraverseToMeshNode" in mapParams_)) mapParams_["mapTraverseToMeshNode"] = true;
+
+                   if (!("mapCache" in mapParams_)) mapParams_["mapCache"] = 2000;
+                   if (!("mapGPUCache" in mapParams_)) mapParams_["mapGPUCache"] = 2000;
+
+                   if (!("view" in mapParams_)) {
+                       mapParams_['view'] = {
+                         "surfaces": {},
+                         "freeLayers": {},
+                         "options": {}
+                       };
+                   }
+                   
+                   useTiles3D_ = path_;
+                   
+               } else {
+                   mapParams_["map"] = path_;
+               }
+               
+                html_ += '' +
+                  //'<link rel="stylesheet" type="text/css" href="https://cdn.melown.com/libs/melownjs/browser/stable/melown-browser.min.css" />' +
+                  '<link rel="stylesheet" type="text/css" href="https://cdn.melown.com/libs/vtsjs/browser/v2/vts-browser.min.css" />' +
+
+                  //'<script type="text/javascript" src="../../build/vts-browser.js"></' +'script >' +
+                  '<script type="text/javascript" src="./vts-browser.min.js"></' +'script >' +
+                //'<script type="text/javascript" src="https://cdn.melown.com/libs/melownjs/browser/stable/melown-browser.min.js"></' +'script >' +
+
+                //'<script type="text/javascript" src="https://cdn.melown.com/libs/vtsjs/browser/v2/vts-browser.min.js"></' +'script >' +
+
+                '<script> var browser_,noposts_=true,' + 'useTiles3D_="' + useTiles3D_ + '", mapParams_=' + JSON.stringify(mapParams_) + '; ' + vtsCodeString_ + '</' +'script >';
+         } else {
+                var mapPath_ = "'" + config_ + "'";        
+
+                html_ += '<link rel="stylesheet" type="text/css" href="https://maps.cdn.melown.com/libs/engine-latest.css" />' +
+                //'<script type="text/javascript" src="http://127.0.0.1:8020/Vadstena/renderer-webgl/build/engine-v1-merge.js"></' +'script >' +
+                '<script type="text/javascript" src="./engine-v1.js"></' +'script >' +
+                '<script> var engine_,noposts_=true,mapPath_=' + mapPath_ + '; ' + nonvtsCodeString_ + '</' +'script >';
+         }        
+              
+         html_ += '</head>' +
+            '<body style = "padding: 0; margin: 0;" onload="' + (vts_ ? "vtsCode()" : "nonvtsCode()") + '">' +
+                '<div id="vadstena-engine" style="width:100%; height:100%;">' +
+                '</div>' +
+            '</body>' +
+            '</html>';
+            
+        iframe_.contentWindow.document.open();
+        iframe_.contentWindow.document.write(html_);
+        iframe_.contentWindow.document.close();
+        //iframe_.contentWindow.focus();
+        //iframe_.contentWindow.onclick = right_ ? focusRight : focusLeft;
+        iframe_.contentWindow.onmousedown = right_ ? focusRight : focusLeft;
+
+        setUrlParams(); 
+    }
+        
+    window.addEventListener("message", onMessage, false);
+    
+    function onMessage(event_) {
+        var data_ = event_.data;
+        
+        if (data_.type == "vts-pos" || data_.type == "nonvts-pos") {
+            if (event_.source == iframeLeft_.contentWindow) {
+                iframeRight_.contentWindow.postMessage({"type" :data_.type, "data": data_.data}, "*");
+            } else if (event_.source == iframeRight_.contentWindow) {
+                iframeLeft_.contentWindow.postMessage({"type" :data_.type, "data": data_.data}, "*");
+            }
+        }
+    }
+
+    function focusRight() {
+        if (focus_ == "right") {
+            return;
+        }
+
+        focus_ = "right";
+
+        iframeRight_.focus();
+        iframeRight_.style.borderColor = "#ff0000";
+        iframeLeft_.style.borderColor = "#bbbbbb";
+
+        iframeLeft_.contentWindow.postMessage({"type" :"set-noposts", "data": true}, "*");
+        iframeRight_.contentWindow.postMessage({"type" :"set-noposts", "data": false}, "*");
+
+    }
+    
+    function focusLeft() {
+        if (focus_ == "left") {
+            return;
+        }
+
+        focus_ = "left";
+
+        iframeLeft_.focus();
+        iframeLeft_.style.borderColor = "#ff0000";
+        iframeRight_.style.borderColor = "#bbbbbb";
+
+        iframeLeft_.contentWindow.postMessage({"type" :"set-noposts", "data": false}, "*");
+        iframeRight_.contentWindow.postMessage({"type" :"set-noposts", "data": true}, "*");
+    }
+
+</script>
+
+</head>
+<body style = "padding: 0; margin: 0;" onload="init()">
+
+
+    <div class="panel-left">
+        <div class="panel-controls">
+            <form id="left-controls">
+                Map: <input type="text" name="mapConfig" value="">
+                Params: <input type="text" name="mapParams" value="">
+                <input type="checkbox" name="vts" checked>VTS
+                <button type="button" onclick="run(false)">Run</button> 
+            </form>
+        </div>
+        <iframe id="browser-left" class="browser"></iframe>
+    </div>
+    
+    <div class="panel-right">
+        <div class="panel-controls">
+            <form id="right-controls">
+                Map: <input type="text" name="mapConfig" value="">
+                Params: <input type="text" name="mapParams" value="">
+                <input type="checkbox" name="vts" checked>VTS
+                <button type="button" onclick="run(true)">Run</button> 
+            </form>
+        </div>
+        <iframe id="browser-right" class="browser"></iframe>
+    </div>
+
+</body>
+</html>
