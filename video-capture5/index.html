@@ -328,9 +328,18 @@
                                                                 'fade': data.fade, 'fadePower': data.fadePower, 'samplePeriod': data.samplePeriod,
                                                                 'yawInterpolation': data.yawInterpolation });
                                                                 
-                var s = (browser.map.getDistance([p1[1], p1[2], 0], [p2[1], p2[2], 0], false)[0] / data.duration) * 3.6;
+                var res = browser.map.getDistance([p1[1], p1[2], 0], [p2[1], p2[2], 0], false);
+                var d;
                 
-                window.parent.postMessage({'type': 'export-trajectory', 'data': t , 'speed': s},'*');            
+                if (res[2] < 10000) { //use euclidian distance
+                    d = res[2];
+                } else {
+                    d = res[0];
+                }
+
+                var s = (d / (data.duration*0.001)) * 3.6;
+
+                window.parent.postMessage({'type': 'export-trajectory', 'data': t , 'speed': s},'*');
             }
 
             if (data.type == 'fly') {
@@ -670,7 +679,7 @@
         
         if (speed < 1)
             text += speed.toFixed(2);
-        else if (speed < 10)
+        else if (speed < 100)
             text += speed.toFixed(1);
         else
             text += speed.toFixed(0);
