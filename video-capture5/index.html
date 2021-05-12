@@ -327,7 +327,10 @@
                 var t = browser.map.generateTrajectory(p1, p2, {'mode': data.mode, 'maxDuration': data.duration, 'minDuration': data.duration,
                                                                 'fade': data.fade, 'fadePower': data.fadePower, 'samplePeriod': data.samplePeriod,
                                                                 'yawInterpolation': data.yawInterpolation });
-                window.parent.postMessage({'type': 'export-trajectory', 'data': t },'*');            
+                                                                
+                var s = (browser.map.getDistance([p1[1], p1[2], 0], [p2[1], p2[2], 0], false)[0] / data.duration) * 3.6;
+                
+                window.parent.postMessage({'type': 'export-trajectory', 'data': t , 'speed': s},'*');            
             }
 
             if (data.type == 'fly') {
@@ -540,7 +543,7 @@
         
             case 'export-trajectory':
                 currentTrajectory = data.data;
-                exportTrajectory(data.data);
+                exportTrajectory(data.data, data.speed);
                 break;
 
             case 'export-map-loaded':
@@ -650,7 +653,7 @@
     }
 
 
-    function exportTrajectory(trajectory) {
+    function exportTrajectory(trajectory, speed) {
         var form =  document.getElementById('right-controls2');
         var text = '# fps ' + parseFloat(form.elements['videoFps'].value) + '\n';
 
@@ -662,6 +665,19 @@
         }
 
         document.getElementById('trajectory-text').value = text;
+
+        text = 'speed: ';
+        
+        if (speed < 1)
+            text += speed.toFixed(2);
+        else if (speed < 10)
+            text += speed.toFixed(1);
+        else
+            text += speed.toFixed(0);
+            
+        text += ' km/h';
+        
+        document.getElementById('speed').innerHTML = text;
     }
 
 
@@ -765,6 +781,7 @@
             <div id="panel-list">
             </div>
             <button type="button" onclick="generateTrajectory()">Generate</button> 
+            <span id="speed" style="margin-left: 20px; font-size: 12px"></span>
             <br/>
             <br/>
 
