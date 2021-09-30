@@ -37631,6 +37631,7 @@ MapOctree.prototype.onBinFileLoaded = function(info, data) {
             const pos = this.map.getPosition();
             pos.setCoords(coords);
             pos.pos[3] = 'fix';
+            pos.setViewExtent(500);
             this.map.setPosition(pos);
         }
     }
