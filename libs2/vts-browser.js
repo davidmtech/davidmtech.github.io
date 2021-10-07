@@ -19416,7 +19416,7 @@ Dom.hasClass = function(element, name) {
 
 Dom.addClass = function(element, name) {
     if (element.classList !== undefined) {
-        const classes = Dom.splitWords(name);
+        const classes = name.trim().split(/\s+/);
         for (let i = 0, li = classes.length; i < li; i++) {
             element.classList.add(classes[i]);
         }
@@ -48278,7 +48278,9 @@ ThreeDevice.prototype.setSize = function(width, height) {
        //    this.gpu = new GpuDevice(this, div, this.curSize, this.config.rendererAllowScreenshots, this.config.rendererAntialiasing, this.config.rendererAnisotropic);
 
        this.div.appendChild( this.gpu2.domElement );
-    }
+   } else {
+       this.gpu2.setSize( width, height );
+   }
 
     this.camera2.aspect = width / height;
     this.camera2.updateProjectionMatrix();
