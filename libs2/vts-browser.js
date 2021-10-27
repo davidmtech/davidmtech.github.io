@@ -48652,9 +48652,9 @@ ThreeDevice.prototype.finishRender = function(options) {
     if (this.renderer.core.map.draw.drawChannel == 1) {
         this.scene.background = new THREE.Color( 0xffffff );
         this.gpu2.setRenderTarget( this.textureRenderTarget );
-        this.gpu2.models2.visible = false;
+        this.models2.visible = false;
         this.gpu2.render( this.scene, this.camera2 );
-        this.gpu2.models2.visible = true;
+        this.models2.visible = true;
         this.gpu2.setRenderTarget( null );
         return;
     }
