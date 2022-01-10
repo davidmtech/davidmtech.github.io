@@ -31621,6 +31621,21 @@ MapInterface.prototype.getSrses = function() {
 };
 
 
+MapInterface.prototype.getPhysicalSrsId = function() {
+    return this.map.referenceFrame.model.physicalSrs.id;
+};
+
+
+MapInterface.prototype.getPublicSrsId = function() {
+    return this.map.referenceFrame.model.publicSrs.id;
+};
+
+
+MapInterface.prototype.getNavigationSrsId = function() {
+    return this.map.referenceFrame.model.navigationSrs.id;
+};
+
+
 MapInterface.prototype.getSrsInfo = function(srsId) {
     const srs = this.map.getSrs(srsId);
     return srs ? srs.getInfo() : {};
