@@ -34,7 +34,7 @@ var seaLevelInput = null;
     var panel = browser.ui.addControl('sealevel-panel',
         '<div id="sealevel-div" class="sealevel-div">' +
             '<label><b>Sea Level</b></label><br/>' +
-            '<input id="seaLevelInput" type="number" min="0" max="300" step="5" value="5" size="4">' +
+            '<input id="seaLevelInput" type="number" min="0" max="300" step="5" value="10" size="4">' +
         '</div>');
 
     //get destinations-div element
