@@ -20144,7 +20144,7 @@ string getCoreVersion()
 */
 
 function getCoreVersion(full) {
-    return (full ? 'Core: ' : '') + '2.30.4';
+    return (full ? 'Core: ' : '') + '2.30.5';
 }
 
 
@@ -31763,6 +31763,12 @@ MapInterface.prototype.convertCoordsFromNavToCameraSpace = function(pos, mode, l
 MapInterface.prototype.convertCoordsFromPhysToCameraSpace = function(pos) {
     const p = this.map.camera.position;
     return [pos[0] - p[0], pos[1] - p[1], pos[2] - p[2]];
+};
+
+
+MapInterface.prototype.convertCoordsFromCameraSpaceToPhys = function(pos) {
+    const p = this.map.camera.position;
+    return [p[0]+pos[0], p[1] + pos[1], p[2] + pos[2]];
 };
 
 
@@ -100863,6 +100869,8 @@ WebGLDevice.prototype.init = function() {
     canvas.width = this.curSize[0];
     canvas.height = this.curSize[1];
     canvas.style.display = 'block';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
 
     if (canvas.getContext == null) {
         //canvas not supported
