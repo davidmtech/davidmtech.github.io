@@ -20144,7 +20144,7 @@ string getCoreVersion()
 */
 
 function getCoreVersion(full) {
-    return (full ? 'Core: ' : '') + '2.30.5';
+    return (full ? 'Core: ' : '') + '2.30.6';
 }
 
 
@@ -23794,7 +23794,14 @@ InspectorStats.prototype.updateStatsPanel = function(stats) {
         text2 += stats.debugStr + '<br/>';
     }
 
-    let text3 =  'PixelRatio: ' + (window.devicePixelRatio || 1).toFixed(3) +'<br/>'+
+    let device = "WebGL"
+
+    if (renderer.device == 2) {
+        device = "Three"
+    }
+
+    let text3 =  'Device: ' + device +'<br/>'+
+                 'PixelRatio: ' + (window.devicePixelRatio || 1).toFixed(3) +'<br/>'+
                  'BFRate: ' + Math.round(1000 / (stats.frameTime+0.00001)) +'<br/><br/>';
 
     const map = this.core.getMap();
@@ -27459,7 +27466,7 @@ MapDraw.prototype.getDrawCommandsGpuSize = function(commands) {
                     gpuNeeded += mesh.gpuSize;
                 }
 
-                if (texture) {
+                if (texture && !(this.config.mapNoTextures || this.debug.drawWireframe)) {
                     gpuNeeded += texture.getGpuSize();
                 }
             }
@@ -27515,7 +27522,7 @@ MapDraw.prototype.areDrawCommandsReady = function(commands, priority, doNotLoad,
                 const texture = command.texture;
 
                 const meshReady = (mesh && mesh.isReady(doNotLoad, priority, checkGpu));
-                const textureReady = this.config.mapNoTextures ? true : (!texture  || (texture && texture.isReady(doNotLoad, priority, checkGpu)));
+                const textureReady = (this.config.mapNoTextures || this.debug.drawWireframe) ? true : (!texture  || (texture && texture.isReady(doNotLoad, priority, checkGpu)));
 
                 if (!(meshReady && textureReady) ) {
                     ready = false;
@@ -48927,7 +48934,7 @@ ThreeDevice.prototype.drawTileSubmesh = function (cameraPos, index, texture, typ
     let drawWireframe = map.draw.debug.drawWireframe;
     let gpuTexture = null, t = null;
 
-    if (texture) {
+    if (texture && !(map.draw.config.mapNoTextures || drawWireframe)) {
         gpuTexture = texture.getGpuTexture();
         t = texture.getTransform();
     }
@@ -101418,23 +101425,27 @@ WebGLDevice.prototype.drawTileSubmesh = function (cameraPos, index, texture, typ
     let gpuTexture;
 
     if (texture) {
-        gpuTexture = texture.getGpuTexture();
 
-        if (gpuTexture) {
-            if (texture.statsCoutner != stats.counter) {
-                texture.statsCoutner = stats.counter;
-                stats.gpuRenderUsed += gpuTexture.getSize();
+        if (!(draw.config.mapNoTextures || drawWireframe)) {
+            gpuTexture = texture.getGpuTexture();
+
+            if (gpuTexture) {
+                if (texture.statsCoutner != stats.counter) {
+                    texture.statsCoutner = stats.counter;
+                    stats.gpuRenderUsed += gpuTexture.getSize();
+                }
+
+                this.bindTexture(gpuTexture);
+
+                if (gpuMask) {
+                    this.bindTexture(gpuMask, 1);
+                }
+
+            } else {
+                return;
             }
-
-            this.bindTexture(gpuTexture);
-
-            if (gpuMask) {
-                this.bindTexture(gpuMask, 1);
-            }
-
-        } else {
-            return;
         }
+        
     } else if (type != 3 && type != 1 && type != 2) {
         return;
     }
